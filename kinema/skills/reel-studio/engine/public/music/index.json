@@ -1,0 +1,66 @@
+[
+ {
+  "id": "pulse-tech",
+  "file": "music/pulse-tech.m4a",
+  "beats": "music/pulse-tech.beats.json",
+  "bpm": 110,
+  "dur": 72.82,
+  "desc": "110 bpm, minor, plucky arps + pumping pads. Default for tech explainers."
+ },
+ {
+  "id": "lofi-warm",
+  "file": "music/lofi-warm.m4a",
+  "beats": "music/lofi-warm.beats.json",
+  "bpm": 84,
+  "dur": 71.57,
+  "desc": "84 bpm swing, e-piano jazz chords, vinyl. Calm, friendly, cozy products."
+ },
+ {
+  "id": "ambient-air",
+  "file": "music/ambient-air.m4a",
+  "beats": "music/ambient-air.beats.json",
+  "bpm": 70,
+  "dur": 71.57,
+  "desc": "no drums, floating pads + bells. Under voice on light/sky themes."
+ },
+ {
+  "id": "drive-promo",
+  "file": "music/drive-promo.m4a",
+  "beats": "music/drive-promo.beats.json",
+  "bpm": 124,
+  "dur": 72.68,
+  "desc": "124 bpm four-on-floor, builds to a drop at bar 17. Energetic promo."
+ },
+ {
+  "id": "dark-cinematic",
+  "file": "music/dark-cinematic.m4a",
+  "beats": "music/dark-cinematic.beats.json",
+  "bpm": 90,
+  "dur": 67.0,
+  "desc": "90 bpm pulse, minor drone, booms. Problem statements, security, mystery."
+ },
+ {
+  "id": "bright-pop",
+  "file": "music/bright-pop.m4a",
+  "beats": "music/bright-pop.beats.json",
+  "bpm": 118,
+  "dur": 68.08,
+  "desc": "118 bpm major, happy plucks + claps. Consumer apps, playful."
+ },
+ {
+  "id": "minimal-keys",
+  "file": "music/minimal-keys.m4a",
+  "beats": "music/minimal-keys.beats.json",
+  "bpm": 96,
+  "dur": 63.0,
+  "desc": "96 bpm e-piano arps, rim clicks. Thoughtful, product walkthroughs."
+ },
+ {
+  "id": "trap-hype",
+  "file": "music/trap-hype.m4a",
+  "beats": "music/trap-hype.beats.json",
+  "bpm": 140,
+  "dur": 57.86,
+  "desc": "140 bpm half-time 808 + hat rolls. Aggressive typography promos."
+ }
+]

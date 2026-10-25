@@ -1,0 +1,170 @@
+{
+ "fps": 60,
+ "shots": [
+  {
+   "id": "sh01_globe_hook",
+   "set": "globe",
+   "dur": 9.16,
+   "events": {
+    "dissolve": 3.3,
+    "redraw": 4.29,
+    "redraw_end": 8.92
+   },
+   "start": 0.0,
+   "variant": "hook"
+  },
+  {
+   "id": "sh03_wall",
+   "set": "wall",
+   "dur": 3.75,
+   "events": {},
+   "start": 8.91
+  },
+  {
+   "id": "sh04_gate_lift",
+   "set": "checkpoint",
+   "dur": 2.77,
+   "events": {
+    "lift": 0.47
+   },
+   "start": 12.41,
+   "variant": "lift",
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh05_passport",
+   "set": "passport",
+   "dur": 4.77,
+   "events": {
+    "close": 0.66,
+    "slide": 1.57,
+    "schengen": 3.56
+   },
+   "start": 14.93
+  },
+  {
+   "id": "sh06_crowd",
+   "set": "checkpoint",
+   "dur": 5.31,
+   "events": {},
+   "start": 19.45,
+   "variant": "crowd",
+   "people": 70,
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh07_globe_arcs",
+   "set": "globe",
+   "dur": 2.47,
+   "events": {
+    "start": 0.1
+   },
+   "start": 24.51,
+   "variant": "arcs"
+  },
+  {
+   "id": "sh08_city_grow",
+   "set": "city",
+   "dur": 5.33,
+   "events": {
+    "grow": 0.2
+   },
+   "start": 26.73,
+   "variant": "grow",
+   "render": {
+    "vol_end": 900.0
+   },
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh09a_city_crush",
+   "set": "city",
+   "dur": 2.67,
+   "events": {},
+   "start": 31.81,
+   "variant": "crush",
+   "people": 170,
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh09b_village",
+   "set": "village",
+   "dur": 2.13,
+   "events": {},
+   "start": 34.23,
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh10_army",
+   "set": "military",
+   "dur": 5.87,
+   "events": {},
+   "start": 36.11,
+   "variant": "march",
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh11_state",
+   "set": "tabletop",
+   "dur": 4.31,
+   "events": {
+    "roads": 1.72,
+    "judge": 2.66,
+    "gavel": 3.4
+   },
+   "start": 41.73
+  },
+  {
+   "id": "sh12_globe_redraw",
+   "set": "globe",
+   "dur": 4.01,
+   "events": {
+    "start": 1.89,
+    "span": 2.4099999999999997
+   },
+   "start": 45.79,
+   "variant": "redraw"
+  },
+  {
+   "id": "sh12b_oil",
+   "set": "pumpjack",
+   "dur": 3.11,
+   "events": {},
+   "start": 49.55,
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh12c_battle",
+   "set": "military",
+   "dur": 3.99,
+   "events": {
+    "blasts": [
+     0.35,
+     1.37,
+     3.0
+    ]
+   },
+   "start": 52.41,
+   "variant": "battle",
+   "samples": 32,
+   "vol_samples": 48
+  },
+  {
+   "id": "sh13_final",
+   "set": "checkpoint",
+   "dur": 11.72,
+   "events": {},
+   "start": 56.15,
+   "variant": "final",
+   "samples": 32,
+   "vol_samples": 48
+  }
+ ]
+}

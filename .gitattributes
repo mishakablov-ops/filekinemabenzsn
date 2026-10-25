@@ -1,0 +1,17 @@
+* text=auto
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.glb binary
+*.gltf text
+*.blend binary
+*.fbx binary
+*.hdr binary
+*.exr binary
+*.wav binary
+*.m4a binary
+*.mp3 binary
+*.jpg binary
+*.png binary
+*.webp binary
+*.woff2 binary

@@ -1,0 +1,947 @@
+{
+ "id": "coffee-agent",
+ "mode": "explainer",
+ "style": "dusk",
+ "fps": 60,
+ "voice": {
+  "src": "projects/coffee-agent/voice.wav",
+  "words": "projects/coffee-agent/words.json"
+ },
+ "music": {
+  "src": "music/lofi-warm.m4a",
+  "volume": 0.14,
+  "duck": 0.45
+ },
+ "tail": 2.0,
+ "autoSfx": false,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": true
+ },
+ "sfx": [
+  {
+   "at": "@6",
+   "id": "pk-digital-digitasl-burst-sfx",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@Ради",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@40",
+   "id": "pk-click-ui-button",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@гости",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@заказы",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@поставки",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@таймлайн",
+   "id": "pk-digital-data-load-sfx-1",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@субтитры",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@звуки",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@растёт",
+   "id": "pk-result-failure",
+   "volume": 0.55,
+   "alignPeak": true
+  },
+  {
+   "at": "@кофейню+0.45",
+   "id": "pk-click-ui-button",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@кофейню+0.8",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@Сценарий",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@голос",
+   "id": "pk-click-ui-button",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@монтаж",
+   "id": "pk-digital-digitasl-burst-sfx",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@тему",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@больше",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.55,
+   "alignPeak": true
+  },
+  {
+   "at": "@Кстати",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@агент+1.2",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@шапку",
+   "id": "pk-click-ui-button",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@профиля",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.8,
+   "alignPeak": true
+  }
+ ],
+ "scenes": [
+  {
+   "id": "edit-night",
+   "at": 0,
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "lights": "evening",
+     "build": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        1.65,
+        1.6,
+        0.05
+       ],
+       "target": [
+        0.3,
+        1.1,
+        -2.02
+       ],
+       "fov": 38
+      },
+      {
+       "t": 3,
+       "pos": [
+        1.45,
+        1.52,
+        -0.3
+       ],
+       "target": [
+        0.3,
+        1.1,
+        -2.02
+       ],
+       "fov": 38
+      }
+     ],
+     "people": [
+      {
+       "pose": "type",
+       "pos": [
+        0.3,
+        0,
+        -1.0
+       ],
+       "rotY": 3.14159,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "screen": {
+      "block": "EditorTimeline",
+      "props": {
+       "title": "Кофейня_ролик_v12.prproj",
+       "adds": [
+        {
+         "track": "V1",
+         "at": 0.3,
+         "n": 6
+        },
+        {
+         "track": "T1",
+         "at": 1.0,
+         "n": 7
+        },
+        {
+         "track": "A2",
+         "at": 1.7,
+         "n": 5
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "six-for-forty",
+   "at": "@Ради",
+   "transition": "zoom",
+   "camera": "punch",
+   "captions": false,
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "lights": "evening",
+     "build": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        1.2,
+        1.45,
+        -0.6
+       ],
+       "target": [
+        0.3,
+        1.12,
+        -2.02
+       ],
+       "fov": 34
+      },
+      {
+       "t": 2.5,
+       "pos": [
+        1.0,
+        1.4,
+        -0.9
+       ],
+       "target": [
+        0.3,
+        1.12,
+        -2.02
+       ],
+       "fov": 34
+      }
+     ],
+     "people": [],
+     "screen": {
+      "block": "EditorTimeline",
+      "props": {
+       "title": "Кофейня_ролик_v12.prproj",
+       "adds": [
+        {
+         "track": "V1",
+         "at": 0.3,
+         "n": 6
+        },
+        {
+         "track": "T1",
+         "at": 1.0,
+         "n": 7
+        },
+        {
+         "track": "A2",
+         "at": 1.7,
+         "n": 5
+        }
+       ]
+      }
+     }
+    },
+    "dim": 0.62
+   },
+   "layers": [
+    {
+     "block": "BigType",
+     "pos": "center",
+     "props": {
+      "lines": [
+       "6 часов",
+       "ради",
+       "40 секунд"
+      ],
+      "at": [
+       0,
+       "@Ради",
+       "@40"
+      ],
+      "treatment": [
+       "solid",
+       "serif",
+       "mark"
+      ],
+      "enter": "slam",
+      "upper": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "cafe-day",
+   "at": "@Днём",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cafe",
+     "lights": "evening",
+     "build": false,
+     "cam": "counter",
+     "people": [
+      {
+       "pose": "stand",
+       "pos": [
+        0.6,
+        0,
+        -2.35
+       ],
+       "rotY": 0,
+       "seed": 5,
+       "look": {
+        "hero": true
+       }
+      },
+      {
+       "pose": "stand",
+       "pos": [
+        0.1,
+        0,
+        -0.72
+       ],
+       "rotY": 3.14159,
+       "seed": 7
+      },
+      {
+       "pose": "phone",
+       "pos": [
+        -0.75,
+        0,
+        0.35
+       ],
+       "rotY": 2.6,
+       "seed": 9
+      },
+      {
+       "pose": "stand",
+       "pos": [
+        2.3,
+        0,
+        0.55
+       ],
+       "walkTo": [
+        1.15,
+        0,
+        -0.62
+       ],
+       "walkDur": 2.4,
+       "seed": 6
+      }
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "NotificationStack",
+     "pos": "lower",
+     "props": {
+      "items": [
+       {
+        "app": "Бронь",
+        "text": "Столик на 4 · 12:30",
+        "at": "@гости"
+       },
+       {
+        "app": "Заказ #214",
+        "text": "2 капучино, раф с собой",
+        "at": "@заказы"
+       },
+       {
+        "app": "Поставка",
+        "text": "Молоко 12 л · зерно 5 кг",
+        "at": "@поставки"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "macbook-edit",
+   "at": "@Ночью",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "MacBook",
+    "props": {
+     "cam": "toScreen",
+     "screen": {
+      "block": "EditorTimeline",
+      "props": {
+       "title": "Кофейня_ролик_v13.prproj",
+       "adds": [
+        {
+         "track": "V1",
+         "at": "@таймлайн",
+         "n": 8
+        },
+        {
+         "track": "T1",
+         "at": "@субтитры",
+         "n": 9
+        },
+        {
+         "track": "A2",
+         "at": "@звуки",
+         "n": 7
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "flat",
+   "at": "@Я знал",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Bars3D",
+    "props": {
+     "bars": [
+      {
+       "label": "июнь",
+       "value": 41,
+       "color": "#C9A27A"
+      },
+      {
+       "label": "июль",
+       "value": 40,
+       "color": "#C9A27A"
+      },
+      {
+       "label": "август",
+       "value": 42,
+       "color": "#C9A27A"
+      },
+      {
+       "label": "сентябрь",
+       "value": 40,
+       "color": "#D9732F"
+      }
+     ],
+     "unit": "",
+     "max": 100,
+     "cam": "orbit"
+    }
+   }
+  },
+  {
+   "id": "alone",
+   "at": "@Но",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "lights": "evening",
+     "build": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0.05,
+        1.72,
+        2.35
+       ],
+       "target": [
+        -2.3,
+        1.55,
+        -0.2
+       ],
+       "fov": 40
+      },
+      {
+       "t": 2.5,
+       "pos": [
+        -0.25,
+        1.7,
+        2.0
+       ],
+       "target": [
+        -2.3,
+        1.55,
+        -0.2
+       ],
+       "fov": 40
+      }
+     ],
+     "people": [
+      {
+       "pose": "think",
+       "pos": [
+        -2.05,
+        0,
+        -0.1
+       ],
+       "rotY": -1.5708,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "prompt",
+   "at": "@Однажды",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cafe",
+     "lights": "evening",
+     "build": false,
+     "cam": "counter",
+     "people": [
+      {
+       "pose": "stand",
+       "pos": [
+        0.6,
+        0,
+        -2.35
+       ],
+       "rotY": 0,
+       "seed": 5,
+       "look": {
+        "hero": true
+       }
+      }
+     ]
+    },
+    "dim": 0.6
+   },
+   "layers": [
+    {
+     "block": "ClaudeChat",
+     "pos": "stage",
+     "props": {
+      "greeting": "Доброе утро",
+      "type": "Сделай ролик про мою кофейню ☕",
+      "typeAt": "@Сделай",
+      "cps": 18,
+      "dark": true,
+      "sendAt": "@кофейню+0.45",
+      "reply": "Принято. Пишу сценарий, озвучиваю, монтирую…",
+      "replyAt": "@кофейню+0.8"
+     }
+    }
+   ]
+  },
+  {
+   "id": "bar-pov",
+   "at": "@Сценарий",
+   "transition": "whip",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cafe",
+     "lights": "evening",
+     "build": false,
+     "cam": "fpvBar",
+     "people": []
+    }
+   },
+   "layers": [
+    {
+     "block": "Checklist",
+     "pos": "lower",
+     "props": {
+      "title": "Агент собирает",
+      "items": [
+       "Сценарий",
+       "Голос",
+       "Монтаж"
+      ],
+      "checkAt": [
+       "@Сценарий",
+       "@голос",
+       "@монтаж"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "morning",
+   "at": "@Теперь",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cafe",
+     "lights": "evening",
+     "build": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        -0.2,
+        1.58,
+        3.2
+       ],
+       "target": [
+        -1.55,
+        1.15,
+        0.0
+       ],
+       "fov": 42
+      },
+      {
+       "t": 2.6,
+       "pos": [
+        -0.35,
+        1.55,
+        2.95
+       ],
+       "target": [
+        -1.55,
+        1.15,
+        0.0
+       ],
+       "fov": 42
+      }
+     ],
+     "people": [
+      {
+       "pose": "sit",
+       "pos": [
+        -1.5,
+        0.05,
+        0.2
+       ],
+       "rotY": 0,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      },
+      {
+       "pose": "stand",
+       "pos": [
+        0.6,
+        0,
+        -2.35
+       ],
+       "rotY": 0,
+       "seed": 4,
+       "look": {}
+      }
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Bubble",
+     "pos": "lower",
+     "at": "@тему",
+     "props": {
+      "text": "Тема на завтра: *осенний раф* 🍂",
+      "side": "right"
+     }
+    }
+   ]
+  },
+  {
+   "id": "evening",
+   "at": "@А вечер",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cabin",
+     "cam": "fire",
+     "build": false,
+     "people": [
+      {
+       "pose": "sit",
+       "pos": [
+        0.2,
+        0.08,
+        0.55
+       ],
+       "rotY": 3.14159,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "busy-cta",
+   "at": "@И гостей",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cafe",
+     "lights": "evening",
+     "build": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        2.7,
+        2.35,
+        4.0
+       ],
+       "target": [
+        0.0,
+        1.05,
+        -0.6
+       ],
+       "fov": 50
+      },
+      {
+       "t": 9,
+       "pos": [
+        2.2,
+        2.2,
+        3.4
+       ],
+       "target": [
+        0.0,
+        1.05,
+        -0.6
+       ],
+       "fov": 50
+      }
+     ],
+     "people": [
+      {
+       "pose": "stand",
+       "pos": [
+        0.6,
+        0,
+        -2.35
+       ],
+       "rotY": 0,
+       "seed": 5,
+       "look": {
+        "hero": true
+       }
+      },
+      {
+       "pose": "sit",
+       "pos": [
+        -1.5,
+        0.05,
+        1.6
+       ],
+       "rotY": 3.14159,
+       "seed": 6
+      },
+      {
+       "pose": "sit",
+       "pos": [
+        -1.5,
+        0.05,
+        0.2
+       ],
+       "rotY": 0,
+       "seed": 9
+      },
+      {
+       "pose": "stand",
+       "pos": [
+        0.1,
+        0,
+        -0.72
+       ],
+       "rotY": 3.14159,
+       "seed": 7
+      },
+      {
+       "pose": "phone",
+       "pos": [
+        -0.9,
+        0,
+        -0.65
+       ],
+       "rotY": 2.8,
+       "seed": 8
+      },
+      {
+       "pose": "stand",
+       "pos": [
+        1.3,
+        0,
+        -0.8
+       ],
+       "rotY": 3.14159,
+       "seed": 11
+      },
+      {
+       "pose": "stand",
+       "pos": [
+        2.7,
+        0,
+        0.7
+       ],
+       "walkTo": [
+        1.9,
+        0,
+        -0.62
+       ],
+       "walkDur": 2.6,
+       "seed": 10
+      }
+     ]
+    },
+    "dim": 0.55,
+    "dimAt": "@Кстати"
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "at": "@Кстати",
+     "props": {
+      "enter": "flip",
+      "flipAt": "@агент",
+      "flipDur": 1.2,
+      "float": true,
+      "shadow": 0,
+      "screen": {
+       "block": "TikTokProfile",
+       "props": {
+        "pinned": 1,
+        "highlightAt": "@шапку"
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.3,
+         10.8
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 3.9,
+        "pos": [
+         0.35,
+         2.32,
+         10.4
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 4.9,
+        "pos": [
+         0,
+         2.53,
+         5.4
+        ],
+        "target": [
+         0,
+         2.53,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 8,
+        "pos": [
+         0,
+         2.5,
+         5.1
+        ],
+        "target": [
+         0,
+         2.5,
+         0
+        ],
+        "fov": 30
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,114 @@
+{
+ "fps": 60,
+ "shots": [
+  {
+   "id": "sh01_hook",
+   "set": "orbit",
+   "dur": 2.925,
+   "events": {},
+   "start": 0.0,
+   "variant": "hook"
+  },
+  {
+   "id": "sh02_pad",
+   "set": "spaceport",
+   "dur": 5.598,
+   "events": {},
+   "start": 2.675,
+   "variant": "pad"
+  },
+  {
+   "id": "sh03_ascent",
+   "set": "spaceport",
+   "dur": 4.789,
+   "events": {},
+   "start": 8.023,
+   "variant": "ascent"
+  },
+  {
+   "id": "sh04_sunrise",
+   "set": "orbit",
+   "dur": 2.477,
+   "events": {
+    "rise": 0.929
+   },
+   "start": 12.562,
+   "variant": "sunrise"
+  },
+  {
+   "id": "sh05_moon",
+   "set": "moon",
+   "dur": 3.895,
+   "events": {},
+   "start": 14.789
+  },
+  {
+   "id": "sh06_mars",
+   "set": "mars",
+   "dur": 4.833,
+   "events": {
+    "pulse": 2.132
+   },
+   "start": 18.434,
+   "render": {
+    "vol_end": 2500.0
+   }
+  },
+  {
+   "id": "sh07a_eva",
+   "set": "orbit",
+   "dur": 4.459,
+   "events": {},
+   "start": 23.017,
+   "variant": "eva"
+  },
+  {
+   "id": "sh07b_earth",
+   "set": "planet",
+   "dur": 6.093,
+   "events": {},
+   "start": 27.226,
+   "variant": "earth"
+  },
+  {
+   "id": "sh08a_debris",
+   "set": "planet",
+   "dur": 5.426,
+   "events": {},
+   "start": 33.069,
+   "variant": "debris"
+  },
+  {
+   "id": "sh08b_jam",
+   "set": "orbit",
+   "dur": 3.047,
+   "events": {},
+   "start": 38.245,
+   "variant": "jam"
+  },
+  {
+   "id": "sh09a_dream",
+   "set": "orbit",
+   "dur": 2.067,
+   "events": {},
+   "start": 41.042,
+   "variant": "dream"
+  },
+  {
+   "id": "sh09b_dump",
+   "set": "orbit",
+   "dur": 2.617,
+   "events": {},
+   "start": 42.859,
+   "variant": "dump"
+  },
+  {
+   "id": "sh10_final",
+   "set": "planet",
+   "dur": 8.029,
+   "events": {},
+   "start": 45.226,
+   "variant": "final"
+  }
+ ]
+}

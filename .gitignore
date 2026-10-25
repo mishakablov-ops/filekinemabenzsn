@@ -1,0 +1,20 @@
+# секреты
+.secrets.env
+**/.secrets.env
+.replicate_budget.json
+# окружения и зависимости
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+# тяжёлые результаты (остаются на ПК, см. output/README.md)
+*.mp4
+*.mov
+*.blend1
+**/renders/
+**/jobs/done/
+**/jobs/logs/
+**/jobs/queue/
+**/voice/takes/
+**/tools/blender-*/
+_sync/

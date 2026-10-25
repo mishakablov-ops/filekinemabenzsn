@@ -1,0 +1,88 @@
+{
+ "id": "shadertest",
+ "style": "cloud",
+ "fps": 30,
+ "duration": 16,
+ "scenes": [
+  {
+   "at": 0,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "skyAbove"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 2,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "skyBelow"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 4,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "cloudWall"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 6,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "liquid"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 8,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "aurora"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 10,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "contour"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 12,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "rays"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 14,
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "smoke"
+    }
+   },
+   "transition": "cut"
+  }
+ ]
+}

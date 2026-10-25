@@ -1,0 +1,79 @@
+{
+ "id": "test1",
+ "style": "cloud",
+ "fps": 30,
+ "voice": {
+  "src": "projects/test1/voice.wav",
+  "words": "projects/test1/words.json"
+ },
+ "music": {
+  "src": "music/ambient-air.m4a",
+  "volume": 0.18
+ },
+ "scenes": [
+  {
+   "at": 0,
+   "bg": {
+    "block": "Sky"
+   },
+   "captions": {
+    "tone": "light"
+   },
+   "camera": "push",
+   "layers": [
+    {
+     "block": "Kicker",
+     "props": {
+      "text": "отзывы"
+     },
+     "at": "@какое-то",
+     "pos": "bottom"
+    }
+   ]
+  },
+  {
+   "at": "@Теперь",
+   "transition": "cloud",
+   "layers": [
+    {
+     "block": "Counter",
+     "props": {
+      "to": 18,
+      "label": "экранов",
+      "size": 220
+     },
+     "at": "@своё"
+    }
+   ]
+  },
+  {
+   "at": "@Это",
+   "style": "space",
+   "transition": "blur",
+   "layers": [
+    {
+     "block": "Counter",
+     "props": {
+      "from": 0,
+      "to": 136,
+      "steps": [
+       {
+        "at": "@скиллов",
+        "value": 1200
+       }
+      ],
+      "format": "k",
+      "icon": "star"
+     },
+     "pos": "stage"
+    }
+   ]
+  },
+  {
+   "at": "@И это",
+   "style": "brutal",
+   "transition": "slam",
+   "camera": "punch"
+  }
+ ]
+}

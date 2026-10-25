@@ -1,0 +1,54 @@
+{
+ "id": "t3d",
+ "style": "cinema",
+ "fps": 30,
+ "duration": 12,
+ "captions": {
+  "mode": "none"
+ },
+ "scenes": [
+  {
+   "at": 0,
+   "bg": {
+    "block": "Terrain3D",
+    "props": {
+     "look": "alpine",
+     "cam": "flyover"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 4,
+   "bg": {
+    "block": "Terrain3D",
+    "props": {
+     "look": "satellite",
+     "cam": "orbit",
+     "highlightHeight": 3.2,
+     "points": {
+      "count": 2000,
+      "at": 0.5,
+      "dur": 2
+     }
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 8,
+   "bg": {
+    "block": "Terrain3D",
+    "props": {
+     "look": "topo",
+     "cam": "reveal",
+     "scan": {
+      "at": 0.5,
+      "dur": 3
+     }
+    }
+   },
+   "transition": "cut"
+  }
+ ]
+}

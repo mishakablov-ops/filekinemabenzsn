@@ -1,0 +1,1762 @@
+{
+ "id": "quiet-evenings",
+ "mode": "explainer",
+ "style": "dusk",
+ "fps": 60,
+ "duration": 40,
+ "depthLook": true,
+ "voice": {
+  "src": "projects/quiet-evenings/voice.wav",
+  "words": "projects/quiet-evenings/words.json",
+  "volume": 1
+ },
+ "music": {
+  "src": "projects/quiet-evenings/success-user-40s.wav",
+  "volume": 0.22,
+  "duck": 0.4,
+  "offset": 0,
+  "fadeIn": 0.18,
+  "fadeOut": 1.25
+ },
+ "autoSfx": false,
+ "grain": 0.022,
+ "vignette": 0.15,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": false,
+  "scale": 1,
+  "scrim": 0.8
+ },
+ "sfx": [
+  {
+   "at": "@Пятница",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@дома",
+   "id": "pk-click-ui-button",
+   "volume": 0.4,
+   "alignPeak": false
+  },
+  {
+   "at": "@код",
+   "id": "typing-short",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@книги",
+   "id": "paper-rustle",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@интеллект",
+   "id": "pk-digital-data-load-sfx-1",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@провалился",
+   "id": "pk-result-failure",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@больше",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@первый клиент",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@собственный",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@Проходит",
+   "id": "hit-sub",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@команда",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@В старом",
+   "id": "pk-notify-system-alert-sfx",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@учиться",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@Начни",
+   "id": "hit-soft",
+   "volume": 0.5,
+   "alignPeak": false
+  }
+ ],
+ "scenes": [
+  {
+   "id": "the-joke",
+   "at": 0,
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        4.3,
+        2.45,
+        3.4
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        4.0,
+        2.25,
+        3.1
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "type",
+       "pos": [
+        0.3,
+        0,
+        -1.0
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "lights": "night",
+     "build": false,
+     "screen": {
+      "block": "CodeEditor",
+      "props": {
+       "file": "product.ts",
+       "code": "const idea = await research();\nconst product = await build(idea);\nawait test(product);\nawait ship(product);",
+       "typeFrom": 1,
+       "marks": [
+        {
+         "line": 3,
+         "kind": "hl",
+         "at": 0.7
+        }
+       ],
+       "w": 1280,
+       "h": 840
+      }
+     }
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "cut",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "friday-friends",
+   "at": "@Пятница",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "night",
+     "lights": "night",
+     "pop": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        3.4,
+        3.3,
+        8.0
+       ],
+       "target": [
+        0,
+        2.5,
+        0
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        2.7,
+        3.0,
+        7.4
+       ],
+       "target": [
+        0,
+        2.45,
+        0
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      }
+     ],
+     "objects": [
+      {
+       "type": "rug",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "w": 5,
+       "d": 5,
+       "color": "#343A43"
+      },
+      {
+       "type": "bench",
+       "pos": [
+        -1.2,
+        0,
+        -1.8
+       ]
+      },
+      {
+       "type": "tree",
+       "pos": [
+        -2.8,
+        0,
+        -2.1
+       ],
+       "s": 1.3
+      },
+      {
+       "type": "tree",
+       "pos": [
+        2.5,
+        0,
+        -2.2
+       ],
+       "s": 1.5
+      },
+      {
+       "type": "streetlamp",
+       "pos": [
+        1.9,
+        0,
+        -1.6
+       ],
+       "on": true
+      },
+      {
+       "type": "person",
+       "pose": "cheer",
+       "pos": [
+        -0.85,
+        0,
+        -0.2
+       ],
+       "rotY": 0.3,
+       "seed": 4,
+       "look": {
+        "shirt": "#768E9B",
+        "hairStyle": "short"
+       },
+       "walkTo": [
+        -0.55,
+        0,
+        -0.8
+       ],
+       "walkDur": 1.25
+      },
+      {
+       "type": "person",
+       "pose": "wave",
+       "pos": [
+        0.7,
+        0,
+        -0.1
+       ],
+       "rotY": -0.4,
+       "seed": 6,
+       "look": {
+        "shirt": "#A68393",
+        "hairStyle": "long"
+       }
+      },
+      {
+       "type": "person",
+       "pose": "phone",
+       "pos": [
+        0,
+        0,
+        1.0
+       ],
+       "rotY": 0.15,
+       "seed": 8,
+       "look": {
+        "shirt": "#A4A57B",
+        "hairStyle": "short"
+       }
+      }
+     ]
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "push",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "stays-home",
+   "at": "@Он остаётся",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        9,
+        7.5,
+        11
+       ],
+       "target": [
+        0,
+        2.65,
+        -0.4
+       ],
+       "fov": 34,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        8.1,
+        6.8,
+        10
+       ],
+       "target": [
+        0,
+        2.65,
+        -0.4
+       ],
+       "fov": 34,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "phone",
+       "pos": [
+        1.8,
+        0,
+        0.3
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 1,
+       "look": {
+        "hero": true
+       },
+       "walkTo": [
+        1.3,
+        0,
+        -0.4
+       ],
+       "walkDur": 0.8
+      }
+     ],
+     "lights": "night",
+     "build": false
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "cut",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "paid-development",
+   "at": "@Днём",
+   "bg": {
+    "block": "MacBook",
+    "props": {
+     "cam": "toScreen",
+     "screen": {
+      "block": "CodeEditor",
+      "props": {
+       "file": "product.ts",
+       "code": "const idea = await research();\nconst product = await build(idea);\nawait test(product);\nawait ship(product);",
+       "typeFrom": 1,
+       "marks": [
+        {
+         "line": 3,
+         "kind": "hl",
+         "at": 0.7
+        }
+       ],
+       "w": 1280,
+       "h": 840
+      }
+     },
+     "enter": "none",
+     "spin": 2
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "zoom",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "books-and-business",
+   "at": "@Вечером",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "library",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        2.8,
+        2.0,
+        3.5
+       ],
+       "target": [
+        0.15,
+        1.7,
+        -0.7
+       ],
+       "fov": 48,
+       "ease": "inOut"
+      },
+      {
+       "t": 5,
+       "pos": [
+        2.3,
+        1.9,
+        3
+       ],
+       "target": [
+        0.15,
+        1.7,
+        -0.7
+       ],
+       "fov": 48,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "read",
+       "pos": [
+        0.12,
+        0,
+        -0.68
+       ],
+       "rotY": 0.35,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "lights": "evening",
+     "build": false
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "blur",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "Chips",
+     "props": {
+      "items": [
+       "Маркетинг",
+       "Продажи",
+       "Экономика"
+      ]
+     },
+     "pos": {
+      "x": 80,
+      "y": 700,
+      "w": 900,
+      "h": 150
+     },
+     "enter": "rise",
+     "sfx": false,
+     "at": "@Маркетинг"
+    }
+   ]
+  },
+  {
+   "id": "learning-ai",
+   "at": "@Искусственный",
+   "bg": {
+    "block": "MacBook",
+    "props": {
+     "cam": "hero",
+     "screen": {
+      "block": "ClaudeChat",
+      "props": {
+       "dark": true,
+       "greeting": "Учиться. Пробовать. Повторять.",
+       "type": "Как проверить спрос на продукт?",
+       "typeAt": 0.1,
+       "sendAt": 0.9,
+       "replyAt": 1.2,
+       "reply": "Поговори с будущими клиентами. Собери прототип. Проверь гипотезу.",
+       "cps": 48
+      }
+     },
+     "enter": "none",
+     "spin": 2
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "zoom",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "failure-and-rebuild",
+   "at": "@Первый проект",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        4.3,
+        2.45,
+        3.4
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        4.0,
+        2.25,
+        3.1
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "react",
+       "pos": [
+        0.3,
+        0,
+        -1.0
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "lights": "night",
+     "build": false,
+     "screen": {
+      "block": "CodeEditor",
+      "props": {
+       "file": "product.ts",
+       "code": "const idea = await research();\nconst product = await build(idea);\nawait test(product);\nawait ship(product);",
+       "typeFrom": 1,
+       "marks": [
+        {
+         "line": 3,
+         "kind": "hl",
+         "at": 0.7
+        }
+       ],
+       "w": 1280,
+       "h": 840
+      }
+     }
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "cut",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "Terminal",
+     "props": {
+      "title": "Попытка за попыткой",
+      "w": 880,
+      "h": 350,
+      "welcome": false,
+      "size": 27,
+      "lines": [
+       {
+        "kind": "text",
+        "text": "Первая версия: не сработало",
+        "at": 0.1
+       },
+       {
+        "kind": "prompt",
+        "text": "Разобраться и переделать",
+        "at": "@Второй",
+        "cps": 48
+       },
+       {
+        "kind": "ok",
+        "text": "Следующая попытка",
+        "at": "@переделать"
+       }
+      ]
+     },
+     "pos": {
+      "x": 80,
+      "y": 1260,
+      "w": 900,
+      "h": 350
+     },
+     "enter": "rise",
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "id": "quiet-progress",
+   "at": "@Но каждую",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "library",
+     "cam": "shelves",
+     "people": [],
+     "lights": "evening",
+     "build": false
+    },
+    "dim": 0.25
+   },
+   "camera": "still",
+   "transition": {
+    "type": "blur",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "Checklist",
+     "props": {
+      "title": "Навыки складываются",
+      "items": [
+       "Разработка",
+       "Маркетинг и продажи",
+       "Экономика и ИИ"
+      ],
+      "checkAt": [
+       0.1,
+       0.7,
+       1.3
+      ]
+     },
+     "pos": {
+      "x": 80,
+      "y": 800,
+      "w": 900,
+      "h": 550
+     },
+     "enter": "rise",
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "id": "another-party",
+   "at": "@Пока",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "night",
+     "lights": "night",
+     "pop": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        3.4,
+        3.3,
+        8.0
+       ],
+       "target": [
+        0,
+        2.5,
+        0
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        2.7,
+        3.0,
+        7.4
+       ],
+       "target": [
+        0,
+        2.45,
+        0
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      }
+     ],
+     "objects": [
+      {
+       "type": "rug",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "w": 5,
+       "d": 5,
+       "color": "#343A43"
+      },
+      {
+       "type": "bench",
+       "pos": [
+        -1.2,
+        0,
+        -1.8
+       ]
+      },
+      {
+       "type": "tree",
+       "pos": [
+        -2.8,
+        0,
+        -2.1
+       ],
+       "s": 1.3
+      },
+      {
+       "type": "tree",
+       "pos": [
+        2.5,
+        0,
+        -2.2
+       ],
+       "s": 1.5
+      },
+      {
+       "type": "streetlamp",
+       "pos": [
+        1.9,
+        0,
+        -1.6
+       ],
+       "on": true
+      },
+      {
+       "type": "person",
+       "pose": "cheer",
+       "pos": [
+        -0.85,
+        0,
+        -0.2
+       ],
+       "rotY": 0.3,
+       "seed": 4,
+       "look": {
+        "shirt": "#768E9B",
+        "hairStyle": "short"
+       },
+       "walkTo": [
+        -0.55,
+        0,
+        -0.8
+       ],
+       "walkDur": 1.25
+      },
+      {
+       "type": "person",
+       "pose": "wave",
+       "pos": [
+        0.7,
+        0,
+        -0.1
+       ],
+       "rotY": -0.4,
+       "seed": 6,
+       "look": {
+        "shirt": "#A68393",
+        "hairStyle": "long"
+       }
+      },
+      {
+       "type": "person",
+       "pose": "phone",
+       "pos": [
+        0,
+        0,
+        1.0
+       ],
+       "rotY": 0.15,
+       "seed": 8,
+       "look": {
+        "shirt": "#A4A57B",
+        "hairStyle": "short"
+       }
+      }
+     ]
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "push",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "Notification",
+     "props": {
+      "app": "Старый чат",
+      "time": "Пятница",
+      "text": "Ну что, сегодня опять гулять?"
+     },
+     "pos": {
+      "x": 100,
+      "y": 1270,
+      "w": 880,
+      "h": 210
+     },
+     "enter": "rise",
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "id": "first-client",
+   "at": "@у него появляется",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        4.3,
+        2.45,
+        3.4
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        4.0,
+        2.25,
+        3.1
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "celebrate",
+       "pos": [
+        0.3,
+        0,
+        -1.0
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "lights": "day",
+     "build": false
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "zoom",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "Notification",
+     "props": {
+      "app": "Первый клиент",
+      "title": "Договорились",
+      "text": "Готов оплатить. Когда начнём?"
+     },
+     "pos": {
+      "x": 80,
+      "y": 1300,
+      "w": 880,
+      "h": 200
+     },
+     "enter": "rise",
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "id": "own-product",
+   "at": "@Потом второй",
+   "bg": {
+    "block": "IPhone17",
+    "props": {
+     "enter": "none",
+     "float": true,
+     "screen": {
+      "block": "AppScreen",
+      "props": {
+       "sections": [
+        {
+         "type": "header",
+         "app": "СВОЙ ПРОДУКТ",
+         "title": "От идеи к делу"
+        },
+        {
+         "type": "card",
+         "name": "Первые клиенты",
+         "sub": "Первые реальные задачи"
+        },
+        {
+         "type": "rows",
+         "rows": [
+          {
+           "label": "Прототип",
+           "value": "Готов"
+          },
+          {
+           "label": "Клиенты",
+           "value": "Есть"
+          },
+          {
+           "label": "Следующий шаг",
+           "value": "Команда"
+          }
+         ]
+        },
+        {
+         "type": "button",
+         "label": "Начать работу",
+         "pressAt": "@продукт"
+        }
+       ]
+      }
+     }
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "zoom",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "five-years",
+   "at": "@Проходит",
+   "bg": {
+    "block": "City3D",
+    "props": {
+     "look": "warm",
+     "cam": "orbit",
+     "blocks": 3,
+     "downtown": 1.2
+    },
+    "dim": 0.4
+   },
+   "camera": "still",
+   "transition": {
+    "type": "cut",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "BigType",
+     "props": {
+      "lines": [
+       "5 ЛЕТ",
+       "СПУСТЯ"
+      ],
+      "treatment": [
+       "mark",
+       "solid"
+      ],
+      "at": [
+       0,
+       0.25
+      ],
+      "enter": "wipe",
+      "maxSize": 240,
+      "upper": true
+     },
+     "pos": {
+      "x": 70,
+      "y": 680,
+      "w": 940,
+      "h": 600
+     },
+     "enter": "rise",
+     "sfx": false
+    }
+   ],
+   "captions": false
+  },
+  {
+   "id": "his-team",
+   "at": "@У него команда",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "dusk",
+     "lights": "soft",
+     "pop": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        3.8,
+        3.5,
+        8.5
+       ],
+       "target": [
+        0,
+        1.7,
+        -0.5
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        3.4,
+        3.3,
+        8.1
+       ],
+       "target": [
+        0,
+        1.7,
+        -0.5
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      }
+     ],
+     "objects": [
+      {
+       "type": "rug",
+       "pos": [
+        0,
+        0,
+        -0.5
+       ],
+       "w": 5.5,
+       "d": 4
+      },
+      {
+       "type": "desk",
+       "pos": [
+        -1.35,
+        0,
+        -1.7
+       ],
+       "w": 1.5
+      },
+      {
+       "type": "desk",
+       "pos": [
+        1.35,
+        0,
+        -1.7
+       ],
+       "w": 1.5
+      },
+      {
+       "type": "monitor",
+       "pos": [
+        -1.35,
+        0,
+        -1.8
+       ]
+      },
+      {
+       "type": "monitor",
+       "pos": [
+        1.35,
+        0,
+        -1.8
+       ]
+      },
+      {
+       "type": "chair",
+       "pos": [
+        -1.35,
+        0,
+        -0.8
+       ],
+       "rotY": 3.141592653589793
+      },
+      {
+       "type": "chair",
+       "pos": [
+        1.35,
+        0,
+        -0.8
+       ],
+       "rotY": 3.141592653589793
+      },
+      {
+       "type": "person",
+       "pose": "type",
+       "pos": [
+        -1.35,
+        0,
+        -0.8
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 5,
+       "look": {
+        "shirt": "#7D998C"
+       }
+      },
+      {
+       "type": "person",
+       "pose": "type",
+       "pos": [
+        1.35,
+        0,
+        -0.8
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 7,
+       "look": {
+        "shirt": "#A78C9D",
+        "hairStyle": "bun"
+       }
+      },
+      {
+       "type": "person",
+       "pose": "talk",
+       "pos": [
+        0,
+        0,
+        0.8
+       ],
+       "rotY": 0.25,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      },
+      {
+       "type": "plant",
+       "pos": [
+        -2.7,
+        0,
+        -2.0
+       ],
+       "s": 1.3
+      },
+      {
+       "type": "shelf",
+       "pos": [
+        0,
+        0,
+        -3
+       ],
+       "w": 1.2
+      }
+     ]
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "push",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "home-for-parents",
+   "at": "@деньги",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "kitchen",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        4.1,
+        3.15,
+        5.2
+       ],
+       "target": [
+        0.1,
+        1.85,
+        0.5
+       ],
+       "fov": 49,
+       "ease": "inOut"
+      },
+      {
+       "t": 3,
+       "pos": [
+        3.8,
+        3.0,
+        5.0
+       ],
+       "target": [
+        0.1,
+        1.85,
+        0.5
+       ],
+       "fov": 49,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "talk",
+       "pos": [
+        -0.8,
+        0,
+        0.75
+       ],
+       "rotY": 1.0,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      },
+      {
+       "pose": "listen",
+       "pos": [
+        0.0,
+        0,
+        1.35
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 15,
+       "look": {
+        "hair": "#B5B0A5",
+        "shirt": "#879A88",
+        "hairStyle": "short"
+       }
+      },
+      {
+       "pose": "listen",
+       "pos": [
+        0.8,
+        0,
+        1.35
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 16,
+       "look": {
+        "hair": "#BBB2A7",
+        "shirt": "#AA8992",
+        "hairStyle": "bun"
+       }
+      }
+     ],
+     "lights": "day",
+     "build": false
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "blur",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "same-old-chat",
+   "at": "@В старом",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "dusk",
+     "lights": "soft",
+     "pop": false,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        3.4,
+        3.3,
+        8.0
+       ],
+       "target": [
+        0,
+        2.5,
+        0
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        2.7,
+        3.0,
+        7.4
+       ],
+       "target": [
+        0,
+        2.45,
+        0
+       ],
+       "fov": 42,
+       "ease": "inOut"
+      }
+     ],
+     "objects": [
+      {
+       "type": "rug",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "w": 5,
+       "d": 5,
+       "color": "#343A43"
+      },
+      {
+       "type": "bench",
+       "pos": [
+        -1.2,
+        0,
+        -1.8
+       ]
+      },
+      {
+       "type": "tree",
+       "pos": [
+        -2.8,
+        0,
+        -2.1
+       ],
+       "s": 1.3
+      },
+      {
+       "type": "tree",
+       "pos": [
+        2.5,
+        0,
+        -2.2
+       ],
+       "s": 1.5
+      },
+      {
+       "type": "streetlamp",
+       "pos": [
+        1.9,
+        0,
+        -1.6
+       ],
+       "on": true
+      },
+      {
+       "type": "person",
+       "pose": "think",
+       "pos": [
+        -0.85,
+        0,
+        -0.2
+       ],
+       "rotY": 0.3,
+       "seed": 4,
+       "look": {
+        "shirt": "#768E9B",
+        "hairStyle": "short"
+       }
+      },
+      {
+       "type": "person",
+       "pose": "phone",
+       "pos": [
+        0.7,
+        0,
+        -0.1
+       ],
+       "rotY": -0.4,
+       "seed": 6,
+       "look": {
+        "shirt": "#A68393",
+        "hairStyle": "long"
+       }
+      },
+      {
+       "type": "person",
+       "pose": "phone",
+       "pos": [
+        0,
+        0,
+        1.0
+       ],
+       "rotY": 0.15,
+       "seed": 8,
+       "look": {
+        "shirt": "#A4A57B",
+        "hairStyle": "short"
+       }
+      }
+     ]
+    }
+   },
+   "camera": "still",
+   "transition": {
+    "type": "cut",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "NotificationStack",
+     "props": {
+      "items": [
+       {
+        "app": "Старый чат",
+        "text": "Работа достала.",
+        "at": 0.2
+       },
+       {
+        "app": "Старый чат",
+        "text": "Надо что-то менять…",
+        "at": "@Надо"
+       }
+      ]
+     },
+     "pos": {
+      "x": 100,
+      "y": 1160,
+      "w": 880,
+      "h": 380
+     },
+     "enter": "rise",
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "id": "must-be-lucky",
+   "at": "@Теперь",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        4.3,
+        2.45,
+        3.4
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      },
+      {
+       "t": 4,
+       "pos": [
+        4.0,
+        2.25,
+        3.1
+       ],
+       "target": [
+        0.25,
+        1.65,
+        -1.35
+       ],
+       "fov": 46,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "type",
+       "pos": [
+        0.3,
+        0,
+        -1.0
+       ],
+       "rotY": 3.141592653589793,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "lights": "day",
+     "build": false,
+     "screen": {
+      "block": "CodeEditor",
+      "props": {
+       "file": "product.ts",
+       "code": "const idea = await research();\nconst product = await build(idea);\nawait test(product);\nawait ship(product);",
+       "typeFrom": 1,
+       "marks": [
+        {
+         "line": 3,
+         "kind": "hl",
+         "at": 0.7
+        }
+       ],
+       "w": 1280,
+       "h": 840
+      }
+     }
+    },
+    "dim": 0
+   },
+   "camera": "still",
+   "transition": {
+    "type": "zoom",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": []
+  },
+  {
+   "id": "aipollon-profile",
+   "at": "@Он помнит",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "library",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        2.8,
+        2.0,
+        3.5
+       ],
+       "target": [
+        0.15,
+        1.7,
+        -0.7
+       ],
+       "fov": 48,
+       "ease": "inOut"
+      },
+      {
+       "t": 5,
+       "pos": [
+        2.4,
+        1.9,
+        3.2
+       ],
+       "target": [
+        0.15,
+        1.7,
+        -0.7
+       ],
+       "fov": 48,
+       "ease": "inOut"
+      }
+     ],
+     "people": [
+      {
+       "pose": "read",
+       "pos": [
+        0.12,
+        0,
+        -0.68
+       ],
+       "rotY": 0.35,
+       "seed": 1,
+       "look": {
+        "hero": true
+       }
+      }
+     ],
+     "lights": "evening",
+     "build": false
+    },
+    "dim": 0.7,
+    "dimAt": "@каждый"
+   },
+   "camera": "still",
+   "transition": {
+    "type": "blur",
+    "dur": 0.3,
+    "sfx": false
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "props": {
+      "enter": "flip",
+      "flipAt": 0.25,
+      "flipDur": 0.65,
+      "float": true,
+      "shadow": 0,
+      "screen": {
+       "block": "CreatorProfile",
+       "props": {
+        "highlightAt": "@выбирал",
+        "tapAt": "@учиться"
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.1,
+         10.8
+        ],
+        "target": [
+         0,
+         2.05,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 4.5,
+        "pos": [
+         0.08,
+         2.23,
+         8.9
+        ],
+        "target": [
+         0,
+         2.23,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       }
+      ]
+     },
+     "pos": "full",
+     "enter": "none",
+     "sfx": false,
+     "at": "@Он помнит+0.45"
+    }
+   ],
+   "captions": {
+    "mode": "editorial",
+    "pos": "top",
+    "scrim": 0.85
+   }
+  }
+ ]
+}

@@ -1,0 +1,1298 @@
+{
+ "id": "podezd",
+ "mode": "explainer",
+ "style": "dusk",
+ "fps": 60,
+ "voice": {
+  "src": "projects/podezd/voice.wav",
+  "words": "projects/podezd/words.json"
+ },
+ "music": {
+  "src": "music/dark-cinematic.m4a",
+  "volume": 0.08,
+  "duck": 0.5
+ },
+ "tail": 2.6,
+ "autoSfx": false,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": true
+ },
+ "sfx": [
+  {
+   "at": 0.0,
+   "id": "drone",
+   "src": "projects/podezd/sfx-src/drone.mp3",
+   "volume": 0.55,
+   "from": 0.3,
+   "dur": 26.8,
+   "fade": 0.8
+  },
+  {
+   "at": 26.0,
+   "id": "drone",
+   "src": "projects/podezd/sfx-src/drone.mp3",
+   "volume": 0.55,
+   "from": 0.3,
+   "dur": 26.8,
+   "fade": 0.8
+  },
+  {
+   "at": 52.0,
+   "id": "drone",
+   "src": "projects/podezd/sfx-src/drone.mp3",
+   "volume": 0.55,
+   "from": 0.3,
+   "dur": 26.8,
+   "fade": 0.8
+  },
+  {
+   "at": 78.0,
+   "id": "drone",
+   "src": "projects/podezd/sfx-src/drone.mp3",
+   "volume": 0.55,
+   "from": 0.3,
+   "dur": 26.8,
+   "fade": 0.8
+  },
+  {
+   "at": 104.0,
+   "id": "drone",
+   "src": "projects/podezd/sfx-src/drone.mp3",
+   "volume": 0.55,
+   "from": 0.3,
+   "dur": 26.8,
+   "fade": 0.8
+  },
+  {
+   "at": 0.0,
+   "id": "stairwell_tone",
+   "src": "projects/podezd/sfx-src/stairwell_tone.mp3",
+   "volume": 0.9,
+   "from": 0.0,
+   "dur": 14.2,
+   "fade": 0.6
+  },
+  {
+   "at": 14.0,
+   "id": "stairwell_tone",
+   "src": "projects/podezd/sfx-src/stairwell_tone.mp3",
+   "volume": 0.9,
+   "from": 0.0,
+   "dur": 14.2,
+   "fade": 0.6
+  },
+  {
+   "at": 28.0,
+   "id": "stairwell_tone",
+   "src": "projects/podezd/sfx-src/stairwell_tone.mp3",
+   "volume": 0.9,
+   "from": 0.0,
+   "dur": 14.2,
+   "fade": 0.6
+  },
+  {
+   "at": 42.0,
+   "id": "stairwell_tone",
+   "src": "projects/podezd/sfx-src/stairwell_tone.mp3",
+   "volume": 0.9,
+   "from": 0.0,
+   "dur": 14.2,
+   "fade": 0.6
+  },
+  {
+   "at": 54.0,
+   "id": "stairwell_tone",
+   "src": "projects/podezd/sfx-src/stairwell_tone.mp3",
+   "volume": 0.9,
+   "from": 0.0,
+   "dur": 14.2,
+   "fade": 0.6
+  },
+  {
+   "at": 68.0,
+   "id": "stairwell_tone",
+   "src": "projects/podezd/sfx-src/stairwell_tone.mp3",
+   "volume": 0.9,
+   "from": 0.0,
+   "dur": 14.2,
+   "fade": 0.6
+  },
+  {
+   "at": 0.0,
+   "id": "lamp_buzz",
+   "src": "projects/podezd/sfx-src/lamp_buzz.mp3",
+   "volume": 0.45,
+   "from": 0.1,
+   "dur": 2.8,
+   "fade": 0.4
+  },
+  {
+   "at": 0.4,
+   "id": "people_moan",
+   "src": "projects/podezd/sfx-src/people_moan.mp3",
+   "volume": 0.45,
+   "from": 4.6,
+   "dur": 2.6,
+   "fade": 0.5
+  },
+  {
+   "at": 3.89,
+   "id": "people_moan",
+   "src": "projects/podezd/sfx-src/people_moan.mp3",
+   "volume": 0.9,
+   "from": 20.2,
+   "dur": 3.0,
+   "fade": 0.8
+  },
+  {
+   "at": 9.1,
+   "id": "steps_concrete",
+   "src": "projects/podezd/sfx-src/steps_concrete.mp3",
+   "volume": 0.35,
+   "from": 0.0,
+   "dur": 1.9,
+   "fade": 0.4
+  },
+  {
+   "at": 11.74,
+   "id": "lamp_buzz",
+   "src": "projects/podezd/sfx-src/lamp_buzz.mp3",
+   "volume": 0.55,
+   "from": 0.15,
+   "dur": 2.6,
+   "fade": 0.4
+  },
+  {
+   "at": 20.22,
+   "id": "pages",
+   "src": "projects/podezd/sfx-src/pages.mp3",
+   "volume": 0.7,
+   "from": 2.55,
+   "dur": 0.9,
+   "fade": 0.2
+  },
+  {
+   "at": 22.04,
+   "id": "people_moan",
+   "src": "projects/podezd/sfx-src/people_moan.mp3",
+   "volume": 0.4,
+   "from": 10.0,
+   "dur": 3.6,
+   "fade": 0.8
+  },
+  {
+   "at": 26.97,
+   "id": "steps_concrete",
+   "src": "projects/podezd/sfx-src/steps_concrete.mp3",
+   "volume": 0.4,
+   "from": 0.0,
+   "dur": 0.45,
+   "fade": 0.1
+  },
+  {
+   "at": "@смотри",
+   "id": "sting-dark",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": 31.3,
+   "id": "people_moan",
+   "src": "projects/podezd/sfx-src/people_moan.mp3",
+   "volume": 0.55,
+   "from": 31.0,
+   "dur": 3.3,
+   "fade": 0.6
+  },
+  {
+   "at": 36.9,
+   "id": "drip",
+   "src": "projects/podezd/sfx-src/drip.mp3",
+   "volume": 0.35,
+   "from": 0.0
+  },
+  {
+   "at": 38.78,
+   "id": "pipe_knock",
+   "src": "projects/podezd/sfx-src/pipe_knock.mp3",
+   "volume": 0.8,
+   "from": 0.0,
+   "dur": 0.6,
+   "fade": 0.15
+  },
+  {
+   "at": 39.28,
+   "id": "pipe_knock",
+   "src": "projects/podezd/sfx-src/pipe_knock.mp3",
+   "volume": 0.6,
+   "from": 0.0,
+   "dur": 0.6,
+   "fade": 0.15
+  },
+  {
+   "at": 39.86,
+   "id": "pipe_knock",
+   "src": "projects/podezd/sfx-src/pipe_knock.mp3",
+   "volume": 0.75,
+   "from": 2.62,
+   "dur": 0.6,
+   "fade": 0.15
+  },
+  {
+   "at": 40.78,
+   "id": "pipe_knock",
+   "src": "projects/podezd/sfx-src/pipe_knock.mp3",
+   "volume": 0.7,
+   "from": 3.17,
+   "dur": 0.6,
+   "fade": 0.15
+  },
+  {
+   "at": 42.07,
+   "id": "pipe_knock",
+   "src": "projects/podezd/sfx-src/pipe_knock.mp3",
+   "volume": 0.5,
+   "from": 5.25,
+   "dur": 0.5,
+   "fade": 0.15
+  },
+  {
+   "at": 42.52,
+   "id": "pipe_knock",
+   "src": "projects/podezd/sfx-src/pipe_knock.mp3",
+   "volume": 0.3,
+   "from": 5.25,
+   "dur": 0.5,
+   "fade": 0.15
+  },
+  {
+   "at": 43.98,
+   "id": "lamp_buzz",
+   "src": "projects/podezd/sfx-src/lamp_buzz.mp3",
+   "volume": 0.5,
+   "from": 0.1,
+   "dur": 2.8,
+   "fade": 0.5
+  },
+  {
+   "at": 46.22,
+   "id": "breath_scared",
+   "src": "projects/podezd/sfx-src/breath_scared.mp3",
+   "volume": 0.45,
+   "from": 0.4,
+   "dur": 2.6,
+   "fade": 0.6
+  },
+  {
+   "at": 49.13,
+   "id": "woman_scream",
+   "src": "projects/podezd/sfx-src/woman_scream.mp3",
+   "volume": 0.85,
+   "from": 0.0,
+   "dur": 2.4,
+   "fade": 0.3
+  },
+  {
+   "at": 50.34,
+   "id": "breath_scared",
+   "src": "projects/podezd/sfx-src/breath_scared.mp3",
+   "volume": 0.4,
+   "from": 1.4,
+   "dur": 3.6,
+   "fade": 0.6
+  },
+  {
+   "at": 51.81,
+   "id": "woman_scream",
+   "src": "projects/podezd/sfx-src/woman_scream.mp3",
+   "volume": 0.38,
+   "from": 0.0,
+   "dur": 2.3,
+   "fade": 0.6
+  },
+  {
+   "at": 53.04,
+   "id": "woman_scream",
+   "src": "projects/podezd/sfx-src/woman_scream.mp3",
+   "volume": 0.24,
+   "from": 0.1,
+   "dur": 2.4,
+   "fade": 1.0
+  },
+  {
+   "at": 54.0,
+   "id": "doors_open_close",
+   "src": "projects/podezd/sfx-src/doors_open_close.mp3",
+   "volume": 0.55,
+   "from": 0.0,
+   "dur": 1.1,
+   "fade": 0.2
+  },
+  {
+   "at": 54.7,
+   "id": "steps_concrete",
+   "src": "projects/podezd/sfx-src/steps_concrete.mp3",
+   "volume": 0.35,
+   "from": 0.5,
+   "dur": 1.0,
+   "fade": 0.2
+  },
+  {
+   "at": 57.2,
+   "id": "bones_crack",
+   "src": "projects/podezd/sfx-src/bones_crack.mp3",
+   "volume": 0.7,
+   "from": 0.5,
+   "dur": 0.7,
+   "fade": 0.2
+  },
+  {
+   "at": "@Все",
+   "id": "hit-sub",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": 59.36,
+   "id": "drip",
+   "src": "projects/podezd/sfx-src/drip.mp3",
+   "volume": 0.3,
+   "from": 0.0
+  },
+  {
+   "at": 60.07,
+   "id": "door_creak",
+   "src": "projects/podezd/sfx-src/door_creak.mp3",
+   "volume": 0.7,
+   "from": 1.3,
+   "dur": 1.9,
+   "fade": 0.4
+  },
+  {
+   "at": 65.29,
+   "id": "pages",
+   "src": "projects/podezd/sfx-src/pages.mp3",
+   "volume": 0.55,
+   "from": 0.3,
+   "dur": 1.1,
+   "fade": 0.2
+  },
+  {
+   "at": "@моя",
+   "id": "hit-sub",
+   "volume": 0.55,
+   "alignPeak": true
+  },
+  {
+   "at": 70.18,
+   "id": "door_creak",
+   "src": "projects/podezd/sfx-src/door_creak.mp3",
+   "volume": 0.55,
+   "from": 5.0,
+   "dur": 2.6,
+   "fade": 0.6
+  },
+  {
+   "at": 73.69,
+   "id": "phone_beeps",
+   "src": "projects/podezd/sfx-src/phone_beeps.mp3",
+   "volume": 0.25,
+   "from": 30.0,
+   "dur": 0.4,
+   "fade": 0.05
+  },
+  {
+   "at": 74.02,
+   "id": "phone_beeps",
+   "src": "projects/podezd/sfx-src/phone_beeps.mp3",
+   "volume": 0.6,
+   "from": 0.0,
+   "dur": 2.3,
+   "fade": 0.1
+  },
+  {
+   "at": 77.27,
+   "id": "child_cry",
+   "src": "projects/podezd/sfx-src/child_cry.mp3",
+   "volume": 0.5,
+   "from": 13.15,
+   "dur": 2.4,
+   "fade": 0.4
+  },
+  {
+   "at": "@включил",
+   "id": "pk-click-ui-button",
+   "volume": 0.45,
+   "alignPeak": true
+  },
+  {
+   "at": 81.44,
+   "id": "steps_concrete",
+   "src": "projects/podezd/sfx-src/steps_concrete.mp3",
+   "volume": 0.45,
+   "from": 1.0,
+   "dur": 3.2,
+   "fade": 0.5
+  },
+  {
+   "at": 82.74,
+   "id": "drip",
+   "src": "projects/podezd/sfx-src/drip.mp3",
+   "volume": 0.3,
+   "from": 0.0
+  },
+  {
+   "at": "@пролёте",
+   "id": "pk-result-failure",
+   "volume": 0.3,
+   "alignPeak": true
+  },
+  {
+   "at": 86.08,
+   "id": "steps_concrete",
+   "src": "projects/podezd/sfx-src/steps_concrete.mp3",
+   "volume": 0.4,
+   "from": 4.3,
+   "dur": 3.0,
+   "fade": 0.5
+  },
+  {
+   "at": "@Шесть",
+   "id": "hit-sub",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": 90.56,
+   "id": "furniture_drag",
+   "src": "projects/podezd/sfx-src/furniture_drag.mp3",
+   "volume": 0.18,
+   "from": 0.0,
+   "dur": 0.8,
+   "fade": 0.3
+  },
+  {
+   "at": 93.62,
+   "id": "child_cry",
+   "src": "projects/podezd/sfx-src/child_cry.mp3",
+   "volume": 0.6,
+   "from": 4.0,
+   "dur": 3.3,
+   "fade": 0.6
+  },
+  {
+   "at": 96.62,
+   "id": "child_cry",
+   "src": "projects/podezd/sfx-src/child_cry.mp3",
+   "volume": 0.5,
+   "from": 7.8,
+   "dur": 4.6,
+   "fade": 0.5
+  },
+  {
+   "at": 97.12,
+   "id": "breath_scared",
+   "src": "projects/podezd/sfx-src/breath_scared.mp3",
+   "volume": 0.35,
+   "from": 4.1,
+   "dur": 4.0,
+   "fade": 0.6
+  },
+  {
+   "at": 101.33,
+   "id": "child_cry",
+   "src": "projects/podezd/sfx-src/child_cry.mp3",
+   "volume": 0.45,
+   "from": 13.2,
+   "dur": 2.3,
+   "fade": 0.4
+  },
+  {
+   "at": 103.53,
+   "id": "child_cry",
+   "src": "projects/podezd/sfx-src/child_cry.mp3",
+   "volume": 0.4,
+   "from": 15.0,
+   "dur": 2.6,
+   "fade": 0.4
+  },
+  {
+   "at": 106.46,
+   "id": "steps_concrete",
+   "src": "projects/podezd/sfx-src/steps_concrete.mp3",
+   "volume": 0.45,
+   "from": 0.0,
+   "dur": 0.42,
+   "fade": 0.1
+  },
+  {
+   "at": 106.16,
+   "id": "child_cry",
+   "src": "projects/podezd/sfx-src/child_cry.mp3",
+   "volume": 0.45,
+   "from": 18.0,
+   "dur": 1.88,
+   "fade": 0.03
+  },
+  {
+   "at": 109.38,
+   "id": "bones_crack",
+   "src": "projects/podezd/sfx-src/bones_crack.mp3",
+   "volume": 0.8,
+   "from": 3.2,
+   "dur": 2.8,
+   "fade": 0.3
+  },
+  {
+   "at": 109.28,
+   "id": "breath_scared",
+   "src": "projects/podezd/sfx-src/breath_scared.mp3",
+   "volume": 0.35,
+   "from": 6.3,
+   "dur": 2.0,
+   "fade": 0.4
+  },
+  {
+   "at": 112.04,
+   "id": "stinger",
+   "src": "projects/podezd/sfx-src/stinger.mp3",
+   "volume": 0.95,
+   "from": 0.0,
+   "dur": 2.4,
+   "fade": 0.6
+  },
+  {
+   "at": "@смотри+0.5",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@профиле",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.8,
+   "alignPeak": true
+  }
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "at": 0,
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "hook",
+     "ev": {},
+     "c0": 4329.0
+    }
+   }
+  },
+  {
+   "id": "moan",
+   "at": "@И воют",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "moan",
+     "ev": {},
+     "c0": 4332.31
+    }
+   },
+   "transition": {
+    "type": "hardcut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "block",
+   "at": "@Меня зовут",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "block",
+     "ev": {},
+     "c0": 4334.23
+    }
+   },
+   "transition": {
+    "type": "glitch",
+    "sfx": false,
+    "dur": 0.3
+   }
+  },
+  {
+   "id": "upgap",
+   "at": "@Лифта нет",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "upgap",
+     "ev": {},
+     "c0": 4337.83
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "landing",
+   "at": "@зелёные стены",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "landing",
+     "ev": {},
+     "c0": 4339.97
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "boothWindow",
+   "at": "@Внизу вахта",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "boothWindow",
+     "ev": {},
+     "c0": 4343.17
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "journal",
+   "at": "@Она знает",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "journal",
+     "ev": {
+      "close": 2.31
+     },
+     "c0": 4347.01
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "serega",
+   "at": "@Первым был",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "serega",
+     "ev": {},
+     "c0": 4350.67
+    }
+   },
+   "transition": {
+    "type": "glitch",
+    "sfx": false,
+    "dur": 0.3
+   }
+  },
+  {
+   "id": "ask",
+   "at": "@Я спросил",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "ask",
+     "ev": {
+      "up": 1.25
+     },
+     "c0": 4355.75
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "graffiti",
+   "at": "@смотри вниз",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "graffiti",
+     "ev": {},
+     "c0": 4358.91
+    }
+   },
+   "transition": {
+    "type": "hardcut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "crane",
+   "at": "@Через день",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "crane",
+     "ev": {},
+     "c0": 4360.23
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "listen",
+   "at": "@Они не спят",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "listen",
+     "ev": {
+      "listen": 2.47
+     },
+     "c0": 4363.43
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "pipe",
+   "at": "@Ночью в",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "pipe",
+     "ev": {
+      "k1": 0.87,
+      "k3": 1.95,
+      "k4": 2.87,
+      "k2": 1.37
+     },
+     "c0": 4367.07
+    }
+   },
+   "transition": {
+    "type": "glitch",
+    "sfx": false,
+    "dur": 0.3
+   }
+  },
+  {
+   "id": "upfast",
+   "at": "@Этаж за",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "upfast",
+     "ev": {},
+     "c0": 4370.75
+    }
+   },
+   "transition": {
+    "type": "hardcut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "breath",
+   "at": "@А лампочки",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "breath",
+     "ev": {},
+     "c0": 4371.97
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "wake",
+   "at": "@В ночь на",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "wake",
+     "ev": {
+      "scream": 1.65
+     },
+     "c0": 4376.75
+    }
+   },
+   "transition": {
+    "type": "dip",
+    "sfx": false,
+    "dur": 0.3
+   }
+  },
+  {
+   "id": "bed",
+   "at": "@Кричала",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "bed",
+     "ev": {},
+     "c0": 4379.17
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "railing",
+   "at": "@Я вышел",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "railing",
+     "ev": {
+      "turn": 3.37
+     },
+     "c0": 4382.93
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "point",
+   "at": "@И молча",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "point",
+     "ev": {
+      "point": 1.11
+     },
+     "c0": 4387.15
+    }
+   },
+   "transition": {
+    "type": "hardcut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "boothEnter",
+   "at": "@Вахта открыта",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "boothEnter",
+     "ev": {
+      "tea": 2.85
+     },
+     "c0": 4389.25
+    }
+   },
+   "transition": {
+    "type": "glitch",
+    "sfx": false,
+    "dur": 0.3
+   }
+  },
+  {
+   "id": "journalFloor",
+   "at": "@Журнал на",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "journalFloor",
+     "ev": {
+      "name": 2.67
+     },
+     "c0": 4393.97
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "door",
+   "at": "@А за шкафом",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "door",
+     "ev": {},
+     "c0": 4398.61
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "call",
+   "at": "@Я позвонил",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "call",
+     "ev": {
+      "beeps": 1.73
+     },
+     "c0": 4402.27
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "cry",
+   "at": "@А потом в",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "cry",
+     "ev": {},
+     "c0": 4404.91
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "torch",
+   "at": "@Я включил",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "torch",
+     "ev": {
+      "on": 0.53
+     },
+     "c0": 4408.03
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "nosig",
+   "at": "@Связь пропала",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "nosig",
+     "ev": {},
+     "c0": 4412.79
+    }
+   },
+   "transition": {
+    "type": "glitch",
+    "sfx": false,
+    "dur": 0.3
+   }
+  },
+  {
+   "id": "count",
+   "at": "@Я считал",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "count",
+     "ev": {
+      "six": 0.93
+     },
+     "c0": 4415.01
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "scratches",
+   "at": "@На стенах",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "scratches",
+     "ev": {},
+     "c0": 4418.79
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "doorway",
+   "at": "@Внизу кто-то",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "doorway",
+     "ev": {},
+     "c0": 4422.21
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "him",
+   "at": "@Он сидел",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "him",
+     "ev": {
+      "tall": 2.29
+     },
+     "c0": 4425.65
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "face",
+   "at": "@И закрывал",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "face",
+     "ev": {},
+     "c0": 4430.31
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "scarf",
+   "at": "@Рядом лежал",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "scarf",
+     "ev": {},
+     "c0": 4432.51
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "step",
+   "at": "@Я сделал",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "step",
+     "ev": {
+      "stop": 1.695
+     },
+     "c0": 4435.09
+    }
+   },
+   "transition": {
+    "type": "cut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "lower",
+   "at": "@И он начал",
+   "camera": "still",
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "lower",
+     "ev": {},
+     "c0": 4438.21
+    }
+   },
+   "transition": {
+    "type": "hardcut",
+    "sfx": false
+   }
+  },
+  {
+   "id": "cta",
+   "at": "@Продолжение",
+   "camera": "still",
+   "captions": false,
+   "transition": {
+    "type": "glitch",
+    "dur": 0.35,
+    "sfx": false
+   },
+   "bg": {
+    "block": "PzShot",
+    "props": {
+     "shot": "lower",
+     "ev": {},
+     "c0": 4441.16
+    }
+   },
+   "dim": 0.6,
+   "dimAt": "@Продолжение",
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "at": "@Продолжение",
+     "props": {
+      "enter": "flip",
+      "flipAt": "@смотри",
+      "flipDur": 0.9,
+      "float": true,
+      "shadow": 0,
+      "screen": {
+       "block": "TikTokProfile",
+       "props": {
+        "pinned": 0,
+        "newTile": {
+         "src": "projects/podezd/part2_cover.jpg",
+         "label": "ЧАСТЬ 2",
+         "at": "@профиле"
+        }
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.3,
+         10.8
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 1.6,
+        "pos": [
+         0.2,
+         2.32,
+         10.4
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 2.6,
+        "pos": [
+         0,
+         1.62,
+         6.2
+        ],
+        "target": [
+         0,
+         1.62,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 6,
+        "pos": [
+         0,
+         1.6,
+         5.8
+        ],
+        "target": [
+         0,
+         1.6,
+         0
+        ],
+        "fov": 30
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,276 @@
+{
+ "src": "engine\\public\\models\\src\\macbook.blend",
+ "glb": "models/macbook.glb",
+ "screenMaterial": "Display.002",
+ "screenMesh": "Display.002",
+ "materials": {
+  "Apple-Logo.001": {
+   "area": 0.909091,
+   "polys": 1,
+   "size": [
+    0.0508,
+    0.0,
+    0.0559
+   ]
+  },
+  "GreyMetalic.002": {
+   "area": 0.35693,
+   "polys": 363799,
+   "size": [
+    0.3126,
+    0.2272,
+    0.2264
+   ]
+  },
+  "Silver Metalic.002": {
+   "area": 1.4e-05,
+   "polys": 826,
+   "size": [
+    0.0009,
+    0.0083,
+    0.0006
+   ]
+  },
+  "Bezel.003": {
+   "area": 0.004315,
+   "polys": 87,
+   "size": [
+    0.3086,
+    0.0,
+    0.2043
+   ]
+  },
+  "Display.002": {
+   "area": 0.058706,
+   "polys": 61,
+   "size": [
+    0.2996,
+    0.0,
+    0.1968
+   ]
+  },
+  "Black Plastic.002": {
+   "area": 0.017552,
+   "polys": 12286,
+   "size": [
+    0.3124,
+    0.0905,
+    0.0103
+   ]
+  },
+  "Keyboard.002": {
+   "area": 0.069264,
+   "polys": 39147,
+   "size": [
+    0.2729,
+    0.1084,
+    0.0022
+   ]
+  },
+  "BlackMetalic.002": {
+   "area": 0.038341,
+   "polys": 41578,
+   "size": [
+    0.2961,
+    0.1157,
+    0.0042
+   ]
+  },
+  "Soft Rubber.002": {
+   "area": 0.004331,
+   "polys": 7992,
+   "size": [
+    0.311,
+    0.205,
+    0.2264
+   ]
+  }
+ },
+ "meshes": [
+  {
+   "name": "Main Body.002",
+   "polys": 403489,
+   "dims": [
+    0.3126,
+    0.2212,
+    0.0103
+   ],
+   "materials": [
+    "GreyMetalic.002",
+    "BlackMetalic.002",
+    "Black Plastic.002"
+   ]
+  },
+  {
+   "name": "Keyboard.002",
+   "polys": 39147,
+   "dims": [
+    0.2729,
+    0.1084,
+    0.0022
+   ],
+   "materials": [
+    "Keyboard.002"
+   ]
+  },
+  {
+   "name": "Extruded.055",
+   "polys": 9524,
+   "dims": [
+    0.2075,
+    0.0041,
+    0.0042
+   ],
+   "materials": [
+    "Black Plastic.002"
+   ]
+  },
+  {
+   "name": "Screengasket.002",
+   "polys": 3912,
+   "dims": [
+    0.311,
+    0.0004,
+    0.2151
+   ],
+   "materials": [
+    "Soft Rubber.002"
+   ]
+  },
+  {
+   "name": "Display.002",
+   "polys": 2174,
+   "dims": [
+    0.3126,
+    0.0106,
+    0.2212
+   ],
+   "materials": [
+    "GreyMetalic.002",
+    "Display.002",
+    "Bezel.003"
+   ]
+  },
+  {
+   "name": "BaseCover.002",
+   "polys": 1988,
+   "dims": [
+    0.3073,
+    0.2159,
+    0.0019
+   ],
+   "materials": [
+    "GreyMetalic.002"
+   ]
+  },
+  {
+   "name": "Revolved.002",
+   "polys": 1020,
+   "dims": [
+    0.019,
+    0.019,
+    0.0008
+   ],
+   "materials": [
+    "Soft Rubber.002"
+   ]
+  },
+  {
+   "name": "Solid 428.002",
+   "polys": 1020,
+   "dims": [
+    0.019,
+    0.019,
+    0.0008
+   ],
+   "materials": [
+    "Soft Rubber.002"
+   ]
+  },
+  {
+   "name": "Solid 430.002",
+   "polys": 1020,
+   "dims": [
+    0.019,
+    0.019,
+    0.0008
+   ],
+   "materials": [
+    "Soft Rubber.002"
+   ]
+  },
+  {
+   "name": "Solid 432.002",
+   "polys": 1020,
+   "dims": [
+    0.019,
+    0.019,
+    0.0008
+   ],
+   "materials": [
+    "Soft Rubber.002"
+   ]
+  },
+  {
+   "name": "Charging pin.002",
+   "polys": 826,
+   "dims": [
+    0.0009,
+    0.0083,
+    0.0006
+   ],
+   "materials": [
+    "Silver Metalic.002"
+   ]
+  },
+  {
+   "name": "Trackpad.002",
+   "polys": 468,
+   "dims": [
+    0.1289,
+    0.0804,
+    0.002
+   ],
+   "materials": [
+    "GreyMetalic.002"
+   ]
+  },
+  {
+   "name": "Solid 514.002",
+   "polys": 84,
+   "dims": [
+    0.015,
+    0.004,
+    0.0025
+   ],
+   "materials": [
+    "GreyMetalic.002"
+   ]
+  },
+  {
+   "name": "Solid 515.002",
+   "polys": 84,
+   "dims": [
+    0.015,
+    0.004,
+    0.0025
+   ],
+   "materials": [
+    "GreyMetalic.002"
+   ]
+  },
+  {
+   "name": "Apple-Logo-Iconic-Tech-Brand-Symbol-PNG-Transparent-Representa",
+   "polys": 1,
+   "dims": [
+    0.0508,
+    0.0559,
+    0.0
+   ],
+   "materials": [
+    "Apple-Logo.001"
+   ]
+  }
+ ],
+ "sizeMB": 15.95
+}

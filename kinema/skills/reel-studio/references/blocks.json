@@ -1,0 +1,1769 @@
+[
+ {
+  "id": "Title",
+  "cat": "text",
+  "desc": "Headline with blur-in words; markup *italic* [accent] ==mark== / linebreak. `at` = per-word anchors.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "Собери *своё* / приложение [за вечер]",
+   "lead": "Теперь можно"
+  }
+ },
+ {
+  "id": "Kicker",
+  "cat": "text",
+  "desc": "Small uppercase label chip with glowing dot.",
+  "pos": "top",
+  "overlay": false,
+  "example": {
+   "text": "Новый скилл"
+  }
+ },
+ {
+  "id": "Counter",
+  "cat": "text",
+  "desc": "Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд».",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "from": 0,
+   "to": 1200,
+   "format": "k",
+   "icon": "star",
+   "label": "звёзд на GitHub"
+  }
+ },
+ {
+  "id": "StrikeList",
+  "cat": "text",
+  "desc": "List whose items get red strike-throughs at anchors (strikeAt).",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "items": [
+    "Код",
+    "Логотип",
+    "Тексты"
+   ],
+   "strikeAt": [
+    1.2,
+    1.6,
+    2
+   ]
+  }
+ },
+ {
+  "id": "ArrowList",
+  "cat": "text",
+  "desc": "List where focus moves down: active item big with →, previous ones fade.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "items": [
+    "Код",
+    "Логотип",
+    "Тексты"
+   ]
+  }
+ },
+ {
+  "id": "Quote",
+  "cat": "text",
+  "desc": "Quote card in serif italic with author.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "Нравится, но клиенты забывают про запись",
+   "author": "отзыв в App Store"
+  }
+ },
+ {
+  "id": "Typewriter",
+  "cat": "text",
+  "desc": "Text typed character by character with caret.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "найди, где это снято"
+  }
+ },
+ {
+  "id": "Pill",
+  "cat": "text",
+  "desc": "Rounded pill with optional counting number: «18 экранов».",
+  "pos": "bottom",
+  "overlay": false,
+  "example": {
+   "value": 18,
+   "text": "экранов"
+  }
+ },
+ {
+  "id": "Chips",
+  "cat": "text",
+  "desc": "Tags popping in with stagger.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "items": [
+    "Reels",
+    "Shorts",
+    "TikTok",
+    "YouTube"
+   ],
+   "accentIdx": [
+    0
+   ]
+  }
+ },
+ {
+  "id": "BigType",
+  "cat": "text",
+  "desc": "AGGRESSIVE: giant lines fitted to full width. enter slam|letters|rise|split|wipe; treatment solid|outline|mark|serif|accent; echo outlines.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "lines": [
+    "Ноль",
+    "кода",
+    "100%"
+   ],
+   "treatment": [
+    "solid",
+    "outline",
+    "mark"
+   ]
+  }
+ },
+ {
+  "id": "Marquee",
+  "cat": "text",
+  "desc": "AGGRESSIVE: endless tilted text band(s); cross:true for an X of two bands.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "бесплатно",
+   "cross": true
+  }
+ },
+ {
+  "id": "Extruded",
+  "cat": "text",
+  "desc": "AGGRESSIVE: pseudo-3D extruded word, slow tilt.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "FREE"
+  }
+ },
+ {
+  "id": "LetterRoll",
+  "cat": "text",
+  "desc": "Slot-machine letters rolling into a word.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "СКИЛЛ"
+  }
+ },
+ {
+  "id": "WordSwap",
+  "cat": "text",
+  "desc": "One slot cycling through words under a lead line.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "lead": "для",
+   "words": [
+    "дизайнеров",
+    "кодеров",
+    "всех"
+   ]
+  }
+ },
+ {
+  "id": "MaskText",
+  "cat": "text",
+  "desc": "Giant word filled with an image (image-in-type).",
+  "pos": "center",
+  "overlay": false,
+  "example": null
+ },
+ {
+  "id": "Highlight",
+  "cat": "text",
+  "desc": "Paragraph with marker sweeps over chosen words at anchors.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "text": "Агент читает отзывы и ищет повторяющиеся жалобы",
+   "marks": [
+    {
+     "word": "отзывы"
+    },
+    {
+     "word": "жалобы"
+    }
+   ]
+  }
+ },
+ {
+  "id": "StatSlam",
+  "cat": "text",
+  "desc": "AGGRESSIVE: giant stat slammed in with unit and label.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "value": "2",
+   "unit": "м",
+   "label": "точность"
+  }
+ },
+ {
+  "id": "Notification",
+  "cat": "ui",
+  "desc": "iOS-style notification banner: app, icon, time, title, text, stars.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "app": "Slotra · новый отзыв",
+   "text": "Доплата за каждого сотрудника. Серьёзно?",
+   "stars": 1
+  }
+ },
+ {
+  "id": "NotificationStack",
+  "cat": "ui",
+  "desc": "Notifications dropping in one by one (items[].at anchors).",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "items": [
+    {
+     "app": "Slotra · новый отзыв",
+     "text": "Доплата за каждого сотрудника",
+     "stars": 1
+    },
+    {
+     "app": "Slotra · новый отзыв",
+     "text": "Клиенты забывают про запись",
+     "stars": 2
+    }
+   ]
+  }
+ },
+ {
+  "id": "ReviewCard",
+  "cat": "ui",
+  "desc": "Review card: source badge (App Store/Google Play/Reddit/…), stars, text, optional highlight phrase.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "source": "Google Play",
+   "stars": 3,
+   "text": "Удобно, но клиенты из другого города путают время",
+   "highlight": "путают время"
+  }
+ },
+ {
+  "id": "ReviewFeed",
+  "cat": "ui",
+  "desc": "List of reviews appearing; focus:{at, keep:[idx]} collapses the rest (filtering).",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "items": [
+    {
+     "source": "App Store",
+     "stars": 5,
+     "text": "Отличное приложение!"
+    },
+    {
+     "source": "App Store",
+     "stars": 4,
+     "text": "Нравится, но нет напоминаний"
+    },
+    {
+     "source": "Reddit",
+     "stars": 1,
+     "text": "Подняли цену. Ухожу"
+    }
+   ],
+   "focus": {
+    "at": 1.8,
+    "keep": [
+     1
+    ]
+   }
+  }
+ },
+ {
+  "id": "Checklist",
+  "cat": "ui",
+  "desc": "Plan / todo list; checkAt[] anchors tick boxes.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "title": "План исправлений",
+   "items": [
+    "Напоминания по SMS",
+    "Одна цена для команды",
+    "Часовой пояс"
+   ],
+   "checkAt": [
+    1,
+    1.5,
+    2
+   ]
+  }
+ },
+ {
+  "id": "ScoreCard",
+  "cat": "ui",
+  "desc": "Big percentage card with bar, status pill and ✕/✓ lists (e.g. «Сходство с оригиналом 62%»).",
+  "pos": "right",
+  "overlay": false,
+  "example": {
+   "label": "Сходство с оригиналом",
+   "value": 62,
+   "status": "Не готово к выкладке",
+   "cons": [
+    "Перенос записи",
+    "Онлайн-оплата"
+   ]
+  }
+ },
+ {
+  "id": "PricingCards",
+  "cat": "ui",
+  "desc": "2–3 pricing tiers, `hot` tier highlighted, `strike` old price.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "tiers": [
+    {
+     "name": "Старт",
+     "price": "0 ₽"
+    },
+    {
+     "name": "Про",
+     "price": "990 ₽",
+     "period": "/мес",
+     "hot": true
+    },
+    {
+     "name": "Команда",
+     "price": "+500 ₽",
+     "period": "/чел"
+    }
+   ]
+  }
+ },
+ {
+  "id": "Toast",
+  "cat": "ui",
+  "desc": "Small confirmation toast pill (check/warn/dot).",
+  "pos": "bottom",
+  "overlay": false,
+  "example": {
+   "text": "Скилл установлен"
+  }
+ },
+ {
+  "id": "Cursor",
+  "cat": "ui",
+  "desc": "OVERLAY mouse pointer (or hand:true) gliding through points [{x,y,at,click}] in frame px, ripple on clicks.",
+  "pos": "full",
+  "overlay": true,
+  "example": {
+   "points": [
+    {
+     "x": 300,
+     "y": 1300
+    },
+    {
+     "x": 640,
+     "y": 900,
+     "at": 1
+    },
+    {
+     "x": 520,
+     "y": 1100,
+     "at": 2
+    }
+   ]
+  }
+ },
+ {
+  "id": "Callout",
+  "cat": "ui",
+  "desc": "OVERLAY label with leader line from point (x,y) to label (lx,ly), frame px.",
+  "pos": "full",
+  "overlay": true,
+  "example": {
+   "text": "вот здесь",
+   "x": 540,
+   "y": 1000,
+   "lx": 760,
+   "ly": 820
+  }
+ },
+ {
+  "id": "SearchBar",
+  "cat": "ui",
+  "desc": "Search field typing a query, then results drop down (first highlighted).",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "query": "клиника рядом",
+   "results": [
+    "Клиника на Ленина, 4.8",
+    "Медцентр «Здоровье», 4.6"
+   ]
+  }
+ },
+ {
+  "id": "Toggles",
+  "cat": "ui",
+  "desc": "Settings list whose switches flip on at onAt[] anchors.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "items": [
+    "Напоминания",
+    "Онлайн-оплата",
+    "Отзывы"
+   ],
+   "onAt": [
+    0.8,
+    1.2,
+    1.6
+   ]
+  }
+ },
+ {
+  "id": "Steps",
+  "cat": "ui",
+  "desc": "Numbered steps on a progress rail; showAt[] anchors.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "items": [
+    {
+     "title": "Скажи Claude",
+     "sub": "«поставь скилл»"
+    },
+    {
+     "title": "Он сам установит"
+    },
+    {
+     "title": "Пользуйся"
+    }
+   ]
+  }
+ },
+ {
+  "id": "CompareSplit",
+  "cat": "ui",
+  "desc": "Before/after columns with ✕ and ✓ lists; right side revealed at revealAt.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "left": {
+    "title": "Было",
+    "items": [
+     "3 часа монтажа",
+     "шаблоны"
+    ]
+   },
+   "right": {
+    "title": "Стало",
+    "items": [
+     "10 минут",
+     "свой стиль"
+    ]
+   }
+  }
+ },
+ {
+  "id": "Progress",
+  "cat": "ui",
+  "desc": "Progress / install bar counting to 100% then `done` text.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "label": "Устанавливаю скилл",
+   "done": "Готово"
+  }
+ },
+ {
+  "id": "AvatarStack",
+  "cat": "ui",
+  "desc": "Overlapping avatars + counting label (users, stars, team).",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "count": 5,
+   "n": 4800,
+   "label": "человек уже пользуются"
+  }
+ },
+ {
+  "id": "Bubble",
+  "cat": "ui",
+  "desc": "Single chat/speech bubble (left/right), markup supported.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "text": "А можно *без* монтажа?",
+   "side": "right"
+  }
+ },
+ {
+  "id": "EmergencyAlert",
+  "cat": "ui",
+  "desc": "Civil-defence emergency alert screen (390×844) with pulsing radiation sign, level pill, title and instructions. Put it on IPhone17/Phone3D/Phone screens.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "AppScreen",
+  "cat": "ui",
+  "desc": "Mobile app screen builder (390×844): sections header|card|days|slots|rows|button|list|text|image|bars|search|gap. selectAt/pressAt anchors animate taps. Use inside Phone/Phone3D.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "sections": [
+    {
+     "type": "header",
+     "app": "Окно",
+     "title": "Запись"
+    },
+    {
+     "type": "days",
+     "label": "Октябрь",
+     "days": [
+      [
+       "Пн",
+       "13"
+      ],
+      [
+       "Вт",
+       "14"
+      ],
+      [
+       "Ср",
+       "15"
+      ],
+      [
+       "Чт",
+       "16"
+      ],
+      [
+       "Пт",
+       "17"
+      ]
+     ],
+     "selected": 2
+    },
+    {
+     "type": "slots",
+     "label": "Свободное время",
+     "slots": [
+      "10:00",
+      "11:30",
+      "13:00",
+      "14:30",
+      "16:00",
+      "17:30"
+     ],
+     "selected": 3
+    },
+    {
+     "type": "rows",
+     "rows": [
+      {
+       "label": "Напоминание по SMS",
+       "value": "нет",
+       "status": "bad"
+      },
+      {
+       "label": "Тариф",
+       "value": "+500 ₽",
+       "status": "bad"
+      }
+     ]
+    },
+    {
+     "type": "button",
+     "label": "Записаться"
+    }
+   ]
+  }
+ },
+ {
+  "id": "ScreenGrid",
+  "cat": "ui",
+  "desc": "Map of an app's screens (cols×rows wireframes S01…) with a highlighted click path and a counter pill. label with Russian plural forms: «клик|клика|кликов до записи». h = max height (default 740).",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "cols": 6,
+   "rows": 3,
+   "path": [
+    0,
+    2,
+    8,
+    9,
+    14,
+    16
+   ],
+   "label": "клик|клика|кликов до записи"
+  }
+ },
+ {
+  "id": "LockScreen",
+  "cat": "ui",
+  "desc": "Phone lock screen (390×844) with notifications; actions:['Отклонить','Разрешить'] + pressAt for an approval moment.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "notes": [
+    {
+     "app": "VS Code",
+     "text": "Claude ждёт разрешения",
+     "actions": [
+      "Отклонить",
+      "Разрешить"
+     ],
+     "pressAt": 1.6
+    }
+   ]
+  }
+ },
+ {
+  "id": "EmailCard",
+  "cat": "ui",
+  "desc": "Inbox email row card: from, subject, preview, unread dot.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "from": "GitHub",
+   "subject": "Your repo got 1 000 stars",
+   "preview": "Congrats! replica-skill just passed…"
+  }
+ },
+ {
+  "id": "DynamicIsland",
+  "cat": "ui",
+  "desc": "Big black Dynamic-Island pill expanding with icon/title/sub and optional action buttons (pressAt).",
+  "pos": "top",
+  "overlay": false,
+  "example": {
+   "title": "Claude Code",
+   "sub": "требует разрешения",
+   "actions": [
+    "Отклонить",
+    "Разрешить"
+   ],
+   "pressAt": 1.8
+  }
+ },
+ {
+  "id": "Terminal",
+  "cat": "ui",
+  "desc": "Agent CLI terminal: lines[] kinds prompt(typed)|tool(● Name(arg) ⎿ sub)|text|ask(permission box, chooseAt)|status(spinner until)|ok|diff. Auto-scrolls. Each line has `at`.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "lines": [
+    {
+     "kind": "prompt",
+     "text": "почини форму входа и прогони тесты"
+    },
+    {
+     "kind": "tool",
+     "name": "Read",
+     "arg": "auth/middleware.ts",
+     "sub": [
+      "Read 84 lines"
+     ]
+    },
+    {
+     "kind": "tool",
+     "name": "Update",
+     "arg": "LoginForm.tsx",
+     "sub": [
+      "+11 −5"
+     ]
+    },
+    {
+     "kind": "ask",
+     "cmd": "npm test",
+     "chooseAt": 3.2
+    },
+    {
+     "kind": "ok",
+     "text": "23 tests passed"
+    }
+   ]
+  }
+ },
+ {
+  "id": "ClaudeChat",
+  "cat": "ui",
+  "desc": "AI chat desktop app: greeting (serif), input with typed text (type,typeAt), attachment drop (attach:{src,name,at}), skill chips, model label, send (sendAt) then streaming reply (reply,replyAt). dark:true variant.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "type": "найди, где это снято",
+   "chips": [
+    "geo-sleuth"
+   ],
+   "attach": {
+    "name": "IMG_2041.jpg",
+    "at": 0.2
+   }
+  }
+ },
+ {
+  "id": "CodeEditor",
+  "cat": "ui",
+  "desc": "Code editor with tabs, line numbers, naive syntax colours; typeFrom = line index where typing starts; marks:[{line,kind:add|del|hl,at}].",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "file": "skill.md",
+   "code": "# geo-sleuth\nconst photo = await read(\"IMG_2041.jpg\")\nconst place = locate(photo) // ±2 м\nreturn place",
+   "typeFrom": 1,
+   "marks": [
+    {
+     "line": 3,
+     "kind": "hl",
+     "at": 2
+    }
+   ]
+  }
+ },
+ {
+  "id": "GithubRepo",
+  "cat": "ui",
+  "desc": "Repository page: owner/repo, desc, topics, rolling star count stars:[from,to] at starsAt, forks, license, file rows; ring:'stars'|'license'|'forks' circles a metric at ringAt.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "owner": "you",
+   "repo": "replica-skill",
+   "desc": "11 free skills that clone any app",
+   "stars": [
+    136,
+    1200
+   ],
+   "ring": "stars",
+   "files": [
+    {
+     "name": "replica-architect"
+    },
+    {
+     "name": "replica-backend"
+    },
+    {
+     "name": "replica-design"
+    }
+   ]
+  }
+ },
+ {
+  "id": "FileTree",
+  "cat": "ui",
+  "desc": "Folder tree with indentation and highlighted entries.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "items": [
+    {
+     "name": "skills",
+     "dir": true
+    },
+    {
+     "name": "geo-sleuth",
+     "depth": 1,
+     "dir": true
+    },
+    {
+     "name": "SKILL.md",
+     "depth": 2,
+     "hl": true
+    },
+    {
+     "name": "terrain.py",
+     "depth": 2
+    }
+   ]
+  }
+ },
+ {
+  "id": "EditorTimeline",
+  "cat": "ui",
+  "desc": "Video-editor (NLE) timeline: tracks V2/V1/Субтитры/Голос/Звуки/Эффекты, moving playhead + timecode; adds:[{track,at,n}] piles clips onto a lane at an anchor (the pain of manual editing); errorAt/errorText = export crash overlay.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "adds": [
+    {
+     "track": "T1",
+     "at": 0.6,
+     "n": 8
+    },
+    {
+     "track": "A2",
+     "at": 1.2,
+     "n": 6
+    }
+   ],
+   "errorAt": 2.4
+  }
+ },
+ {
+  "id": "Phone",
+  "cat": "device",
+  "desc": "2D phone (flat, crisp): screen:{block,props} (use AppScreen/LockScreen/…) or src image; w, dark, tilt (deg), float.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "screen": {
+    "block": "AppScreen",
+    "props": {
+     "sections": [
+      {
+       "type": "header",
+       "app": "Окно",
+       "title": "Запись"
+      },
+      {
+       "type": "card",
+       "name": "Анна Ковалёва",
+       "sub": "Стрижка · 60 мин",
+       "value": "1 500 ₽"
+      },
+      {
+       "type": "button",
+       "label": "Записаться"
+      }
+     ]
+    }
+   }
+  }
+ },
+ {
+  "id": "Window",
+  "cat": "device",
+  "desc": "macOS window chrome; body:{block,props} or src; url:'…' turns it into a browser; tabs.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "title": "Claude",
+   "url": "github.com/you/skill",
+   "body": {
+    "block": "Title",
+    "props": {
+     "text": "Окно"
+    }
+   }
+  }
+ },
+ {
+  "id": "SocialProfile",
+  "cat": "social",
+  "desc": "Generic social profile screen (390×844) for the CTA end card: handle, bio lines, link (highlights at pressAt), tiles.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "handle": "reel.studio",
+   "name": "Ролики, которые собирает агент",
+   "bio": [
+    "Объяснялки с голосом",
+    "Промо под музыку"
+   ],
+   "link": "t.me/reelstudio",
+   "tiles": [
+    {
+     "title": "Голос"
+    },
+    {
+     "title": "3D"
+    },
+    {
+     "title": "Промо"
+    }
+   ]
+  }
+ },
+ {
+  "id": "TikTokProfile",
+  "cat": "social",
+  "desc": "The channel's TikTok profile (light theme, 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "highlightAt": 1.2
+  }
+ },
+ {
+  "id": "StoryFrame",
+  "cat": "social",
+  "desc": "Story viewer (390×844): progress bars, user, photo src or body block, caption, reply bar.",
+  "pos": "stage",
+  "overlay": false,
+  "example": null
+ },
+ {
+  "id": "PostCard",
+  "cat": "social",
+  "desc": "Social post card with counting replies/reposts/likes.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "name": "Мария",
+   "handle": "maria",
+   "text": "Попросила агента собрать ролик — и он собрал. С голосом."
+  }
+ },
+ {
+  "id": "BarChart",
+  "cat": "data",
+  "desc": "Horizontal labelled bars counting up (complaints, votes). dim:true greys out an outlier, note replaces the number.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "title": "О чём жалуются",
+   "bars": [
+    {
+     "label": "Нет напоминаний",
+     "value": 27
+    },
+    {
+     "label": "Доплата за сотрудника",
+     "value": 21
+    },
+    {
+     "label": "Путаница с поясом",
+     "value": 14
+    },
+    {
+     "label": "«Ужасный цвет»",
+     "value": 1,
+     "dim": true,
+     "note": "1 отзыв"
+    }
+   ]
+  }
+ },
+ {
+  "id": "ColumnChart",
+  "cat": "data",
+  "desc": "Vertical columns growing; highlight index uses the accent.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "values": [
+    120,
+    210,
+    340,
+    610
+   ],
+   "labels": [
+    "янв",
+    "фев",
+    "мар",
+    "апр"
+   ]
+  }
+ },
+ {
+  "id": "LineChart",
+  "cat": "data",
+  "desc": "Line that draws itself with an area fill and a live end value.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "values": [
+    10,
+    14,
+    13,
+    22,
+    31,
+    48,
+    75
+   ],
+   "title": "Звёзды за неделю"
+  }
+ },
+ {
+  "id": "Donut",
+  "cat": "data",
+  "desc": "Progress ring with a counting percentage and label.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "value": 94,
+   "label": "покрытие тестами"
+  }
+ },
+ {
+  "id": "KPIs",
+  "cat": "data",
+  "desc": "2–4 KPI tiles counting up (prefix/suffix/format).",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "items": [
+    {
+     "value": 14000,
+     "label": "точек обзора"
+    },
+    {
+     "value": 2,
+     "label": "метра точность",
+     "prefix": "±"
+    }
+   ]
+  }
+ },
+ {
+  "id": "Table",
+  "cat": "data",
+  "desc": "Table that fades in row by row and highlights one row at highlightAt.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "head": [
+    "Тариф",
+    "Цена"
+   ],
+   "rows": [
+    [
+     "Старт",
+     "0 ₽"
+    ],
+    [
+     "Про",
+     "990 ₽"
+    ]
+   ],
+   "highlight": 1
+  }
+ },
+ {
+  "id": "Waveform",
+  "cat": "data",
+  "desc": "Animated voice waveform bars (voice features, podcasts).",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "label": "Голос"
+  }
+ },
+ {
+  "id": "MapPin",
+  "cat": "map",
+  "desc": "Location pin with pulse, error radius (±2 м) and monospace coordinates.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "coords": "23.7351° N · 113.1235° E",
+   "radius": "2 м"
+  }
+ },
+ {
+  "id": "S6Shot",
+  "cat": "3d",
+  "desc": "Сосед с шестого этажа: one shot by id (PS1 + VHS), ev = event times, c0 = tape counter.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "shot": "bed_up"
+  }
+ },
+ {
+  "id": "S6Insert",
+  "cat": "3d",
+  "desc": "Сосед с шестого этажа: tape inserts (card, tracks, count, zoom, match).",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "kind": "card",
+   "lines": [
+    "НОЧЬ 1"
+   ]
+  }
+ },
+ {
+  "id": "PzPoseTest",
+  "cat": "3d",
+  "desc": "podezd: debug one actor in one pose under plain light.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "who": "him",
+   "pose": "floor"
+  }
+ },
+ {
+  "id": "PzShot",
+  "cat": "3d",
+  "desc": "podezd horror reel: one shot by id (hook, moan, block, upgap, landing, boothWindow, journal, serega, ask, graffiti, crane, listen, pipe, upfast, breath, wake, bed, railing, point, boothEnter, journalFloor, door, call, cry, torch, nosig, count, scratches, doorway, him, face, scarf, step, lower); ev = event times.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "shot": "hook"
+  }
+ },
+ {
+  "id": "PzSetTest",
+  "cat": "3d",
+  "desc": "podezd horror: test of one location (booth, boothAfter, descent, lair, bedroom, pipe, block) with its actor.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "set": "booth"
+  }
+ },
+ {
+  "id": "PzTest",
+  "cat": "3d",
+  "desc": "podezd horror: test of the Khrushchyovka stairwell, residents and poses (PS1 + VHS look). cam keys, who, flicker, breath, look.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkChase",
+  "cat": "3d",
+  "desc": "nk reel: first-person run at Panmunjom on the chase clock. tau0, look:[tau,dur], exit.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkCctv",
+  "cat": "3d",
+  "desc": "nk reel: UN surveillance-camera shot. tau0, cam keys, label, jeepSpin.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkFall",
+  "cat": "3d",
+  "desc": "nk reel: hit, hit, fall into the leaves. tau0.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkBarracks",
+  "cat": "3d",
+  "desc": "nk reel: barracks, first person. mode drink|slam, slamAt, lookAt, dreadAt.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkDrive",
+  "cat": "3d",
+  "desc": "nk reel: in the jeep on the road. mode start|checkpoint.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkBridge",
+  "cat": "3d",
+  "desc": "nk reel: drone shot of the jeep on the 72-hour bridge.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkDitch",
+  "cat": "3d",
+  "desc": "nk reel: Panmunjom by jeep. mode approach|ditch, dropAt, revAt.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkHeli",
+  "cat": "3d",
+  "desc": "nk reel: looking up at the helicopter from a stretcher.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkSurgery",
+  "cat": "3d",
+  "desc": "nk reel: operating lamp, white-out at whiteAt.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "NkOutro",
+  "cat": "3d",
+  "desc": "nk reel: last shots over the line. view line|wide.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "RescueTest",
+  "cat": "3d",
+  "desc": "nk-escape test: ROK soldiers crawl to the defector and drag him (his eyes or a side view).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "MxTest",
+  "cat": "3d",
+  "desc": "nk-escape test: Mixamo soldiers. view: gallery|chase; qa logs feet checks.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "SoldiersTest",
+  "cat": "3d",
+  "desc": "nk-escape test: procedural soldiers (pose gallery).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "BarracksTest",
+  "cat": "3d",
+  "desc": "nk-escape test: KPA barracks room, first person at the table (one hand takes the cup).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "JsaTest",
+  "cat": "3d",
+  "desc": "nk-escape test: Panmunjom JSA set. view: overview|run (first-person run to the wall).",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "view": "run"
+  }
+ },
+ {
+  "id": "JeepDriveTest",
+  "cat": "3d",
+  "desc": "nk-escape test: first-person drive in the jeep with live hands on the wheel (project-specific).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "Laptop3D",
+  "cat": "3d",
+  "desc": "Real 3D laptop (PBR metal, reflections, shadow) with a LIVE HTML screen: screen:{block,props} or src image. cam: hero|orbit|lowAngle|zoomScreen|top|side|close or keyframes. open:true animates the lid. color: silver|space|midnight|black.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "screen": {
+    "block": "Title",
+    "props": {
+     "text": "Привет, *3D*"
+    }
+   },
+   "cam": "hero",
+   "open": true
+  }
+ },
+ {
+  "id": "Phone3D",
+  "cat": "3d",
+  "desc": "Real 3D phone(s) with LIVE HTML screens. phones:[{screen,pos,rot,color}] for a fan of up to 3 (keep them from overlapping). cam: hero|close|low|wide. turn:[fromDeg,toDeg], enterSpin. color: titanium|black|silver|white|gold.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "screen": {
+    "block": "Title",
+    "props": {
+     "text": "9:41"
+    }
+   },
+   "enterSpin": true
+  }
+ },
+ {
+  "id": "Globe3D",
+  "cat": "3d",
+  "desc": "Earth with real coastlines. look: dots|solid|night|light. focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "look": "dots",
+   "focus": [
+    {
+     "t": 0,
+     "lat": 30,
+     "lon": 80,
+     "dist": 3.8
+    },
+    {
+     "t": 2.5,
+     "lat": 49,
+     "lon": -123,
+     "dist": 2.6
+    }
+   ],
+   "markers": [
+    {
+     "lat": 49.2,
+     "lon": -123.1,
+     "label": "49.21° N · 123.11° W",
+     "at": 2.4
+    }
+   ],
+   "arcs": [
+    {
+     "from": [
+      23.7,
+      113.1
+     ],
+     "to": [
+      49.2,
+      -123.1
+     ],
+     "at": 0.5,
+     "dur": 1.8
+    }
+   ]
+  }
+ },
+ {
+  "id": "Terrain3D",
+  "cat": "3d",
+  "desc": "Procedural mountains. look: satellite|alpine|topo|desert|mono. cam: flyover|orbit|reveal|top|low. contours (0..1), scan:{at,dur} sweeping band, highlightHeight (accent iso-line), points:{count,at,dur} viewpoints appearing, pins:[{x,z,label,at}].",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "look": "alpine",
+   "cam": "reveal",
+   "contours": 0.25,
+   "points": {
+    "count": 1500,
+    "at": 1.5,
+    "dur": 2
+   }
+  }
+ },
+ {
+  "id": "City3D",
+  "cat": "3d",
+  "desc": "Procedural city that grows from the ground. look: warm|white|night|clay. cam: orbit|dive|street|iso. blossom 0..1 = share of pink trees; downtown = tower height; highlight:{x,z,label,at} target ring.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "look": "warm",
+   "cam": "dive",
+   "blossom": 0.4,
+   "highlight": {
+    "x": 2,
+    "z": 2,
+    "label": "49.2158° N · 123.1087° W",
+    "at": 3
+   }
+  }
+ },
+ {
+  "id": "Shapes3D",
+  "cat": "3d",
+  "desc": "Glossy iridescent hero objects: blob|torus|knot|rings|pills|cubes, glass:true for transmission. Use sparingly — abstract shapes read as generic.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "kind": "rings"
+  }
+ },
+ {
+  "id": "Bars3D",
+  "cat": "3d",
+  "desc": "3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front. Last bar uses the accent.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "bars": [
+    {
+     "label": "янв",
+     "value": 120
+    },
+    {
+     "label": "фев",
+     "value": 210
+    },
+    {
+     "label": "мар",
+     "value": 340
+    },
+    {
+     "label": "апр",
+     "value": 610
+    }
+   ],
+   "unit": ""
+  }
+ },
+ {
+  "id": "Tunnel3D",
+  "cat": "3d",
+  "desc": "Flying through glowing rings/squares/hexes. Intros, 'deep dive' moments, transitions.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "shape": "hex"
+  }
+ },
+ {
+  "id": "StarRain",
+  "cat": "3d",
+  "desc": "3D stars / coins / hearts raining and tumbling (GitHub stars, rewards, likes). Transparent — overlay on any scene.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "kind": "star"
+  }
+ },
+ {
+  "id": "Cards3D",
+  "cat": "3d",
+  "desc": "CSS-3D (crisp HTML) cards floating in depth with a moving camera. items:[{block,props|src,x,y,z,rx,ry,w,h,at}], cam:{from:[x,y,z],to,rx:[a,b],ry:[a,b]}.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "items": [
+    {
+     "block": "Title",
+     "props": {
+      "text": "Один"
+     },
+     "x": -250,
+     "z": -200
+    },
+    {
+     "block": "Title",
+     "props": {
+      "text": "Два"
+     },
+     "x": 250,
+     "z": 0
+    }
+   ]
+  }
+ },
+ {
+  "id": "Tilt",
+  "cat": "3d",
+  "desc": "Wrap any block in a slow perspective tilt (2.5D). child:{block,props}, rx:[from,to], ry:[from,to], w,h.",
+  "pos": "center",
+  "overlay": false,
+  "example": {
+   "child": {
+    "block": "Title",
+    "props": {
+     "text": "Tilt"
+    }
+   }
+  }
+ },
+ {
+  "id": "Room3D",
+  "cat": "3d",
+  "desc": "Cut-away 3D room diorama in dark pastel. preset: office|living|bedroom|cafe|studio + cozy library (wall of books, armchair reader, candle) | kitchen (counter, stove with steam, fridge, dining table) | cabin (log walls, real fireplace) | basement (concrete shelter: supply racks, water, crank radio, lantern, sandbags, steel door, tally board). people:[{pose,pos,rotY,seed,look:{suit:true = improvised protective gear},walkTo}] (fpv cams default to nobody). screen:{block,props} = LIVE HTML on the monitor (office) or TV (living). cam: diorama|front|closeDesk|pushIn|top|inside; library: reading|shelves; kitchen: counter|table; cabin: fire; basement: corner + first-person fpvEnter|fpvShelf|fpvRadio|fpvDoor|fpvWindow|fpvBed|fpvTally|fpvHands. hands:{item:radio|can|bottle|tape|lantern|geiger|mask, gloves, sleeve, from} = your own hands in a first-person shot. basement: days (tally marks), door 0..1 or [from,to] animated, lantern. lights: day|evening|night. build:true pops the room up.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "preset": "office",
+   "cam": "diorama"
+  }
+ },
+ {
+  "id": "Street3D",
+  "cat": "3d",
+  "desc": "Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,look:{suit:true}}] for a lone survivor.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "time": "evening",
+   "cam": "eye"
+  }
+ },
+ {
+  "id": "Blast3D",
+  "cat": "3d",
+  "desc": "Nuclear blast over a distant city at dusk (stylized, no gore): flash (warm, never pure white) at flashAt, fireball → mushroom cloud rising for ~9 s, ground shockwave sweeping to the camera at waveAt (default flashAt+3.2) with camera shake, dust haze and falling ash. cam: hill|street|wide or keyframes. Cue your own boom/rumble SFX on flashAt and waveAt.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "cam": "hill",
+   "flashAt": 0.6
+  }
+ },
+ {
+  "id": "Scene3D",
+  "cat": "3d",
+  "desc": "Compose your own low-poly scene: objects:[{type,pos,rotY,at,...}] types person|desk|chair|monitor|laptop|sofa|bed|table|shelf|plant|lamp|rug|frame|mug|pendant|counter|stool|tv|car|tree|streetlamp|bench|traffic|building|box. Persons: pose stand|walk|run|sit|type|wave|point|think|phone|cheer, walkTo. labels:[{text,pos,at}]. cam keyframes.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "objects": [
+    {
+     "type": "rug",
+     "pos": [
+      0,
+      0,
+      0
+     ],
+     "w": 4,
+     "d": 3
+    },
+    {
+     "type": "person",
+     "pos": [
+      -0.8,
+      0,
+      0
+     ],
+     "pose": "wave",
+     "rotY": 0.4
+    },
+    {
+     "type": "person",
+     "pos": [
+      0.8,
+      0,
+      0.2
+     ],
+     "pose": "think",
+     "rotY": -0.4,
+     "seed": 3
+    },
+    {
+     "type": "plant",
+     "pos": [
+      2,
+      0,
+      -1
+     ]
+    }
+   ],
+   "labels": [
+    {
+     "text": "Привет!",
+     "pos": [
+      -0.8,
+      2.3,
+      0
+     ],
+     "at": 1
+    }
+   ]
+  }
+ },
+ {
+  "id": "Model3D",
+  "cat": "3d",
+  "desc": "Import any .glb/.gltf from engine/public/models (BlenderKit/Sketchfab/Poly Haven; convert .blend with scripts/blend2glb.py). fit = size, cam hero|orbit|low|top, spin deg/s, enter rise|spin, anim plays embedded clip. screenMesh + screen:{block,props} maps a LIVE HTML screen onto the model's display mesh.",
+  "pos": "full",
+  "overlay": false,
+  "example": null
+ },
+ {
+  "id": "MacBook",
+  "cat": "3d",
+  "desc": "The user's real MacBook model (models/macbook.glb) with a LIVE HTML screen. screen:{block,props}; cam: orbit|hero|low|top|close|toScreen (flies into the display) or keyframes; spin; enter rise|spin|none.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "screen": {
+    "block": "Terminal",
+    "props": {
+     "w": 1280,
+     "h": 840,
+     "size": 34,
+     "lines": [
+      {
+       "kind": "prompt",
+       "text": "собери ролик"
+      }
+     ]
+    }
+   },
+   "cam": "orbit"
+  }
+ },
+ {
+  "id": "IPhone17",
+  "cat": "3d",
+  "desc": "The user's real iPhone 17 Pro model (models/iphone17pro.glb) standing upright with a LIVE 390×844 screen (AppScreen, LockScreen, SocialProfile…). spin deg/s, enter spin|rise, cam keyframes or orbit|hero|close|toScreen.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "screen": {
+    "block": "LockScreen",
+    "props": {
+     "notes": [
+      {
+       "app": "Claude",
+       "text": "Ролик готов",
+       "at": 0.5
+      }
+     ]
+    }
+   },
+   "spin": 10,
+   "enter": "spin"
+  }
+ },
+ {
+  "id": "WarmGlow",
+  "cat": "bg",
+  "desc": "Default for ember/blaze: near-black warm base with a slow drifting amber glow.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "Solid",
+  "cat": "bg",
+  "desc": "Flat colour (theme bg by default).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "MeshGradient",
+  "cat": "bg",
+  "desc": "Soft drifting pastel blobs. Light explainers (cloud/pop).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "Aurora",
+  "cat": "bg",
+  "desc": "Dark base with flowing coloured light. Neon/tech.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "base": "#0B0614"
+  }
+ },
+ {
+  "id": "Studio",
+  "cat": "bg",
+  "desc": "Warm spotlight + floor. Hero shots of devices (pair with Laptop3D).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "Stars",
+  "cat": "bg",
+  "desc": "Twinkling starfield (transparent).",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "PlanetHorizon",
+  "cat": "bg",
+  "desc": "Night sky + glowing planet rim. Big questions / mission lines.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "Sky",
+  "cat": "bg",
+  "desc": "Blue sky with drifting procedural clouds. Calm, optimistic.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "Paper",
+  "cat": "bg",
+  "desc": "Warm paper. Editorial / magazine.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "GridBG",
+  "cat": "bg",
+  "desc": "Faint grid, or `floor:true` synthwave perspective floor.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "floor": true
+  }
+ },
+ {
+  "id": "PhotoBG",
+  "cat": "bg",
+  "desc": "Photo with Ken Burns zoom/pan, optional darken/blur/top shade.",
+  "pos": "full",
+  "overlay": false,
+  "example": null
+ },
+ {
+  "id": "VideoBG",
+  "cat": "bg",
+  "desc": "Muted video background with slow zoom.",
+  "pos": "full",
+  "overlay": false,
+  "example": null
+ },
+ {
+  "id": "FootageTop",
+  "cat": "bg",
+  "desc": "Screen recording/photo in the top 60%, fading to black (subtitles below).",
+  "pos": "full",
+  "overlay": false,
+  "example": null
+ },
+ {
+  "id": "LightSweep",
+  "cat": "bg",
+  "desc": "Dark bg with a slow diagonal light sweep.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "DuoTone",
+  "cat": "bg",
+  "desc": "Two-tone diagonal gradient.",
+  "pos": "full",
+  "overlay": false,
+  "example": {}
+ },
+ {
+  "id": "ShaderBG",
+  "cat": "bg",
+  "desc": "GPU shader background. preset: skyAbove|skyBelow|cloudWall|liquid|aurora|contour|rays|smoke. skyAbove = flying over a sea of clouds; skyBelow = cumulus overhead; cloudWall = soft overcast; liquid = premium flowing gradient (theme colours); aurora; contour = topographic lines; rays; smoke. colors:[c1..c4], speed, sun, cover.",
+  "pos": "full",
+  "overlay": false,
+  "example": {
+   "preset": "skyAbove"
+  }
+ }
+]

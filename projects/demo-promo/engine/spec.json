@@ -1,0 +1,313 @@
+{
+ "id": "demo-promo",
+ "mode": "promo",
+ "style": "blaze",
+ "fps": 60,
+ "words": "projects/demo-promo/words.json",
+ "duration": 21.2,
+ "music": {
+  "src": "music/trap-hype.m4a",
+  "volume": 0.9,
+  "duck": 1,
+  "beats": "music/trap-hype.beats.json",
+  "offset": 6.857,
+  "fadeIn": 0.05,
+  "fadeOut": 1.4
+ },
+ "captions": {
+  "mode": "slam"
+ },
+ "sfx": [
+  {
+   "at": "drop:0",
+   "id": "riser-medium",
+   "volume": 0.9
+  },
+  {
+   "at": "drop:0",
+   "id": "hit-cinematic",
+   "volume": 1.0
+  }
+ ],
+ "scenes": [
+  {
+   "id": "b0",
+   "at": "bar:0",
+   "bg": {
+    "block": "Tunnel3D",
+    "props": {
+     "shape": "hex",
+     "speed": 1.2
+    }
+   },
+   "camera": "punch",
+   "transition": "cut"
+  },
+  {
+   "id": "b1",
+   "at": "bar:1",
+   "bg": {
+    "block": "ShaderBG",
+    "props": {
+     "preset": "smoke",
+     "speed": 2
+    }
+   },
+   "camera": "punch",
+   "transition": "slam"
+  },
+  {
+   "id": "b2",
+   "at": "bar:2",
+   "bg": {
+    "block": "GridBG",
+    "props": {
+     "floor": true,
+     "speed": 3
+    }
+   },
+   "camera": "punch",
+   "transition": "slam",
+   "layers": [
+    {
+     "block": "Marquee",
+     "props": {
+      "text": "шаблоны",
+      "outline": true,
+      "size": 110,
+      "angle": -6,
+      "band": false
+     },
+     "pos": {
+      "x": 0,
+      "y": 1230,
+      "w": 1080,
+      "h": 300
+     },
+     "overlap": true
+    }
+   ]
+  },
+  {
+   "id": "b3",
+   "at": "bar:3",
+   "bg": "WarmGlow",
+   "camera": "pushFast",
+   "transition": "slam",
+   "layers": [
+    {
+     "block": "Counter",
+     "props": {
+      "from": 60,
+      "to": 1,
+      "label": "минута|минуты|минут",
+      "size": 220,
+      "dur": 1.4
+     },
+     "pos": {
+      "x": 60,
+      "y": 1210,
+      "w": 960,
+      "h": 320
+     }
+    }
+   ]
+  },
+  {
+   "id": "drop-mac",
+   "at": "drop:0",
+   "transition": "flash",
+   "camera": "still",
+   "bg": {
+    "block": "MacBook",
+    "props": {
+     "cam": "toScreen",
+     "enter": "rise",
+     "screen": {
+      "block": "Terminal",
+      "props": {
+       "w": 1280,
+       "h": 840,
+       "size": 40,
+       "title": "promo — claude",
+       "lines": [
+        {
+         "kind": "prompt",
+         "text": "собери промо под бит",
+         "at": 0.05,
+         "cps": 26
+        },
+        {
+         "kind": "ok",
+         "text": "12 сцен · 140 bpm · готово",
+         "at": 1.1
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "id": "b5",
+   "at": "bar:5",
+   "transition": "whip",
+   "camera": "punch",
+   "layers": [
+    {
+     "block": "ScreenGrid",
+     "props": {
+      "cols": 6,
+      "rows": 3,
+      "path": [
+       0,
+       7,
+       8,
+       15,
+       16
+      ],
+      "pathAt": 0.2,
+      "step": 0.22,
+      "label": "клик|клика|кликов — и сцена собрана"
+     }
+    }
+   ]
+  },
+  {
+   "id": "b6",
+   "at": "bar:6",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "City3D",
+    "props": {
+     "look": "warm",
+     "cam": "iso",
+     "blossom": 0.3
+    }
+   }
+  },
+  {
+   "id": "b7",
+   "at": "bar:7",
+   "transition": "whip",
+   "camera": "punch",
+   "layers": [
+    {
+     "block": "Waveform",
+     "props": {
+      "bars": 40,
+      "h": 320
+     }
+    }
+   ]
+  },
+  {
+   "id": "b8",
+   "at": "bar:8",
+   "transition": "whip",
+   "camera": "still",
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "studio",
+     "lights": "evening",
+     "cam": "closeDesk",
+     "build": false
+    }
+   }
+  },
+  {
+   "id": "b9",
+   "at": "bar:9",
+   "transition": "slam",
+   "camera": "punch",
+   "layers": [
+    {
+     "block": "Checklist",
+     "props": {
+      "items": [
+       "Субтитры не заезжают",
+       "Громкость −14 LUFS",
+       "Кадры без чёрных дыр"
+      ],
+      "checkAt": [
+       "bar:9+0.3",
+       "bar:9+0.7",
+       "bar:9+1.1"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "free",
+   "at": "bar:10",
+   "transition": "slam",
+   "camera": "punch",
+   "bg": "WarmGlow",
+   "layers": [
+    {
+     "block": "Marquee",
+     "props": {
+      "text": "без подписки",
+      "cross": true,
+      "size": 90
+     },
+     "pos": {
+      "x": 0,
+      "y": 1260,
+      "w": 1080,
+      "h": 300
+     },
+     "overlap": true
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "at": "bar:11",
+   "transition": "flash",
+   "camera": "still",
+   "bg": {
+    "block": "IPhone17",
+    "props": {
+     "enter": "spin",
+     "screen": {
+      "block": "SocialProfile",
+      "props": {
+       "handle": "reel.studio",
+       "name": "Ролики, которые собирает агент",
+       "bio": [
+        "Объяснялки с голосом",
+        "Промо под музыку"
+       ],
+       "link": "t.me/reel_studio",
+       "pressAt": 0.8,
+       "tiles": [
+        {
+         "title": "Голос"
+        },
+        {
+         "title": "3D"
+        },
+        {
+         "title": "Промо"
+        },
+        {
+         "title": "QA"
+        },
+        {
+         "title": "Звук"
+        },
+        {
+         "title": "Стиль"
+        }
+       ]
+      }
+     }
+    }
+   }
+  }
+ ]
+}

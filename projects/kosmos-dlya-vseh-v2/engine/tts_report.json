@@ -1,0 +1,21 @@
+{
+ "duration": 51.312,
+ "words": 125,
+ "wps": 2.45,
+ "cards": 20,
+ "max_gap": 0.54,
+ "warnings": [],
+ "voice": {
+  "voice": "Algenib",
+  "rate": "+14%",
+  "pitch": "+0Hz",
+  "widen": 1.0,
+  "emph": 0.0,
+  "fx": "off",
+  "gap": 0.15,
+  "source": "replicate:gemini:Algenib",
+  "tighten": 0.25,
+  "engine": "audio",
+  "preset": null
+ }
+}

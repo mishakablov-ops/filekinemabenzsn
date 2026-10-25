@@ -1,0 +1,1536 @@
+{
+ "words": [
+  {
+   "i": 0,
+   "text": "Представь:",
+   "start": 0.0,
+   "end": 0.82,
+   "card": 0,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 1,
+   "text": "завтра",
+   "start": 1.02,
+   "end": 1.5,
+   "card": 0,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 2,
+   "text": "утром",
+   "start": 1.5,
+   "end": 1.96,
+   "card": 0,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 3,
+   "text": "все",
+   "start": 1.96,
+   "end": 2.54,
+   "card": 0,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 4,
+   "text": "границы",
+   "start": 2.54,
+   "end": 3.2,
+   "card": 0,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 5,
+   "text": "исчезли.",
+   "start": 3.2,
+   "end": 3.98,
+   "card": 0,
+   "role": "punch",
+   "style": [
+    "mark"
+   ],
+   "line": 0
+  },
+  {
+   "i": 6,
+   "text": "195",
+   "start": 4.34,
+   "end": 4.92,
+   "card": 1,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 7,
+   "text": "стран.",
+   "start": 4.92,
+   "end": 5.76,
+   "card": 1,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 8,
+   "text": "250 000 км",
+   "start": 6.14,
+   "end": 8.1,
+   "card": 2,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 9,
+   "text": "линий",
+   "start": 8.1,
+   "end": 8.48,
+   "card": 2,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 10,
+   "text": "на",
+   "start": 8.48,
+   "end": 8.62,
+   "card": 2,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 11,
+   "text": "карте.",
+   "start": 8.62,
+   "end": 8.98,
+   "card": 2,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 12,
+   "text": "И",
+   "start": 8.98,
+   "end": 9.34,
+   "card": 3,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 13,
+   "text": "больше",
+   "start": 9.34,
+   "end": 9.66,
+   "card": 3,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 14,
+   "text": "70",
+   "start": 9.66,
+   "end": 10.12,
+   "card": 3,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 15,
+   "text": "стен,",
+   "start": 10.12,
+   "end": 10.88,
+   "card": 3,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 16,
+   "text": "которые",
+   "start": 11.02,
+   "end": 11.3,
+   "card": 3,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 17,
+   "text": "их",
+   "start": 11.3,
+   "end": 11.6,
+   "card": 3,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 18,
+   "text": "охраняют.",
+   "start": 11.6,
+   "end": 12.08,
+   "card": 3,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 19,
+   "text": "Первыми",
+   "start": 12.48,
+   "end": 12.98,
+   "card": 4,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 20,
+   "text": "поднимаются",
+   "start": 12.98,
+   "end": 13.66,
+   "card": 4,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 21,
+   "text": "шлагбаумы.",
+   "start": 13.66,
+   "end": 14.54,
+   "card": 4,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 22,
+   "text": "Паспорт",
+   "start": 15.0,
+   "end": 15.44,
+   "card": 5,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 23,
+   "text": "больше",
+   "start": 15.44,
+   "end": 15.74,
+   "card": 5,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 24,
+   "text": "не",
+   "start": 15.74,
+   "end": 15.9,
+   "card": 5,
+   "role": "punch",
+   "style": [
+    "italic"
+   ],
+   "line": 0
+  },
+  {
+   "i": 25,
+   "text": "нужен,",
+   "start": 15.9,
+   "end": 16.18,
+   "card": 5,
+   "role": "punch",
+   "style": [
+    "italic"
+   ],
+   "line": 0
+  },
+  {
+   "i": 26,
+   "text": "как",
+   "start": 16.5,
+   "end": 16.62,
+   "card": 6,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 27,
+   "text": "сегодня",
+   "start": 16.62,
+   "end": 16.92,
+   "card": 6,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 28,
+   "text": "между",
+   "start": 16.92,
+   "end": 17.26,
+   "card": 6,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 29,
+   "text": "29",
+   "start": 17.26,
+   "end": 17.78,
+   "card": 6,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 30,
+   "text": "странами",
+   "start": 17.78,
+   "end": 18.74,
+   "card": 6,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 31,
+   "text": "Шенгена.",
+   "start": 18.74,
+   "end": 19.22,
+   "card": 6,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 32,
+   "text": "Потом",
+   "start": 19.52,
+   "end": 19.9,
+   "card": 7,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 33,
+   "text": "люди",
+   "start": 19.9,
+   "end": 20.26,
+   "card": 7,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 34,
+   "text": "двинутся.",
+   "start": 20.26,
+   "end": 21.04,
+   "card": 7,
+   "role": "punch",
+   "style": [
+    "mark"
+   ],
+   "line": 0
+  },
+  {
+   "i": 35,
+   "text": "15 %",
+   "start": 21.34,
+   "end": 22.26,
+   "card": 8,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 36,
+   "text": "взрослых",
+   "start": 22.26,
+   "end": 22.88,
+   "card": 8,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 37,
+   "text": "мечтают",
+   "start": 22.88,
+   "end": 23.64,
+   "card": 8,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 38,
+   "text": "переехать.",
+   "start": 23.64,
+   "end": 24.28,
+   "card": 8,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 39,
+   "text": "Это",
+   "start": 24.58,
+   "end": 24.76,
+   "card": 9,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 40,
+   "text": "почти",
+   "start": 24.76,
+   "end": 25.04,
+   "card": 9,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 41,
+   "text": "900 млн",
+   "start": 25.04,
+   "end": 26.4,
+   "card": 9,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 42,
+   "text": "человек.",
+   "start": 26.4,
+   "end": 26.8,
+   "card": 9,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 43,
+   "text": "По",
+   "start": 26.8,
+   "end": 27.36,
+   "card": 10,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 44,
+   "text": "оценкам",
+   "start": 27.36,
+   "end": 27.82,
+   "card": 10,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 45,
+   "text": "экономистов,",
+   "start": 27.82,
+   "end": 28.68,
+   "card": 10,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 46,
+   "text": "мировая",
+   "start": 28.84,
+   "end": 29.3,
+   "card": 10,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 47,
+   "text": "экономика",
+   "start": 29.3,
+   "end": 29.88,
+   "card": 10,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 48,
+   "text": "могла",
+   "start": 29.88,
+   "end": 30.24,
+   "card": 10,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 49,
+   "text": "бы",
+   "start": 30.24,
+   "end": 30.36,
+   "card": 10,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 50,
+   "text": "почти",
+   "start": 30.36,
+   "end": 30.74,
+   "card": 10,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 51,
+   "text": "удвоиться.",
+   "start": 30.74,
+   "end": 31.56,
+   "card": 10,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 52,
+   "text": "Но",
+   "start": 31.88,
+   "end": 32.14,
+   "card": 11,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 53,
+   "text": "сначала",
+   "start": 32.14,
+   "end": 32.54,
+   "card": 11,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 54,
+   "text": "давка",
+   "start": 32.54,
+   "end": 33.3,
+   "card": 11,
+   "role": "punch",
+   "style": [
+    "neg"
+   ],
+   "line": 0
+  },
+  {
+   "i": 55,
+   "text": "в",
+   "start": 33.3,
+   "end": 33.4,
+   "card": 11,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 56,
+   "text": "больших",
+   "start": 33.4,
+   "end": 33.78,
+   "card": 11,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 57,
+   "text": "городах",
+   "start": 33.78,
+   "end": 34.3,
+   "card": 11,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 58,
+   "text": "и",
+   "start": 34.3,
+   "end": 34.68,
+   "card": 12,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 59,
+   "text": "пустые",
+   "start": 34.68,
+   "end": 35.16,
+   "card": 12,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 60,
+   "text": "деревни.",
+   "start": 35.16,
+   "end": 35.68,
+   "card": 12,
+   "role": "punch",
+   "style": [
+    "italic"
+   ],
+   "line": 0
+  },
+  {
+   "i": 61,
+   "text": "Армии",
+   "start": 36.18,
+   "end": 36.68,
+   "card": 13,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 62,
+   "text": "тратят",
+   "start": 36.68,
+   "end": 37.06,
+   "card": 13,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 63,
+   "text": "почти",
+   "start": 37.06,
+   "end": 37.32,
+   "card": 13,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 64,
+   "text": "$3 трлн",
+   "start": 37.32,
+   "end": 38.62,
+   "card": 13,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 65,
+   "text": "в",
+   "start": 38.62,
+   "end": 38.88,
+   "card": 13,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 66,
+   "text": "год.",
+   "start": 38.88,
+   "end": 39.06,
+   "card": 13,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 67,
+   "text": "А",
+   "start": 39.48,
+   "end": 39.62,
+   "card": 14,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 68,
+   "text": "без",
+   "start": 39.62,
+   "end": 39.96,
+   "card": 14,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 69,
+   "text": "границ",
+   "start": 39.96,
+   "end": 40.52,
+   "card": 14,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 70,
+   "text": "что",
+   "start": 40.52,
+   "end": 40.8,
+   "card": 14,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 71,
+   "text": "им",
+   "start": 40.8,
+   "end": 40.92,
+   "card": 14,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 72,
+   "text": "охранять?",
+   "start": 40.92,
+   "end": 41.3,
+   "card": 14,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 73,
+   "text": "Но",
+   "start": 41.8,
+   "end": 41.9,
+   "card": 15,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 74,
+   "text": "кто",
+   "start": 41.9,
+   "end": 42.12,
+   "card": 15,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 75,
+   "text": "тогда",
+   "start": 42.12,
+   "end": 42.36,
+   "card": 15,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 76,
+   "text": "соберёт",
+   "start": 42.36,
+   "end": 42.82,
+   "card": 15,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 77,
+   "text": "налоги,",
+   "start": 42.82,
+   "end": 43.44,
+   "card": 15,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 78,
+   "text": "починит",
+   "start": 43.6,
+   "end": 43.96,
+   "card": 16,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 79,
+   "text": "дороги",
+   "start": 43.96,
+   "end": 44.48,
+   "card": 16,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 80,
+   "text": "и",
+   "start": 44.48,
+   "end": 44.74,
+   "card": 16,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 81,
+   "text": "рассудит",
+   "start": 44.74,
+   "end": 45.18,
+   "card": 16,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 82,
+   "text": "спор?",
+   "start": 45.18,
+   "end": 45.46,
+   "card": 16,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 83,
+   "text": "Скорее",
+   "start": 45.86,
+   "end": 46.32,
+   "card": 17,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 84,
+   "text": "всего,",
+   "start": 46.32,
+   "end": 46.64,
+   "card": 17,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 85,
+   "text": "люди",
+   "start": 46.64,
+   "end": 47.26,
+   "card": 17,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 86,
+   "text": "снова",
+   "start": 47.26,
+   "end": 47.78,
+   "card": 17,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 87,
+   "text": "нарисуют",
+   "start": 47.78,
+   "end": 48.4,
+   "card": 17,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 88,
+   "text": "границы.",
+   "start": 48.4,
+   "end": 49.02,
+   "card": 17,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 89,
+   "text": "По",
+   "start": 49.48,
+   "end": 49.62,
+   "card": 18,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 90,
+   "text": "языкам,",
+   "start": 49.62,
+   "end": 50.14,
+   "card": 18,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 91,
+   "text": "вере,",
+   "start": 50.58,
+   "end": 50.98,
+   "card": 18,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 92,
+   "text": "рекам",
+   "start": 51.24,
+   "end": 51.74,
+   "card": 18,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 93,
+   "text": "и",
+   "start": 51.74,
+   "end": 52.02,
+   "card": 18,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 94,
+   "text": "нефти.",
+   "start": 52.02,
+   "end": 52.48,
+   "card": 18,
+   "role": "punch",
+   "style": [
+    "mark"
+   ],
+   "line": 0
+  },
+  {
+   "i": 95,
+   "text": "И",
+   "start": 52.48,
+   "end": 52.88,
+   "card": 19,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 96,
+   "text": "за",
+   "start": 52.88,
+   "end": 53.02,
+   "card": 19,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 97,
+   "text": "каждую",
+   "start": 53.02,
+   "end": 53.54,
+   "card": 19,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 98,
+   "text": "такую",
+   "start": 53.54,
+   "end": 53.78,
+   "card": 19,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 99,
+   "text": "линию",
+   "start": 53.78,
+   "end": 54.4,
+   "card": 19,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 100,
+   "text": "снова",
+   "start": 54.4,
+   "end": 55.0,
+   "card": 19,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 101,
+   "text": "будут",
+   "start": 55.0,
+   "end": 55.36,
+   "card": 19,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 102,
+   "text": "воевать.",
+   "start": 55.36,
+   "end": 55.94,
+   "card": 19,
+   "role": "punch",
+   "style": [
+    "neg"
+   ],
+   "line": 0
+  },
+  {
+   "i": 103,
+   "text": "Границы",
+   "start": 56.22,
+   "end": 56.88,
+   "card": 20,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 104,
+   "text": "—",
+   "start": 56.88,
+   "end": 56.93,
+   "card": 20,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 105,
+   "text": "это",
+   "start": 56.88,
+   "end": 57.3,
+   "card": 20,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 106,
+   "text": "не",
+   "start": 57.3,
+   "end": 57.44,
+   "card": 20,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 107,
+   "text": "стены.",
+   "start": 57.44,
+   "end": 57.86,
+   "card": 20,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 108,
+   "text": "Это",
+   "start": 58.18,
+   "end": 58.36,
+   "card": 21,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 109,
+   "text": "договор.",
+   "start": 58.36,
+   "end": 58.82,
+   "card": 21,
+   "role": "punch",
+   "style": [
+    "italic"
+   ],
+   "line": 0
+  },
+  {
+   "i": 110,
+   "text": "А",
+   "start": 59.14,
+   "end": 59.28,
+   "card": 22,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 111,
+   "text": "ты",
+   "start": 59.28,
+   "end": 59.5,
+   "card": 22,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 112,
+   "text": "бы",
+   "start": 59.5,
+   "end": 59.64,
+   "card": 22,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 113,
+   "text": "открыл",
+   "start": 59.64,
+   "end": 60.06,
+   "card": 22,
+   "role": "punch",
+   "style": [
+    "mark"
+   ],
+   "line": 0
+  },
+  {
+   "i": 114,
+   "text": "свою?",
+   "start": 60.06,
+   "end": 60.24,
+   "card": 22,
+   "role": "punch",
+   "style": [
+    "mark"
+   ],
+   "line": 0
+  },
+  {
+   "i": 115,
+   "text": "Кстати,",
+   "start": 60.66,
+   "end": 60.98,
+   "card": 23,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 116,
+   "text": "этот",
+   "start": 61.46,
+   "end": 61.66,
+   "card": 23,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 117,
+   "text": "ролик",
+   "start": 61.66,
+   "end": 62.04,
+   "card": 23,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 118,
+   "text": "собрал",
+   "start": 62.04,
+   "end": 62.46,
+   "card": 23,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 119,
+   "text": "агент.",
+   "start": 62.46,
+   "end": 62.98,
+   "card": 23,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 120,
+   "text": "Хочешь",
+   "start": 63.3,
+   "end": 63.7,
+   "card": 24,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 121,
+   "text": "так",
+   "start": 63.7,
+   "end": 63.868,
+   "card": 24,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 122,
+   "text": "же?",
+   "start": 63.868,
+   "end": 63.98,
+   "card": 24,
+   "role": "lead",
+   "line": 0
+  },
+  {
+   "i": 123,
+   "text": "Тебе",
+   "start": 64.4,
+   "end": 64.72,
+   "card": 24,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 124,
+   "text": "в",
+   "start": 64.72,
+   "end": 64.78,
+   "card": 24,
+   "role": "punch",
+   "line": 0
+  },
+  {
+   "i": 125,
+   "text": "шапку",
+   "start": 64.78,
+   "end": 65.08,
+   "card": 24,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  },
+  {
+   "i": 126,
+   "text": "профиля.",
+   "start": 65.08,
+   "end": 65.42,
+   "card": 24,
+   "role": "punch",
+   "style": [
+    "accent"
+   ],
+   "line": 0
+  }
+ ],
+ "cards": [
+  {
+   "i": 0,
+   "start": 0.0,
+   "end": 3.98,
+   "words": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "i": 1,
+   "start": 4.34,
+   "end": 5.76,
+   "words": [
+    6,
+    7
+   ]
+  },
+  {
+   "i": 2,
+   "start": 6.14,
+   "end": 8.98,
+   "words": [
+    8,
+    9,
+    10,
+    11
+   ]
+  },
+  {
+   "i": 3,
+   "start": 8.98,
+   "end": 12.08,
+   "words": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  },
+  {
+   "i": 4,
+   "start": 12.48,
+   "end": 14.54,
+   "words": [
+    19,
+    20,
+    21
+   ]
+  },
+  {
+   "i": 5,
+   "start": 15.0,
+   "end": 16.18,
+   "words": [
+    22,
+    23,
+    24,
+    25
+   ]
+  },
+  {
+   "i": 6,
+   "start": 16.5,
+   "end": 19.22,
+   "words": [
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ]
+  },
+  {
+   "i": 7,
+   "start": 19.52,
+   "end": 21.04,
+   "words": [
+    32,
+    33,
+    34
+   ]
+  },
+  {
+   "i": 8,
+   "start": 21.34,
+   "end": 24.28,
+   "words": [
+    35,
+    36,
+    37,
+    38
+   ]
+  },
+  {
+   "i": 9,
+   "start": 24.58,
+   "end": 26.8,
+   "words": [
+    39,
+    40,
+    41,
+    42
+   ]
+  },
+  {
+   "i": 10,
+   "start": 26.8,
+   "end": 31.56,
+   "words": [
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51
+   ]
+  },
+  {
+   "i": 11,
+   "start": 31.88,
+   "end": 34.3,
+   "words": [
+    52,
+    53,
+    54,
+    55,
+    56,
+    57
+   ]
+  },
+  {
+   "i": 12,
+   "start": 34.3,
+   "end": 35.68,
+   "words": [
+    58,
+    59,
+    60
+   ]
+  },
+  {
+   "i": 13,
+   "start": 36.18,
+   "end": 39.06,
+   "words": [
+    61,
+    62,
+    63,
+    64,
+    65,
+    66
+   ]
+  },
+  {
+   "i": 14,
+   "start": 39.48,
+   "end": 41.3,
+   "words": [
+    67,
+    68,
+    69,
+    70,
+    71,
+    72
+   ]
+  },
+  {
+   "i": 15,
+   "start": 41.8,
+   "end": 43.44,
+   "words": [
+    73,
+    74,
+    75,
+    76,
+    77
+   ]
+  },
+  {
+   "i": 16,
+   "start": 43.6,
+   "end": 45.46,
+   "words": [
+    78,
+    79,
+    80,
+    81,
+    82
+   ]
+  },
+  {
+   "i": 17,
+   "start": 45.86,
+   "end": 49.02,
+   "words": [
+    83,
+    84,
+    85,
+    86,
+    87,
+    88
+   ]
+  },
+  {
+   "i": 18,
+   "start": 49.48,
+   "end": 52.48,
+   "words": [
+    89,
+    90,
+    91,
+    92,
+    93,
+    94
+   ]
+  },
+  {
+   "i": 19,
+   "start": 52.48,
+   "end": 55.94,
+   "words": [
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102
+   ]
+  },
+  {
+   "i": 20,
+   "start": 56.22,
+   "end": 57.86,
+   "words": [
+    103,
+    104,
+    105,
+    106,
+    107
+   ]
+  },
+  {
+   "i": 21,
+   "start": 58.18,
+   "end": 58.82,
+   "words": [
+    108,
+    109
+   ]
+  },
+  {
+   "i": 22,
+   "start": 59.14,
+   "end": 60.24,
+   "words": [
+    110,
+    111,
+    112,
+    113,
+    114
+   ]
+  },
+  {
+   "i": 23,
+   "start": 60.66,
+   "end": 62.98,
+   "words": [
+    115,
+    116,
+    117,
+    118,
+    119
+   ]
+  },
+  {
+   "i": 24,
+   "start": 63.3,
+   "end": 65.42,
+   "words": [
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126
+   ]
+  }
+ ],
+ "duration": 65.553
+}

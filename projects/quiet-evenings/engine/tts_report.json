@@ -1,0 +1,18 @@
+{
+ "duration": 39.606,
+ "words": 106,
+ "wps": 2.7,
+ "cards": 23,
+ "max_gap": 0.44,
+ "warnings": [],
+ "voice": {
+  "rate": "+14%",
+  "pitch": "+0Hz",
+  "widen": 1.0,
+  "emph": 0.0,
+  "fx": "off",
+  "gap": 0.15,
+  "engine": "audio",
+  "preset": null
+ }
+}

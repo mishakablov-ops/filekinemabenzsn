@@ -1,0 +1,247 @@
+{
+ "id": "models",
+ "style": "dusk",
+ "fps": 30,
+ "duration": 16,
+ "captions": {
+  "mode": "none"
+ },
+ "scenes": [
+  {
+   "at": 0,
+   "camera": "still",
+   "bg": {
+    "block": "Model3D",
+    "props": {
+     "src": "models/macbook.glb",
+     "screenMaterial": "Display",
+     "fit": 3.2,
+     "cam": "orbit",
+     "enter": "rise",
+     "screen": {
+      "block": "Terminal",
+      "props": {
+       "w": 1280,
+       "h": 840,
+       "size": 34,
+       "title": "reel — claude",
+       "lines": [
+        {
+         "kind": "prompt",
+         "text": "собери ролик про 3D",
+         "at": 0.4
+        },
+        {
+         "kind": "tool",
+         "name": "Render",
+         "arg": "reel.mp4",
+         "sub": [
+          "2468 кадров"
+         ],
+         "at": 1.6
+        },
+        {
+         "kind": "ok",
+         "text": "QA PASS",
+         "at": 2.4
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "at": 3.2,
+   "camera": "still",
+   "transition": "blur",
+   "bg": {
+    "block": "Model3D",
+    "props": {
+     "src": "models/macbook.glb",
+     "screenMaterial": "Display",
+     "fit": 3.2,
+     "cam": "toScreen",
+     "enter": "none",
+     "screen": {
+      "block": "Terminal",
+      "props": {
+       "w": 1280,
+       "h": 840,
+       "size": 34,
+       "title": "reel — claude",
+       "lines": [
+        {
+         "kind": "prompt",
+         "text": "собери ролик про 3D",
+         "at": 0.4
+        },
+        {
+         "kind": "tool",
+         "name": "Render",
+         "arg": "reel.mp4",
+         "sub": [
+          "2468 кадров"
+         ],
+         "at": 1.6
+        },
+        {
+         "kind": "ok",
+         "text": "QA PASS",
+         "at": 2.4
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "at": 7,
+   "camera": "still",
+   "bg": {
+    "block": "Model3D",
+    "props": {
+     "src": "models/iphone17pro.glb",
+     "screenMaterial": "Screen",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "fit": 3,
+     "screenW": 390,
+     "screenRadius": 44,
+     "enter": "spin",
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0,
+        1.6,
+        9.2
+       ],
+       "target": [
+        0,
+        1.5,
+        0
+       ],
+       "fov": 30
+      },
+      {
+       "t": 4,
+       "pos": [
+        1.4,
+        1.8,
+        8.4
+       ],
+       "target": [
+        0,
+        1.5,
+        0
+       ],
+       "fov": 30
+      }
+     ],
+     "screen": {
+      "block": "AppScreen",
+      "props": {
+       "sections": [
+        {
+         "type": "header",
+         "app": "Окно",
+         "title": "Запись"
+        },
+        {
+         "type": "card",
+         "name": "Анна Ковалёва",
+         "sub": "Стрижка · 60 мин",
+         "value": "1 500 ₽"
+        },
+        {
+         "type": "slots",
+         "label": "Свободное время",
+         "slots": [
+          "10:00",
+          "11:30",
+          "13:00",
+          "14:30",
+          "16:00",
+          "17:30"
+         ],
+         "selected": 3
+        },
+        {
+         "type": "button",
+         "label": "Записаться"
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "at": 11,
+   "camera": "still",
+   "bg": {
+    "block": "Model3D",
+    "props": {
+     "src": "models/iphone17pro.glb",
+     "screenMaterial": "Screen",
+     "rot": [
+      -1.5708,
+      0,
+      0
+     ],
+     "fit": 3,
+     "screenW": 390,
+     "screenRadius": 44,
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0,
+        1.6,
+        9.2
+       ],
+       "target": [
+        0,
+        1.5,
+        0
+       ],
+       "fov": 30
+      },
+      {
+       "t": 4,
+       "pos": [
+        -1.4,
+        1.8,
+        8.4
+       ],
+       "target": [
+        0,
+        1.5,
+        0
+       ],
+       "fov": 30
+      }
+     ],
+     "screen": {
+      "block": "LockScreen",
+      "props": {
+       "notes": [
+        {
+         "app": "Claude",
+         "text": "Ролик готов",
+         "at": 0.5
+        }
+       ]
+      }
+     },
+     "spin": 12
+    }
+   }
+  }
+ ]
+}

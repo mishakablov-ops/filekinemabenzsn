@@ -1,0 +1,19 @@
+{
+ "duration": 50.855,
+ "words": 125,
+ "wps": 2.47,
+ "cards": 20,
+ "max_gap": 0.26,
+ "warnings": [],
+ "voice": {
+  "voice": "ru-RU-DmitryNeural",
+  "rate": "+16%",
+  "pitch": "+50Hz",
+  "widen": 1.7,
+  "emph": 2.0,
+  "fx": "energetic",
+  "gap": 0.15,
+  "engine": "edge",
+  "preset": "energetic"
+ }
+}

@@ -1,0 +1,2653 @@
+{
+ "id": "edinyi-yazyk",
+ "mode": "explainer",
+ "style": "fresh",
+ "fps": 60,
+ "voice": {
+  "src": "projects/edinyi-yazyk/voice.wav",
+  "words": "projects/edinyi-yazyk/words.json"
+ },
+ "music": {
+  "src": "music/lofi-warm.m4a",
+  "volume": 0.12,
+  "duck": 0.45
+ },
+ "tail": 2.0,
+ "autoSfx": false,
+ "captions": {
+  "mode": "pill",
+  "pos": "lower"
+ },
+ "sfx": [
+  {
+   "at": "@Представь",
+   "id": "pk-digital-digitasl-burst-sfx",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@языке",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@Токио",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@полуслова",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@понятно",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@не",
+   "id": "pk-result-failure",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@1980",
+   "id": "sting-dark",
+   "volume": 0.4,
+   "alignPeak": false
+  },
+  {
+   "at": "@интоксикадо",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@передозировка",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@кровоизлияние",
+   "id": "heartbeat",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@71",
+   "id": "pk-digital-data-load-sfx-1",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@исчезнут",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@север",
+   "id": "pk-click-ui-button",
+   "volume": 0.45,
+   "alignPeak": true
+  },
+  {
+   "at": "@юг",
+   "id": "click-soft",
+   "volume": 0.45,
+   "alignPeak": true
+  },
+  {
+   "at": "@запад",
+   "id": "pk-click-ui-button",
+   "volume": 0.45,
+   "alignPeak": true
+  },
+  {
+   "at": "@восток",
+   "id": "click-soft",
+   "volume": 0.45,
+   "alignPeak": true
+  },
+  {
+   "at": "@комореби",
+   "id": "sparkle",
+   "volume": 0.4,
+   "alignPeak": true
+  },
+  {
+   "at": "@удобнее",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@Кстати",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@нейросеть",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.55,
+   "alignPeak": true
+  },
+  {
+   "at": "@шапку",
+   "id": "pk-click-ui-button",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@профиля",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.8,
+   "alignPeak": true
+  }
+ ],
+ "scenes": [
+  {
+   "id": "globe",
+   "at": 0,
+   "camera": "still",
+   "bg": {
+    "block": "Sky"
+   },
+   "layers": [
+    {
+     "block": "Globe3D",
+     "pos": "full",
+     "enter": "none",
+     "props": {
+      "look": "earth",
+      "spin": 3,
+      "focus": [
+       {
+        "t": 0,
+        "lat": 30,
+        "lon": 34,
+        "dist": 8.6
+       },
+       {
+        "t": 3.6,
+        "lat": 38,
+        "lon": 24,
+        "dist": 6.6
+       }
+      ],
+      "markers": [
+       {
+        "lat": 51.5,
+        "lon": -0.12,
+        "label": "Hello",
+        "at": 0.2
+       },
+       {
+        "lat": 55.75,
+        "lon": 37.62,
+        "label": "Привет",
+        "at": 0.5
+       },
+       {
+        "lat": 40.4,
+        "lon": -3.7,
+        "label": "Hola",
+        "at": 0.8
+       },
+       {
+        "lat": 30.0,
+        "lon": 31.2,
+        "label": "مرحبا",
+        "at": 1.1
+       },
+       {
+        "lat": 28.6,
+        "lon": 77.2,
+        "label": "नमस्ते",
+        "at": 1.4
+       },
+       {
+        "lat": -1.3,
+        "lon": 36.8,
+        "label": "Jambo",
+        "at": 1.7
+       },
+       {
+        "lat": -8.8,
+        "lon": 13.2,
+        "label": "Olá",
+        "at": 2.0
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "street",
+   "at": "@Таксист",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Street3D",
+    "props": {
+     "look": "real",
+     "time": "day",
+     "cam": "eye",
+     "cars": 7,
+     "people": 12,
+     "seed": "tokyo"
+    }
+   },
+   "layers": [
+    {
+     "block": "Bubble",
+     "at": "@Токио",
+     "pos": {
+      "x": 70,
+      "y": 330,
+      "w": 760,
+      "h": 200
+     },
+     "props": {
+      "text": "Мне на Сибую, пожалуйста",
+      "side": "left",
+      "name": "Ты",
+      "size": 46
+     }
+    },
+    {
+     "block": "Bubble",
+     "at": "@полуслова-0.2",
+     "pos": {
+      "x": 250,
+      "y": 540,
+      "w": 760,
+      "h": 200
+     },
+     "props": {
+      "text": "Конечно, садитесь!",
+      "side": "right",
+      "name": "Таксист",
+      "size": 46
+     }
+    }
+   ]
+  },
+  {
+   "id": "cafe",
+   "at": "@Меню",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#F2EEE8",
+     "ground": {
+      "size": 30,
+      "color": "#B48A60"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0.55,
+        1.55,
+        3.7
+       ],
+       "target": [
+        0.0,
+        0.8,
+        -0.8
+       ],
+       "fov": 46
+      },
+      {
+       "t": 2.9,
+       "pos": [
+        0.4,
+        1.45,
+        3.15
+       ],
+       "target": [
+        0.0,
+        0.8,
+        -0.8
+       ],
+       "fov": 46
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -2.3
+       ],
+       "rotY": 0.0,
+       "color": "#EEEBE5"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        9
+       ],
+       "pos": [
+        -2.7,
+        0,
+        1.5
+       ],
+       "rotY": 0.0,
+       "color": "#E3DFD8"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.7,
+        1.3,
+        0.04
+       ],
+       "pos": [
+        0.35,
+        1.0,
+        -2.2
+       ],
+       "rotY": 0.0,
+       "color": "#CFE6F7"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.84,
+        0.08,
+        0.1
+       ],
+       "pos": [
+        0.35,
+        0.96,
+        -2.18
+       ],
+       "rotY": 0.0,
+       "color": "#FFFFFF"
+      },
+      {
+       "type": "model",
+       "src": "models/ph/hanging_picture_frame_01/hanging_picture_frame_01.gltf",
+       "pos": [
+        -1.35,
+        1.75,
+        -2.2
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/round_wooden_table_01/round_wooden_table_01.gltf",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "rotY": 0.0,
+       "h": 0.76
+      },
+      {
+       "type": "model",
+       "src": "models/ph/tea_set_01/tea_set_01.gltf",
+       "pos": [
+        0.12,
+        0.76,
+        -0.05
+       ],
+       "rotY": 0.0,
+       "s": 0.62
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wooden_bowl_01/wooden_bowl_01.gltf",
+       "pos": [
+        -0.33,
+        0.76,
+        0.22
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/croissant/croissant.gltf",
+       "pos": [
+        -0.33,
+        0.79,
+        0.22
+       ],
+       "rotY": 0.6
+      },
+      {
+       "type": "model",
+       "src": "models/ph/lemon/lemon.gltf",
+       "pos": [
+        0.42,
+        0.76,
+        0.3
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/gallinera_chair/gallinera_chair.gltf",
+       "pos": [
+        0.95,
+        0,
+        0.05
+       ],
+       "rotY": -1.5708
+      },
+      {
+       "type": "model",
+       "src": "models/ph/gallinera_chair/gallinera_chair.gltf",
+       "pos": [
+        -0.95,
+        0,
+        -0.05
+       ],
+       "rotY": 1.5708
+      },
+      {
+       "type": "model",
+       "src": "models/ph/standing_chalkboard_01/standing_chalkboard_01.gltf",
+       "pos": [
+        -0.95,
+        0,
+        -1.2
+       ],
+       "rotY": 0.35
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_01/potted_plant_01.gltf",
+       "pos": [
+        -1.9,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_02/potted_plant_02.gltf",
+       "pos": [
+        2.0,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/CoffeeCart_01/CoffeeCart_01.gltf",
+       "pos": [
+        1.35,
+        0,
+        -1.7
+       ],
+       "rotY": -0.35
+      },
+      {
+       "type": "model",
+       "src": "models/ph/modern_ceiling_lamp_01/modern_ceiling_lamp_01.gltf",
+       "pos": [
+        0,
+        2.05,
+        0
+       ],
+       "rotY": 0.0
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "books",
+   "at": "@Переводчики",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#EFEAE2",
+     "ground": {
+      "size": 30,
+      "color": "#B48A60"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0.9,
+        1.15,
+        1.5
+       ],
+       "target": [
+        0.3,
+        0.7,
+        -1.1
+       ],
+       "fov": 40
+      },
+      {
+       "t": 2.8,
+       "pos": [
+        0.75,
+        1.1,
+        1.25
+       ],
+       "target": [
+        0.35,
+        0.7,
+        -1.1
+       ],
+       "fov": 40
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -1.6
+       ],
+       "rotY": 0.0,
+       "color": "#E8E2D6"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        8
+       ],
+       "pos": [
+        -2.4,
+        0,
+        2
+       ],
+       "rotY": 0.0,
+       "color": "#DCD5C8"
+      },
+      {
+       "type": "model",
+       "src": "models/ph/Sofa_01/Sofa_01.gltf",
+       "pos": [
+        -0.7,
+        0,
+        -1.15
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/throw_pillows_01/throw_pillows_01.gltf",
+       "pos": [
+        -0.7,
+        0.42,
+        -1.1
+       ],
+       "rotY": 0.0,
+       "s": 0.85
+      },
+      {
+       "type": "model",
+       "src": "models/ph/side_table_01/side_table_01.gltf",
+       "pos": [
+        0.55,
+        0,
+        -1.05
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/book_encyclopedia_set_01/book_encyclopedia_set_01.gltf",
+       "pos": [
+        0.5,
+        0.55,
+        -1.05
+       ],
+       "rotY": 0.15
+      },
+      {
+       "type": "model",
+       "src": "models/ph/desk_lamp_arm_01/desk_lamp_arm_01.gltf",
+       "pos": [
+        0.72,
+        0.55,
+        -1.15
+       ],
+       "rotY": -0.6,
+       "s": 0.7
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_02/potted_plant_02.gltf",
+       "pos": [
+        1.45,
+        0,
+        -1.2
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/ceramic_vase_01/ceramic_vase_01.gltf",
+       "pos": [
+        0.33,
+        0.55,
+        -0.95
+       ],
+       "rotY": 0.0,
+       "s": 0.6
+      },
+      {
+       "type": "model",
+       "src": "models/ph/fancy_picture_frame_01/fancy_picture_frame_01.gltf",
+       "pos": [
+        -0.7,
+        1.6,
+        -1.52
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "rug",
+       "pos": [
+        0,
+        0,
+        -0.2
+       ],
+       "w": 2.6,
+       "d": 1.8,
+       "color": "#7F93A3"
+      }
+     ]
+    },
+    "dim": 0.25
+   },
+   "layers": [
+    {
+     "block": "StrikeList",
+     "pos": "upper",
+     "props": {
+      "items": [
+       "Переводчик",
+       "Разговорник",
+       "Субтитры"
+      ],
+      "strikeAt": [
+       "@не",
+       "@не+0.2",
+       "@нужны"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "ward",
+   "at": "@В 1980",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#EEF3F2",
+     "ground": {
+      "size": 30,
+      "color": "#C9CDC9"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        1.1,
+        2.0,
+        5.2
+       ],
+       "target": [
+        -0.25,
+        0.85,
+        -0.6
+       ],
+       "fov": 46
+      },
+      {
+       "t": 4.2,
+       "pos": [
+        0.85,
+        1.85,
+        4.6
+       ],
+       "target": [
+        -0.25,
+        0.85,
+        -0.6
+       ],
+       "fov": 46
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -2.2
+       ],
+       "rotY": 0.0,
+       "color": "#DCEAE5"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        9
+       ],
+       "pos": [
+        -2.6,
+        0,
+        1.5
+       ],
+       "rotY": 0.0,
+       "color": "#CFE1DB"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.5,
+        1.2,
+        0.04
+       ],
+       "pos": [
+        1.2,
+        1.1,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#D5EBF8"
+      },
+      {
+       "type": "box",
+       "size": [
+        10,
+        0.12,
+        0.06
+       ],
+       "pos": [
+        0,
+        0.9,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#FFFFFF"
+      },
+      {
+       "type": "bed",
+       "pos": [
+        -0.6,
+        0,
+        -0.9
+       ],
+       "rotY": 0
+      },
+      {
+       "type": "person",
+       "pos": [
+        -0.6,
+        0.0,
+        -0.55
+       ],
+       "rotY": 0.0,
+       "pose": "sit",
+       "seed": 7,
+       "look": {
+        "shirt": "#7FA7C9",
+        "pants": "#7FA7C9",
+        "hairStyle": "short",
+        "skin": "#C68E68",
+        "hair": "#16161A"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        0.75,
+        0,
+        -0.1
+       ],
+       "rotY": -0.9,
+       "pose": "think",
+       "seed": 2,
+       "look": {
+        "shirt": "#F4F4F2",
+        "pants": "#4E9C94",
+        "hairStyle": "short",
+        "skin": "#E3B999",
+        "hair": "#4A3122"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        -1.5,
+        0,
+        0.6
+       ],
+       "rotY": 0.7,
+       "pose": "talk",
+       "seed": 4,
+       "look": {
+        "shirt": "#C2443A",
+        "pants": "#2B3442",
+        "hairStyle": "long",
+        "skin": "#C68E68",
+        "hair": "#231B16"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        1.15,
+        0,
+        -1.35
+       ],
+       "rotY": -0.5,
+       "pose": "stand",
+       "seed": 5,
+       "look": {
+        "shirt": "#6FB1A8",
+        "pants": "#6FB1A8",
+        "hairStyle": "bun",
+        "skin": "#C68E68"
+       }
+      },
+      {
+       "type": "model",
+       "src": "models/ph/side_table_01/side_table_01.gltf",
+       "pos": [
+        0.6,
+        0,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_04/potted_plant_04.gltf",
+       "pos": [
+        0.5,
+        0.55,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/ceramic_vase_01/ceramic_vase_01.gltf",
+       "pos": [
+        0.72,
+        0.55,
+        -1.7
+       ],
+       "rotY": 0.0,
+       "s": 0.5
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_01/potted_plant_01.gltf",
+       "pos": [
+        2.2,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/modern_ceiling_lamp_01/modern_ceiling_lamp_01.gltf",
+       "pos": [
+        -0.3,
+        2.05,
+        -0.5
+       ],
+       "rotY": 0.0
+      }
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Kicker",
+     "pos": "top",
+     "props": {
+      "text": "Флорида · 1980",
+      "size": 46,
+      "solid": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "words",
+   "at": "@Семья",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#EEF3F2",
+     "ground": {
+      "size": 30,
+      "color": "#C9CDC9"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        -0.35,
+        1.6,
+        3.4
+       ],
+       "target": [
+        -0.45,
+        1.0,
+        -0.3
+       ],
+       "fov": 46
+      },
+      {
+       "t": 4.6,
+       "pos": [
+        -0.15,
+        1.55,
+        3.0
+       ],
+       "target": [
+        -0.45,
+        1.0,
+        -0.3
+       ],
+       "fov": 46
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -2.2
+       ],
+       "rotY": 0.0,
+       "color": "#DCEAE5"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        9
+       ],
+       "pos": [
+        -2.6,
+        0,
+        1.5
+       ],
+       "rotY": 0.0,
+       "color": "#CFE1DB"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.5,
+        1.2,
+        0.04
+       ],
+       "pos": [
+        1.2,
+        1.1,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#D5EBF8"
+      },
+      {
+       "type": "box",
+       "size": [
+        10,
+        0.12,
+        0.06
+       ],
+       "pos": [
+        0,
+        0.9,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#FFFFFF"
+      },
+      {
+       "type": "bed",
+       "pos": [
+        -0.6,
+        0,
+        -0.9
+       ],
+       "rotY": 0
+      },
+      {
+       "type": "person",
+       "pos": [
+        -0.6,
+        0.0,
+        -0.55
+       ],
+       "rotY": 0.0,
+       "pose": "sit",
+       "seed": 7,
+       "look": {
+        "shirt": "#7FA7C9",
+        "pants": "#7FA7C9",
+        "hairStyle": "short",
+        "skin": "#C68E68",
+        "hair": "#16161A"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        0.75,
+        0,
+        -0.1
+       ],
+       "rotY": -0.9,
+       "pose": "think",
+       "seed": 2,
+       "look": {
+        "shirt": "#F4F4F2",
+        "pants": "#4E9C94",
+        "hairStyle": "short",
+        "skin": "#E3B999",
+        "hair": "#4A3122"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        -1.5,
+        0,
+        0.6
+       ],
+       "rotY": 0.7,
+       "pose": "talk",
+       "seed": 4,
+       "look": {
+        "shirt": "#C2443A",
+        "pants": "#2B3442",
+        "hairStyle": "long",
+        "skin": "#C68E68",
+        "hair": "#231B16"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        1.15,
+        0,
+        -1.35
+       ],
+       "rotY": -0.5,
+       "pose": "stand",
+       "seed": 5,
+       "look": {
+        "shirt": "#6FB1A8",
+        "pants": "#6FB1A8",
+        "hairStyle": "bun",
+        "skin": "#C68E68"
+       }
+      },
+      {
+       "type": "model",
+       "src": "models/ph/side_table_01/side_table_01.gltf",
+       "pos": [
+        0.6,
+        0,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_04/potted_plant_04.gltf",
+       "pos": [
+        0.5,
+        0.55,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/ceramic_vase_01/ceramic_vase_01.gltf",
+       "pos": [
+        0.72,
+        0.55,
+        -1.7
+       ],
+       "rotY": 0.0,
+       "s": 0.5
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_01/potted_plant_01.gltf",
+       "pos": [
+        2.2,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/modern_ceiling_lamp_01/modern_ceiling_lamp_01.gltf",
+       "pos": [
+        -0.3,
+        2.05,
+        -0.5
+       ],
+       "rotY": 0.0
+      }
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Bubble",
+     "at": "@интоксикадо",
+     "pos": {
+      "x": 70,
+      "y": 330,
+      "w": 760,
+      "h": 200
+     },
+     "props": {
+      "text": "Он *intoxicado*, ему плохо!",
+      "side": "left",
+      "name": "Семья",
+      "size": 46
+     }
+    },
+    {
+     "block": "Bubble",
+     "at": "@передозировка-0.3",
+     "pos": {
+      "x": 250,
+      "y": 540,
+      "w": 760,
+      "h": 200
+     },
+     "props": {
+      "text": "Передозировка?",
+      "side": "right",
+      "name": "Врач",
+      "size": 46
+     }
+    }
+   ]
+  },
+  {
+   "id": "patient",
+   "at": "@У парня",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#EEF3F2",
+     "ground": {
+      "size": 30,
+      "color": "#C9CDC9"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0.9,
+        1.9,
+        3.7
+       ],
+       "target": [
+        -0.6,
+        0.95,
+        -0.7
+       ],
+       "fov": 40
+      },
+      {
+       "t": 2.4,
+       "pos": [
+        0.65,
+        1.8,
+        3.0
+       ],
+       "target": [
+        -0.6,
+        0.95,
+        -0.7
+       ],
+       "fov": 40
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -2.2
+       ],
+       "rotY": 0.0,
+       "color": "#DCEAE5"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        9
+       ],
+       "pos": [
+        -2.6,
+        0,
+        1.5
+       ],
+       "rotY": 0.0,
+       "color": "#CFE1DB"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.5,
+        1.2,
+        0.04
+       ],
+       "pos": [
+        1.2,
+        1.1,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#D5EBF8"
+      },
+      {
+       "type": "box",
+       "size": [
+        10,
+        0.12,
+        0.06
+       ],
+       "pos": [
+        0,
+        0.9,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#FFFFFF"
+      },
+      {
+       "type": "bed",
+       "pos": [
+        -0.6,
+        0,
+        -0.9
+       ],
+       "rotY": 0
+      },
+      {
+       "type": "person",
+       "pos": [
+        -0.6,
+        0.0,
+        -0.55
+       ],
+       "rotY": 0.0,
+       "pose": "sit",
+       "seed": 7,
+       "look": {
+        "shirt": "#7FA7C9",
+        "pants": "#7FA7C9",
+        "hairStyle": "short",
+        "skin": "#C68E68",
+        "hair": "#16161A"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        0.75,
+        0,
+        -0.1
+       ],
+       "rotY": -0.9,
+       "pose": "think",
+       "seed": 2,
+       "look": {
+        "shirt": "#F4F4F2",
+        "pants": "#4E9C94",
+        "hairStyle": "short",
+        "skin": "#E3B999",
+        "hair": "#4A3122"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        -1.5,
+        0,
+        0.6
+       ],
+       "rotY": 0.7,
+       "pose": "talk",
+       "seed": 4,
+       "look": {
+        "shirt": "#C2443A",
+        "pants": "#2B3442",
+        "hairStyle": "long",
+        "skin": "#C68E68",
+        "hair": "#231B16"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        1.15,
+        0,
+        -1.35
+       ],
+       "rotY": -0.5,
+       "pose": "stand",
+       "seed": 5,
+       "look": {
+        "shirt": "#6FB1A8",
+        "pants": "#6FB1A8",
+        "hairStyle": "bun",
+        "skin": "#C68E68"
+       }
+      },
+      {
+       "type": "model",
+       "src": "models/ph/side_table_01/side_table_01.gltf",
+       "pos": [
+        0.6,
+        0,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_04/potted_plant_04.gltf",
+       "pos": [
+        0.5,
+        0.55,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/ceramic_vase_01/ceramic_vase_01.gltf",
+       "pos": [
+        0.72,
+        0.55,
+        -1.7
+       ],
+       "rotY": 0.0,
+       "s": 0.5
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_01/potted_plant_01.gltf",
+       "pos": [
+        2.2,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/modern_ceiling_lamp_01/modern_ceiling_lamp_01.gltf",
+       "pos": [
+        -0.3,
+        2.05,
+        -0.5
+       ],
+       "rotY": 0.0
+      }
+     ]
+    },
+    "dim": 0.15
+   }
+  },
+  {
+   "id": "money",
+   "at": "@Итог",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#EEF3F2",
+     "ground": {
+      "size": 30,
+      "color": "#C9CDC9"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        1.6,
+        2.6,
+        5.6
+       ],
+       "target": [
+        -0.3,
+        1.9,
+        -0.8
+       ],
+       "fov": 46
+      },
+      {
+       "t": 4,
+       "pos": [
+        1.4,
+        2.5,
+        5.2
+       ],
+       "target": [
+        -0.3,
+        1.9,
+        -0.8
+       ],
+       "fov": 46
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -2.2
+       ],
+       "rotY": 0.0,
+       "color": "#DCEAE5"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        9
+       ],
+       "pos": [
+        -2.6,
+        0,
+        1.5
+       ],
+       "rotY": 0.0,
+       "color": "#CFE1DB"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.5,
+        1.2,
+        0.04
+       ],
+       "pos": [
+        1.2,
+        1.1,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#D5EBF8"
+      },
+      {
+       "type": "box",
+       "size": [
+        10,
+        0.12,
+        0.06
+       ],
+       "pos": [
+        0,
+        0.9,
+        -2.1
+       ],
+       "rotY": 0.0,
+       "color": "#FFFFFF"
+      },
+      {
+       "type": "bed",
+       "pos": [
+        -0.6,
+        0,
+        -0.9
+       ],
+       "rotY": 0
+      },
+      {
+       "type": "person",
+       "pos": [
+        -0.6,
+        0.0,
+        -0.55
+       ],
+       "rotY": 0.0,
+       "pose": "sit",
+       "seed": 7,
+       "look": {
+        "shirt": "#7FA7C9",
+        "pants": "#7FA7C9",
+        "hairStyle": "short",
+        "skin": "#C68E68",
+        "hair": "#16161A"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        0.75,
+        0,
+        -0.1
+       ],
+       "rotY": -0.9,
+       "pose": "think",
+       "seed": 2,
+       "look": {
+        "shirt": "#F4F4F2",
+        "pants": "#4E9C94",
+        "hairStyle": "short",
+        "skin": "#E3B999",
+        "hair": "#4A3122"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        -1.5,
+        0,
+        0.6
+       ],
+       "rotY": 0.7,
+       "pose": "talk",
+       "seed": 4,
+       "look": {
+        "shirt": "#C2443A",
+        "pants": "#2B3442",
+        "hairStyle": "long",
+        "skin": "#C68E68",
+        "hair": "#231B16"
+       }
+      },
+      {
+       "type": "person",
+       "pos": [
+        1.15,
+        0,
+        -1.35
+       ],
+       "rotY": -0.5,
+       "pose": "stand",
+       "seed": 5,
+       "look": {
+        "shirt": "#6FB1A8",
+        "pants": "#6FB1A8",
+        "hairStyle": "bun",
+        "skin": "#C68E68"
+       }
+      },
+      {
+       "type": "model",
+       "src": "models/ph/side_table_01/side_table_01.gltf",
+       "pos": [
+        0.6,
+        0,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_04/potted_plant_04.gltf",
+       "pos": [
+        0.5,
+        0.55,
+        -1.75
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/ceramic_vase_01/ceramic_vase_01.gltf",
+       "pos": [
+        0.72,
+        0.55,
+        -1.7
+       ],
+       "rotY": 0.0,
+       "s": 0.5
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_01/potted_plant_01.gltf",
+       "pos": [
+        2.2,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/modern_ceiling_lamp_01/modern_ceiling_lamp_01.gltf",
+       "pos": [
+        -0.3,
+        2.05,
+        -0.5
+       ],
+       "rotY": 0.0
+      }
+     ]
+    },
+    "dim": 0.62
+   },
+   "layers": [
+    {
+     "block": "Counter",
+     "pos": "center",
+     "at": "@71-0.35",
+     "props": {
+      "from": 0,
+      "to": 71,
+      "prefix": "$",
+      "label": "миллион|миллиона|миллионов",
+      "size": 240,
+      "dur": 1.0,
+      "startAt": "@71"
+     }
+    }
+   ]
+  },
+  {
+   "id": "globe-langs",
+   "at": "@Но",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "Sky"
+   },
+   "layers": [
+    {
+     "block": "Globe3D",
+     "pos": "full",
+     "enter": "none",
+     "props": {
+      "look": "earth",
+      "spin": 0,
+      "focus": [
+       {
+        "t": 0,
+        "lat": 25,
+        "lon": 60,
+        "dist": 8.2
+       },
+       {
+        "t": 3.6,
+        "lat": -15,
+        "lon": 140,
+        "dist": 5.6
+       }
+      ],
+      "markers": [
+       {
+        "lat": 28.6,
+        "lon": 77.2,
+        "label": "नमस्ते",
+        "at": 0.1
+       },
+       {
+        "lat": 39.9,
+        "lon": 116.4,
+        "label": "你好",
+        "at": 0.3
+       },
+       {
+        "lat": 30.0,
+        "lon": 31.2,
+        "label": "مرحبا",
+        "at": 0.5
+       },
+       {
+        "lat": -1.3,
+        "lon": 36.8,
+        "label": "Jambo",
+        "at": 0.7
+       },
+       {
+        "lat": 41.0,
+        "lon": 29.0,
+        "label": "Merhaba",
+        "at": 0.9
+       },
+       {
+        "lat": 35.68,
+        "lon": 139.69,
+        "label": "こんにちは",
+        "at": 1.9
+       },
+       {
+        "lat": 19.4,
+        "lon": -99.1,
+        "label": "Hola",
+        "at": 1.3
+       },
+       {
+        "lat": -15.3,
+        "lon": 145.2,
+        "label": "Guugu Yimithirr",
+        "at": 1.6
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "outback",
+   "at": "@В языке",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#9FCDEE",
+     "ground": {
+      "size": 300,
+      "color": "#B8693E"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        1.0,
+        1.7,
+        5.0
+       ],
+       "target": [
+        0,
+        1.1,
+        -1
+       ],
+       "fov": 50
+      },
+      {
+       "t": 5.2,
+       "pos": [
+        -0.4,
+        1.75,
+        5.2
+       ],
+       "target": [
+        0,
+        1.1,
+        -1
+       ],
+       "fov": 50
+      }
+     ],
+     "objects": [
+      {
+       "type": "model",
+       "src": "models/ph/quiver_tree_01/quiver_tree_01.gltf",
+       "pos": [
+        -2.6,
+        0,
+        -4.5
+       ],
+       "rotY": 0.0,
+       "s": 1.4
+      },
+      {
+       "type": "model",
+       "src": "models/ph/quiver_tree_01/quiver_tree_01.gltf",
+       "pos": [
+        3.4,
+        0,
+        -7.5
+       ],
+       "rotY": 1.2,
+       "s": 1.2
+      },
+      {
+       "type": "model",
+       "src": "models/ph/dead_quiver_trunk/dead_quiver_trunk.gltf",
+       "pos": [
+        2.0,
+        0,
+        -2.6
+       ],
+       "rotY": 0.5
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wild_rooibos_bush/wild_rooibos_bush.gltf",
+       "pos": [
+        -1.2,
+        0,
+        -1.6
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wild_rooibos_bush/wild_rooibos_bush.gltf",
+       "pos": [
+        2.6,
+        0,
+        -0.6
+       ],
+       "rotY": 1.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wild_rooibos_bush/wild_rooibos_bush.gltf",
+       "pos": [
+        -3.4,
+        0,
+        -0.4
+       ],
+       "rotY": 2.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wild_rooibos_bush/wild_rooibos_bush.gltf",
+       "pos": [
+        0.6,
+        0,
+        -9.0
+       ],
+       "rotY": 0.0,
+       "s": 1.3
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wild_rooibos_bush/wild_rooibos_bush.gltf",
+       "pos": [
+        -5.0,
+        0,
+        -8.0
+       ],
+       "rotY": 0.7,
+       "s": 1.4
+      },
+      {
+       "type": "person",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "rotY": 0.3,
+       "pose": "point",
+       "seed": 3,
+       "look": {
+        "skin": "#4A2E20",
+        "hair": "#151313",
+        "shirt": "#E9E6DF",
+        "pants": "#3A3A3F",
+        "hairStyle": "short"
+       }
+      }
+     ],
+     "labels": [
+      {
+       "text": "Север",
+       "size": 56,
+       "pos": [
+        0,
+        3.0,
+        -4.0
+       ],
+       "at": "@север"
+      },
+      {
+       "text": "Юг",
+       "size": 56,
+       "pos": [
+        0.2,
+        0.25,
+        1.6
+       ],
+       "at": "@юг"
+      },
+      {
+       "text": "Запад",
+       "size": 56,
+       "pos": [
+        -1.0,
+        1.6,
+        -0.3
+       ],
+       "at": "@запад"
+      },
+      {
+       "text": "Восток",
+       "size": 56,
+       "pos": [
+        1.1,
+        1.6,
+        -0.3
+       ],
+       "at": "@восток"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "komorebi",
+   "at": "@А японское",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#CFE8F7",
+     "ground": {
+      "size": 200,
+      "color": "#5E8F45"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0.25,
+        1.3,
+        8.2
+       ],
+       "target": [
+        0.3,
+        2.9,
+        -6
+       ],
+       "fov": 50
+      },
+      {
+       "t": 4.6,
+       "pos": [
+        0.2,
+        1.25,
+        7.3
+       ],
+       "target": [
+        0.3,
+        3.3,
+        -6
+       ],
+       "fov": 50
+      }
+     ],
+     "objects": [
+      {
+       "type": "tree",
+       "pos": [
+        -2.6,
+        0,
+        -2.0
+       ],
+       "s": 1.7
+      },
+      {
+       "type": "tree",
+       "pos": [
+        2.4,
+        0,
+        -2.6
+       ],
+       "s": 1.8
+      },
+      {
+       "type": "tree",
+       "pos": [
+        -1.1,
+        0,
+        -5.0
+       ],
+       "s": 1.9
+      },
+      {
+       "type": "tree",
+       "pos": [
+        1.9,
+        0,
+        -6.5
+       ],
+       "s": 1.7
+      },
+      {
+       "type": "tree",
+       "pos": [
+        -3.4,
+        0,
+        -7.0
+       ],
+       "s": 1.8
+      },
+      {
+       "type": "tree",
+       "pos": [
+        3.6,
+        0,
+        -7.5
+       ],
+       "s": 1.9
+      },
+      {
+       "type": "tree",
+       "pos": [
+        2.0,
+        0,
+        -11.0
+       ],
+       "s": 2.0
+      },
+      {
+       "type": "tree",
+       "pos": [
+        -2.0,
+        0,
+        -12.0
+       ],
+       "s": 1.8
+      },
+      {
+       "type": "prim",
+       "shape": "sphere",
+       "pos": [
+        0.5,
+        4.6,
+        -26
+       ],
+       "r": 1.5,
+       "color": "#FFF6D8",
+       "emissive": "#FFF1C4",
+       "ei": 3.0,
+       "shadow": false
+      },
+      {
+       "type": "prim",
+       "shape": "sphere",
+       "pos": [
+        0.5,
+        4.6,
+        -26.8
+       ],
+       "r": 3.6,
+       "color": "#FFF0C8",
+       "emissive": "#FFE29A",
+       "ei": 0.9,
+       "shadow": false
+      },
+      {
+       "type": "person",
+       "pos": [
+        -0.75,
+        0,
+        2.6
+       ],
+       "rotY": 3.3,
+       "pose": "stand",
+       "seed": 6,
+       "look": {
+        "shirt": "#E9E6DF",
+        "pants": "#56688A",
+        "hairStyle": "long",
+        "hair": "#16161A",
+        "skin": "#F0CFB4"
+       }
+      }
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Kicker",
+     "pos": "top",
+     "at": "@комореби",
+     "props": {
+      "text": "木漏れ日 · комореби",
+      "size": 46,
+      "solid": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "globe-end",
+   "at": "@Один",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "Sky"
+   },
+   "layers": [
+    {
+     "block": "Globe3D",
+     "pos": "full",
+     "enter": "none",
+     "props": {
+      "look": "earth",
+      "spin": 6,
+      "labels": false,
+      "focus": [
+       {
+        "t": 0,
+        "lat": 20,
+        "lon": 30,
+        "dist": 6.4
+       },
+       {
+        "t": 3.4,
+        "lat": 25,
+        "lon": 10,
+        "dist": 8.6
+       }
+      ],
+      "arcs": [
+       {
+        "from": [
+         35.7,
+         139.7
+        ],
+        "to": [
+         51.5,
+         -0.12
+        ],
+        "at": 0.2,
+        "dur": 1.2
+       },
+       {
+        "from": [
+         -23.5,
+         -46.6
+        ],
+        "to": [
+         48.85,
+         2.35
+        ],
+        "at": 0.5,
+        "dur": 1.2
+       },
+       {
+        "from": [
+         28.6,
+         77.2
+        ],
+        "to": [
+         40.7,
+         -74.0
+        ],
+        "at": 0.8,
+        "dur": 1.2
+       },
+       {
+        "from": [
+         -33.9,
+         151.2
+        ],
+        "to": [
+         55.75,
+         37.62
+        ],
+        "at": 1.1,
+        "dur": 1.2
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "at": "@Кстати",
+   "transition": "fade",
+   "camera": "still",
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "look": "real",
+     "pop": false,
+     "lights": "studio",
+     "env": 0.8,
+     "bg": "#F2EEE8",
+     "ground": {
+      "size": 30,
+      "color": "#B48A60"
+     },
+     "cam": [
+      {
+       "t": 0,
+       "pos": [
+        0.55,
+        1.55,
+        3.7
+       ],
+       "target": [
+        0.0,
+        0.8,
+        -0.8
+       ],
+       "fov": 46
+      },
+      {
+       "t": 7,
+       "pos": [
+        0.35,
+        1.45,
+        3.2
+       ],
+       "target": [
+        0.0,
+        0.8,
+        -0.8
+       ],
+       "fov": 46
+      }
+     ],
+     "objects": [
+      {
+       "type": "box",
+       "size": [
+        10,
+        3.2,
+        0.15
+       ],
+       "pos": [
+        0,
+        0,
+        -2.3
+       ],
+       "rotY": 0.0,
+       "color": "#EEEBE5"
+      },
+      {
+       "type": "box",
+       "size": [
+        0.15,
+        3.2,
+        9
+       ],
+       "pos": [
+        -2.7,
+        0,
+        1.5
+       ],
+       "rotY": 0.0,
+       "color": "#E3DFD8"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.7,
+        1.3,
+        0.04
+       ],
+       "pos": [
+        0.35,
+        1.0,
+        -2.2
+       ],
+       "rotY": 0.0,
+       "color": "#CFE6F7"
+      },
+      {
+       "type": "box",
+       "size": [
+        1.84,
+        0.08,
+        0.1
+       ],
+       "pos": [
+        0.35,
+        0.96,
+        -2.18
+       ],
+       "rotY": 0.0,
+       "color": "#FFFFFF"
+      },
+      {
+       "type": "model",
+       "src": "models/ph/hanging_picture_frame_01/hanging_picture_frame_01.gltf",
+       "pos": [
+        -1.35,
+        1.75,
+        -2.2
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/round_wooden_table_01/round_wooden_table_01.gltf",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "rotY": 0.0,
+       "h": 0.76
+      },
+      {
+       "type": "model",
+       "src": "models/ph/tea_set_01/tea_set_01.gltf",
+       "pos": [
+        0.12,
+        0.76,
+        -0.05
+       ],
+       "rotY": 0.0,
+       "s": 0.62
+      },
+      {
+       "type": "model",
+       "src": "models/ph/wooden_bowl_01/wooden_bowl_01.gltf",
+       "pos": [
+        -0.33,
+        0.76,
+        0.22
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/croissant/croissant.gltf",
+       "pos": [
+        -0.33,
+        0.79,
+        0.22
+       ],
+       "rotY": 0.6
+      },
+      {
+       "type": "model",
+       "src": "models/ph/lemon/lemon.gltf",
+       "pos": [
+        0.42,
+        0.76,
+        0.3
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/gallinera_chair/gallinera_chair.gltf",
+       "pos": [
+        0.95,
+        0,
+        0.05
+       ],
+       "rotY": -1.5708
+      },
+      {
+       "type": "model",
+       "src": "models/ph/gallinera_chair/gallinera_chair.gltf",
+       "pos": [
+        -0.95,
+        0,
+        -0.05
+       ],
+       "rotY": 1.5708
+      },
+      {
+       "type": "model",
+       "src": "models/ph/standing_chalkboard_01/standing_chalkboard_01.gltf",
+       "pos": [
+        -0.95,
+        0,
+        -1.2
+       ],
+       "rotY": 0.35
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_01/potted_plant_01.gltf",
+       "pos": [
+        -1.9,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/potted_plant_02/potted_plant_02.gltf",
+       "pos": [
+        2.0,
+        0,
+        -1.8
+       ],
+       "rotY": 0.0
+      },
+      {
+       "type": "model",
+       "src": "models/ph/CoffeeCart_01/CoffeeCart_01.gltf",
+       "pos": [
+        1.35,
+        0,
+        -1.7
+       ],
+       "rotY": -0.35
+      },
+      {
+       "type": "model",
+       "src": "models/ph/modern_ceiling_lamp_01/modern_ceiling_lamp_01.gltf",
+       "pos": [
+        0,
+        2.05,
+        0
+       ],
+       "rotY": 0.0
+      }
+     ]
+    },
+    "dim": 0.4
+   },
+   "captions": {
+    "pos": "top"
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "props": {
+      "enter": "flip",
+      "flipAt": "@нейросеть",
+      "flipDur": 1.2,
+      "float": true,
+      "shadow": 0,
+      "color": "#2F4560",
+      "screen": {
+       "block": "TikTokProfile",
+       "props": {
+        "dark": true,
+        "name": "aipollon",
+        "handle": "videopollon",
+        "badge": "Verified business",
+        "bio": "Даем возможность делать самые качественные ролики с ии прямо здесь 👇🏻",
+        "link": "https://t.me/aipollonvideo",
+        "avatar": "brand/aipollon-avatar.png",
+        "tiles": [
+         "brand/tiles/cover-edinyi-yazyk.jpg",
+         "brand/tiles/cover-coffee-agent.jpg",
+         "brand/tiles/cover-nuclear.jpg",
+         "brand/tiles/fr-gibrid.jpg",
+         "projects/mir-bez-granic/cover.jpg",
+         "brand/tiles/quiet-evenings.jpg",
+         "brand/tiles/cover-fr-klassika.jpg",
+         "brand/tiles/fr-test-1.jpg",
+         ""
+        ],
+        "pinned": 1,
+        "highlightAt": "@шапку"
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.3,
+         10.8
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 1.6,
+        "pos": [
+         0.35,
+         2.32,
+         10.4
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 2.6,
+        "pos": [
+         0,
+         2.53,
+         5.4
+        ],
+        "target": [
+         0,
+         2.53,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 6,
+        "pos": [
+         0,
+         2.5,
+         5.1
+        ],
+        "target": [
+         0,
+         2.5,
+         0
+        ],
+        "fov": 30
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

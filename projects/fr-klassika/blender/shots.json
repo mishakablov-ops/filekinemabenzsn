@@ -1,0 +1,23 @@
+{
+ "fps": 60,
+ "shots": [
+  {
+   "id": "pa_aerial",
+   "set": "paris",
+   "dur": 4.5,
+   "variant": "aerial"
+  },
+  {
+   "id": "pa_cafe",
+   "set": "paris",
+   "dur": 4.5,
+   "variant": "cafe"
+  },
+  {
+   "id": "pa_blvd",
+   "set": "paris",
+   "dur": 5.0,
+   "variant": "boulevard"
+  }
+ ]
+}

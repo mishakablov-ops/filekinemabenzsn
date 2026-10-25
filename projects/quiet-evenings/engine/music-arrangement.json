@@ -1,0 +1,76 @@
+{
+  "source": "ssstik.io_1792530637838.mp3",
+  "source_duration": 37.27675,
+  "duration": 40.0,
+  "tempo_changed": false,
+  "pitch_changed": false,
+  "analysis_bpm": 93.9,
+  "loop": {
+    "end": 36.14174760383386,
+    "resume": 25.931938764643238,
+    "crossfade_seconds": 0.3,
+    "correlation": 0.5401726849063855,
+    "bars": 4
+  },
+  "music_gain_keyframes": [
+    [
+      0,
+      0.87
+    ],
+    [
+      13,
+      0.87
+    ],
+    [
+      14,
+      0.78
+    ],
+    [
+      16.4,
+      0.9
+    ],
+    [
+      19.5,
+      0.92
+    ],
+    [
+      22,
+      1.0
+    ],
+    [
+      24.93,
+      1.18
+    ],
+    [
+      27,
+      1.22
+    ],
+    [
+      34.89,
+      1.18
+    ],
+    [
+      40,
+      1.18
+    ]
+  ],
+  "normalization": {
+    "input_i": "-18.42",
+    "input_tp": "-7.13",
+    "input_lra": "5.40",
+    "input_thresh": "-28.65",
+    "output_i": "-14.16",
+    "output_tp": "-3.10",
+    "output_lra": "1.50",
+    "output_thresh": "-24.21",
+    "normalization_type": "dynamic",
+    "target_offset": "-1.84",
+    "gain_db": 2.42
+  },
+  "mix": {
+    "volume": 0.22,
+    "duck": 0.4,
+    "fadeIn": 0.18,
+    "fadeOut": 1.25
+  }
+}

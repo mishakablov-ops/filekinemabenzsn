@@ -1,0 +1,348 @@
+{
+ "id": "kosmos-dlya-vseh-v2",
+ "mode": "explainer",
+ "style": "orbit",
+ "fps": 60,
+ "voice": {
+  "src": "projects/kosmos-dlya-vseh-v2/voice.wav",
+  "words": "projects/kosmos-dlya-vseh-v2/words.json",
+  "volume": 1
+ },
+ "music": {
+  "src": "projects/kosmos-dlya-vseh-v2/soundtrack.wav",
+  "volume": 1.0,
+  "duck": 1.0,
+  "offset": 0,
+  "fadeIn": 0.05,
+  "fadeOut": 0.9
+ },
+ "tail": 2.1,
+ "autoSfx": false,
+ "sfx": [],
+ "grain": 0.02,
+ "vignette": 0.14,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": false,
+  "scale": 1,
+  "scrim": 0.8
+ },
+ "scenes": [
+  {
+   "id": "sh01_hook",
+   "at": 0,
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh01_hook.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh02_pad",
+   "at": "@Пока",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh02_pad.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh03_ascent",
+   "at": "@Хотя",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh03_ascent.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh04_sunrise",
+   "at": "@На орбите",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh04_sunrise.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh05_moon",
+   "at": "@До Луны",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh05_moon.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh06_mars",
+   "at": "@До Марса",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh06_mars.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh07a_eva",
+   "at": "@Почти все",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh07a_eva.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh07b_earth",
+   "at": "@Границ",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh07b_earth.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh08a_debris",
+   "at": "@Но вокруг",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh08a_debris.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh08b_jam",
+   "at": "@Если полетят#2",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh08b_jam.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh09a_dream",
+   "at": "@Космос для",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh09a_dream.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh09b_dump",
+   "at": "@Главное",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh09b_dump.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh10_final",
+   "at": "@Кстати",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/kosmos-dlya-vseh-v2/clips/sh10_final.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    },
+    "dim": 0.55,
+    "dimAt": "@Кстати"
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "sfx": false,
+     "props": {
+      "enter": "flip",
+      "flipAt": "@нейросеть",
+      "flipDur": 1.2,
+      "float": true,
+      "shadow": 0,
+      "color": "#D9822B",
+      "screen": {
+       "block": "TikTokProfile",
+       "props": {
+        "dark": true,
+        "name": "aipollon",
+        "handle": "videopollon",
+        "badge": "Verified business",
+        "bio": "Даем возможность делать самые качественные ролики с ии прямо здесь 👇🏻",
+        "link": "https://t.me/aipollonvideo",
+        "avatar": "brand/aipollon-avatar.png",
+        "tiles": [
+         "projects/kosmos-dlya-vseh-v2/cover.jpg",
+         "brand/tiles/cover-edinyi-yazyk.jpg",
+         "brand/tiles/cover-coffee-agent.jpg",
+         "brand/tiles/cover-nuclear.jpg",
+         "brand/tiles/fr-gibrid.jpg",
+         "projects/mir-bez-granic/cover.jpg",
+         "brand/tiles/quiet-evenings.jpg",
+         "brand/tiles/cover-fr-klassika.jpg",
+         "brand/tiles/fr-test-1.jpg"
+        ],
+        "pinned": 1,
+        "highlightAt": "@шапке"
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.3,
+         10.8
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 1.6,
+        "pos": [
+         0.35,
+         2.32,
+         10.4
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 2.6,
+        "pos": [
+         0,
+         2.53,
+         5.4
+        ],
+        "target": [
+         0,
+         2.53,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 6,
+        "pos": [
+         0,
+         2.5,
+         5.1
+        ],
+        "target": [
+         0,
+         2.5,
+         0
+        ],
+        "fov": 30
+       }
+      ]
+     }
+    }
+   ],
+   "captions": {
+    "mode": "editorial",
+    "pos": "top",
+    "scrim": 0.85
+   }
+  }
+ ]
+}

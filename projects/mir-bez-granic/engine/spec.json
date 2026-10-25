@@ -1,0 +1,353 @@
+{
+ "id": "mir-bez-granic",
+ "mode": "explainer",
+ "style": "dusk",
+ "fps": 60,
+ "voice": {
+  "src": "projects/mir-bez-granic/voice.wav",
+  "words": "projects/mir-bez-granic/words.json",
+  "volume": 1
+ },
+ "music": {
+  "src": "projects/mir-bez-granic/soundtrack.wav",
+  "volume": 1.0,
+  "duck": 1.0,
+  "offset": 0,
+  "fadeIn": 0.05,
+  "fadeOut": 0.9
+ },
+ "tail": 2.1,
+ "autoSfx": false,
+ "sfx": [],
+ "grain": 0.02,
+ "vignette": 0.14,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": false,
+  "scale": 1,
+  "scrim": 0.8
+ },
+ "scenes": [
+  {
+   "id": "sh01_globe_hook",
+   "at": 0,
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh01_globe_hook.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh03_wall",
+   "at": "@И больше",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh03_wall.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh04_gate_lift",
+   "at": "@Первыми",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh04_gate_lift.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh05_passport",
+   "at": "@Паспорт",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh05_passport.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh06_crowd",
+   "at": "@Потом",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh06_crowd.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh07_globe_arcs",
+   "at": "@Это почти",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh07_globe_arcs.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh08_city_grow",
+   "at": "@По оценкам",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh08_city_grow.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh09a_city_crush",
+   "at": "@Но сначала",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh09a_city_crush.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh09b_village",
+   "at": "@и пустые",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh09b_village.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh10_army",
+   "at": "@Армии",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh10_army.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh11_state",
+   "at": "@Но кто",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh11_state.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh12_globe_redraw",
+   "at": "@Скорее",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh12_globe_redraw.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh12b_oil",
+   "at": "@языкам",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh12b_oil.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh12c_battle",
+   "at": "@И за",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh12c_battle.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "sh13_final",
+   "at": "@Границы#3",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/mir-bez-granic/clips/sh13_final.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    },
+    "dim": 0.6,
+    "dimAt": "@Кстати"
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "sfx": false,
+     "at": "@Кстати+0.3",
+     "props": {
+      "enter": "flip",
+      "flipAt": 0.25,
+      "flipDur": 0.65,
+      "float": true,
+      "shadow": 0,
+      "screen": {
+       "block": "TikTokProfile",
+       "props": {
+        "dark": true,
+        "name": "aipollon",
+        "handle": "videopollon",
+        "badge": "Verified business",
+        "bio": "Даем возможность делать самые качественные ролики с ии прямо здесь 👇🏻",
+        "link": "https://t.me/aipollonvideo",
+        "avatar": "brand/aipollon-avatar.png",
+        "tiles": [
+         "projects/mir-bez-granic/cover.jpg",
+         "brand/tiles/quiet-evenings.jpg",
+         "",
+         "",
+         "",
+         "",
+         "",
+         "",
+         ""
+        ],
+        "pinned": 1,
+        "highlightAt": "@шапку"
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.1,
+         10.8
+        ],
+        "target": [
+         0,
+         2.05,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 4.5,
+        "pos": [
+         0.08,
+         2.23,
+         8.9
+        ],
+        "target": [
+         0,
+         2.23,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       }
+      ]
+     }
+    }
+   ],
+   "captions": {
+    "mode": "editorial",
+    "pos": "top",
+    "scrim": 0.85
+   }
+  }
+ ]
+}

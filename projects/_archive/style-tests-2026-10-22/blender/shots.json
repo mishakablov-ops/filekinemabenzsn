@@ -1,0 +1,101 @@
+{
+ "fps": 60,
+ "shots": [
+  {
+   "id": "toy_street",
+   "set": "street_test",
+   "dur": 6.0,
+   "style": "toy",
+   "variant": "street",
+   "events": {}
+  },
+  {
+   "id": "toy_aerial",
+   "set": "street_test",
+   "dur": 6.0,
+   "style": "toy",
+   "variant": "aerial",
+   "events": {}
+  },
+  {
+   "id": "toy_close",
+   "set": "street_test",
+   "dur": 6.0,
+   "style": "toy",
+   "variant": "close",
+   "events": {}
+  },
+  {
+   "id": "lp_street",
+   "set": "street_test",
+   "dur": 6.0,
+   "style": "lowpoly",
+   "variant": "street",
+   "events": {}
+  },
+  {
+   "id": "lp_aerial",
+   "set": "street_test",
+   "dur": 6.0,
+   "style": "lowpoly",
+   "variant": "aerial",
+   "events": {}
+  },
+  {
+   "id": "lp_close",
+   "set": "street_test",
+   "dur": 6.0,
+   "style": "lowpoly",
+   "variant": "close",
+   "events": {}
+  },
+  {
+   "id": "fr2_walk",
+   "set": "france",
+   "dur": 4.5,
+   "style": "toy",
+   "variant": "walk",
+   "events": {}
+  },
+  {
+   "id": "fr2_cafe",
+   "set": "france",
+   "dur": 4.5,
+   "style": "toy",
+   "variant": "cafe",
+   "events": {}
+  },
+  {
+   "id": "fr2_reveal",
+   "set": "france",
+   "dur": 5.0,
+   "style": "toy",
+   "variant": "reveal",
+   "events": {}
+  },
+  {
+   "id": "fr3_walk",
+   "set": "france",
+   "dur": 4.5,
+   "style": "lowpoly",
+   "variant": "walk",
+   "events": {}
+  },
+  {
+   "id": "fr3_cafe",
+   "set": "france",
+   "dur": 4.5,
+   "style": "lowpoly",
+   "variant": "cafe",
+   "events": {}
+  },
+  {
+   "id": "fr3_reveal",
+   "set": "france",
+   "dur": 5.0,
+   "style": "lowpoly",
+   "variant": "reveal",
+   "events": {}
+  }
+ ]
+}

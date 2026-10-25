@@ -1,0 +1,151 @@
+{
+ "id": "kit",
+ "style": "dusk",
+ "fps": 30,
+ "duration": 24,
+ "captions": {
+  "mode": "none"
+ },
+ "scenes": [
+  {
+   "at": 0,
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "office",
+     "cam": "diorama"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 3,
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "living",
+     "cam": "diorama",
+     "lights": "evening"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 6,
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "cafe",
+     "cam": "diorama"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 9,
+   "bg": {
+    "block": "Room3D",
+    "props": {
+     "preset": "bedroom",
+     "cam": "diorama",
+     "lights": "night"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 12,
+   "bg": {
+    "block": "Street3D",
+    "props": {
+     "time": "evening",
+     "cam": "eye"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 15,
+   "bg": {
+    "block": "Street3D",
+    "props": {
+     "time": "day",
+     "cam": "high"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 18,
+   "bg": {
+    "block": "Street3D",
+    "props": {
+     "time": "night",
+     "cam": "drone"
+    }
+   },
+   "transition": "cut"
+  },
+  {
+   "at": 21,
+   "bg": {
+    "block": "Scene3D",
+    "props": {
+     "objects": [
+      {
+       "type": "rug",
+       "pos": [
+        0,
+        0,
+        0
+       ],
+       "w": 4,
+       "d": 3
+      },
+      {
+       "type": "person",
+       "pos": [
+        -0.8,
+        0,
+        0
+       ],
+       "pose": "wave",
+       "rotY": 0.4
+      },
+      {
+       "type": "person",
+       "pos": [
+        0.8,
+        0,
+        0.2
+       ],
+       "pose": "think",
+       "rotY": -0.4,
+       "seed": 3
+      },
+      {
+       "type": "plant",
+       "pos": [
+        2,
+        0,
+        -1
+       ]
+      }
+     ],
+     "labels": [
+      {
+       "text": "Привет!",
+       "pos": [
+        -0.8,
+        2.3,
+        0
+       ],
+       "at": 1
+      }
+     ]
+    }
+   },
+   "transition": "cut"
+  }
+ ]
+}

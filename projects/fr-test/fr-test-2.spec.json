@@ -1,0 +1,81 @@
+{
+ "id": "fr-test-2",
+ "mode": "explainer",
+ "style": "toytown",
+ "fps": 60,
+ "voice": {
+  "src": "projects/fr-test-2/voice.wav",
+  "words": "projects/fr-test-2/words.json",
+  "volume": 1
+ },
+ "music": {
+  "src": "music/lofi-warm.m4a",
+  "volume": 0.22,
+  "duck": 0.4,
+  "offset": 0,
+  "fadeIn": 0.05,
+  "fadeOut": 0.9
+ },
+ "tail": 1.0,
+ "autoSfx": false,
+ "sfx": [],
+ "grain": 0.02,
+ "vignette": 0.12,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": false,
+  "scale": 1,
+  "scrim": 0.8
+ },
+ "scenes": [
+  {
+   "id": "fr2_walk",
+   "at": 0,
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/fr-test-2/clips/fr2_walk.mp4",
+     "zoom": [
+      1.0,
+      1.04
+     ]
+    }
+   }
+  },
+  {
+   "id": "fr2_cafe",
+   "at": "@Кофе",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/fr-test-2/clips/fr2_cafe.mp4",
+     "zoom": [
+      1.0,
+      1.04
+     ]
+    }
+   }
+  },
+  {
+   "id": "fr2_reveal",
+   "at": "@А в конце",
+   "transition": "cut",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/fr-test-2/clips/fr2_reveal.mp4",
+     "zoom": [
+      1.0,
+      1.04
+     ]
+    }
+   }
+  }
+ ]
+}
