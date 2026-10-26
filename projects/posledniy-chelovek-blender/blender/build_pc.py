@@ -10,6 +10,9 @@ import sys, os, json, time, argparse, importlib, traceback, glob
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'sets'))
+# in the repository the scene modules live only in blender/library (and lib.py in blender/kit): local copies win
+for _p in (('..', '..', '..', 'blender', 'kit', 'blender'), ('..', '..', '..', 'blender', 'library')):
+    sys.path.append(os.path.normpath(os.path.join(HERE, *_p)))
 import bpy
 import lib
 

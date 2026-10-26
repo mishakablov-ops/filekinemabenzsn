@@ -11,8 +11,8 @@
 <id>/
   README.md         этот файл: суть, статус, источники, журнал версий
   script.md         сценарий в разметке титров
-  engine/           что идёт в KINEMA: script.md, spec.json, words.json, storyboard.py, голосовые скрипты
-  blender/          (только «Блендер») shots.json, sets/*.py, отличные от blender/kit
+  engine/           что идёт в KINEMA: spec.json, words.json, storyboard.py, голосовые скрипты (script.md — только в корне)
+  blender/          (только «Блендер») shots.json, sets/*.py, отличные от blender/kit и blender/library
   tools/            (только если меняли) mix.py, build_spec.py, build_timeline.py
   voice/            sections.json, manifest.json выбранных дублей (без самих wav)
   jobs/             .ps1-задачи для воркера на ПК, по номерам

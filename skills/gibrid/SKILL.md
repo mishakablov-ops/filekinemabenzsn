@@ -43,8 +43,9 @@ description: Сделать вертикальный ролик aipollon в ст
 8. **Проверка.** `engine/tools/stills.mjs --qa` по каждой сцене и контактный лист — смотреть самому
    (образец обёртки: `projects/posledniy-chelovek/engine/stills.py` — начало и конец каждой сцены по якорям);
    `render.py <id>` → `qa.py` → 20+ кадров из готового MP4, начало/середина/конец движений, микс в готовом файле.
-9. **Выдача.** `RS/engine/out/<id>.mp4` (новые версии `-v2`, `-v3` отдельными файлами). Исходники (`script.md`,
-   `spec.json`, `words.json`, `storyboard.py`, голосовые скрипты) скопировать в `projects/<id>/engine/`, строку — в
+9. **Выдача.** `RS/engine/out/<id>.mp4` (новые версии `-v2`, `-v3` отдельными файлами). Исходники (`spec.json`,
+   `words.json`, `storyboard.py`, голосовые скрипты) скопировать в `projects/<id>/engine/`, `script.md` — только в корень
+   `projects/<id>/` (без копии в `engine/`), строку — в
    `output/README.md`. Новые пожелания пользователя — в `styles/gibrid/README.md` с датой.
 
 ## Ограничения среды

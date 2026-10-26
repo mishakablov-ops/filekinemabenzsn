@@ -11,15 +11,14 @@
 
 ## Что здесь заморожено (не редактировать)
 
-- `blender-kit/` — точная копия `AIpollon-Reel-Studio/skills/reel-studio/blender-kit/` на 22.10.2026 (lib.py, sets/, tools/, worker).
-- `mir-bez-granic-sets/`, `mir-bez-granic-lib.py` — сцены и библиотека из самого одобренного ролика (совпадают с китом).
-- `rules/` — правила оформления на этот день: `styles.md`, `blender-pipeline.md`, `sound.md`, `qa-checklist.md`, `AGENTS.md`, `aipollon-knowledge.md`.
+Кит, сцены «Мира без границ» и правила оформления на 22.10.2026 — в коммите `440b9f5` (первый коммит репозитория).
+Копии внутри этой папки удалены 26.10.2026 как дубли (сцены и lib.py совпадали с `blender/kit/`).
 
 ## Как вернуться к этому стилю
 
 Сказать Claude: «делай в стиле 1» или «классика». Тогда:
-1. Новый проект создаётся из **этой** копии: `bash "styles/01-klassika/blender-kit/new_blender_project.sh" <id>`.
-2. Правила берутся из `rules/` этой папки.
+1. Кит того дня: `git checkout 440b9f5 -- blender/kit` во временной ветке, новый проект — `blender/kit/new_blender_project.sh <id>`.
+2. Правила того дня: `git show 440b9f5:styles/01-klassika/rules/styles.md` (и остальные файлы `rules/`).
 3. Папка `assets3d/` не используется.
 
 Даже если основной `blender-kit/` потом поменяется под новые модели, эта копия останется прежней.
@@ -28,4 +27,4 @@
 
 - `blender-kit/` здесь не копируется: на 22.10.2026 он совпадал с `blender/kit/` (отличался только путями в
   `new_blender_project.sh`). Состояние на момент переноса закреплено коммитом `440b9f5` (первый коммит репозитория).
-- `rules/` и `mir-bez-granic-sets/`, `mir-bez-granic-lib.py` — как были.
+- `rules/`, `mir-bez-granic-sets/`, `mir-bez-granic-lib.py` лежали здесь до 26.10.2026, теперь только в коммите `440b9f5`.

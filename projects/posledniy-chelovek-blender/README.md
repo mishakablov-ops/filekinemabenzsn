@@ -75,10 +75,11 @@
 
 ```
 posledniy-chelovek-blender/
-  README.md, cover.jpg (обложка 540×720 для сетки профиля)
-  blender/  build_pc.py (вход), shots.json, sets/: pcommon.py (небо, фасады, герой, машины, волки), pcity.py (улицы,
-            город с высоты, заправка, Припять), pearth.py (Земля ночью), prooms.py (кафе, ТЭЦ, магазин, квартира, прихожая)
-  engine/   storyboard.py → spec.json (v1, `--quick`) и spec-v2.json (v2), words.json (тот же голос)
+  README.md (обложка — `kinema/skills/reel-studio/engine/public/brand/tiles/cover-posledniy-chelovek-blender.jpg`)
+  blender/  build_pc.py (вход, модули берёт из `blender/library/`), shots.json; модули: pcommon.py (небо, фасады,
+            герой, машины, волки), pcity.py (улицы, город с высоты, заправка, Припять), pearth.py (Земля ночью),
+            prooms.py (кафе, ТЭЦ, магазин, квартира, прихожая)
+  engine/   storyboard.py → spec.json (v1, `--quick`) и spec-v2.json (v2), words.json — из `projects/posledniy-chelovek/engine/` (тот же голос)
   tools/    build_timeline.py (`--quick` = v1), mkjob.py (задачи воркера: still / clip / clip60)
   jobs/     задачи воркера 320–324 (v1), bg_327 (v2)
   qa/       qa.md

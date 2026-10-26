@@ -44,7 +44,7 @@
 
 ```
 posledniy-chelovek/
-  README.md, script.md, cover.jpg (обложка 540×720 для сетки профиля)
+  README.md, script.md (обложка — `kinema/skills/reel-studio/engine/public/brand/tiles/cover-posledniy-chelovek.jpg`)
   engine/   storyboard.py → spec.json, voice_sections.py (голос по секциям), stills.py (лист кадров), words.json, tts_report.json
   voice/    manifest.json: оценки Whisper всех дублей и выбранный (сами wav — на ПК)
   jobs/     300_posledniy_voice.ps1 — голос на ПК (301–303 — та же задача повторно после исправлений)
