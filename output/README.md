@@ -14,6 +14,7 @@ MP4 в git не храним (сотни МБ, лимит GitHub 100 МБ на �
 | `edinyi-yazyk.mp4` | edinyi-yazyk | Гибрид, реализм | 23.10.2026 | выдан |
 | `kosmos-dlya-vseh.mp4`, `kosmos-dlya-vseh-v2.mp4` | kosmos-dlya-vseh | Блендер | 24.10.2026 | выдан |
 | `posledniy-chelovek.mp4` | posledniy-chelovek | Гибрид | 26.10.2026 | выдан, ждём отзыв |
+| `posledniy-chelovek-blender.mp4` | posledniy-chelovek-blender | Блендер, быстрый режим, реалистичные цвета | 26.10.2026 | выдан, ждём отзыв |
 | `coffee-agent.mp4`, `выживач после бомбы.mp4` | эталоны | Гибрид | — | **эталоны стиля «Гибрид»** (общая папка проекта) |
 
 Новая выдача → строка сюда (версии отдельными строками) и в README проекта.

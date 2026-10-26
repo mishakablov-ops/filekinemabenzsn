@@ -1,0 +1,202 @@
+{
+ "fps": 60,
+ "shots": [
+  {
+   "id": "wake",
+   "set": "pcity",
+   "variant": "wake",
+   "kind": "still",
+   "dur": 2.68,
+   "start": 0.0,
+   "anchor": 0.0,
+   "events": {}
+  },
+  {
+   "id": "count",
+   "set": "pearth",
+   "variant": "count",
+   "kind": "clip",
+   "dur": 4.51,
+   "start": 2.43,
+   "anchor": "@Исчезли",
+   "events": {
+    "out": 1.17,
+    "done": 3.19
+   }
+  },
+  {
+   "id": "you",
+   "set": "pcity",
+   "variant": "you",
+   "kind": "still",
+   "dur": 3.45,
+   "start": 6.69,
+   "anchor": "@И это",
+   "events": {}
+  },
+  {
+   "id": "cafe",
+   "set": "prooms",
+   "variant": "cafe",
+   "kind": "still",
+   "dur": 3.01,
+   "start": 9.89,
+   "anchor": "@В кафе",
+   "events": {}
+  },
+  {
+   "id": "blackout",
+   "set": "pcity",
+   "variant": "blackout",
+   "kind": "clip",
+   "dur": 3.19,
+   "start": 15.27,
+   "anchor": "@Через",
+   "events": {
+    "out": 1.9
+   }
+  },
+  {
+   "id": "station",
+   "set": "prooms",
+   "variant": "station",
+   "kind": "still",
+   "dur": 3.21,
+   "start": 18.21,
+   "anchor": "@Станциям",
+   "events": {}
+  },
+  {
+   "id": "shops",
+   "set": "prooms",
+   "variant": "shops",
+   "kind": "still",
+   "dur": 3.21,
+   "start": 21.17,
+   "anchor": "@Зато",
+   "events": {}
+  },
+  {
+   "id": "bread",
+   "set": "prooms",
+   "variant": "bread",
+   "kind": "still",
+   "dur": 2.41,
+   "start": 24.13,
+   "anchor": "@Хлеб",
+   "events": {}
+  },
+  {
+   "id": "cans",
+   "set": "prooms",
+   "variant": "cans",
+   "kind": "still",
+   "dur": 2.47,
+   "start": 26.29,
+   "anchor": "@А консервы",
+   "events": {}
+  },
+  {
+   "id": "car",
+   "set": "pcity",
+   "variant": "car",
+   "kind": "still",
+   "dur": 1.97,
+   "start": 28.51,
+   "anchor": "@Любая",
+   "events": {}
+  },
+  {
+   "id": "fuel",
+   "set": "pcity",
+   "variant": "fuel",
+   "kind": "still",
+   "dur": 2.67,
+   "start": 30.23,
+   "anchor": "@Но бензин",
+   "events": {}
+  },
+  {
+   "id": "night",
+   "set": "pcity",
+   "variant": "night",
+   "kind": "clip",
+   "dur": 6.67,
+   "start": 32.65,
+   "anchor": "@Ночью",
+   "events": {
+    "tilt": 4.68
+   }
+  },
+  {
+   "id": "third",
+   "set": "pcity",
+   "variant": "third",
+   "kind": "still",
+   "dur": 2.59,
+   "start": 39.07,
+   "anchor": "@Раньше",
+   "events": {}
+  },
+  {
+   "id": "wolves",
+   "set": "pcity",
+   "variant": "wolves",
+   "kind": "clip",
+   "dur": 3.35,
+   "start": 41.41,
+   "anchor": "@Через год",
+   "events": {}
+  },
+  {
+   "id": "chernobyl",
+   "set": "pcity",
+   "variant": "chernobyl",
+   "kind": "still",
+   "dur": 4.23,
+   "start": 44.51,
+   "anchor": "@В зоне",
+   "events": {}
+  },
+  {
+   "id": "last",
+   "set": "pearth",
+   "variant": "last",
+   "kind": "still",
+   "dur": 2.89,
+   "start": 48.49,
+   "anchor": "@Ты последний",
+   "events": {}
+  },
+  {
+   "id": "room",
+   "set": "prooms",
+   "variant": "room",
+   "kind": "still",
+   "dur": 2.99,
+   "start": 51.13,
+   "anchor": "@Сидишь",
+   "events": {}
+  },
+  {
+   "id": "knock",
+   "set": "prooms",
+   "variant": "knock",
+   "kind": "still",
+   "dur": 3.16,
+   "start": 53.87,
+   "anchor": "@И вдруг",
+   "events": {}
+  },
+  {
+   "id": "cta",
+   "set": "prooms",
+   "variant": "cta",
+   "kind": "still",
+   "dur": 7.93,
+   "start": 56.78,
+   "anchor": "@Кстати",
+   "events": {}
+  }
+ ]
+}
