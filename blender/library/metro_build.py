@@ -110,23 +110,40 @@ class Acc:
     then writes one mesh with foreach_set. attrs: name -> default (float, or 4-tuple for a colour)."""
 
     def __init__(self, attrs=None):
-        self.V, self.F, self.UV, self.MI = [], [], [], []
+        self.V, self.F, self.UV, self.MI, self.SM = [], [], [], [], []
         self.attrs = attrs or {}
         self.AV = {k: [] for k in self.attrs}
         self.mats, self.mi = [], {}
+
+    def _slot(self, mat):
+        k = self.mi.get(mat.name)
+        if k is None:
+            k = self.mi[mat.name] = len(self.mats)
+            self.mats.append(mat)
+        return k
 
     def face(self, pts, uvs, mat, at=None):
         base = len(self.V)
         self.V.extend(pts)
         self.F.append(tuple(range(base, base + len(pts))))
         self.UV.extend(uvs if uvs is not None else [(0.0, 0.0)] * len(pts))
-        k = self.mi.get(mat.name)
-        if k is None:
-            k = self.mi[mat.name] = len(self.mats)
-            self.mats.append(mat)
-        self.MI.append(k)
+        self.MI.append(self._slot(mat))
+        self.SM.append(False)
         for a in self.attrs:
             self.AV[a].append(at.get(a, self.attrs[a]) if at else self.attrs[a])
+
+    def shared(self, verts, faces, mat, at=None, smooth=True):
+        """A closed shape whose faces share vertices, so smooth shading works (tree crowns)."""
+        base = len(self.V)
+        self.V.extend(verts)
+        k = self._slot(mat)
+        for f in faces:
+            self.F.append(tuple(base + i for i in f))
+            self.UV.extend([(0.0, 0.0)] * len(f))
+            self.MI.append(k)
+            self.SM.append(smooth)
+            for a in self.attrs:
+                self.AV[a].append(at.get(a, self.attrs[a]) if at else self.attrs[a])
 
     def __len__(self):
         return len(self.F)
@@ -218,7 +235,7 @@ class Acc:
             me.materials.append(m)
         me.polygons.foreach_set('material_index', self.MI)
         try:
-            me.polygons.foreach_set('use_smooth', [False] * len(self.F))
+            me.polygons.foreach_set('use_smooth', self.SM)
         except Exception:
             pass
         me.update()
@@ -643,16 +660,7 @@ def build_waterfront(plan, M, coll):
 
 
 # ----------------------------------------------------------------------------- bridges
-def deck_z(br, y):
-    """Deck height: 12 m over the waterfront roads, ramps down inland, an arch up to deck_z[1] over the river."""
-    lo, hi = br['deck_z']
-    shore = lo + 2.0
-    if y >= 0 or y <= MP.RIVER_S:
-        d = y if y >= 0 else MP.RIVER_S - y                 # metres inland from the bank
-        ramp = br['y1'] if y >= 0 else MP.RIVER_S - br['y0']
-        return shore * min(1.0, max(0.0, 1 - (d - 50) / (ramp - 50)))
-    t = (y - MP.RIVER_S / 2) / (-MP.RIVER_S / 2)
-    return shore + (hi - shore) * (1 - t * t)
+deck_z = MP.deck_z
 
 
 def build_bridges(plan, M, coll):
@@ -901,7 +909,7 @@ def build_filler(plan, M, coll, reach=7500.0):
 
 
 # ----------------------------------------------------------------------------- everything
-def build_city(focus=(0.0, 0.0), detail_r=0.0, filler=True, skip=None, fps=24, frames=48, night=0.0):
+def build_city(focus=(0.0, 0.0), detail_r=0.0, filler=True, skip=None, fps=24, frames=48, night=0.0, keep=()):
     """Build the whole city into collection 'Metro'. Returns a stats dict."""
     import time
     t0 = time.time()
@@ -922,7 +930,7 @@ def build_city(focus=(0.0, 0.0), detail_r=0.0, filler=True, skip=None, fps=24, f
         build_filler(plan, M, coll)
     if detail_r > 0:
         import metro_detail
-        st['detail'] = metro_detail.build_detail(plan, M, coll, roads, focus, detail_r, fps, frames, night)
+        st['detail'] = metro_detail.build_detail(plan, M, coll, roads, focus, detail_r, fps, frames, night, keep=keep)
     st['objects'] = len(coll.objects)
     st['faces'] = sum(len(o.data.polygons) for o in coll.objects if o.type == 'MESH')
     st['seconds'] = round(time.time() - t0, 1)

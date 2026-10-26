@@ -243,6 +243,18 @@ def roof_for(btype, h, rng):
     return r
 
 
+def deck_z(br, y):
+    """Deck height: 12 m over the waterfront roads, ramps down inland, an arch up to deck_z[1] over the river."""
+    lo, hi = br['deck_z']
+    shore = lo + 2.0
+    if y >= 0 or y <= RIVER_S:
+        d = y if y >= 0 else RIVER_S - y                 # metres inland from the bank
+        ramp = br['y1'] if y >= 0 else RIVER_S - br['y0']
+        return shore * min(1.0, max(0.0, 1 - (d - 50) / (ramp - 50)))
+    t = (y - RIVER_S / 2) / (-RIVER_S / 2)
+    return shore + (hi - shore) * (1 - t * t)
+
+
 def subdivide_block(rng, blk, hb, zone):
     """Cut a rectangular block into lots. Returns list of (poly, kind) with kind 'tower' | 'row' | 'corner'."""
     x0, y0, x1, y1 = blk

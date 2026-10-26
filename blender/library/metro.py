@@ -9,6 +9,8 @@ A shot in shots.json:
               "detail_r": metres of street furniture around the camera, "filler": false (no city beyond the plan)
 
 Spots (metro_plan.py): skyline_dusk, aerial_night, avenue, plaza, embankment, bridge, park, rooftop.
+New places for every reel (user, 26.10.2026): "spot": {"kind": "street", "seed": "..."} -> metro_spots.make_spot;
+better fill shots.json with `metro_spots.py --shots` first so the place is fixed in the file and logged.
 """
 import math
 import bpy
@@ -78,7 +80,13 @@ def water_probe(cam_loc):
 
 def build(shot, fps):
     plan = MB.get_plan()
-    spot = dict(plan['spots'][shot.get('variant', 'skyline_dusk')])
+    if 'spot' in shot and 'cam' not in shot:
+        import metro_spots as MS
+        sp = shot['spot']
+        spot = MS.make_spot(sp['kind'], sp.get('seed', shot['id']), shot.get('preset') or sp.get('preset'))
+        print('METRO spot', spot, flush=True)
+    else:
+        spot = dict(plan['spots'][shot.get('variant', 'skyline_dusk')])
     for k in ('cam', 'target', 'lens', 'preset', 'move'):
         if k in shot:
             spot[k] = shot[k]
@@ -89,8 +97,10 @@ def build(shot, fps):
     MM.set_global('FocusY', cam_loc.y)
     MM.set_global('FocusR', detail_r)
     night = dict(PRESETS[spot['preset']], **shot.get('over', {}))['night']
+    end = cam_loc + Vector(spot.get('move') or (0, 0, 0))
+    keep = [((cam_loc.x, cam_loc.y), (end.x, end.y), 1.6)] if cam_loc.z < 30 else []   # the lens walks freely
     st = MB.build_city(focus=(cam_loc.x, cam_loc.y), detail_r=detail_r, filler=shot.get('filler', True), fps=fps,
-                       frames=frames, night=night)
+                       frames=frames, night=night, keep=keep)
     p = apply_preset(spot['preset'], shot.get('over'))
     MM.key_time(fps, frames)
     cam = lib.camera(tuple(cam_loc), tuple(tgt), spot['lens'])

@@ -14,7 +14,7 @@ from lib import C
 
 G = 'MetroGlobals'
 GLOBAL_DEFAULTS = dict(Night=0.0, Lit=0.1, Street=0.0, Neon=0.3, Traffic=0.6, Time=0.0, FogDensity=0.00025,
-                       FogHeight=600.0, FocusX=0.0, FocusY=0.0, FocusR=0.0, Signal=1.0)
+                       FogHeight=600.0, FocusX=0.0, FocusY=0.0, FocusR=0.0, Signal=1.0, LampR=0.0)
 FOG_COLOR = '#AFC0CC'
 
 
@@ -468,7 +468,8 @@ def traffic_mat():
 
 def road_mat():
     """Road surface: UV u = metres along, v = metres across (signed); attributes hw (half width) and led (0 sodium,
-    1 white). At night pools of light under the kerb lamps every 30 m, staggered on the two sides."""
+    1 white). At night pools of light under the kerb lamps every 30 m, staggered on the two sides, except within LampR
+    of the focus where metro_detail puts real lights."""
     b, m = new_mat('MF_road')
     if b is None:
         return m
@@ -491,7 +492,12 @@ def road_mat():
     du = b.mul(b.sub(b.fract(b.div(uu, 30.0)), 0.5), 30.0)
     dv = b.sub(av, b.sub(hw, 1.2))
     pool = b.exp(b.mul(b.add(b.mul(du, du), b.mul(dv, dv)), -1.0 / 60.0))
-    em = b.mul(b.mul(pool, g['Street']), 0.9)
+    # painted pools only beyond LampR: nearer the camera real lamps light the street
+    pos = b.node('ShaderNodeNewGeometry').outputs['Position']
+    px, py, _ = b.sep(pos)
+    ddx, ddy = b.sub(px, g['FocusX']), b.sub(py, g['FocusY'])
+    far = b.gt(b.add(b.mul(ddx, ddx), b.mul(ddy, ddy)), b.mul(g['LampR'], g['LampR']))
+    em = b.mul(b.mul(b.mul(pool, g['Street']), 0.9), far)
     col = b.mixc(led, '#FF9A45', '#FFE4C2')
     sh = principled(b, base, b.add(0.62, b.mul(track, -0.2)), 0.0, 0.5, col, em)
     return finish(m, b, sh)
@@ -538,7 +544,21 @@ def tree_mat():
     r = b.attr('brnd')
     base = b.mixc(r, '#2F4A22', '#5C7432')
     base = b.mixc(b.gt(r, 0.86), base, '#7A6A2E')
-    sh = principled(b, base, 0.9, 0.0, 0.3)
+    # leaf clusters: light and dark speckle and a strong small-scale bump
+    tc = b.node('ShaderNodeTexCoord')
+    lf = b.node('ShaderNodeTexVoronoi')
+    lf.inputs['Scale'].default_value = 3.5
+    b.L.new(tc.outputs['Object'], lf.inputs['Vector'])
+    nz = b.node('ShaderNodeTexNoise')
+    nz.inputs['Scale'].default_value = 1.2
+    b.L.new(tc.outputs['Object'], nz.inputs['Vector'])
+    base = b.mixc(b.mul(lf.outputs['Distance'], 0.9), b.scalec(base, 1.25), b.scalec(base, 0.55))
+    base = b.mixc(b.mul(nz.outputs['Fac'], 0.5), base, b.scalec(base, 1.3))
+    bump = b.node('ShaderNodeBump')
+    bump.inputs['Strength'].default_value = 0.8
+    bump.inputs['Distance'].default_value = 0.15
+    b.L.new(lf.outputs['Distance'], bump.inputs['Height'])
+    sh = principled(b, base, 0.85, 0.0, 0.3, normal=bump.outputs['Normal'])
     return finish(m, b, sh)
 
 

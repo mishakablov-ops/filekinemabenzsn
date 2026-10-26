@@ -187,8 +187,7 @@ def blob(A, cx, cy, cz, r, rng, mat, at, squash=0.85):
     V, F = ico()
     vv = [(cx + x * r * (1 + rng.uniform(-0.18, 0.18)), cy + y * r * (1 + rng.uniform(-0.18, 0.18)),
            cz + z * r * squash * (1 + rng.uniform(-0.18, 0.18))) for x, y, z in V]
-    for a, b, c in F:
-        A.face([vv[a], vv[b], vv[c]], None, mat, at)
+    A.shared(vv, F, mat, at)
 
 
 def street_tree(A, D, x, y, z, rng, scale=1.0):
@@ -388,9 +387,11 @@ def lane_offsets(r):
     return [(sd * (1.0 + (k + 0.5) * lw), -sd) for sd in (-1, 1) for k in range(half)]
 
 
-def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, seed=11):
+def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, seed=11, keep=()):
+    """keep: camera paths [((x0, y0), (x1, y1), r)]: no trees, bins, poles or walkers there, the lens passes freely."""
     import time
     t0 = time.time()
+    kept = lambda x, y, rr=0.0: any(dist_seg(x, y, a, b)[0] < r + rr for a, b, r in keep)
     D = dmats(M)
     rng = random.Random(seed)
     fx, fy = focus
@@ -455,7 +456,7 @@ def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, s
                 lamp_near = min(abs(((uu - (0 if side < 0 else 15)) + 15) % 30 - 15), 99)
                 if in_span(uu, 6.0) and lamp_near > 3.0 and rng.random() < p_tree:
                     x, y = P(uu, side * (hw + 1.5))
-                    if math.hypot(x - fx, y - fy) > 4:
+                    if math.hypot(x - fx, y - fy) > 4 and not kept(x, y, 1.8):
                         Tr.prism(MB.ccw([(x - 0.7, y - 0.7), (x + 0.7, y - 0.7), (x + 0.7, y + 0.7), (x - 0.7, y + 0.7)]), 0.15, 0.17, D['pit'])
                         street_tree(Tr, D, x, y, 0.17, rng)
                         st['trees'] += 1
@@ -472,8 +473,8 @@ def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, s
             # bins, hydrants, newspaper boxes
             uu = lo + rng.uniform(0, 20)
             while uu < hi:
-                if in_span(uu, 4.0):
-                    x, y = P(uu, side * (hw + 0.8))
+                x, y = P(uu, side * (hw + 0.8))
+                if in_span(uu, 4.0) and not kept(x, y, 1.0):
                     k = rng.random()
                     if k < 0.45:
                         A.cyl(x, y, 0.15, 0.28, 0.85, D['green'], seg=8)
@@ -505,7 +506,8 @@ def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, s
                 sh = MP.ST_ROAD / 2
                 for sv, su in ((-1, -1), (1, 1)):
                     x, y = P(c + su * (sh + 1.0), sv * (hw + 1.0))
-                    signal(A, D, x, y, hd + (0 if su < 0 else math.pi), hd - math.pi / 2 * sv, w)
+                    if not kept(x, y, 0.6):
+                        signal(A, D, x, y, hd + (0 if su < 0 else math.pi), hd - math.pi / 2 * sv, w)
                 # zebras across the avenue (both sides of the crossing) and across the street
                 for su in (-1, 1):
                     cu = c + su * (sh + 2.6)
@@ -521,8 +523,26 @@ def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, s
                         p0, p1 = P(uu, cv - 1.4), P(uu, cv + 1.4)
                         A.strip(p0, p1, 0.5, MB.ROAD_Z['street'] + 0.015, D['stripe'])
                         uu += 1.1
-    # metro entrance at the avenue corner nearest to the focus
-    metro_entrance(A, D, plan, focus, coll)
+    # metro entrance at the nearest station corner (stations every other avenue, every third street)
+    metro_entrance(A, D, plan, focus, coll, kept)
+    # promenades: benches facing the water, trees between the lamps
+    for y_bench, y_tree, face in ((9.0, 11.6, -1), (MP.RIVER_S - 9.0, MP.RIVER_S - 11.6, 1)):
+        if abs(fy - y_bench) > R:
+            continue
+        x = math.floor((fx - R) / 25.0) * 25.0 + 12.5
+        while x < fx + R:
+            if math.hypot(x - fx, y_tree - fy) > 4 and not kept(x, y_tree, 2.0):
+                street_tree(Tr, D, x, y_tree, 0.3, rng, scale=1.1)
+                st['trees'] += 1
+            for bx in (x - 6.0, x + 6.0):
+                if kept(bx, y_bench, 1.4):
+                    continue
+                A.box(bx, y_bench, 0.3, 1.9, 0.5, 0.45, D['wood'])
+                A.box(bx, y_bench - face * 0.25, 0.75, 1.9, 0.08, 0.45, D['wood'])
+                for sx in (-0.8, 0.8):
+                    A.box(bx + sx, y_bench, 0.3, 0.08, 0.5, 0.45, D['iron'])
+            x += 25.0
+    st['people'] = pedestrians(roads, focus, R, fps, frames, coll, rng, kept=kept)
     # --- moving cars: one object each, driven at constant speed
     moving.sort(key=lambda m: math.hypot(m[5](m[1], m[2])[0] - fx, m[5](m[1], m[2])[1] - fy))
     for k, (r, uu, off, dr, v, P, hd, zr) in enumerate(moving[:160]):
@@ -542,18 +562,80 @@ def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, s
                 for kp in fc.keyframe_points:
                     kp.interpolation = 'LINEAR'
         st['moving'] += 1
-    # --- night: real lights under the nearest lamps
+    # --- night: real lights under the nearest lamps (streets and the promenade lamps of metro_build, every 25 m)
+    for ly in (12.5, MP.RIVER_S - 12.5):
+        if abs(fy - ly) < R:
+            x = math.floor((fx - R) / 25.0) * 25.0
+            while x < fx + R:
+                lamps.append((x, ly, 4.3, 1.0))
+                x += 25.0
     if night > 0.3:
         lamps.sort(key=lambda l: math.hypot(l[0] - fx, l[1] - fy))
         for k, (x, y, z, led) in enumerate(lamps[:40]):
             lib.light('POINT', (x, y, z), energy=350 * night, color='#FFE2BC' if led else '#FFA65A', size=0.25,
                       name='MetroStreetLight', shadow=k < 12, coll=coll)
             st['lights'] += 1
+        if lamps:
+            far = lamps[:40][-1]
+            MM.set_global('LampR', math.hypot(far[0] - fx, far[1] - fy) + 1.0)
     A.build('MetroDetail', coll)
     C.build('MetroParked', coll)
     Tr.build('MetroTrees', coll)
     st['seconds'] = round(time.time() - t0, 1)
     return st
+
+
+def pedestrians(roads, focus, R, fps, frames, coll, rng, max_n=32, kept=lambda x, y, rr=0.0: False):
+    """People walking along the sidewalks and the promenade near the camera (people2: jointed legs, real gait)."""
+    try:
+        import people2
+    except ImportError:
+        return 0
+    fx, fy = focus
+    dur = frames / fps
+    cand = []
+    Rp = min(R, 110.0)
+    for r in roads:
+        if r['kind'] not in ('avenue', 'street', 'diagonal'):
+            continue
+        a, b = r['a'], r['b']
+        d, t = dist_seg(fx, fy, a, b)
+        if d > Rp:
+            continue
+        L, gaps = MB.road_gaps(r, roads)
+        sp = MB.spans(L, gaps)
+        ux, uy = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+        nx, ny = -uy, ux
+        hw, walk = r['road'] / 2, r['walk']
+        tc = t * L
+        uu = max(0.0, tc - Rp) + rng.uniform(0, 8)
+        while uu < min(L, tc + Rp):
+            if any(s0 + 2 < uu < s1 - 2 for s0, s1 in sp):
+                side = rng.choice((-1, 1))
+                off = side * (hw + rng.uniform(2.6, max(2.7, walk - 0.5)))
+                x, y = a[0] + ux * uu + nx * off, a[1] + uy * uu + ny * off
+                dr = rng.choice((-1, 1))
+                cand.append((x, y, 0.15, ux * dr, uy * dr))
+            uu += rng.uniform(5, 14)
+    for y0 in (5.0, MP.RIVER_S - 5.0):
+        if abs(fy - y0) < Rp:
+            x = fx - Rp
+            while x < fx + Rp:
+                dr = rng.choice((-1, 1))
+                cand.append((x, y0 + rng.uniform(-3, 3), 0.3, float(dr), 0.0))
+                x += rng.uniform(6, 15)
+    cand = [c for c in cand if math.hypot(c[0] - fx, c[1] - fy) > 3.0 and
+            not any(kept(c[0] + c[3] * 1.5 * dur * f, c[1] + c[4] * 1.5 * dur * f, 0.8) for f in (0.0, 0.5, 1.0))]
+    cand.sort(key=lambda c: math.hypot(c[0] - fx, c[1] - fy))
+    n = 0
+    for k, (x, y, z, dx, dy) in enumerate(cand[:max_n]):
+        h = rng.uniform(0.92, 1.07)
+        sp_ = rng.uniform(1.1, 1.55)
+        p = people2.person((x, y, z), math.atan2(dx, -dy), h, rng, coll, bag=rng.random() < 0.3, name=f'MetroWalker{k}')
+        people2.walk(p, sp_, rng.random(), h, fps)
+        lib.move_root(p, [(x, y, z), (x + dx * sp_ * dur * 1.1, y + dy * sp_ * dur * 1.1, z)], 0.0, sp_)
+        n += 1
+    return n
 
 
 def signal(A, D, x, y, hd_mast, hd_face, w):
@@ -572,16 +654,19 @@ def signal(A, D, x, y, hd_mast, hd_face, w):
                       0.22, 0.04, 0.22, m, rot=hd_face)
 
 
-def metro_entrance(A, D, plan, focus, coll):
+def metro_entrance(A, D, plan, focus, coll, kept=lambda x, y, rr=0.0: False):
     fx, fy = focus
-    aves = MP.avenues()
-    ax = min(aves, key=lambda x: abs(x - fx))
-    sts = MP.streets()
-    sy = min(sts, key=lambda y: abs(y - fy))
-    if fy < MP.CITY_Y0 or math.hypot(ax - fx, sy - fy) > 250:
+    aves, sts = MP.avenues(), MP.streets()
+    st = [(ax, sy, i, j) for i, ax in enumerate(aves) for j, sy in enumerate(sts) if i % 2 == 0 and j % 3 == 1 and
+          not MP.in_park(ax, sy)]
+    if fy < MP.CITY_Y0 or not st:
         return
-    x = ax + MP.AVE_ROAD / 2 + 3.2
-    y = sy + MP.ST_ROW / 2 + 8.0
+    ax, sy, i, j = min(st, key=lambda s: math.hypot(s[0] - fx, s[1] - fy))
+    sx, sy_ = (1, -1)[(i // 2 + j) % 2], (1, -1)[(i + j // 3) % 2]      # which corner of the crossing
+    x = ax + sx * (MP.AVE_ROAD / 2 + 3.2)
+    y = sy + sy_ * (MP.ST_ROW / 2 + 8.0)
+    if math.hypot(x - fx, y - fy) > 250 or kept(x, y, 4.0):
+        return
     # opening with railings, globe lamps and a red «М» on a pole
     A.box(x, y, 0.15, 2.2, 6.0, 0.02, D['dark'])
     for sx in (-1, 1):

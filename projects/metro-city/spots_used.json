@@ -1,0 +1,249 @@
+[
+ {
+  "reel": "places-demo",
+  "key": "avenue:demo/1",
+  "kind": "avenue",
+  "cam": [
+   252.5,
+   2071.8,
+   1.8
+  ],
+  "target": [
+   171.5,
+   1556.3,
+   106.7
+  ],
+  "lens": 27,
+  "preset": "night",
+  "desc": "проспект: тротуар, взгляд вдоль",
+  "seed": "demo/1#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "borough:demo/2",
+  "kind": "borough",
+  "cam": [
+   -564.0,
+   -1398.5,
+   1.7
+  ],
+  "target": [
+   -1101.9,
+   -1238.3,
+   6.8
+  ],
+  "lens": 23,
+  "preset": "golden",
+  "desc": "Боро: тротуар, взгляд вдоль",
+  "seed": "demo/2#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "lookup:demo/4",
+  "kind": "lookup",
+  "cam": [
+   -471.9,
+   726.1,
+   1.6
+  ],
+  "target": [
+   -360.0,
+   728.0,
+   257.0
+  ],
+  "lens": 21,
+  "preset": "golden",
+  "desc": "взгляд вверх вдоль башни 380 м",
+  "seed": "demo/4#1"
+ },
+ {
+  "reel": "places-demo",
+  "key": "waterfront:demo/5",
+  "kind": "waterfront",
+  "cam": [
+   245.8,
+   6.3,
+   2.0
+  ],
+  "target": [
+   839.6,
+   -79.8,
+   16.0
+  ],
+  "lens": 33,
+  "preset": "day",
+  "desc": "набережная, вдоль берега",
+  "seed": "demo/5#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "river:demo/7",
+  "kind": "river",
+  "cam": [
+   -2381.6,
+   -547.4,
+   43.0
+  ],
+  "target": [
+   387.9,
+   287.7,
+   80.4
+  ],
+  "lens": 33,
+  "preset": "dusk",
+  "desc": "над рекой, вдоль реки на город",
+  "seed": "demo/7#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "aerial:demo/8",
+  "kind": "aerial",
+  "cam": [
+   -1614.5,
+   1106.5,
+   602.4
+  ],
+  "target": [
+   -1200.0,
+   -350.0,
+   28.3
+  ],
+  "lens": 35,
+  "preset": "night",
+  "desc": "с высоты",
+  "seed": "demo/8#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "rooftop:demo/9",
+  "kind": "rooftop",
+  "cam": [
+   -843.0,
+   1833.5,
+   25.9
+  ],
+  "target": [
+   -620.0,
+   1560.0,
+   134.4
+  ],
+  "lens": 25,
+  "preset": "golden",
+  "desc": "крыша дома 23 м",
+  "seed": "demo/9#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "park:demo/12",
+  "kind": "park",
+  "cam": [
+   114.8,
+   2631.3,
+   1.9
+  ],
+  "target": [
+   120.0,
+   380.0,
+   198.4
+  ],
+  "lens": 27,
+  "preset": "golden",
+  "desc": "в парке",
+  "seed": "demo/12#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "street:demo/0",
+  "kind": "street",
+  "cam": [
+   1124.9,
+   2587.8,
+   1.6
+  ],
+  "target": [
+   571.6,
+   2498.9,
+   21.0
+  ],
+  "lens": 29,
+  "preset": "day",
+  "desc": "улица: тротуар, взгляд вдоль",
+  "seed": "demo/0#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "corner:demo/3",
+  "kind": "corner",
+  "cam": [
+   1187.3,
+   2294.0,
+   1.7
+  ],
+  "target": [
+   1308.2,
+   2389.2,
+   51.3
+  ],
+  "lens": 24,
+  "preset": "night",
+  "desc": "перекрёсток: угол тротуара, взгляд через перекрёсток",
+  "seed": "demo/3#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "skyline:demo/6",
+  "kind": "skyline",
+  "cam": [
+   2966.0,
+   -432.3,
+   199.6
+  ],
+  "target": [
+   -421.9,
+   517.1,
+   153.7
+  ],
+  "lens": 31,
+  "preset": "golden",
+  "desc": "скайлайн (east)",
+  "seed": "demo/6#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "bridge:demo/10",
+  "kind": "bridge",
+  "cam": [
+   554.0,
+   6.7,
+   2.0
+  ],
+  "target": [
+   1006.4,
+   -183.7,
+   44.2
+  ],
+  "lens": 26,
+  "preset": "golden",
+  "desc": "Новый мост с набережной города",
+  "seed": "demo/10#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "deck:demo/11",
+  "kind": "deck",
+  "cam": [
+   949.0,
+   -340.4,
+   33.7
+  ],
+  "target": [
+   1011.9,
+   559.6,
+   92.3
+  ],
+  "lens": 23,
+  "preset": "dusk",
+  "desc": "на пешеходной части: Новый мост",
+  "seed": "demo/11#0"
+ }
+]
