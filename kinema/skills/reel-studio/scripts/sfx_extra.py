@@ -308,9 +308,45 @@ def _():
     return widen(reverb(x, 0.25, 2.0, 0.6))
 
 
+@item("foley", "door-knock", "three firm knocks on a wooden door, heard from inside a quiet room (1.4 s)", "foley door knock wood")
+def _():
+    seed(97)
+    d = 1.4
+    x = np.zeros(n_of(d))
+    for at, g in ((0.03, 1.0), (0.27, 0.88), (0.5, 1.05)):
+        kd = 0.32
+        body = (sine(log_sweep(150, 105, kd), kd) * env_exp(kd, 0.07, 0.001) * 1.1 + sine(232.0, kd) * env_exp(kd, 0.045, 0.001) * 0.45)
+        wood = (bandpass(noise(kd), 640, 0.6) * env_exp(kd, 0.035, 0.0005) * 0.9 + bandpass(noise(kd), 1350, 0.5) * env_exp(kd, 0.02, 0.0005) * 0.45)
+        tick = highpass(noise(kd), 2600) * env_exp(kd, 0.004, 0.0002) * 0.35
+        x = place(x, (body + wood + tick) * g, at)[: n_of(d)]
+    return widen(reverb(softclip(x * 1.2, 1.2), 0.22, 0.55, 0.65))
+
+
+def howl(d: float, f0: float, start: float, s: int) -> np.ndarray:
+    """one wolf: slides up, holds with a slow vibrato, falls away; harmonics + a little breath"""
+    seed(s)
+    t = np.arange(n_of(d)) / SR
+    u = np.clip((t - start) / max(0.01, d - start), 0, 1)
+    rise = 1 - np.exp(-np.clip(t - start, 0, None) / 0.22)
+    fall = np.clip((u - 0.5) / 0.5, 0, 1) ** 1.3
+    f = f0 * (0.68 + 0.34 * rise - 0.03 * u - 0.36 * fall) * (1 + 0.012 * np.sin(2 * np.pi * 5.3 * t) * np.clip((t - start - 0.7) / 0.5, 0, 1))
+    tone = sum(sine(f * h, d) * a for h, a in ((1, 1.0), (2, 0.42), (3, 0.16), (4, 0.06)))
+    breath = bandpass(noise(d), 2 * f0, 0.8) * 0.06
+    env = np.clip((t - start) / 0.38, 0, 1) ** 1.5 * (1 - np.clip((u - 0.62) / 0.38, 0, 1)) ** 1.6
+    return bandpass(tone + breath, 900, 2.2) * env
+
+
+@item("ambience", "wolf-howl", "two wolves howling far away over an empty city, long outdoor tail (4 s)", "ambience wolf howl animal night")
+def _():
+    d = 4.0
+    x = howl(d, 560.0, 0.0, 98) + howl(d, 630.0, 0.95, 99) * 0.5
+    return widen(reverb(lowpass(x, 4200), 0.42, 2.4, 0.55), 18.0)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--only", nargs="*", help="generate just these ids (the rest of the library stays untouched)")
     a = ap.parse_args()
     if a.list:
         for e in EXTRA:
@@ -319,6 +355,8 @@ def main():
     ix = L.load_index()
     have = {e["id"]: e for e in ix}
     for e in EXTRA:
+        if a.only and e["name"] not in a.only:
+            continue
         x = np.asarray(e["fn"](), dtype=np.float64)
         x = to_stereo(x)
         rel = f"sfx/{e['category']}/{e['name']}.wav"
@@ -335,7 +373,7 @@ def main():
         print(f"  {e['category']:9} {e['name']:20} {dur:5.2f}s  peak {meta['peak']:.2f}s")
     L.save_index(ix)
     L.write_docs(ix)
-    print(f"{len(EXTRA)} extra sounds")
+    print(f"{len(a.only) if a.only else len(EXTRA)} extra sounds")
 
 
 if __name__ == "__main__":

@@ -755,3 +755,58 @@ export const PastryCase: React.FC<{ p?: V3; rotY?: number; w?: number }> = ({ p,
     </mesh>
   </G>
 );
+
+// ================================================================== ANIMALS
+/** Low-poly wolf (~0.8 m at the shoulder, 1.4 m long), faces +z. t = seconds, speed m/s (0 = stands, head turns).
+ *  Diagonal gait: front-left with back-right, stride ~1.3 m; eyes catch a little warm light. */
+export const Wolf: React.FC<{ p?: V3; rotY?: number; t?: number; speed?: number; seed?: number; c?: string }> = ({ p = [0, 0, 0], rotY = 0, t = 0, speed = 1.1, seed = 0, c }) => {
+  const fur = c ?? ["#77706A", "#6B645E", "#837A70"][seed % 3];
+  const dark = "#4E4843";
+  const light = "#A39A8E";
+  const ph = speed > 0 ? (t * speed * Math.PI * 2) / 1.3 + seed : 0;
+  const sw = speed > 0 ? 0.42 : 0;
+  const bob = speed > 0 ? Math.abs(Math.sin(ph)) * 0.025 : 0;
+  const look = speed > 0 ? Math.sin(ph * 0.5) * 0.06 : Math.sin(t * 0.7 + seed) * 0.35;
+  const leg = (x: number, z: number, a: number, k: string) => (
+    <group key={k} position={[x, 0.6, z]} rotation={[a, 0, 0]}>
+      <Cyl rt={0.05} rb={0.04} h={0.36} p={[0, -0.16, 0]} c={fur} seg={8} />
+      <Cyl rt={0.035} rb={0.03} h={0.26} p={[0, -0.44, 0.015]} c={fur} seg={8} />
+      <Box s={[0.08, 0.05, 0.12]} p={[0, -0.575, 0.04]} c={dark} rad={0.02} />
+    </group>
+  );
+  return (
+    <group position={p} rotation={[0, rotY, 0]}>
+      <group position={[0, bob, 0]}>
+        {/* body: capsule along z, deeper chest, lighter belly */}
+        <Cap r={0.19} len={0.62} p={[0, 0.74, -0.04]} r3={[Math.PI / 2, 0, 0]} c={fur} />
+        <Ball r={0.25} p={[0, 0.79, 0.3]} s={[0.9, 1.05, 1.0]} c={fur} />
+        <Ball r={0.16} p={[0, 0.62, 0.12]} s={[1, 0.7, 1.9]} c={light} />
+        <Box s={[0.2, 0.06, 0.7]} p={[0, 0.93, -0.02]} c={dark} rad={0.03} />
+        {/* neck + head */}
+        <group position={[0, 0.92, 0.46]} rotation={[0, look, 0]}>
+          <Box s={[0.22, 0.26, 0.24]} p={[0, 0.02, 0.02]} r={[-0.5, 0, 0]} c={fur} rad={0.07} />
+          <Box s={[0.27, 0.24, 0.28]} p={[0, 0.13, 0.17]} c={fur} rad={0.08} />
+          <Box s={[0.15, 0.12, 0.22]} p={[0, 0.07, 0.38]} c={light} rad={0.04} />
+          <Ball r={0.032} p={[0, 0.115, 0.49]} c="#1E1C1B" detail={0} />
+          {[-1, 1].map((sx) => (
+            <React.Fragment key={sx}>
+              <mesh position={[sx * 0.085, 0.31, 0.12]} rotation={[-0.15, 0, sx * -0.18]} castShadow material={mat(dark, 0.9)}>
+                <coneGeometry args={[0.055, 0.15, 4]} />
+              </mesh>
+              <Ball r={0.022} p={[sx * 0.075, 0.17, 0.31]} c="#C9A24A" emissive="#E0A040" ei={0.8} detail={0} />
+            </React.Fragment>
+          ))}
+        </group>
+        {/* tail hangs low, sways with the walk */}
+        <group position={[0, 0.82, -0.42]} rotation={[2.45, Math.sin(ph) * 0.12, 0]}>
+          <Cyl rt={0.07} rb={0.04} h={0.48} p={[0, 0.24, 0]} c={fur} seg={8} />
+          <Ball r={0.05} p={[0, 0.48, 0]} c={dark} detail={0} />
+        </group>
+      </group>
+      {leg(-0.11, 0.33, Math.sin(ph) * sw, "fl")}
+      {leg(0.11, 0.33, Math.sin(ph + Math.PI) * sw, "fr")}
+      {leg(-0.11, -0.33, Math.sin(ph + Math.PI) * sw, "bl")}
+      {leg(0.11, -0.33, Math.sin(ph) * sw, "br")}
+    </group>
+  );
+};

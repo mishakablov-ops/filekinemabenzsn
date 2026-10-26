@@ -1,4 +1,4 @@
-# Sound library (53 SFX + 8 music beds)
+# Sound library (55 SFX + 8 music beds)
 
 Base library: noise-based sounds synthesized by `scripts/sfx_gen.py` (whooshes, swipes, impacts, risers, paper/cards, typing, ambiences). The tonal synthetic blips (clicks, pops, ticks, chimes, coins, beeps, glitches) sounded 8-bit and are **retired** (`scripts/sfx_library.py`, list `RETIRED`): files moved to `assets/sfx-retired/`, ids kept as aliases → silence or the imported pack's sound. Music: `scripts/music_gen.py`, loudness-normalised to −16 LUFS, AAC.
 
@@ -30,7 +30,7 @@ Each bed has `music/<id>.beats.json` (beats, bars, sections, drops). Your own tr
 
 ## SFX by category
 
-53 playable sounds (8 from the imported pack). Synthetic tonal blips (clicks, pops, ticks, chimes, coins, beeps, glitches) are retired: their ids still work in specs and blocks but play the pack's sound of the same category, or nothing until a pack is imported (`scripts/sfx_library.py import <folder|zip>`). `sfx_library.py status` shows the current mapping.
+55 playable sounds (8 from the imported pack). Synthetic tonal blips (clicks, pops, ticks, chimes, coins, beeps, glitches) are retired: their ids still work in specs and blocks but play the pack's sound of the same category, or nothing until a pack is imported (`scripts/sfx_library.py import <folder|zip>`). `sfx_library.py status` shows the current mapping.
 
 ### whoosh (0)
 - also accepted: `whoosh-short` (silent), `whoosh-medium` (silent), `whoosh-long` (silent), `whoosh-up` (silent), `whoosh-down` (silent), `whoosh-airy` (silent), `whoosh-deep` (silent), `whoosh-pan-lr` (silent), `whoosh-pan-rl` (silent), `whoosh-double` (silent), `whoosh-reverse` (silent), `whoosh-cloud` (silent), `whoosh-short-low` (silent), `whoosh-short-high` (silent)
@@ -97,7 +97,7 @@ Each bed has `music/<id>.beats.json` (beats, bars, sections, drops). Your own tr
 - `pk-shimmer-ui-dissolvre-sfx` — pack: UI dissolvre sfx.MP3 (0.789s, peak 0.092s)
 - also accepted: `sparkle` (silent), `sparkle-rise`→`pk-shimmer-ui-dissolvre-sfx`, `shimmer-pad`→`pk-shimmer-ui-dissolvre-sfx`, `star` (silent), `magic-wand`→`pk-shimmer-ui-dissolvre-sfx`
 
-### foley (7)
+### foley (8)
 - `geiger-low` — Geiger counter, background level: sparse clicks (3 s) (3.0s, peak 2.615s)
 - `geiger-high` — Geiger counter near a hot spot: dense crackle (3 s) (3.0s, peak 0.066s)
 - `geiger-rise` — Geiger counter approaching contamination: clicks speed up (4 s) (4.0s, peak 3.804s)
@@ -105,6 +105,7 @@ Each bed has `music/<id>.beats.json` (beats, bars, sections, drops). Your own tr
 - `door-heavy-close` — heavy steel door slams shut, bolt engages, concrete room (2.5 s) (3.94s, peak 0.024s)
 - `door-creak` — slow heavy door creak (2 s) (3.11s, peak 0.669s)
 - `switch-click` — flashlight / lantern switch click (0.25 s) (0.26s, peak 0.011s)
+- `door-knock` — three firm knocks on a wooden door, heard from inside a quiet room (1.4 s) (2.015s, peak 0.518s)
 - also accepted: `radio-static` (silent), `radio-voice` (silent), `radio-tune` (silent), `steps-concrete` (silent), `steps-debris` (silent), `tape-rip` (silent), `breath-mask` (silent), `can-open` (silent), `water-pour` (silent)
 
 ### alarm (2)
@@ -125,13 +126,14 @@ Each bed has `music/<id>.beats.json` (beats, bars, sections, drops). Your own tr
 - `tone-rise-short` — short tonal rise into cut (0.5s, peak 0.5s)
 - also accepted: `sting-logo` (silent), `sting-soft` (silent), `sting-dark` (silent), `sting-bright` (silent)
 
-### ambience (6)
+### ambience (7)
 - `room-tone` — quiet room tone loop, glue under voice (7.0s, peak 0.0s)
 - `space-drone` — deep space drone loop, night / planet scenes (10.0s, peak 0.0s)
 - `city-hum` — low city hum bed, map / city flyovers (7.0s, peak 0.0s)
 - `terminal-hum` — faint computer fan hum (7.0s, peak 0.0s)
 - `rumble-distant` — distant rolling rumble, aftershock thunder (6 s) (8.76s, peak 3.426s)
 - `bunker-tone` — shelter room tone: low hum, faint vent air, distant creaks (8 s) (8.0s, peak 3.31s)
+- `wolf-howl` — two wolves howling far away over an empty city, long outdoor tail (4 s) (6.65s, peak 2.112s)
 - also accepted: `air-high` (silent), `wind` (silent), `wind-ash` (silent)
 
 ### transition (1)

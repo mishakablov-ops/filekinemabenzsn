@@ -2791,5 +2791,36 @@
   "dur": 6.21,
   "peak": 3.782,
   "source": "gen"
+ },
+ {
+  "id": "door-knock",
+  "file": "sfx/foley/door-knock.wav",
+  "category": "foley",
+  "desc": "three firm knocks on a wooden door, heard from inside a quiet room (1.4 s)",
+  "tags": [
+   "foley",
+   "door",
+   "knock",
+   "wood"
+  ],
+  "dur": 2.015,
+  "peak": 0.518,
+  "source": "gen"
+ },
+ {
+  "id": "wolf-howl",
+  "file": "sfx/ambience/wolf-howl.wav",
+  "category": "ambience",
+  "desc": "two wolves howling far away over an empty city, long outdoor tail (4 s)",
+  "tags": [
+   "ambience",
+   "wolf",
+   "howl",
+   "animal",
+   "night"
+  ],
+  "dur": 6.65,
+  "peak": 2.112,
+  "source": "gen"
  }
 ]

@@ -144,7 +144,7 @@ export const THREE_BLOCKS: Record<string, BlockDef> = {
   }),
   Globe3D: defineBlock({
     C: Globe3D, cat: "3d", pos: "full", self: true, sfx: "whoosh-deep",
-    desc: "Earth with real coastlines. look: dots|solid|night|light. focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.",
+    desc: "Earth with real coastlines. look: dots|solid|night|light|dusk (warm dark Earth). cities:true = warm night lights of ~140 big cities, citiesOut (anchor/seconds) switches them off city by city within ~1.5 s (negative = already dark). focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.",
     events: (p, t) => [
       ...((p.markers ?? []) as { at?: unknown }[]).map((m) => ({ f: m.at !== undefined ? t.at(m.at) : 0, id: "ping-sonar", vol: 0.5 })),
       ...((p.arcs ?? []) as { at?: unknown }[]).map((a, i) => ({ f: a.at !== undefined ? t.at(a.at) : Math.round((0.4 + i * 0.5) * t.fps), id: "whoosh-up", vol: 0.5 })),
@@ -167,7 +167,7 @@ export const THREE_BLOCKS: Record<string, BlockDef> = {
     exampleDur: 4,
   }),
   Shapes3D: defineBlock({ C: Shapes3D, cat: "3d", pos: "full", self: true, sfx: "reveal-glow", desc: "Glossy iridescent hero objects: blob|torus|knot|rings|pills|cubes, glass:true for transmission. Use sparingly — abstract shapes read as generic.", example: { kind: "rings" } }),
-  Bars3D: defineBlock({ C: Bars3D, cat: "3d", pos: "full", self: true, sfx: "riser-short", desc: "3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front. Last bar uses the accent.", example: { bars: [{ label: "янв", value: 120 }, { label: "фев", value: 210 }, { label: "мар", value: 340 }, { label: "апр", value: 610 }], unit: "" } }),
+  Bars3D: defineBlock({ C: Bars3D, cat: "3d", pos: "full", self: true, sfx: "riser-short", desc: "3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front or camera keys [{t,pos,target,fov}]. Last bar uses the accent.", example: { bars: [{ label: "янв", value: 120 }, { label: "фев", value: 210 }, { label: "мар", value: 340 }, { label: "апр", value: 610 }], unit: "" } }),
   Tunnel3D: defineBlock({ C: Tunnel3D, cat: "3d", pos: "full", self: true, sfx: "trans-zoom-through", desc: "Flying through glowing rings/squares/hexes. Intros, 'deep dive' moments, transitions.", example: { shape: "hex" } }),
   StarRain: defineBlock({ C: StarRain, cat: "3d", pos: "full", self: true, sfx: "sparkle-rise", desc: "3D stars / coins / hearts raining and tumbling (GitHub stars, rewards, likes). Transparent — overlay on any scene.", example: { kind: "star" } }),
   Cards3D: defineBlock({ C: Cards3D, cat: "3d", pos: "full", self: true, sfx: "swipe-soft", desc: "CSS-3D (crisp HTML) cards floating in depth with a moving camera. items:[{block,props|src,x,y,z,rx,ry,w,h,at}], cam:{from:[x,y,z],to,rx:[a,b],ry:[a,b]}.", example: { items: [{ block: "Title", props: { text: "Один" }, x: -250, z: -200 }, { block: "Title", props: { text: "Два" }, x: 250, z: 0 }] } }),
@@ -180,7 +180,7 @@ export const THREE_BLOCKS: Record<string, BlockDef> = {
   }),
   Street3D: defineBlock({
     C: Street3D, cat: "3d", pos: "full", self: true, sfx: "whoosh-medium",
-    desc: "Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,look:{suit:true}}] for a lone survivor.",
+    desc: "Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,rotY,pose,look:{suit:true}}] for a lone survivor. stopped:true = cars stand where they stopped, every other driver door open (people:0 = everyone vanished); lightsOut (anchor/seconds) = windows, lamps and headlights die out over ~1.2 s; stars:true = night sky with a Milky Way band; wolves:[{x,z,speed,dir,seed}] = low-poly wolves trotting.",
     example: { time: "evening", cam: "eye" },
     exampleDur: 4,
   }),

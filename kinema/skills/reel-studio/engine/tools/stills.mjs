@@ -31,9 +31,11 @@ const out = path.resolve(args.out ?? path.join(root, "out", "stills"));
 const scale = parseFloat(args.scale ?? "0.5");
 fs.mkdirSync(out, { recursive: true });
 
+// GPU-less machines (cloud, VM): REMOTION_GL=swangle renders WebGL on the CPU (SwiftShader)
+const gl = process.env.REMOTION_GL || "angle";
 const serveUrl = await bundle({ entryPoint: path.join(root, "src", "index.ts"), publicDir: path.join(root, "public") });
-const browser = await openBrowser("chrome", { chromiumOptions: { gl: "angle" } });
-const composition = await selectComposition({ serveUrl, id: comp, inputProps, puppeteerInstance: browser, chromiumOptions: { gl: "angle" } });
+const browser = await openBrowser("chrome", { chromiumOptions: { gl } });
+const composition = await selectComposition({ serveUrl, id: comp, inputProps, puppeteerInstance: browser, chromiumOptions: { gl } });
 const { fps, durationInFrames } = composition;
 let frames = [];
 if (args.frames) frames = args.frames.split(",").map(Number);
@@ -47,7 +49,7 @@ const files = [];
 for (const frame of frames) {
   const file = path.join(out, `f${String(frame).padStart(5, "0")}.png`);
   const before = qaLog.length;
-  await renderStill({ composition, serveUrl, output: file, frame, inputProps, scale, puppeteerInstance: browser, chromiumOptions: { gl: "angle" }, overwrite: true, onBrowserLog });
+  await renderStill({ composition, serveUrl, output: file, frame, inputProps, scale, puppeteerInstance: browser, chromiumOptions: { gl }, overwrite: true, onBrowserLog });
   files.push(file);
   for (let k = before; k < qaLog.length; k++) if (qaLog[k].frame < 0) qaLog[k].frame = frame;
   // several measurements per frame (late-loading assets): keep only the LAST issues entry of this frame

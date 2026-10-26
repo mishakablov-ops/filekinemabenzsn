@@ -23,7 +23,7 @@
  {
   "id": "Counter",
   "cat": "text",
-  "desc": "Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд».",
+  "desc": "Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд» (shared tail after a space: «день|дня|дней до плесени»); labelSize px.",
   "pos": "center",
   "overlay": false,
   "example": {
@@ -624,6 +624,24 @@
   }
  },
  {
+  "id": "ChatScreen",
+  "cat": "ui",
+  "desc": "Messenger dialog (390×844, dark): contact name/sub/avatar letter, messages[{text, me, at, time, failAt}] — bubbles pop in at at; failAt turns a sent message into red «!» + «Не доставлено» (shows «Отправка…» before). Put it on IPhone17/Phone3D/Phone screens.",
+  "pos": "stage",
+  "overlay": false,
+  "example": {
+   "name": "Мама",
+   "messages": [
+    {
+     "text": "Мам, ты где?",
+     "me": true,
+     "at": 0.3,
+     "failAt": 1.6
+    }
+   ]
+  }
+ },
+ {
   "id": "LockScreen",
   "cat": "ui",
   "desc": "Phone lock screen (390×844) with notifications; actions:['Отклонить','Разрешить'] + pressAt for an approval moment.",
@@ -904,7 +922,7 @@
  {
   "id": "TikTokProfile",
   "cat": "social",
-  "desc": "The channel's TikTok profile (light theme, 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').",
+  "desc": "The channel's TikTok profile (light theme, dark: true for TikTok's dark theme; 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').",
   "pos": "stage",
   "overlay": false,
   "example": {
@@ -1305,7 +1323,7 @@
  {
   "id": "Globe3D",
   "cat": "3d",
-  "desc": "Earth with real coastlines. look: dots|solid|night|light. focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.",
+  "desc": "Earth with real coastlines. look: dots|solid|night|light|dusk (warm dark Earth). cities:true = warm night lights of ~140 big cities, citiesOut (anchor/seconds) switches them off city by city within ~1.5 s (negative = already dark). focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.",
   "pos": "full",
   "overlay": false,
   "example": {
@@ -1396,7 +1414,7 @@
  {
   "id": "Bars3D",
   "cat": "3d",
-  "desc": "3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front. Last bar uses the accent.",
+  "desc": "3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front or camera keys [{t,pos,target,fov}]. Last bar uses the accent.",
   "pos": "full",
   "overlay": false,
   "example": {
@@ -1497,7 +1515,7 @@
  {
   "id": "Street3D",
   "cat": "3d",
-  "desc": "Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,look:{suit:true}}] for a lone survivor.",
+  "desc": "Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,rotY,pose,look:{suit:true}}] for a lone survivor. stopped:true = cars stand where they stopped, every other driver door open (people:0 = everyone vanished); lightsOut (anchor/seconds) = windows, lamps and headlights die out over ~1.2 s; stars:true = night sky with a Milky Way band; wolves:[{x,z,speed,dir,seed}] = low-poly wolves trotting.",
   "pos": "full",
   "overlay": false,
   "example": {

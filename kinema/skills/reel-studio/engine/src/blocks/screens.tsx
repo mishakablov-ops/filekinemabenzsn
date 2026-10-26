@@ -356,6 +356,60 @@ const LockScreen: React.FC<{ time?: string; date?: string; notes?: { app: string
   );
 };
 
+// ------------------------------------------------------------------ ChatScreen: messenger dialog (390×844)
+// messages[].at — bubble appears; failAt — red «!» + «Не доставлено» (before it: «Отправка…»)
+const ChatScreen: React.FC<{
+  name?: string; sub?: string; avatar?: string; time?: string;
+  messages?: { text: string; me?: boolean; at?: unknown; time?: string; failAt?: unknown; status?: "sent" | "read" }[];
+}> = ({ name = "Мама", sub = "была в сети вчера", avatar, time = "8:14", messages = [] }) => {
+  const { f, fps, at } = useBlockTime();
+  const s = SCR.dark;
+  const RED = "#D9574A";
+  return (
+    <div style={{ width: 390, height: 844, position: "relative", overflow: "hidden", background: s.bg, fontFamily: "Inter", color: s.ink, display: "flex", flexDirection: "column" }}>
+      <StatusBar s={s} time={time} />
+      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 16px 14px", borderBottom: `1px solid ${s.line}` }}>
+        <span style={{ font: "500 30px Inter", color: s.accent, lineHeight: 1, marginTop: -4 }}>‹</span>
+        <div style={{ width: 44, height: 44, borderRadius: 22, background: "#5A4A3E", display: "flex", alignItems: "center", justifyContent: "center", font: "700 19px Inter", color: "#EDE3D4" }}>{avatar ?? name[0]}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ font: "700 18px Inter" }}>{name}</div>
+          <div style={{ font: "500 13px Inter", color: s.muted }}>{sub}</div>
+        </div>
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 8, padding: "0 14px 18px" }}>
+        {messages.map((m, i) => {
+          const st = m.at !== undefined ? at(m.at) : Math.round(i * 0.6 * fps);
+          if (f < st) return null;
+          const p = clamp01(springAt(f - st, fps, 0, SPR.ui));
+          const ff = m.failAt !== undefined ? at(m.failAt) : null;
+          const failed = ff !== null && f >= ff;
+          const pf = failed ? clamp01(springAt(f - (ff as number), fps, 0, SPR.ui)) : 0;
+          const sending = ff !== null && !failed;
+          return (
+            <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.me ? "flex-end" : "flex-start", opacity: p, transform: `translateY(${(1 - p) * 24}px) scale(${lerp(0.94, 1, p)})`, transformOrigin: m.me ? "100% 100%" : "0 100%" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexDirection: m.me ? "row" : "row-reverse" }}>
+                {failed ? (
+                  <div style={{ width: 24, height: 24, borderRadius: 12, background: RED, color: "#1E1712", font: "800 16px Inter", display: "flex", alignItems: "center", justifyContent: "center", transform: `scale(${lerp(0.3, 1, pf)})` }}>!</div>
+                ) : null}
+                <div style={{ maxWidth: 270, padding: "10px 15px", borderRadius: 20, borderBottomRightRadius: m.me ? 6 : 20, borderBottomLeftRadius: m.me ? 20 : 6, background: m.me ? s.accent : s.chip, color: m.me ? "#1E1712" : s.ink, font: "500 17px Inter", lineHeight: 1.3, opacity: failed ? 0.72 : 1 }}>
+                  {m.text}
+                </div>
+              </div>
+              <div style={{ font: "600 12px Inter", marginTop: 4, padding: "0 4px", color: failed ? RED : s.muted, opacity: failed ? pf : 1 }}>
+                {failed ? "Не доставлено" : sending ? `Отправка${".".repeat(1 + (Math.floor((f - st) / (fps * 0.3)) % 3))}` : m.time ?? (m.me ? (m.status === "read" ? "Прочитано" : "Доставлено") : "")}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px 34px", borderTop: `1px solid ${s.line}` }}>
+        <div style={{ flex: 1, height: 40, borderRadius: 20, border: `1px solid ${s.line}`, background: s.surface, display: "flex", alignItems: "center", padding: "0 16px", font: "500 16px Inter", color: s.muted }}>Сообщение</div>
+        <div style={{ width: 40, height: 40, borderRadius: 20, background: s.chip }} />
+      </div>
+    </div>
+  );
+};
+
 // ------------------------------------------------------------------ SocialProfile (generic — CTA end card)
 const SocialProfile: React.FC<{ handle: string; name?: string; bio?: string[]; link?: string; avatar?: string; tiles?: { title: string; sub?: string; color?: string; src?: string }[]; pressAt?: unknown; posts?: number; followers?: number; following?: number }> = ({
   handle, name, bio = [], link, avatar, tiles = [], pressAt, posts = 48, followers = 12400, following = 31,
@@ -409,11 +463,12 @@ const SocialProfile: React.FC<{ handle: string; name?: string; bio?: string[]; l
   );
 };
 
-// ------------------------------------------------------------------ TikTokProfile: the channel's real TikTok profile (light theme, 390×844)
+// ------------------------------------------------------------------ TikTokProfile: the channel's real TikTok profile (light or dark theme, 390×844)
 // Layout follows TikTok's 2025 own-profile screen: big name + handle on the left, avatar on the right, bio, link,
 // tab icons, 3-column video grid, bottom nav. highlightAt draws an accent frame round bio+link ("ссылка в шапке профиля").
-const TT = { bg: "#FBFAF8", ink: "#161823", muted: "#75767C", line: "rgba(22,24,35,0.12)", red: "#FE2C55", cyan: "#20D5EC" };
-const Ico: React.FC<{ d: string; size?: number; sw?: number; fill?: string; color?: string; vb?: number }> = ({ d, size = 22, sw = 2, fill = "none", color = TT.ink, vb = 24 }) => (
+const TT = { bg: "#FBFAF8", ink: "#161823", muted: "#75767C", line: "rgba(22,24,35,0.12)", red: "#FE2C55", cyan: "#20D5EC", icon: "#5A5B62", badge: "#4A4B52", onAccent: "#FBFAF8" };
+const TT_DARK: typeof TT = { bg: "#121212", ink: "#F1F1F2", muted: "#9C9CA3", line: "rgba(255,255,255,0.14)", red: "#FE2C55", cyan: "#20D5EC", icon: "#B4B4BA", badge: "#CFCFD4", onAccent: "#FFFFFF" };
+const Ico: React.FC<{ d: string; size?: number; sw?: number; fill?: string; color?: string; vb?: number }> = ({ d, size = 22, sw = 2, fill = "none", color = "currentColor", vb = 24 }) => (
   <svg width={size} height={size} viewBox={`0 0 ${vb} ${vb}`} fill={fill} stroke={fill === "none" ? color : "none"} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
     <path d={d} fill={fill === "none" ? "none" : color} />
   </svg>
@@ -439,10 +494,13 @@ const TikTokProfile: React.FC<{
   stats?: { following: string; followers: string; likes: string } | null; highlightAt?: unknown; time?: string;
   /** a new video lands in the first grid cell at `at` (cover image, a label like "ЧАСТЬ 2", a NEW badge) */
   newTile?: { src: string; label?: string; at?: unknown };
+  /** TikTok's dark theme (near-black screen, light text) */
+  dark?: boolean;
 }> = ({
   // defaults = the channel set up by scripts/setup.py (engine/src/brand.json)
-  name = BRAND.name, handle = BRAND.handle, badge = BRAND.badge, bio = BRAND.bio, link = BRAND.link || undefined, avatar = BRAND.avatar, tiles = BRAND.tiles, pinned = 0, stats = null, highlightAt, time = "9:41", newTile,
+  name = BRAND.name, handle = BRAND.handle, badge = BRAND.badge, bio = BRAND.bio, link = BRAND.link || undefined, avatar = BRAND.avatar, tiles = BRAND.tiles, pinned = 0, stats = null, highlightAt, time = "9:41", newTile, dark = false,
 }) => {
+  const T = dark ? TT_DARK : TT;
   const { f, fps, at } = useBlockTime();
   const nf = newTile ? (newTile.at !== undefined ? at(newTile.at) : 0) : 1e9;
   const nIn = E.out(clamp01((f - nf) / (0.5 * fps)));
@@ -453,17 +511,17 @@ const TikTokProfile: React.FC<{
   const pulse = f >= hf ? 0.5 + 0.5 * Math.sin(((f - hf) / fps) * Math.PI * 2 * 1.2) : 0;
   const tap = clamp01((f - hf - 0.35 * fps) / (0.6 * fps));
   return (
-    <div style={{ width: 390, height: 844, background: TT.bg, color: TT.ink, fontFamily: "Inter", overflow: "hidden", position: "relative" }}>
+    <div style={{ width: 390, height: 844, background: T.bg, color: T.ink, fontFamily: "Inter", overflow: "hidden", position: "relative" }}>
       {/* status bar (the island is drawn by the device) */}
       <div style={{ height: 54, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 34px 0 46px", boxSizing: "border-box", font: `600 16px Inter` }}>
         <span>{time}</span>
         <span style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <span style={{ display: "inline-flex", gap: 2, alignItems: "flex-end" }}>
-            {[4, 7, 10, 13].map((h) => <span key={h} style={{ width: 3, height: h, background: TT.ink, borderRadius: 1 }} />)}
+            {[4, 7, 10, 13].map((h) => <span key={h} style={{ width: 3, height: h, background: T.ink, borderRadius: 1 }} />)}
           </span>
-          <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.4 6.8a6.6 6.6 0 0 1 9.2 0l-1.1 1.1a5 5 0 0 0-7 0zM1.1 4.5a9.8 9.8 0 0 1 13.8 0l-1.1 1.1a8.2 8.2 0 0 0-11.6 0z" fill={TT.ink} /></svg>
-          <span style={{ width: 25, height: 12, border: `1.4px solid ${TT.ink}`, borderRadius: 4, padding: 1.4, boxSizing: "border-box", opacity: 0.9 }}>
-            <span style={{ display: "block", width: "62%", height: "100%", background: TT.ink, borderRadius: 2 }} />
+          <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.4 6.8a6.6 6.6 0 0 1 9.2 0l-1.1 1.1a5 5 0 0 0-7 0zM1.1 4.5a9.8 9.8 0 0 1 13.8 0l-1.1 1.1a8.2 8.2 0 0 0-11.6 0z" fill={T.ink} /></svg>
+          <span style={{ width: 25, height: 12, border: `1.4px solid ${T.ink}`, borderRadius: 4, padding: 1.4, boxSizing: "border-box", opacity: 0.9 }}>
+            <span style={{ display: "block", width: "62%", height: "100%", background: T.ink, borderRadius: 2 }} />
           </span>
         </span>
       </div>
@@ -479,31 +537,31 @@ const TikTokProfile: React.FC<{
       <div style={{ position: "relative", padding: "6px 16px 0", height: stats ? 132 : 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span style={{ font: `800 27px Inter`, letterSpacing: -0.6 }}>{name}</span>
-          <svg width="12" height="8" viewBox="0 0 12 8" style={{ marginTop: 4 }}><path d="M1 1l5 5 5-5" fill={TT.ink} /></svg>
-          <span style={{ width: 8, height: 8, borderRadius: 4, background: TT.red, marginTop: -14, marginLeft: -2 }} />
+          <svg width="12" height="8" viewBox="0 0 12 8" style={{ marginTop: 4 }}><path d="M1 1l5 5 5-5" fill={T.ink} /></svg>
+          <span style={{ width: 8, height: 8, borderRadius: 4, background: T.red, marginTop: -14, marginLeft: -2 }} />
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, font: `500 13px Inter`, color: TT.muted }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 4, font: `500 13px Inter`, color: T.muted }}>
           <span>@{handle}</span>
           <span>·</span>
-          <Ico d={IC.store} size={13} sw={1.8} color={TT.muted} />
-          <span style={{ color: "#4A4B52", fontWeight: 600 }}>{badge}</span>
+          <Ico d={IC.store} size={13} sw={1.8} color={T.muted} />
+          <span style={{ color: T.badge, fontWeight: 600 }}>{badge}</span>
         </div>
         {stats ? (
           <div style={{ display: "flex", gap: 30, marginTop: 16 }}>
             {[[stats.following, "Following"], [stats.followers, "Followers"], [stats.likes, "Likes"]].map(([v, l]) => (
-              <div key={l}><div style={{ font: `800 16px Inter` }}>{v}</div><div style={{ font: `500 13px Inter`, color: TT.muted }}>{l}</div></div>
+              <div key={l}><div style={{ font: `800 16px Inter` }}>{v}</div><div style={{ font: `500 13px Inter`, color: T.muted }}>{l}</div></div>
             ))}
           </div>
         ) : null}
         <div style={{ position: "absolute", right: 16, top: -4, width: 86, height: 86, borderRadius: 43, overflow: "hidden", background: "#3A1A16" }}>
           {avatar ? <Img src={asset(avatar)} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : null}
         </div>
-        <div style={{ position: "absolute", right: 12, top: 60, width: 26, height: 26, borderRadius: 13, background: TT.cyan, border: `3px solid ${TT.bg}`, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", color: TT.bg, font: `700 18px Inter`, lineHeight: 1 }}>+</div>
+        <div style={{ position: "absolute", right: 12, top: 60, width: 26, height: 26, borderRadius: 13, background: T.cyan, border: `3px solid ${T.bg}`, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center", color: T.onAccent, font: `700 18px Inter`, lineHeight: 1 }}>+</div>
       </div>
       {/* bio + link (the "шапка профиля") */}
       <div style={{ position: "relative", margin: "0 10px", padding: "8px 6px 10px", borderRadius: 14 }}>
         <div style={{ font: `500 14px Inter`, lineHeight: 1.36 }}>{bio}</div>
-        {link ? <div style={{ marginTop: 3, font: `700 14px Inter`, color: TT.ink, background: tap > 0 && tap < 1 ? `rgba(217,115,47,${0.22 * (1 - tap)})` : undefined, display: "inline-block", borderRadius: 5 }}>{link}</div> : null}
+        {link ? <div style={{ marginTop: 3, font: `700 14px Inter`, color: T.ink, background: tap > 0 && tap < 1 ? `rgba(217,115,47,${0.22 * (1 - tap)})` : undefined, display: "inline-block", borderRadius: 5 }}>{link}</div> : null}
         {hp > 0 ? (
           <div style={{ position: "absolute", inset: -2, borderRadius: 16, border: `3px solid rgba(217,115,47,${hp})`, boxShadow: `0 0 ${10 + 18 * pulse}px rgba(217,115,47,${0.45 * hp})`, transform: `scale(${1.06 - 0.06 * hp})` }} />
         ) : null}
@@ -512,13 +570,13 @@ const TikTokProfile: React.FC<{
         ) : null}
       </div>
       {/* tabs */}
-      <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", height: 44, marginTop: 8, borderBottom: `1px solid ${TT.line}`, position: "relative" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 2 }}><Ico d={IC.bars} size={22} sw={2.2} /><svg width="9" height="6" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" fill={TT.ink} /></svg></span>
-        <Ico d={IC.shop} size={22} sw={1.8} color="#5A5B62" />
-        <Ico d={IC.lock} size={22} sw={1.8} color="#5A5B62" />
-        <Ico d={IC.bookmark} size={22} sw={1.8} color="#5A5B62" />
-        <Ico d={IC.heart} size={22} sw={1.8} color="#5A5B62" />
-        <div style={{ position: "absolute", left: 22, bottom: -1, width: 44, height: 2.5, background: TT.ink, borderRadius: 2 }} />
+      <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", height: 44, marginTop: 8, borderBottom: `1px solid ${T.line}`, position: "relative" }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 2 }}><Ico d={IC.bars} size={22} sw={2.2} /><svg width="9" height="6" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" fill={T.ink} /></svg></span>
+        <Ico d={IC.shop} size={22} sw={1.8} color={T.icon} />
+        <Ico d={IC.lock} size={22} sw={1.8} color={T.icon} />
+        <Ico d={IC.bookmark} size={22} sw={1.8} color={T.icon} />
+        <Ico d={IC.heart} size={22} sw={1.8} color={T.icon} />
+        <div style={{ position: "absolute", left: 22, bottom: -1, width: 44, height: 2.5, background: T.ink, borderRadius: 2 }} />
       </div>
       {/* video grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1.5 }}>
@@ -530,11 +588,11 @@ const TikTokProfile: React.FC<{
               // no reels rendered yet: muted cover with a play glyph (render.py adds real covers to brand.json)
               <svg width="26" height="26" viewBox="0 0 24 24" style={{ position: "absolute", left: "50%", top: "50%", marginLeft: -13, marginTop: -13, opacity: 0.5 }}><path d="M8 5v14l11-7z" fill="#E8D9C2" /></svg>
             )}
-            {i < pinned ? <div style={{ position: "absolute", left: 6, top: 6, background: TT.red, color: TT.bg, font: `700 10px Inter`, padding: "2px 5px", borderRadius: 3 }}>Pinned</div> : null}
+            {i < pinned ? <div style={{ position: "absolute", left: 6, top: 6, background: T.red, color: T.onAccent, font: `700 10px Inter`, padding: "2px 5px", borderRadius: 3 }}>Pinned</div> : null}
             {i === 0 && newTile && nIn > 0 ? (
               <div style={{ position: "absolute", inset: 0, opacity: nIn, transform: `scale(${1.25 - 0.25 * nIn})` }}>
                 <Img src={asset(newTile.src)} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                <div style={{ position: "absolute", left: 6, top: 6, background: TT.red, color: TT.bg, font: `800 11px Inter`, padding: "2px 6px", borderRadius: 3, boxShadow: `0 0 ${6 + 10 * nPulse}px rgba(254,44,85,0.8)` }}>NEW</div>
+                <div style={{ position: "absolute", left: 6, top: 6, background: T.red, color: T.onAccent, font: `800 11px Inter`, padding: "2px 6px", borderRadius: 3, boxShadow: `0 0 ${6 + 10 * nPulse}px rgba(254,44,85,0.8)` }}>NEW</div>
                 {newTile.label ? <div style={{ position: "absolute", left: 0, right: 0, bottom: 8, textAlign: "center", color: "#fff", font: `900 20px Inter`, letterSpacing: 0.5, textShadow: "0 2px 6px rgba(0,0,0,0.9)" }}>{newTile.label}</div> : null}
                 <div style={{ position: "absolute", inset: 0, border: `3px solid rgba(254,44,85,${0.6 + 0.4 * nPulse})` }} />
                 <div style={{ position: "absolute", inset: 0, background: "#fff", opacity: nFlash * 0.8 }} />
@@ -544,19 +602,19 @@ const TikTokProfile: React.FC<{
         ))}
       </div>
       {/* bottom nav */}
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 82, background: TT.bg, borderTop: `1px solid ${TT.line}`, display: "flex", justifyContent: "space-around", alignItems: "flex-start", paddingTop: 8, boxSizing: "border-box" }}>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 82, background: T.bg, borderTop: `1px solid ${T.line}`, display: "flex", justifyContent: "space-around", alignItems: "flex-start", paddingTop: 8, boxSizing: "border-box" }}>
         {[["Home", IC.home], ["Discover", IC.compass], ["+", ""], ["Inbox", IC.inbox], ["Profile", IC.user]].map(([l, d]) =>
           l === "+" ? (
             <div key={l} style={{ position: "relative", width: 46, height: 30, marginTop: 4 }}>
-              <div style={{ position: "absolute", top: 0, bottom: 0, left: -3, right: 3, borderRadius: 9, background: TT.cyan }} />
-              <div style={{ position: "absolute", top: 0, bottom: 0, left: 3, right: -3, borderRadius: 9, background: TT.red }} />
-              <div style={{ position: "absolute", inset: 0, borderRadius: 9, background: TT.ink, color: TT.bg, display: "flex", alignItems: "center", justifyContent: "center", font: `700 22px Inter` }}>+</div>
+              <div style={{ position: "absolute", top: 0, bottom: 0, left: -3, right: 3, borderRadius: 9, background: T.cyan }} />
+              <div style={{ position: "absolute", top: 0, bottom: 0, left: 3, right: -3, borderRadius: 9, background: T.red }} />
+              <div style={{ position: "absolute", inset: 0, borderRadius: 9, background: T.ink, color: T.bg, display: "flex", alignItems: "center", justifyContent: "center", font: `700 22px Inter` }}>+</div>
             </div>
           ) : (
             <div key={l} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, position: "relative" }}>
               <Ico d={d} size={24} sw={1.9} fill={l === "Profile" ? "solid" : "none"} />
               <span style={{ font: `${l === "Profile" ? 700 : 500} 10px Inter` }}>{l}</span>
-              {l === "Inbox" ? <span style={{ position: "absolute", right: 2, top: -2, width: 8, height: 8, borderRadius: 4, background: TT.red }} /> : null}
+              {l === "Inbox" ? <span style={{ position: "absolute", right: 2, top: -2, width: 8, height: 8, borderRadius: 4, background: T.red }} /> : null}
             </div>
           ),
         )}
@@ -713,10 +771,16 @@ export const SCREEN_BLOCKS: Record<string, BlockDef> = {
     events: (p, t) => ((p.path ?? []) as number[]).map((_, k) => ({ f: (p.pathAt !== undefined ? t.at(p.pathAt) : Math.round(0.8 * t.fps)) + Math.round(k * (p.step ?? 0.35) * t.fps), id: "click-tiny" })),
     example: { cols: 6, rows: 3, path: [0, 2, 8, 9, 14, 16], label: "клик|клика|кликов до записи" },
   }),
+  ChatScreen: defineBlock({
+    C: ChatScreen, cat: "ui", desc: "Messenger dialog (390×844, dark): contact name/sub/avatar letter, messages[{text, me, at, time, failAt}] — bubbles pop in at at; failAt turns a sent message into red «!» + «Не доставлено» (shows «Отправка…» before). Put it on IPhone17/Phone3D/Phone screens.",
+    pos: "stage", self: true, sfx: null,
+    events: (p, t) => ((p.messages ?? []) as { at?: unknown; failAt?: unknown }[]).flatMap((m, i) => [{ f: m.at !== undefined ? t.at(m.at) : Math.round(i * 0.6 * t.fps), id: "swipe-tiny" }, ...(m.failAt !== undefined ? [{ f: t.at(m.failAt), id: "error-buzz" }] : [])]),
+    example: { name: "Мама", messages: [{ text: "Мам, ты где?", me: true, at: 0.3, failAt: 1.6 }] },
+  }),
   LockScreen: defineBlock({ C: LockScreen, cat: "ui", desc: "Phone lock screen (390×844) with notifications; actions:['Отклонить','Разрешить'] + pressAt for an approval moment.", pos: "stage", self: true, sfx: null, events: (p, t) => ((p.notes ?? []) as { at?: unknown; pressAt?: unknown }[]).flatMap((n, i) => [{ f: n.at !== undefined ? t.at(n.at) : Math.round(i * 0.5 * t.fps), id: "chime-two-up" }, ...(n.pressAt !== undefined ? [{ f: t.at(n.pressAt), id: "success-check" }] : [])]), example: { notes: [{ app: "VS Code", text: "Claude ждёт разрешения", actions: ["Отклонить", "Разрешить"], pressAt: 1.6 }] } }),
   SocialProfile: defineBlock({ C: SocialProfile, cat: "social", desc: "Generic social profile screen (390×844) for the CTA end card: handle, bio lines, link (highlights at pressAt), tiles.", pos: "stage", self: true, sfx: null, example: { handle: "reel.studio", name: "Ролики, которые собирает агент", bio: ["Объяснялки с голосом", "Промо под музыку"], link: "t.me/reelstudio", tiles: [{ title: "Голос" }, { title: "3D" }, { title: "Промо" }] } }),
   TikTokProfile: defineBlock({
-    C: TikTokProfile, cat: "social", desc: "The channel's TikTok profile (light theme, 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').",
+    C: TikTokProfile, cat: "social", desc: "The channel's TikTok profile (light theme, dark: true for TikTok's dark theme; 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').",
     pos: "stage", self: true, sfx: null, events: (p, t) => (p.highlightAt !== undefined ? [{ f: t.at(p.highlightAt), id: "pk-pop-ui-menu" }] : []),
     example: { highlightAt: 1.2 },
   }),

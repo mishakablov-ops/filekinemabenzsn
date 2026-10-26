@@ -81,15 +81,16 @@ export const Shapes3D: React.FC<{ kind?: "blob" | "torus" | "rings" | "pills" | 
 };
 
 // ------------------------------------------------------------------ Bars3D: growing 3D bar chart with labels
-export const Bars3D: React.FC<{ bars: { label: string; value: number; color?: string }[]; max?: number; unit?: string; stagger?: number; cam?: string }> = ({ bars, max, unit = "", stagger = 0.15, cam = "orbit" }) => {
+export const Bars3D: React.FC<{ bars: { label: string; value: number; color?: string }[]; max?: number; unit?: string; stagger?: number; cam?: string | CamKey[] }> = ({ bars, max, unit = "", stagger = 0.15, cam = "orbit" }) => {
   const { f, fps } = useBlockTime();
   const th = useTheme();
   const t = f / fps;
   const mx = max ?? Math.max(...bars.map((b) => b.value));
   const n = bars.length;
   const gap = 1.25;
-  const keys: CamKey[] =
-    cam === "front"
+  const keys: CamKey[] = Array.isArray(cam)
+    ? cam
+    : cam === "front"
       ? [{ t: 0, pos: [0, 3, 14], target: [0, 2, 0], fov: 30 }, { t: 6, pos: [0.6, 3.4, 13], target: [0, 2, 0], fov: 30 }]
       : [{ t: 0, pos: [-8, 6, 12], target: [0, 1.8, 0], fov: 30 }, { t: 6, pos: [6, 5, 12.5], target: [0, 1.8, 0], fov: 30 }];
   const c = camAt(keys, t);

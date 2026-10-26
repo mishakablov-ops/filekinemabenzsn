@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, random } from "remotion";
 import * as THREE from "three";
 import { feature } from "topojson-client";
 import landTopo from "world-atlas/land-110m.json";
 import { useBlockTime, useTheme } from "../core/context";
 import { E, clamp01, lerp } from "../core/motion";
-import { makeCamera, project, Stage3D, type Cam } from "./core";
+import { dotTexture, makeCamera, project, Stage3D, type Cam } from "./core";
 
 export const ll2v = (lat: number, lon: number, r = 1) => {
   const la = THREE.MathUtils.degToRad(lat);
@@ -174,7 +174,69 @@ const MarkerMesh: React.FC<{ m: Marker; f: number; color: string }> = ({ m, f, c
   );
 };
 
+// ~130 big metro areas (approximate centres) for the night lights of Earth
+const CITIES: [number, number][] = [
+  [35.7, 139.7], [28.6, 77.2], [31.2, 121.5], [-23.5, -46.6], [19.4, -99.1], [30.0, 31.2], [19.1, 72.9], [39.9, 116.4], [23.8, 90.4], [34.7, 135.5],
+  [40.7, -74.0], [24.9, 67.0], [-34.6, -58.4], [29.6, 106.5], [41.0, 29.0], [22.6, 88.4], [14.6, 121.0], [6.5, 3.4], [-22.9, -43.2], [39.1, 117.2],
+  [-4.3, 15.3], [23.1, 113.3], [34.05, -118.25], [55.75, 37.62], [22.5, 114.1], [31.5, 74.3], [12.97, 77.6], [48.86, 2.35], [4.7, -74.1], [-6.2, 106.8],
+  [13.1, 80.3], [-12.0, -77.0], [13.75, 100.5], [37.57, 126.98], [35.2, 136.9], [17.4, 78.5], [51.5, -0.13], [35.7, 51.4], [41.9, -87.6], [30.7, 104.1],
+  [32.06, 118.8], [30.6, 114.3], [10.8, 106.7], [-8.8, 13.2], [23.0, 72.6], [3.14, 101.7], [34.3, 108.9], [30.3, 120.2], [41.8, 123.4], [24.7, 46.7],
+  [33.3, 44.4], [-33.45, -70.67], [21.2, 72.8], [40.4, -3.7], [18.5, 73.9], [45.8, 126.6], [29.76, -95.37], [32.78, -96.8], [43.65, -79.38], [-6.8, 39.3],
+  [25.76, -80.19], [-19.9, -43.9], [1.35, 103.8], [39.95, -75.17], [33.75, -84.39], [33.6, 130.4], [15.6, 32.5], [41.39, 2.17], [-26.2, 28.05], [59.94, 30.31],
+  [36.07, 120.38], [38.9, 121.6], [38.9, -77.04], [16.8, 96.15], [31.2, 29.9], [36.65, 117.0], [20.67, -103.35], [52.52, 13.4], [41.9, 12.5], [50.45, 30.52],
+  [52.23, 21.0], [45.46, 9.19], [-33.87, 151.2], [-37.8, 144.96], [-1.29, 36.82], [33.57, -7.59], [9.03, 38.74], [5.36, -4.0], [37.77, -122.42], [47.6, -122.33],
+  [45.5, -73.57], [49.28, -123.12], [55.03, 82.92], [56.84, 60.6], [55.8, 49.1], [43.24, 76.89], [41.3, 69.24], [53.9, 27.56], [52.37, 4.9], [50.85, 4.35],
+  [48.2, 16.37], [47.5, 19.04], [37.98, 23.73], [38.72, -9.14], [25.2, 55.27], [34.5, 69.2], [25.03, 121.56], [33.45, -112.07], [39.74, -104.99], [42.33, -83.05],
+  [42.36, -71.06], [25.67, -100.31], [10.5, -66.9], [-0.18, -78.47], [5.6, -0.19], [12.0, 8.52], [36.75, 3.06], [36.8, 10.18], [-31.95, 115.86], [-27.47, 153.03],
+  [-36.85, 174.76], [56.0, 92.87], [43.12, 131.9], [54.99, 73.37], [53.2, 50.15], [47.23, 39.7], [48.7, 44.5], [56.3, 44.0], [53.48, -2.24], [53.55, 10.0],
+  [50.11, 8.68], [48.14, 11.58], [45.76, 4.84], [44.43, 26.1], [59.33, 18.07], [60.17, 24.94], [55.68, 12.57], [59.91, 10.75], [32.08, 34.78], [21.03, 105.85],
+];
+
+/** warm city lights; each city dies at its own moment after `out` (frame), flickering for a few frames */
+const CityLights: React.FC<{ f: number; fps: number; out: number; color: string }> = ({ f, fps, out, color }) => {
+  const base = useMemo(() => {
+    const pos: number[] = [];
+    const city: number[] = [];
+    const b: number[] = [];
+    CITIES.forEach(([la, lo], i) => {
+      const n = 7 + Math.floor(random(`cn${i}`) * 7);
+      for (let k = 0; k < n; k++) {
+        const r = k === 0 ? 0 : 0.2 + random(`cr${i}${k}`) * 1.3;
+        const a = random(`ca${i}${k}`) * Math.PI * 2;
+        const v = ll2v(la + Math.sin(a) * r, lo + (Math.cos(a) * r) / Math.max(0.3, Math.cos((la * Math.PI) / 180)), 1.004);
+        pos.push(v.x, v.y, v.z);
+        city.push(i);
+        b.push(k === 0 ? 1 : 0.5 + random(`cb${i}${k}`) * 0.45);
+      }
+    });
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.Float32BufferAttribute(new Array(pos.length).fill(0), 3));
+    return { geo, city, b };
+  }, []);
+  const mtl = useMemo(() => new THREE.PointsMaterial({ size: 13, map: dotTexture(), sizeAttenuation: false, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }), []);
+  // soft glow round every light (same points, big and faint) so a city reads as a warm blob, not a pixel
+  const halo = useMemo(() => new THREE.PointsMaterial({ size: 40, map: dotTexture(), sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.3, depthWrite: false, blending: THREE.AdditiveBlending }), []);
+  const c = new THREE.Color(color);
+  const attr = base.geo.getAttribute("color") as THREE.BufferAttribute;
+  base.city.forEach((ci, k) => {
+    const off = out + Math.round((0.05 + random(`co${ci}`) * 1.5) * fps);
+    const on = f < off - 6 || (f < off && (f + ci) % 3 !== 0) ? 1 : 0;
+    const v = base.b[k] * on;
+    attr.setXYZ(k, c.r * v, c.g * v, c.b * v);
+  });
+  attr.needsUpdate = true;
+  return (
+    <>
+      <points geometry={base.geo} material={halo} />
+      <points geometry={base.geo} material={mtl} />
+    </>
+  );
+};
+
 const STYLES = {
+  // warm dark Earth for the dusk palette (pairs with cities: true)
+  dusk: { ocean: "#221C17", land: "#5E4F42", dot: "", atmo: "#E39A5E" },
   dots: { ocean: "#0A1430", land: "#0A1430", dot: "#8FB4FF", atmo: "#4D86FF" },
   solid: { ocean: "#0E2A5A", land: "#5E8F5A", dot: "", atmo: "#7FB2FF" },
   night: { ocean: "#04060E", land: "#141B33", dot: "", atmo: "#3A64FF" },
@@ -183,7 +245,9 @@ const STYLES = {
 
 export const Globe3D: React.FC<{
   look?: keyof typeof STYLES; focus?: Focus[]; markers?: Marker[]; arcs?: Arc[]; spin?: number; accent?: string; labels?: boolean; dist?: number; tilt?: number;
-}> = ({ look = "dots", focus, markers = [], arcs = [], spin = 4, accent, labels = true, dist = 3.6, tilt = 0 }) => {
+  /** warm night lights of ~130 big cities; citiesOut (anchor/seconds) switches them off city by city within ~1.5 s */
+  cities?: boolean; citiesOut?: unknown;
+}> = ({ look = "dots", focus, markers = [], arcs = [], spin = 4, accent, labels = true, dist = 3.6, tilt = 0, cities = false, citiesOut }) => {
   const { f, fps, at } = useBlockTime();
   const th = useTheme();
   const t = f / fps;
@@ -227,12 +291,13 @@ export const Globe3D: React.FC<{
   const camera = makeCamera(cam);
   return (
     <AbsoluteFill>
-      <Stage3D cam={cam} lights="soft" env={look === "light" ? 0.8 : 0.25} shadows={false}>
+      <Stage3D cam={cam} lights="soft" env={look === "light" ? 0.8 : look === "dusk" ? 0.55 : 0.25} shadows={false}>
         <mesh>
           <sphereGeometry args={[1, 128, 128]} />
           <meshStandardMaterial map={tex} roughness={0.85} metalness={0} emissive={look === "night" ? "#0A1640" : "#000"} />
         </mesh>
         {look === "dots" || look === "light" ? <Dots color={st.dot} /> : null}
+        {cities ? <CityLights f={f} fps={fps} out={citiesOut !== undefined ? at(citiesOut) : Infinity} color="#FFC48A" /> : null}
         <Atmosphere color={st.atmo} />
         {arcs.map((a, i) => {
           const s = a.at !== undefined ? at(a.at) : Math.round((0.4 + i * 0.5) * fps);

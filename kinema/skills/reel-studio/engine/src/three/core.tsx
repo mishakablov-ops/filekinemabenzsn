@@ -191,6 +191,25 @@ export const ContactShadow: React.FC<{ y?: number; size?: number; opacity?: numb
   );
 };
 
+/** round soft sprite for THREE.PointsMaterial `map` (without one, points render as squares): stars, city lights, glow */
+let dotTex: THREE.Texture | null = null;
+export const dotTexture = () => {
+  if (!dotTex) {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const g = c.getContext("2d")!;
+    const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, "rgba(255,255,255,1)");
+    grd.addColorStop(0.3, "rgba(255,255,255,0.75)");
+    grd.addColorStop(0.65, "rgba(255,255,255,0.18)");
+    grd.addColorStop(1, "rgba(255,255,255,0)");
+    g.fillStyle = grd;
+    g.fillRect(0, 0, 64, 64);
+    dotTex = new THREE.CanvasTexture(c);
+  }
+  return dotTex;
+};
+
 export const ShadowGround: React.FC<{ y?: number; opacity?: number }> = ({ y = 0, opacity = 0.28 }) => (
   <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, y, 0]} receiveShadow>
     <planeGeometry args={[60, 60]} />

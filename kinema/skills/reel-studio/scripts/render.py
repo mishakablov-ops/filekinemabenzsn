@@ -36,6 +36,8 @@ def run_render(pid: str, out: Path, preview: bool, concurrency: int, frames: str
     if preview:
         props["fps"] = 30
     cmd = [NPX, "remotion", "render", "src/index.ts", "Reel", str(out), f"--props={json.dumps(props)}", f"--concurrency={concurrency}", "--log=warn"]
+    if os.environ.get("REMOTION_GL"):  # GPU-less machines: REMOTION_GL=swangle
+        cmd += [f"--gl={os.environ['REMOTION_GL']}"]
     if preview:
         cmd += ["--scale=0.5", "--crf=24"]
     if frames:

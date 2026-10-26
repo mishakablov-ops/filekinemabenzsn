@@ -14,7 +14,7 @@ type TLine =
   | { kind: "tool"; name: string; arg?: string; sub?: string[]; at?: unknown; state?: "run" | "ok" | "err" }
   | { kind: "text"; text: string; at?: unknown; color?: string }
   | { kind: "ask"; title?: string; cmd: string; question?: string; options?: string[]; chooseAt?: unknown; at?: unknown }
-  | { kind: "status"; text?: string; at?: unknown; until?: unknown }
+  | { kind: "status"; text?: string; at?: unknown; until?: unknown; /** grey tail after the timer; "" hides it (a non-Claude console) */ hint?: string }
   | { kind: "ok"; text: string; at?: unknown }
   | { kind: "diff"; add?: string[]; del?: string[]; at?: unknown };
 
@@ -72,7 +72,7 @@ const Terminal: React.FC<{ lines: TLine[]; title?: string; w?: number; h?: numbe
       if (f < until) {
         rows.push(
           <div key={key} style={{ opacity: a, marginTop: lh * 0.35, color: T.acc }}>
-            <Spinner f={f} /> {l.text ?? "Думаю…"} <span style={{ color: T.dim }}>({Math.floor(fl / fps)}s · esc to interrupt)</span>
+            <Spinner f={f} /> {l.text ?? "Думаю…"} <span style={{ color: T.dim }}>({Math.floor(fl / fps)}s{(l.hint ?? "esc to interrupt") ? ` · ${l.hint ?? "esc to interrupt"}` : ""})</span>
           </div>,
         );
         rowCount += 1;

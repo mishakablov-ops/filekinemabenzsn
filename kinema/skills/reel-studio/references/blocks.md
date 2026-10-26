@@ -1,4 +1,4 @@
-# Block catalog (116 blocks)
+# Block catalog (117 blocks)
 
 Generated from `engine/src/blocks` by `node tools/catalog.mjs`. Use in spec.json as `{ "block": "<Name>", "props": {…} }`.
 
@@ -19,7 +19,7 @@ Small uppercase label chip with glowing dot.
 - example: `{"block":"Kicker","props":{"text":"Новый скилл"}}`
 
 ### Counter
-Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд».
+Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд» (shared tail after a space: «день|дня|дней до плесени»); labelSize px.
 
 - pos: `center` · enter: `pop` · sfx: `null` · has internal sound events
 - example: `{"block":"Counter","props":{"from":0,"to":1200,"format":"k","icon":"star","label":"звёзд на GitHub"}}`
@@ -230,6 +230,12 @@ Map of an app's screens (cols×rows wireframes S01…) with a highlighted click 
 - pos: `stage` · enter: `self` · sfx: `pop-triple` · has internal sound events
 - example: `{"block":"ScreenGrid","props":{"cols":6,"rows":3,"path":[0,2,8,9,14,16],"label":"клик|клика|кликов до записи"}}`
 
+### ChatScreen
+Messenger dialog (390×844, dark): contact name/sub/avatar letter, messages[{text, me, at, time, failAt}] — bubbles pop in at at; failAt turns a sent message into red «!» + «Не доставлено» (shows «Отправка…» before). Put it on IPhone17/Phone3D/Phone screens.
+
+- pos: `stage` · enter: `self` · sfx: `null` · has internal sound events
+- example: `{"block":"ChatScreen","props":{"name":"Мама","messages":[{"text":"Мам, ты где?","me":true,"at":0.3,"failAt":1.6}]}}`
+
 ### LockScreen
 Phone lock screen (390×844) with notifications; actions:['Отклонить','Разрешить'] + pressAt for an approval moment.
 
@@ -309,7 +315,7 @@ Generic social profile screen (390×844) for the CTA end card: handle, bio lines
 - example: `{"block":"SocialProfile","props":{"handle":"reel.studio","name":"Ролики, которые собирает агент","bio":["Объяснялки с голосом","Промо под музыку"],"link":"t.me/reelstudio","tiles":[{"title":"Голос"},{"title":"3D"},{"title":"Промо"}]}}`
 
 ### TikTokProfile
-The channel's TikTok profile (light theme, 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').
+The channel's TikTok profile (light theme, dark: true for TikTok's dark theme; 390×844, 2025 layout): name, @handle · badge, avatar, bio, link, tab icons, video grid (tiles: image srcs, pinned: n first tiles get the Pinned badge), bottom nav. highlightAt draws an accent frame + tap ripple round bio/link — the 'ссылка в шапке профиля' CTA. newTile {src,label,at}: a new video lands in the first cell (NEW badge) — 'продолжение в профиле'. stats only when the real numbers are worth showing. Put it on IPhone17 (enter:'flip').
 
 - pos: `stage` · enter: `self` · sfx: `null` · has internal sound events
 - example: `{"block":"TikTokProfile","props":{"highlightAt":1.2}}`
@@ -527,7 +533,7 @@ Real 3D phone(s) with LIVE HTML screens. phones:[{screen,pos,rot,color}] for a f
 - example: `{"block":"Phone3D","props":{"screen":{"block":"Title","props":{"text":"9:41"}},"enterSpin":true}}`
 
 ### Globe3D
-Earth with real coastlines. look: dots|solid|night|light. focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.
+Earth with real coastlines. look: dots|solid|night|light|dusk (warm dark Earth). cities:true = warm night lights of ~140 big cities, citiesOut (anchor/seconds) switches them off city by city within ~1.5 s (negative = already dark). focus:[{t,lat,lon,dist}] flies the camera; markers:[{lat,lon,label,at}] pulse + HTML label; arcs:[{from:[lat,lon],to:[lat,lon],at,dur}] animated flight lines.
 
 - pos: `full` · enter: `self` · sfx: `whoosh-deep` · has internal sound events
 - example: `{"block":"Globe3D","props":{"look":"dots","focus":[{"t":0,"lat":30,"lon":80,"dist":3.8},{"t":2.5,"lat":49,"lon":-123,"dist":2.6}],"markers":[{"lat":49.2,"lon":-123.1,"label":"49.21° N · 123.11° W","at":2.4}],"arcs":[{"from":[23.7,113.1],"to":[49.2,-123.1],"at":0.5,"dur":1.8}]}}`
@@ -551,7 +557,7 @@ Glossy iridescent hero objects: blob|torus|knot|rings|pills|cubes, glass:true fo
 - example: `{"block":"Shapes3D","props":{"kind":"rings"}}`
 
 ### Bars3D
-3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front. Last bar uses the accent.
+3D bar chart growing with HTML value labels. bars:[{label,value,color}], unit, cam: orbit|front or camera keys [{t,pos,target,fov}]. Last bar uses the accent.
 
 - pos: `full` · enter: `self` · sfx: `riser-short`
 - example: `{"block":"Bars3D","props":{"bars":[{"label":"янв","value":120},{"label":"фев","value":210},{"label":"мар","value":340},{"label":"апр","value":610}],"unit":""}}`
@@ -587,7 +593,7 @@ Cut-away 3D room diorama in dark pastel. preset: office|living|bedroom|cafe|stud
 - example: `{"block":"Room3D","props":{"preset":"office","cam":"diorama"}}`
 
 ### Street3D
-Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,look:{suit:true}}] for a lone survivor.
+Ordinary city street: buildings with windows, moving cars, walking people, lamps, trees, crosswalk + traffic lights. time: day|evening|night; cam: eye|high|follow|crossing|top|drone; cars, people counts; traffic red|green; highlight:{x,z,label,at}. abandoned:true = after a disaster: empty, dusty fog, abandoned cars with open doors, dead trees, rubble, paper, barricade, falling ash (ash:false to stop), lights dead; walkers:[{x,z,speed,dir,rotY,pose,look:{suit:true}}] for a lone survivor. stopped:true = cars stand where they stopped, every other driver door open (people:0 = everyone vanished); lightsOut (anchor/seconds) = windows, lamps and headlights die out over ~1.2 s; stars:true = night sky with a Milky Way band; wolves:[{x,z,speed,dir,seed}] = low-poly wolves trotting.
 
 - pos: `full` · enter: `self` · sfx: `whoosh-medium`
 - example: `{"block":"Street3D","props":{"time":"evening","cam":"eye"}}`

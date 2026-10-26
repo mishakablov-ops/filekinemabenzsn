@@ -124,7 +124,9 @@ const Star: React.FC<{ size: number; color: string; p?: number }> = ({ size, col
 const Counter: React.FC<{
   from?: number; to: number; steps?: { at: unknown; value: number }[]; dur?: number; format?: "space" | "k" | "int" | "dec1" | "pct";
   prefix?: string; suffix?: string; label?: string; size?: number; color?: string; icon?: "star" | "none"; startAt?: unknown; labelAbove?: boolean;
-}> = ({ from = 0, to, steps, dur = 1.4, format = "space", prefix = "", suffix = "", label, size = 260, color, icon = "none", startAt, labelAbove }) => {
+  /** label font size in px (default 0.17 × size): a long number at a small size still gets a readable label */
+  labelSize?: number;
+}> = ({ from = 0, to, steps, dur = 1.4, format = "space", prefix = "", suffix = "", label, size = 260, color, icon = "none", startAt, labelAbove, labelSize }) => {
   const { f, fps, at } = useBlockTime();
   const th = useTheme();
   const s0 = startAt !== undefined ? at(startAt) : 4;
@@ -151,7 +153,7 @@ const Counter: React.FC<{
   const scale = lerp(0.92, 1, clamp01(pop));
   const ink = color ?? th.ink;
   // label may carry Russian plural forms: "минута|минуты|минут"
-  const lab = label ? <div style={{ font: `600 ${Math.round(size * 0.17)}px ${th.fontDisplay}`, color: th.muted, letterSpacing: "-0.01em" }}>{pluralize(Math.round(v), label)}</div> : null;
+  const lab = label ? <div style={{ font: `600 ${labelSize ?? Math.round(size * 0.17)}px ${th.fontDisplay}`, color: th.muted, letterSpacing: "-0.01em", textAlign: "center", maxWidth: 940 }}>{pluralize(Math.round(v), label)}</div> : null;
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: size * 0.04 }}>
       {labelAbove ? lab : null}
@@ -521,7 +523,7 @@ export const TEXT_BLOCKS: Record<string, BlockDef> = {
   Title: defineBlock({ C: Title, cat: "text", desc: "Headline with blur-in words; markup *italic* [accent] ==mark== / linebreak. `at` = per-word anchors.", pos: "center", self: true, sfx: null, example: { text: "Собери *своё* / приложение [за вечер]", lead: "Теперь можно" } }),
   Kicker: defineBlock({ C: Kicker, cat: "text", desc: "Small uppercase label chip with glowing dot.", pos: "top", enter: "pop", sfx: "pop-high", example: { text: "Новый скилл" } }),
   Counter: defineBlock({
-    C: Counter, cat: "text", desc: "Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд».", pos: "center", enter: "pop", sfx: null,
+    C: Counter, cat: "text", desc: "Rolling number; `steps:[{at,value}]` for 136→1.2k jumps; icon:'star'; format space|k|pct; label with plural forms «звезда|звезды|звёзд» (shared tail after a space: «день|дня|дней до плесени»); labelSize px.", pos: "center", enter: "pop", sfx: null,
     events: (p, t) => {
       const s0 = p.startAt !== undefined ? t.at(p.startAt) : 4;
       const pts = [s0, ...((p.steps ?? []) as { at: unknown }[]).map((s) => t.at(s.at))];

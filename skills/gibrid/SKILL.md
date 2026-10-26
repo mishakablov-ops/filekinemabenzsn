@@ -40,7 +40,8 @@ description: Сделать вертикальный ролик aipollon в ст
    один звук два раза подряд не ставить. Музыка `lofi-warm` / `dark-cinematic` 0,10–0,14, duck 0,45, мастер −14 LUFS.
 7. **Концовка.** «Кстати, этот ролик тоже собрал агент…» → `IPhone17` (цвет корпуса под тему ролика) разворачивается к
    `TikTokProfile` aipollon (`dark: true`), оранжевая рамка на шапке. В сетке только настоящие обложки канала.
-8. **Проверка.** `engine/tools/stills.mjs --qa` по каждой сцене и контактный лист — смотреть самому;
+8. **Проверка.** `engine/tools/stills.mjs --qa` по каждой сцене и контактный лист — смотреть самому
+   (образец обёртки: `projects/posledniy-chelovek/engine/stills.py` — начало и конец каждой сцены по якорям);
    `render.py <id>` → `qa.py` → 20+ кадров из готового MP4, начало/середина/конец движений, микс в готовом файле.
 9. **Выдача.** `RS/engine/out/<id>.mp4` (новые версии `-v2`, `-v3` отдельными файлами). Исходники (`script.md`,
    `spec.json`, `words.json`, `storyboard.py`, голосовые скрипты) скопировать в `projects/<id>/engine/`, строку — в
@@ -48,7 +49,16 @@ description: Сделать вертикальный ролик aipollon в ст
 
 ## Ограничения среды
 
-- Из облака нет доступа к replicate.com: голос и рендер запускаются на ПК через `START_WORKER.bat` (задачи `jobs/queue/*.ps1`).
+- Из облака нет доступа к replicate.com: голос запускается на ПК через `START_WORKER.bat` (задачи `jobs/queue/*.ps1`).
+  Задача берёт скрипты из копии репозитория `_sync/<id>/repo` (`projects/<id>/engine/voice_sections.py`), а python,
+  ffmpeg, Whisper и ключ — из Reel Studio на ПК. Whisper на ПК: аудио декодировать через ffmpeg (старый PyAV падает),
+  числа из Whisper приводить к `int`/`float` перед `json.dumps`. Образец: `projects/posledniy-chelovek/`.
+- Рендер можно делать в облаке без видеокарты: `REMOTION_GL=swangle` для `render.py` и `tools/stills.mjs`
+  (~1,4 с на кадр на 4 ядрах: 65 с ролика при 60 к/с ≈ 1,5 ч, запускать в фоне). Браузер для Remotion — Playwright
+  `chrome-headless-shell` ссылкой в `engine/node_modules/.remotion/chrome-headless-shell/linux64/` + файл `VERSION`.
+- Обмен файлами с ПК: `device_stage_files` берёт файлы не глубже 7 папок от подключённой, поэтому результаты задачи
+  сначала скопировать в `_sync/<id>/out/`. Файл из `/mnt/project-files/` отправлять на ПК под новым именем и через
+  ~10 с после записи (сетевая папка может отдать старую версию). Больше 30 МБ — частями, склеить на ПК.
 - Smart App Control на Windows может блокировать `ffmpeg.exe`/`remotion.exe` (код 0xC0E90002). Обходить нельзя, решает пользователь.
 - Лимит трат Replicate — $3 на ролик без разрешения пользователя.
 

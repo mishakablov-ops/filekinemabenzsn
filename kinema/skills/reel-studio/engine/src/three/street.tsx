@@ -3,9 +3,9 @@ import { AbsoluteFill, random } from "remotion";
 import * as THREE from "three";
 import { useBlockTime, useReel } from "../core/context";
 import { CameraClipQA, CollisionQA } from "./collide";
-import { camAt, makeCamera, project, Stage3D, type CamKey, type V3 } from "./core";
+import { camAt, dotTexture, makeCamera, project, Stage3D, type CamKey, type V3 } from "./core";
 import { Bench, Box, Building, Car, PALETTES, Person, pick, StreetLamp, TrafficLight, Tree, type KitPalette, type PersonLook, type Pose } from "./kit";
-import { AshFall, Barricade, DeadTree, Rubble, TrashCan } from "./kit2";
+import { AshFall, Barricade, DeadTree, Rubble, TrashCan, Wolf } from "./kit2";
 
 // after the fallout: dusty, desaturated, no lights (warm greys, never blue)
 const ASH: KitPalette = {
@@ -46,20 +46,37 @@ const CAMS: Record<string, CamKey[]> = {
   ],
 };
 
-type Walker = { pose?: Pose; x?: number; z?: number; speed?: number; dir?: 1 | -1; seed?: number; look?: PersonLook; label?: string };
+type Walker = { pose?: Pose; x?: number; z?: number; speed?: number; dir?: 1 | -1; seed?: number; look?: PersonLook; label?: string; rotY?: number };
 
 export const Street3D: React.FC<{
   time?: "day" | "evening" | "night"; cam?: string | CamKey[]; seed?: string; cars?: number; people?: number; walkers?: Walker[]; crosswalk?: boolean;
   traffic?: "red" | "green"; highlight?: { x: number; z: number; label?: string; at?: unknown };
   /** empty, dusty street after a disaster: parked abandoned cars, dead trees, rubble, falling ash, no lights */
   abandoned?: boolean; ash?: boolean;
-}> = ({ time = "evening", cam = "eye", seed = "st", cars = 6, people = 14, walkers, crosswalk = true, traffic = "green", highlight, abandoned = false, ash }) => {
+  /** nobody drives: the cars stand where they stopped, every other one with the driver door open (people: 0 = everyone vanished) */
+  stopped?: boolean;
+  /** anchor/seconds: windows, street lamps and headlights go dark one after another (~1.2 s, lamps flicker first) */
+  lightsOut?: unknown;
+  /** night sky: stars + the Milky Way band (fade in as the lights go out); look up with cam keys to see it */
+  stars?: boolean;
+  /** wolves walking along the street: x (keep clear of cars/rubble), z, speed m/s (0 = stand), dir 1 = toward +z (camera) */
+  wolves?: { x?: number; z?: number; speed?: number; dir?: 1 | -1; seed?: number }[];
+}> = ({ time = "evening", cam = "eye", seed = "st", cars = 6, people = 14, walkers, crosswalk = true, traffic = "green", highlight, abandoned = false, ash, stopped = false, lightsOut, stars = false, wolves = [] }) => {
   const { f, fps, at } = useBlockTime();
   const { qa } = useReel();
   const t = f / fps;
   const pal = abandoned ? ASH : time === "night" ? PALETTES.night : time === "evening" ? PALETTES.evening : PALETTES.dusk;
-  const lit = abandoned ? 0 : time === "night" ? 0.45 : time === "evening" ? 0.3 : 0.06;
-  const lampsOn = !abandoned && time !== "day";
+  const outF = lightsOut !== undefined ? at(lightsOut) : Infinity;
+  const outP = f < outF ? 0 : Math.min(1, (f - outF) / (1.2 * fps));
+  // windows switch off one after another (Building lights a window when its random value < lit)
+  const lit = (abandoned ? 0 : time === "night" ? 0.45 : time === "evening" ? 0.3 : 0.06) * (1 - outP);
+  const lampsOn0 = !abandoned && time !== "day";
+  // lamp k dies a little after the anchor, flickering for a few frames first
+  const lampOn = (k: number) => {
+    if (!lampsOn0) return false;
+    const off = outF + Math.round((0.1 + ((k * 0.37) % 1) * 0.9) * fps);
+    return f < off - 7 || (f < off && (f + k) % 3 !== 0);
+  };
 
   const blds = useMemo(() => {
     const out: { side: 1 | -1; z: number; w: number; h: number; d: number; seed: number; awning?: string }[] = [];
@@ -157,8 +174,8 @@ export const Street3D: React.FC<{
           const z = Z_NEAR - 6 - i * 12;
           return (
             <React.Fragment key={i}>
-              <StreetLamp p={[-(ROAD + 0.45), 0.16, z]} rotY={Math.PI / 2} on={lampsOn} pal={pal} />
-              <StreetLamp p={[ROAD + 0.45, 0.16, z - 6]} rotY={-Math.PI / 2} on={lampsOn} pal={pal} />
+              <StreetLamp p={[-(ROAD + 0.45), 0.16, z]} rotY={Math.PI / 2} on={lampOn(i * 2)} pal={pal} />
+              <StreetLamp p={[ROAD + 0.45, 0.16, z - 6]} rotY={-Math.PI / 2} on={lampOn(i * 2 + 1)} pal={pal} />
               {abandoned ? (
                 <>
                   <DeadTree p={[-(ROAD + 1.6), 0.16, z - 3]} s={0.9 + random(`${seed}tr${i}`) * 0.3} seed={i} />
@@ -184,12 +201,29 @@ export const Street3D: React.FC<{
           const stopAtLight = traffic === "red" && dir === 1;
           const v = dir === 1 ? 8.5 : 7.5;
           const z0 = Z_NEAR - (laneIdx + random(`${seed}cz${i}`) * 0.3) * ((Z_NEAR - Z_FAR) / perLane);
-          const z = stopAtLight ? -3.5 - laneIdx * 5.6 : wrap(z0 + dir * v * t);
+          const z = stopped ? (dir === 1 ? 10 : 4) - laneIdx * 11 - random(`${seed}cs${i}`) * 3 : stopAtLight ? -3.5 - laneIdx * 5.6 : wrap(z0 + dir * v * t);
+          const skew = stopped ? (random(`${seed}ck${i}`) - 0.5) * 0.16 : 0;
+          const col = pick(pal.cars, i * 3 + 1);
           return (
             <group key={i} userData={{ qa: "solid", id: `car${i}` }}>
-              <Car p={[dir === 1 ? -1.8 : 1.8, 0, z]} rotY={dir === 1 ? 0 : Math.PI} c={pick(pal.cars, i * 3 + 1)} lights={time !== "day"} pal={pal} />
+              <Car p={[dir === 1 ? -1.8 : 1.8, 0, z]} rotY={(dir === 1 ? 0 : Math.PI) + skew} c={col} lights={time !== "day" && f < outF + 0.5 * fps} pal={pal} />
+              {stopped && i % 2 === 0 ? (
+                // the driver door left open: the driver simply vanished
+                <group position={[dir === 1 ? -1.8 : 1.8, 0, z]} rotation={[0, (dir === 1 ? 0 : Math.PI) + skew, 0]}>
+                  <group position={[0.91, 0.62, 0.55]} rotation={[0, 1.0, 0]}>
+                    <Box s={[0.05, 0.55, 0.95]} p={[0, 0, -0.45]} c={col} rad={0.03} />
+                  </group>
+                </group>
+              ) : null}
             </group>
           );
+        })}
+        {stars ? <NightSky seed={seed} o={lightsOut !== undefined ? 0.25 + 0.75 * outP : 1} /> : null}
+        {wolves.map((w, i) => {
+          const v = w.speed ?? 1.1;
+          const dir = w.dir ?? 1;
+          const z = (w.z ?? 0) + dir * v * t;
+          return <Wolf key={`w${i}`} p={[w.x ?? 0, 0, z]} rotY={dir === 1 ? 0 : Math.PI} t={t + i * 0.37} speed={v} seed={w.seed ?? i} />;
         })}
         {/* pedestrians */}
         {ppl.map((p, i) => {
@@ -199,7 +233,7 @@ export const Street3D: React.FC<{
           const pose: Pose = p.pose ?? (v ? "walk" : i % 3 === 0 ? "phone" : "stand");
           return (
             <group key={i} userData={{ qa: "person", pose, id: `walker${i}` }}>
-              <Person pos={[p.x ?? ROAD + 1.5, 0.16, z]} rotY={v ? (dir === 1 ? 0 : Math.PI) : (i % 2 ? 1.2 : -2)} pose={pose} t={t * (v ? v / 1.2 : 1) + i * 0.31} seed={p.seed ?? i} look={p.look} pal={pal} />
+              <Person pos={[p.x ?? ROAD + 1.5, 0.16, z]} rotY={p.rotY ?? (v ? (dir === 1 ? 0 : Math.PI) : i % 2 ? 1.2 : -2)} pose={pose} t={t * (v ? v / 1.2 : 1) + i * 0.31} seed={p.seed ?? i} look={p.look} pal={pal} />
             </group>
           );
         })}
@@ -221,6 +255,62 @@ export const Street3D: React.FC<{
           })()
         : null}
     </AbsoluteFill>
+  );
+};
+
+/** stars + a hazy Milky Way band on a dome (r 150 m), drawn behind the buildings, never fogged */
+const NightSky: React.FC<{ seed: string; o: number }> = ({ seed, o }) => {
+  const [stars, haze] = useMemo(() => {
+    const R = 150;
+    // the band: a great circle rising from the left horizon over the far end of the street (-z) to the right
+    const u = new THREE.Vector3(1, 0.25, 0.15).normalize();
+    const v = new THREE.Vector3(0, 0.82, -0.57).normalize();
+    const n = new THREE.Vector3().crossVectors(u, v).normalize();
+    const g = (k: string) => { // ~gaussian
+      let a = 0;
+      for (let j = 0; j < 4; j++) a += random(`${seed}${k}${j}`);
+      return (a - 2) / 0.58;
+    };
+    const mk = (count: number, band: boolean, warm: [number, number, number], cool: [number, number, number]) => {
+      const pos: number[] = [];
+      const col: number[] = [];
+      for (let i = 0; i < count; i++) {
+        let d: THREE.Vector3;
+        if (band) {
+          const a = random(`${seed}ba${i}${count}`) * Math.PI * 2;
+          d = u.clone().multiplyScalar(Math.cos(a)).add(v.clone().multiplyScalar(Math.sin(a))).add(n.clone().multiplyScalar(g(`bn${i}${count}`) * 0.05)).normalize();
+        } else {
+          const y = random(`${seed}sy${i}`);
+          const a = random(`${seed}sa${i}`) * Math.PI * 2;
+          const r = Math.sqrt(1 - y * y);
+          d = new THREE.Vector3(Math.cos(a) * r, y, Math.sin(a) * r);
+        }
+        if (d.y < 0.03) continue;
+        pos.push(d.x * R, d.y * R, d.z * R);
+        const b = 0.35 + 0.65 * random(`${seed}sb${i}${count}`) ** 2;
+        const c = random(`${seed}sc${i}${count}`) < 0.7 ? warm : cool;
+        col.push(c[0] * b, c[1] * b, c[2] * b);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      geo.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
+      return geo;
+    };
+    return [mk(2600, false, [1, 0.93, 0.82], [0.85, 0.88, 1]), mk(5200, true, [1, 0.9, 0.78], [0.82, 0.8, 0.95])];
+  }, [seed]);
+  const mStars = useMemo(() => new THREE.PointsMaterial({ size: 5, map: dotTexture(), sizeAttenuation: false, vertexColors: true, transparent: true, depthWrite: false, fog: false }), []);
+  const mHaze = useMemo(() => new THREE.PointsMaterial({ size: 46, map: dotTexture(), sizeAttenuation: false, vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }), []);
+  // the band's own points as fine dust on top of the glow: the grainy Milky Way look, readable on a phone
+  const mDust = useMemo(() => new THREE.PointsMaterial({ size: 3.4, map: dotTexture(), sizeAttenuation: false, vertexColors: true, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }), []);
+  mStars.opacity = o;
+  mHaze.opacity = 0.15 * o;
+  mDust.opacity = 0.7 * o;
+  return (
+    <>
+      <points geometry={haze} material={mHaze} renderOrder={-3} />
+      <points geometry={haze} material={mDust} renderOrder={-2} />
+      <points geometry={stars} material={mStars} renderOrder={-1} />
+    </>
   );
 };
 

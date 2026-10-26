@@ -124,7 +124,9 @@ export const Model3D: React.FC<{
   enter?: "rise" | "spin" | "none" | "flip"; flipAt?: unknown; flipDur?: number;
   /** island: draw the Dynamic Island over the live screen; float: gentle hover after it lands */
   island?: boolean; float?: boolean;
-}> = ({ src, cam = "hero", fit = 3, rot = [0, 0, 0], spin = 0, screen, screenMesh, screenMaterial, screenW = 1280, flipScreen = false, screenRadius = 0, anim = true, clip = 0, lights = "studio", env = 1, shadow = 0.45, enter = "rise", flipAt, flipDur = 1.3, island = false, float = false }) => {
+  /** body colour: repaints every material whose name contains "color" (iPhone body / back), e.g. "#D8C3A2" for beige */
+  color?: string;
+}> = ({ color: bodyColor, src, cam = "hero", fit = 3, rot = [0, 0, 0], spin = 0, screen, screenMesh, screenMaterial, screenW = 1280, flipScreen = false, screenRadius = 0, anim = true, clip = 0, lights = "studio", env = 1, shadow = 0.45, enter = "rise", flipAt, flipDur = 1.3, island = false, float = false }) => {
   const { f, fps, at } = useBlockTime();
   const t = f / fps;
   const file = src ?? "models/macbook.glb";
@@ -153,6 +155,18 @@ export const Model3D: React.FC<{
       if (mesh.isMesh) {
         mesh.castShadow = true;
         mesh.receiveShadow = true;
+        if (bodyColor) {
+          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          const out = mats.map((m) => {
+            if (!/color/i.test(m.name)) return m;
+            const c = (m as THREE.MeshStandardMaterial).clone();
+            c.map = null;
+            c.color = new THREE.Color(bodyColor);
+            c.needsUpdate = true;
+            return c;
+          });
+          mesh.material = Array.isArray(mesh.material) ? out : out[0];
+        }
       }
     });
     const box = new THREE.Box3().setFromObject(root);
@@ -170,7 +184,7 @@ export const Model3D: React.FC<{
     const mixer = data.animations.length ? new THREE.AnimationMixer(root) : null;
     if (mixer) mixer.clipAction(data.animations[Math.min(clip, data.animations.length - 1)]).play();
     return { wrap, mixer };
-  }, [data, fit, clip, rot[0], rot[1], rot[2]]);
+  }, [data, fit, clip, rot[0], rot[1], rot[2], bodyColor]);
   if (!prepared) return <AbsoluteFill />;
   const ent = enter === "none" ? 1 : E.outExpo(clamp01(t / 1.0));
   let yaw = THREE.MathUtils.degToRad(spin * t) + (enter === "spin" ? (1 - ent) * Math.PI : 0);

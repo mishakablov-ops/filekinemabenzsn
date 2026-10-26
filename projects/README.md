@@ -12,6 +12,7 @@
 | `fr-gibrid` | Франция | Гибрид | тест | `fr-gibrid.mp4` |
 | `edinyi-yazyk`, `edinyi-yazyk-v2`, `edinyi-yazyk-v2-end` | «Один язык», реалистичная картинка Poly Haven | Гибрид (тема `fresh`) | выдан 23.10.2026 | `edinyi-yazyk.mp4` |
 | `kosmos-dlya-vseh`, `kosmos-dlya-vseh-v2` | «Космос для всех» | Блендер | выдан 24.10.2026 | `kosmos-dlya-vseh-v2.mp4` |
+| `posledniy-chelovek` | «Последний человек на Земле», «ты»-история, 64 с, 20 сцен | Гибрид | выдан 26.10.2026 | `posledniy-chelovek.mp4` |
 | `demo-promo` | демо движка | — | пример | — |
 
 Эталоны «Гибрида» (`coffee-agent`, `nuclear-survival`) — в `kinema/skills/reel-studio/examples/`.
