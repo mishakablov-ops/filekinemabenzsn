@@ -53,7 +53,7 @@ description: Сделать вертикальный ролик aipollon в ст
   Задача берёт скрипты из копии репозитория `_sync/<id>/repo` (`projects/<id>/engine/voice_sections.py`), а python,
   ffmpeg, Whisper и ключ — из Reel Studio на ПК. Whisper на ПК: аудио декодировать через ffmpeg (старый PyAV падает),
   числа из Whisper приводить к `int`/`float` перед `json.dumps`. Образец: `projects/posledniy-chelovek/`.
-- Рендер можно делать в облаке без видеокарты: `REMOTION_GL=swangle` для `render.py` и `tools/stills.mjs`
+- Рендер можно делать в облаке без видеокарты: `REMOTION_GL=swangle` для `render.py`, `qa.py` и `tools/stills.mjs`
   (~1,4 с на кадр на 4 ядрах: 65 с ролика при 60 к/с ≈ 1,5 ч, запускать в фоне). Браузер для Remotion — Playwright
   `chrome-headless-shell` ссылкой в `engine/node_modules/.remotion/chrome-headless-shell/linux64/` + файл `VERSION`.
 - Обмен файлами с ПК: `device_stage_files` берёт файлы не глубже 7 папок от подключённой, поэтому результаты задачи
