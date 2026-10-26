@@ -14,6 +14,7 @@
 | `kosmos-dlya-vseh`, `kosmos-dlya-vseh-v2` | «Космос для всех» | Блендер | выдан 24.10.2026 | `kosmos-dlya-vseh-v2.mp4` |
 | `posledniy-chelovek` | «Последний человек на Земле», «ты»-история, 64 с, 20 сцен | Гибрид | выдан 26.10.2026 | `posledniy-chelovek.mp4` |
 | `posledniy-chelovek-blender` | та же история в реалистичных цветах (голос и титры те же) | Блендер: v1 быстрый, v2 полный | выданы 26.10.2026 | `posledniy-chelovek-blender.mp4`, `posledniy-chelovek-blender-v2.mp4` |
+| `metro-city` | постоянный город «Метрополис» для всех городских сцен (не ролик, а декорация): план, точки съёмки, карта | Блендер | v1 в работе 26.10.2026 | кадры в общей папке `aipollon/metro/` |
 | `demo-promo` | демо движка | — | пример | — |
 
 Эталоны «Гибрида» (`coffee-agent`, `nuclear-survival`) — в `kinema/skills/reel-studio/examples/`.

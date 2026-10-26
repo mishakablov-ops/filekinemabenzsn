@@ -18,3 +18,5 @@ __pycache__/
 **/voice/takes/
 **/tools/blender-*/
 _sync/
+# план города пересобирается из metro_plan.py за секунду
+blender/library/metro_plan.json
