@@ -2,14 +2,17 @@
 
 Same scene cuts as the gibrid version (storyboard.py of posledniy-chelovek): a scene per anchor word.
 kind 'still' = one Blender frame (PhotoBG zoom/pan in KINEMA), 'clip' = animated Blender clip (VideoBG).
-    python3 tools/build_timeline.py [words.json]
+v2 (full mode, 26.10.2026): every shot is a clip; the cafe clip runs on under the phone of the 'mom' scene.
+    python3 tools/build_timeline.py [words.json] [--quick]
 """
 import json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJ = os.path.abspath(os.path.join(HERE, '..'))
 ROOT = os.path.abspath(os.path.join(PROJ, '..', '..'))
-WORDS = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
+ARGS = [a for a in sys.argv[1:] if not a.startswith('--')]
+FULL = '--quick' not in sys.argv
+WORDS = ARGS[0] if ARGS else os.path.join(
     ROOT, 'kinema', 'skills', 'reel-studio', 'engine', 'public', 'projects', 'posledniy-chelovek', 'words.json')
 words = json.load(open(WORDS, encoding='utf-8'))['words']
 LEAD = 0.07          # KINEMA cuts 70 ms before the anchor word
@@ -86,9 +89,25 @@ def build():
             ev = {'out': rel('гаснет', d=0.25)}
         elif sid == 'night':
             ev = {'tilt': rel('Млечный', d=-0.35)}
+        elif sid == 'you':
+            ev = {'pull': rel('Машины')}
+        elif sid == 'shops':
+            ev = {'cheer': rel('твои', d=-0.25)}
+        elif sid == 'knock':
+            ev = {'knock': rel('стучат')}
+        elif sid == 'last':
+            ev = {'mark': rel('Земле')}
+        if FULL and kind == 'still':
+            kind = 'clip'
         d = {'id': sid, 'set': st, 'variant': var, 'kind': kind, 'dur': round(s1 - s0 + 0.25, 3), 'start': round(s0, 3),
              'anchor': a, 'events': ev}
         shots.append(d)
+    if FULL:
+        # one cafe clip under both scenes: the mom scene plays its continuation (VideoBG startFrom)
+        cafe = next(s for s in shots if s['id'] == 'cafe')
+        mom = next(s for s in shots if s['id'] == 'mom')
+        cafe['dur'] = round(mom['start'] + mom['dur'] - cafe['start'], 3)
+        mom['events'] = {'startFrom': round(mom['start'] - cafe['start'], 3)}
     return shots
 
 

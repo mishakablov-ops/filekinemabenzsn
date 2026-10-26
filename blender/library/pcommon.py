@@ -203,6 +203,91 @@ def glow_mat(name, color, strength):
     return m, em.inputs['Strength']
 
 
+# ----------------------------------------------------------------------------- small motion (full mode, v2)
+def _interp(idb, mode):
+    ad = getattr(idb, 'animation_data', None)
+    if ad and ad.action:
+        for fc in ad.action.fcurves:
+            for kp in fc.keyframe_points:
+                kp.interpolation = mode
+
+
+def blink(sock, on, off, t0, t1, period=1.0, duty=0.5):
+    """Hard on/off of an emission strength socket between t0 and t1 (s)."""
+    t = t0
+    while t < t1:
+        lib.key_value(sock, lib.sec2f(t), on, 'CONSTANT')
+        lib.key_value(sock, lib.sec2f(t + period * duty), off, 'CONSTANT')
+        t += period
+
+
+def pulse(sock, lo, hi, t0, t1, period=0.7):
+    """Smooth breathing between lo and hi (rotating beacon seen from the side)."""
+    n = max(2, int((t1 - t0) / (period / 2)) + 1)
+    for i in range(n):
+        lib.key_value(sock, lib.sec2f(t0 + i * period / 2), hi if i % 2 else lo, 'BEZIER')
+
+
+def flicker_light(light, base, amp, t0, t1, rate=11.0, seed=3):
+    """Candle-like random energy wobble on a light object."""
+    rng = random.Random(seed)
+    t = t0
+    while t <= t1:
+        light.data.energy = base + rng.uniform(-amp, amp)
+        light.data.keyframe_insert('energy', frame=lib.sec2f(t))
+        t += 1.0 / rate * rng.uniform(0.7, 1.3)
+
+
+def key_light(light, keys):
+    """keys: [(t, energy)], smooth."""
+    for t, e in keys:
+        light.data.energy = e
+        light.data.keyframe_insert('energy', frame=lib.sec2f(t))
+
+
+def key_rot(ob, idx, keys):
+    """keys: [(t, radians)] on rotation_euler[idx], smooth."""
+    for t, v in keys:
+        P2._key(ob, 'rotation_euler', idx, lib.sec2f(t), v)
+
+
+def birds(coll, rng, n, start, vel, dur, spread=(4.0, 3.0, 2.0), size=0.22, flap=4.5, col='#26272A', name='Bird'):
+    """A loose flock: each bird is two wing plates flapping about a body, flying in a straight line (world vel m/s)."""
+    m = lib.mat(name + 'Mat', col, rough=0.9)
+    vel = Vector(vel)
+    heading = math.atan2(vel.y, vel.x) - math.pi / 2
+    f1 = lib.sec2f(dur) + 1
+    out = []
+    for i in range(n):
+        p0 = Vector(start) + Vector((rng.uniform(-1, 1) * spread[0], rng.uniform(-1, 1) * spread[1], rng.uniform(-1, 1) * spread[2]))
+        v = vel * rng.uniform(0.85, 1.15)
+        root = lib.empty(f'{name}{i}', tuple(p0), (0, 0, heading), coll=coll)
+        lib.sphere(1.0, (0, 0, 0), m, 8, 6, scale=(size * 0.18, size * 0.5, size * 0.16), name=f'{name}{i}Body', coll=coll).parent = root
+        wings = []
+        for sx in (-1, 1):
+            hinge = lib.empty(f'{name}{i}H', (0, 0, 0), coll=coll)
+            hinge.parent = root
+            w = lib.box((size, size * 0.42, size * 0.03), (sx * size * 0.5, 0, 0), m, bevel=0, name=f'{name}{i}Wing', coll=coll)
+            w.parent = hinge
+            wings.append((hinge, sx))
+        lib.key_obj(root, 1, loc=tuple(p0))
+        lib.key_obj(root, f1, loc=tuple(p0 + v * (dur + 1.0 / lib.FPS)))
+        _interp(root, 'LINEAR')
+        ph = rng.uniform(0, 1)
+        fr = flap * rng.uniform(0.85, 1.15)
+        step = 1.0 / (fr * 4)
+        t = 0.0
+        k = 0
+        while t <= dur + step:
+            a = math.sin(2 * math.pi * (fr * t + ph)) * 0.75
+            for hinge, sx in wings:
+                P2._key(hinge, 'rotation_euler', 1, lib.sec2f(t), -sx * a)
+            t += step
+            k += 1
+        out.append(root)
+    return out
+
+
 # ----------------------------------------------------------------------------- the hero
 def hero(loc, heading=0.0, coll=None, pose='stand', name='Hero', rng=None):
     rng = rng or random.Random(7)

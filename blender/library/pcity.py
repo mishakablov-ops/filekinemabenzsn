@@ -251,19 +251,27 @@ def v_street_day(shot, variant):
         # a bike dropped on the zebra, a shopping bag on the sidewalk
         cam = lib.camera((1.4, -14, 1.65), (0.2, 80, 4.5), lens=26)
         cam.data.clip_start = 0.1
-        lib.animate_camera(cam, [(0, (1.4, -14, 1.65)), (dur, (1.4, -12.5, 1.7))], [(0, (0.2, 80, 4.5)), (dur, (0.3, 80, 4.6))])
+        lib.animate_camera(cam, [(0, (1.4, -14, 1.65)), (dur, (1.2, -10.4, 1.74))], [(0, (0.2, 80, 4.5)), (dur, (0.0, 80, 5.1))])
+        # pigeons take off from the road right in front of us and fly away up the street
+        # (they climb steeply so that they read against the sky, not the asphalt)
+        pc.birds(coll, random.Random(2), 7, (0.6, -7.5, 0.5), (0.4, 2.2, 3.0), dur, spread=(1.5, 1.0, 0.3), size=0.3, flap=6.0,
+                 col='#4A4D54', name='Pigeon')
         return dict(fill=0.5, exposure=0.15, still_t=0.5)
     if variant == 'you':
-        pc.hero((0.9, 4.0, 0), heading=0.25, coll=coll, pose='stand')
+        h = pc.hero((0.9, 4.0, 0), heading=0.25, coll=coll, pose='stand')
+        tp = shot['events'].get('pull', 1.1)
+        pc.key_rot(h['head'], 2, [(0.0, 0.0), (0.9, 0.38), (1.6, 0.38), (2.6, -0.3), (dur, -0.3)])
         cam = lib.camera((1.75, 0.2, 1.45), (0.7, 8.0, 1.4), lens=50)
-        lib.animate_camera(cam, [(0, (1.75, 0.2, 1.45)), (dur, (1.75, 0.3, 1.45))], [(0, (0.7, 8.0, 1.4)), (dur, (0.7, 8.0, 1.4))])
+        lib.animate_camera(cam, [(0, (1.75, 0.2, 1.45)), (tp, (1.72, 0.45, 1.45)), (dur, (2.15, -2.6, 1.6))],
+                           [(0, (0.7, 8.0, 1.4)), (tp, (0.7, 8.0, 1.4)), (dur, (0.6, 8.0, 1.45))])
         cam.data.clip_start = 0.1
         return dict(fill=0.6, exposure=0.15, still_t=0.4)
     # car: the hero by an open driver's door (car heading +Y in the right lane, driver side faces -X)
     pc.stopped_car((2.0, 16.0, 0), math.pi / 2 + 0.06, coll, crs, color='#8D1D1F', door=True, name='HeroCar')
-    pc.hero((-0.15, 15.2, 0), heading=math.pi / 2 + 0.1, coll=coll, pose='point')
+    h = pc.hero((-0.15, 15.2, 0), heading=math.pi / 2 + 0.1, coll=coll, pose='point')
+    pc.key_rot(h['upperR'], 0, [(0.0, -0.2), (0.55, -1.3), (dur, -1.32)])
     cam = lib.camera((-3.0, 11.6, 1.5), (1.0, 16.2, 1.1), lens=36)
-    lib.animate_camera(cam, [(0, (-3.0, 11.6, 1.5)), (dur, (-2.9, 11.7, 1.5))], [(0, (1.0, 16.2, 1.1)), (dur, (1.0, 16.2, 1.1))])
+    lib.animate_camera(cam, [(0, (-2.6, 11.2, 1.45)), (dur, (-3.5, 12.4, 1.5))], [(0, (1.0, 16.2, 1.1)), (dur, (1.0, 16.4, 1.1))])
     cam.data.clip_start = 0.1
     return dict(fill=0.6, exposure=0.15, still_t=0.5)
 
@@ -330,6 +338,22 @@ def v_blackout(shot):
     return dict(fill=0.15, fill_col='#9FB4E0', exposure=0.25, samples=32)
 
 
+def meteor(coll, p0, vel, t0, life, strength=80.0, name='Meteor'):
+    """A shooting star: a thin glowing streak that flies along vel (m/s) from t0 for `life` seconds and fades."""
+    m, st = pc.glow_mat(name, '#E8F0FF', 0.0)
+    v = Vector(vel)
+    ob = lib.sphere(1.0, p0, m, 8, 6, scale=(0.4, 0.4, 36.0), name=name, coll=coll)
+    ob.rotation_euler = v.to_track_quat('Z', 'Y').to_euler()
+    lib.key_obj(ob, lib.sec2f(t0), loc=tuple(Vector(p0)))
+    lib.key_obj(ob, lib.sec2f(t0 + life), loc=tuple(Vector(p0) + v * life), interp='LINEAR')
+    lib.key_value(st, 1, 0.0, 'LINEAR')
+    lib.key_value(st, lib.sec2f(t0), 0.0, 'LINEAR')
+    lib.key_value(st, lib.sec2f(t0 + 0.12), strength, 'LINEAR')
+    lib.key_value(st, lib.sec2f(t0 + life), 0.0, 'LINEAR')
+    ob.visible_shadow = False
+    return ob
+
+
 def v_night(shot, variant):
     dur = shot['dur']
     rng = random.Random(11)
@@ -352,7 +376,8 @@ def v_night(shot, variant):
     else:      # third: the sky over the roofs
         p = (0.4, -7.0, 1.6)
         cam = lib.camera(p, (-2.0, 30, 46), lens=24)
-        lib.animate_camera(cam, [(0, p), (dur, p)], [(0, (-2.0, 30, 46)), (dur, (-2.0, 30, 46))])
+        lib.animate_camera(cam, [(0, p), (dur, (0.5, -7.3, 1.6))], [(0, (-4.0, 30, 47)), (dur, (1.5, 30, 45))])
+        meteor(coll, (-120, 300, 340), (420, 0, -190), 0.8, 0.45)
     cam.data.clip_end = 3000
     lib.bloom(0.25, 0.8, 7)
     return dict(fill=0.12, fill_col='#AFC2E8', exposure=1.6, samples=48, still_t=0.5)
@@ -473,7 +498,8 @@ def v_fuel(shot):
     for x in (-6.0, 6.0):
         tufts(coll, rng, 30, ((x - 0.75, x + 0.75), (-1.1, 5.1)), h=(0.08, 0.22))
     cam = lib.camera((5.6, -4.3, 0.95), (4.7, 0.3, 1.9), lens=34, dof=4.6, fstop=4.0)
-    lib.animate_camera(cam, [(0, (5.6, -4.3, 0.95)), (dur, (5.45, -3.95, 0.95))], [(0, (4.7, 0.3, 1.9)), (dur, (4.68, 0.2, 1.9))])
+    lib.animate_camera(cam, [(0, (5.6, -4.3, 0.95)), (dur, (5.25, -3.2, 0.92))], [(0, (4.7, 0.3, 1.9)), (dur, (4.7, 0.25, 1.6))],
+                       focus_keys=[(0, 4.6), (dur, 3.5)])
     cam.data.clip_start = 0.05
     return dict(fill=0.5, exposure=0.12, still_t=0.5)
 
@@ -535,7 +561,9 @@ def v_chernobyl(shot):
              birch=True)
     tufts(coll, rng, 700, ((-12, 12), (-2, 24)), h=(0.25, 0.7), cols=('#6E7F3A', '#7F8C44', '#5E6E34', '#8E8A52'))
     cam = lib.camera((-1.5, -6.0, 1.25), (2.0, 34, 12.5), lens=35)
-    lib.animate_camera(cam, [(0, (-1.5, -6.0, 1.25)), (dur, (-1.2, -5.6, 1.25))], [(0, (2.0, 34, 12.5)), (dur, (2.0, 34, 12.5))])
+    lib.animate_camera(cam, [(0, (-1.6, -6.4, 1.15)), (dur, (-0.9, -2.6, 1.7))], [(0, (2.0, 34, 12.0)), (dur, (2.0, 34, 13.6))])
+    pc.birds(coll, random.Random(6), 5, (-6.0, 30.0, 27.0), (3.2, -0.4, 0.3), dur, spread=(5.0, 2.0, 2.0), size=0.45, flap=3.2,
+             col='#1E1F22', name='Crow')
     return dict(fill=0.6, exposure=0.2, still_t=0.5)
 
 

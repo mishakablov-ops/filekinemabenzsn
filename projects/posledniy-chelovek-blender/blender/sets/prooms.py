@@ -9,6 +9,7 @@ from mathutils import Vector
 import lib
 from lib import C
 import pcommon as pc
+import people2 as P2
 import pcity
 
 F = lib.sec2f
@@ -155,8 +156,16 @@ def v_cafe(shot):
         lib.curve_poly('Cord', [[(x, 0.1, 3.1), (x, 0.1, 2.25)]], bevel=0.004, mat_=iron, coll=coll)
         lib.cyl(0.16, 0.18, (x, 0.1, 2.12), lib.mat('Shade', '#2F4A3E', rough=0.5), verts=24, r2=0.05, name='Shade', coll=coll)
     lib.light('AREA', (0, 0.9, 1.8), (math.radians(-90), 0, 0), energy=120, color='#EEF3FF', size=3.0, name='WindowSoft', coll=coll)
+    # the steam keeps rising and swaying: the coffee was poured a minute ago
+    for k, ob in enumerate(o for o in coll.objects if o.name.startswith('CupSteam')):
+        lib.key_obj(ob, 1, loc=(0, 0, 0))
+        lib.key_obj(ob, F(dur) + 1, loc=(0, 0, 0.03), interp='LINEAR')
+        lib.add_sine(ob, 'location', 0, 0.006, 2.4 + 0.3 * k, phase=k * 1.3)
+        lib.add_sine(ob, 'location', 1, 0.004, 3.1 - 0.2 * k, phase=k * 0.7)
+    # slow push in over the cup, focus follows it
     cam = lib.camera((0.06, -0.66, 1.04), (0.04, 0.1, 0.8), lens=42, dof=0.66, fstop=2.2)
-    lib.animate_camera(cam, [(0, (0.06, -0.66, 1.04)), (dur, (0.06, -0.62, 1.03))], [(0, (0.04, 0.1, 0.8)), (dur, (0.04, 0.1, 0.8))])
+    lib.animate_camera(cam, [(0, (0.06, -0.66, 1.04)), (dur, (0.0, -0.5, 0.99))], [(0, (0.04, 0.1, 0.8)), (dur, (0.05, 0.05, 0.79))],
+                       focus_keys=[(0, 0.66), (dur, 0.52)])
     cam.data.clip_start = 0.05
     return dict(fill=0.45, exposure=0.2, still_t=0.5)
 
@@ -226,11 +235,20 @@ def v_station(shot):
                 rot=(0, 0, 0.1 * k), bevel=0, name='Paper', coll=coll)
     lib.box((0.06, 0.22, 0.05), (2.25, 0.25, 0.8), dark, rot=(0, 0, 0.8), bevel=0.02, name='Handset', coll=coll)
     # red emergency light on the wall + dim screen glow
-    lib.light('POINT', (-3.6, 2.4, 2.9), energy=220, color='#FF3A2A', size=0.2, name='Beacon', coll=coll)
-    lib.sphere(0.12, (-3.6, 2.6, 2.9), redm, 12, 8, name='BeaconLamp', coll=coll)
+    beacon = lib.light('POINT', (-3.6, 2.4, 2.9), energy=220, color='#FF3A2A', size=0.2, name='Beacon', coll=coll)
+    bm, bsock = lib.emission_mat('BeaconLamp', '#FF2E22', 9.0)
+    lib.sphere(0.12, (-3.6, 2.6, 2.9), bm, 12, 8, name='BeaconLamp', coll=coll)
     lib.light('AREA', (0, -0.6, 3.1), (0, 0, 0), energy=260, color='#E9EEF5', size=4.0, name='Emergency', coll=coll)
+    # the alarm is alive: beacon breathes, the panel and the centre monitor blink once a second
+    period = 0.8
+    pc.pulse(bsock.inputs['Strength'], 2.0, 14.0, 0, dur + 0.5, period=period)
+    pc.key_light(beacon, [(i * period / 2, 380 if i % 2 else 60) for i in range(int((dur + 0.5) / (period / 2)) + 1)])
+    pc.blink(alarm.node_tree.nodes['Emission'].inputs['Strength'], 4.5, 0.6, 0, dur + 0.5, period=1.0, duty=0.55)
+    for ob in coll.objects:
+        if ob.name.startswith('AlarmText'):
+            pc.blink(ob.active_material.node_tree.nodes['Emission'].inputs['Strength'], 7.0, 1.2, 0, dur + 0.5, period=1.0, duty=0.55)
     cam = lib.camera((0.55, -1.75, 1.5), (0.0, 0.6, 1.5), lens=27)
-    lib.animate_camera(cam, [(0, (0.55, -1.75, 1.5)), (dur, (0.45, -1.6, 1.48))], [(0, (0.0, 0.6, 1.5)), (dur, (0.0, 0.6, 1.5))])
+    lib.animate_camera(cam, [(0, (0.55, -1.75, 1.5)), (dur, (0.25, -1.2, 1.42))], [(0, (0.0, 0.6, 1.5)), (dur, (0.0, 0.6, 1.62))])
     cam.data.clip_start = 0.05
     lib.bloom(0.35, 0.9, 7)
     return dict(fill=0.45, fill_col='#F2EEE8', exposure=0.35, still_t=0.5)
@@ -310,9 +328,17 @@ def v_shops(shot):
     # a basket dropped in the aisle
     lib.box((0.46, 0.32, 0.24), (-0.55, 3.2, 0.0), lib.mat('Basket', '#C8282A', rough=0.5), rot=(0, 0, 0.4), bevel=0.02, name='Basket',
             coll=coll, origin='bottom')
-    pc.hero((0.0, 6.2, 0), heading=0.0, coll=coll, pose='cheer')
+    h = pc.hero((0.0, 6.2, 0), heading=0.0, coll=coll, pose='cheer')
+    # arms go up on «твои» with a little hop
+    tc = shot.get('events', {}).get('cheer', dur * 0.5)
+    t0, t1 = max(0.0, tc - 0.2), tc + 0.2
+    for part, down, up in (('upperL', -0.12, -2.5), ('upperR', 0.12, 2.5), ('foreL', -0.15, -0.35), ('foreR', 0.15, 0.35)):
+        pc.key_rot(h[part], 1, [(0, down), (t0, down), (t1, up), (dur, up * 1.02)])
+    pc.key_rot(h['head'], 0, [(0, 0.0), (t0, 0.0), (t1, 0.18), (dur, 0.2)])
+    for t, z in ((0, 0.0), (t1 - 0.05, 0.0), (t1 + 0.13, 0.11), (t1 + 0.32, 0.0), (dur, 0.0)):
+        P2._key(h['root'], 'location', 2, F(t), z)
     cam = lib.camera((0.25, 1.4, 1.3), (0.0, 9.0, 1.55), lens=46)
-    lib.animate_camera(cam, [(0, (0.25, 1.4, 1.3)), (dur, (0.2, 1.6, 1.3))], [(0, (0.0, 9.0, 1.55)), (dur, (0.0, 9.0, 1.55))])
+    lib.animate_camera(cam, [(0, (0.25, 1.4, 1.3)), (dur, (0.15, 2.6, 1.3))], [(0, (0.0, 9.0, 1.5)), (dur, (0.0, 9.0, 1.6))])
     cam.data.clip_start = 0.1
     return dict(fill=0.4, exposure=0.15, still_t=0.5)
 
@@ -362,8 +388,9 @@ def v_bread(shot):
                 x += 0.26
             lib.box((0.07, 0.004, 0.045), (x - 0.08, 0.06, z + 0.005), tag, bevel=0, name='Tag', coll=coll)
     lib.light('AREA', (0.2, -0.6, 2.3), (math.radians(35), 0, 0), energy=160, color='#FFE6C4', size=1.6, name='BakeryL', coll=coll)
-    cam = lib.camera((0.22, -0.95, 1.32), (0.0, 0.25, 1.12), lens=40, dof=1.2, fstop=2.8)
-    lib.animate_camera(cam, [(0, (0.22, -0.95, 1.32)), (dur, (0.2, -0.9, 1.31))], [(0, (0.0, 0.25, 1.12)), (dur, (0.0, 0.25, 1.12))])
+    # slow slide along the shelf, as if walking past it
+    cam = lib.camera((0.45, -0.95, 1.32), (0.2, 0.25, 1.12), lens=40, dof=1.2, fstop=2.8)
+    lib.animate_camera(cam, [(0, (0.45, -0.95, 1.32)), (dur, (-0.05, -0.9, 1.3))], [(0, (0.2, 0.25, 1.12)), (dur, (-0.25, 0.25, 1.12))])
     cam.data.clip_start = 0.05
     return dict(fill=0.5, fill_col='#FFF1E2', exposure=0.2, still_t=0.5)
 
@@ -424,8 +451,9 @@ def v_cans(shot):
                 x += 0.08
             x += 0.03
     lib.light('AREA', (0.3, -0.8, 2.4), (math.radians(30), 0, 0), energy=170, color='#F4F6FF', size=2.0, name='ShopL', coll=coll)
-    cam = lib.camera((0.78, -0.72, 1.33), (-0.25, 0.2, 1.17), lens=40, dof=1.15, fstop=2.8)
-    lib.animate_camera(cam, [(0, (0.78, -0.72, 1.33)), (dur, (0.74, -0.68, 1.33))], [(0, (-0.25, 0.2, 1.17)), (dur, (-0.25, 0.2, 1.17))])
+    # dolly along the shelf
+    cam = lib.camera((0.95, -0.72, 1.33), (-0.1, 0.2, 1.17), lens=40, dof=1.15, fstop=2.8)
+    lib.animate_camera(cam, [(0, (0.95, -0.72, 1.33)), (dur, (0.4, -0.68, 1.31))], [(0, (-0.1, 0.2, 1.17)), (dur, (-0.65, 0.2, 1.15))])
     cam.data.clip_start = 0.05
     return dict(fill=0.5, exposure=0.15, still_t=0.5)
 
@@ -455,7 +483,8 @@ def v_room(shot):
         lib.box((0.2, 0.92, 0.6), (sx, 1.62, 0.0), fab, bevel=0.06, name='Arm', coll=coll, origin='bottom')
     lib.box((0.42, 0.14, 0.36), (-0.75, 1.88, 0.42), lib.mat('Pillow', '#C9A66B', rough=0.9), rot=(-0.25, 0, 0.15), bevel=0.06,
             name='Pillow', coll=coll, origin='bottom')
-    pc.hero((0.15, 1.55, 0.0), heading=0.0, coll=coll, pose='sit')
+    h = pc.hero((0.15, 1.55, 0.0), heading=0.0, coll=coll, pose='sit')
+    pc.key_rot(h['head'], 2, [(0, 0.0), (dur * 0.45, 0.0), (dur * 0.8, -0.28), (dur, -0.3)])
     # coffee table with a candle, a rug, a dark TV, a bookcase
     wood = lib.mat('RoomWood', '#6E4F37', rough=0.55, var=0.2, var_scale=8)
     lib.box((2.6, 1.7, 0.012), (0, 0.6, 0.0), lib.mat('Rug', '#7A3F36', rough=0.95, var=0.15, var_scale=8), bevel=0, name='Rug', coll=coll,
@@ -466,8 +495,12 @@ def v_room(shot):
             lib.box((0.04, 0.04, 0.42), (lx, ly, 0.0), wood, bevel=0.005, name='CTLeg', coll=coll, origin='bottom')
     lib.cyl(0.032, 0.11, (0.18, 0.5, 0.46), lib.mat('Wax', '#F1E9D8', rough=0.5), verts=16, name='Candle', coll=coll, origin='bottom')
     flame, _ = lib.emission_mat('Flame', '#FFB15A', 40.0)
-    lib.sphere(1.0, (0.18, 0.5, 0.595), flame, 10, 8, scale=(0.011, 0.011, 0.03), name='Flame', coll=coll)
-    lib.light('POINT', (0.18, 0.5, 0.62), energy=45, color='#FFA552', size=0.03, name='CandleL', coll=coll)
+    fl = lib.sphere(1.0, (0.18, 0.5, 0.595), flame, 10, 8, scale=(0.011, 0.011, 0.03), name='Flame', coll=coll)
+    candle = lib.light('POINT', (0.18, 0.5, 0.62), energy=45, color='#FFA552', size=0.03, name='CandleL', coll=coll)
+    # the candle is alive: the flame sways and the light breathes
+    pc.flicker_light(candle, 45, 9, 0, dur + 0.2, rate=9.0, seed=5)
+    lib.add_sine(fl, 'scale', 2, 0.004, 0.37)
+    lib.add_sine(fl, 'location', 0, 0.0015, 0.53, phase=1.1)
     lib.box((0.14, 0.2, 0.03), (-0.25, 0.6, 0.46), lib.mat('Book', '#2F4E6B', rough=0.7), rot=(0, 0, 0.3), bevel=0.003, name='Book', coll=coll,
             origin='bottom')
     lib.box((1.3, 0.06, 0.76), (-2.45, 0.4, 0.9), lib.mat('TV', '#0E0F10', rough=0.15, spec=0.8), rot=(0, 0, math.pi / 2), bevel=0.01,
@@ -484,7 +517,7 @@ def v_room(shot):
     lib.cyl(0.02, 1.55, (1.45, 1.75, 0.0), iron_mat(), verts=8, name='LampPole', coll=coll, origin='bottom')
     lib.cyl(0.2, 0.25, (1.45, 1.75, 1.5), lib.mat('LampShade', '#E8DFCC', rough=0.8), verts=24, r2=0.13, name='LampShade', coll=coll)
     cam = lib.camera((1.25, -1.55, 1.42), (0.05, 1.35, 0.82), lens=40)
-    lib.animate_camera(cam, [(0, (1.25, -1.55, 1.42)), (dur, (1.15, -1.4, 1.4))], [(0, (0.05, 1.35, 0.82)), (dur, (0.05, 1.35, 0.82))])
+    lib.animate_camera(cam, [(0, (1.25, -1.55, 1.42)), (dur, (1.0, -1.15, 1.38))], [(0, (0.05, 1.35, 0.82)), (dur, (0.1, 1.35, 0.84))])
     cam.data.clip_start = 0.05
     lib.bloom(0.35, 0.9, 7)
     return dict(fill=0.35, fill_col='#C9D3EA', exposure=1.4, still_t=0.5)
@@ -557,15 +590,37 @@ def v_knock(shot, variant):
     dur = shot['dur']
     rng = random.Random(20)
     coll = lib.collection('Hall')
+    ev = shot.get('events', {})
     if variant == 'knock':
-        hallway(coll, rng, door_open=0.0, outside=14.0)
+        land_s = hallway(coll, rng, door_open=0.0, outside=14.0)
+        hinge, torch = bpy.data.objects['DoorHinge'], bpy.data.objects['Torch']
+        # someone stands outside: the light on the landing dips (a shadow), then three knocks rattle the door
+        tk = ev.get('knock', dur * 0.55)
+        e0 = 14.0 * 22
+        pc.key_light(torch, [(0, e0), (tk - 0.75, e0), (tk - 0.4, e0 * 0.35), (tk - 0.1, e0 * 0.55), (dur, e0 * 0.5)])
+        for t, v in ((0, 14 * 0.15), (tk - 0.75, 14 * 0.15), (tk - 0.4, 14 * 0.05), (tk - 0.1, 14 * 0.08), (dur, 14 * 0.075)):
+            lib.key_value(land_s, F(t), v)
+        keys = [(0, 0.0)]
+        for k in range(3):
+            t = tk + k * 0.22
+            keys += [(t - 0.02, 0.0), (t + 0.02, -0.006), (t + 0.08, 0.0)]
+        for t, v in keys:
+            P2._key(hinge, 'rotation_euler', 2, F(t), v)
         cam = lib.camera((0.22, -2.7, 1.55), (0.0, 1.0, 1.08), lens=36)
-        lib.animate_camera(cam, [(0, (0.22, -2.7, 1.55)), (dur, (0.2, -2.45, 1.55))], [(0, (0.0, 1.0, 1.08)), (dur, (0.0, 1.0, 1.08))])
+        lib.animate_camera(cam, [(0, (0.22, -2.7, 1.55)), (dur, (0.16, -2.2, 1.5))], [(0, (0.0, 1.0, 1.08)), (dur, (0.0, 1.0, 1.05))])
         out = dict(fill=0.22, fill_col='#FFE9D2', exposure=0.75, still_t=0.5)
     else:
-        hallway(coll, rng, door_open=0.2, outside=26.0)
+        land_s = hallway(coll, rng, door_open=0.0, outside=14.0)
+        hinge, torch = bpy.data.objects['DoorHinge'], bpy.data.objects['Torch']
+        # the door slowly opens and the light from the landing floods in
+        P2._key(hinge, 'rotation_euler', 2, F(0), 0.0)
+        P2._key(hinge, 'rotation_euler', 2, F(0.5), 0.0)
+        P2._key(hinge, 'rotation_euler', 2, F(min(6.0, dur)), 0.35)
+        pc.key_light(torch, [(0, 14 * 22), (0.5, 14 * 22), (min(6.0, dur), 30 * 22)])
+        for t, v in ((0, 14 * 0.15), (0.5, 14 * 0.15), (min(6.0, dur), 30 * 0.15)):
+            lib.key_value(land_s, F(t), v)
         cam = lib.camera((0.2, -2.45, 1.55), (0.05, 1.0, 1.1), lens=36)
-        lib.animate_camera(cam, [(0, (0.2, -2.45, 1.55)), (dur, (0.18, -2.3, 1.55))], [(0, (0.05, 1.0, 1.1)), (dur, (0.05, 1.0, 1.1))])
+        lib.animate_camera(cam, [(0, (0.2, -2.45, 1.55)), (dur, (0.14, -1.85, 1.5))], [(0, (0.05, 1.0, 1.1)), (dur, (0.1, 1.2, 1.08))])
         out = dict(fill=0.22, fill_col='#FFE9D2', exposure=0.75, still_t=0.3)
     cam.data.clip_start = 0.05
     lib.bloom(0.4, 0.9, 8)

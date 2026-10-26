@@ -41,6 +41,8 @@ description: Сделать вертикальный ролик aipollon в ст
    клипы для Remotion `-bf 0 -g 30 -keyint_min 30`. `.ps1` с кириллицей — UTF-8 с BOM.
    Быстрый режим без кадров на диске: `projects/posledniy-chelovek-blender/blender/build_pc.py` (`--still` и
    `--mp4 --fps 30 --samples 24` сразу в H.264), 15 кадров и 4 клипа ≈ 10 мин, папка проекта на ПК — десятки МБ.
+   Тот же `build_pc.py` даёт и полный режим без кадров на диске: `--mp4 --fps 60` для всех сцен (`tools/mkjob.py … clip60`),
+   19 клипов ≈ 4150 кадров ≈ 51 мин, клипы ≈ 70 МБ. В каждой бывшей «картинке» — движение камеры и одна живая деталь.
 8. **Сборка** `tools/mix.py` (свои звуки `sfx_mbg.py`, `soundtrack.wav`) → `tools/build_spec.py` → `render.py` в KINEMA →
    `qa.py` → 20+ кадров из готового MP4. Титры editorial сверху, концовка `TikTokProfile` (`dark: true`) на `IPhone17`.
    «Оформление как в гибриде» → разметку титров и звуки взять из `styles/gibrid/README.md`.

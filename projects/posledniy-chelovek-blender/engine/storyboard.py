@@ -1,16 +1,20 @@
 """Storyboard for posledniy-chelovek-blender: the same story, voice, captions and sounds as the gibrid posledniy-chelovek,
-pictures from Blender in real colours (quick mode): 15 stills with camera moves in the edit (PhotoBG zoom/pan) and
-4 animated clips (VideoBG). Counters, the chat, the stat slam and the TikTok end card stay KINEMA layers.
+pictures from Blender in real colours. Counters, the chat, the stat slam and the TikTok end card stay KINEMA layers.
 
-    python3 projects/posledniy-chelovek-blender/engine/storyboard.py
-needs <RS>/engine/public/projects/posledniy-chelovek-blender/{voice.wav, words.json, stills/*.jpg, clips/*.mp4}
+v2 (default, full mode): every scene is an animated Blender clip (VideoBG, 60 fps), KINEMA project
+posledniy-chelovek-blender-v2. v1 (--quick): 15 stills with camera moves in the edit (PhotoBG zoom/pan) + 4 clips.
+
+    python3 projects/posledniy-chelovek-blender/engine/storyboard.py [--quick]
+needs <RS>/engine/public/projects/<PID>/{voice.wav, words.json, clips/*.mp4 (+ stills/*.jpg for --quick)}
 """
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 RS = ROOT / "kinema" / "skills" / "reel-studio"
-PID = "posledniy-chelovek-blender"
+FULL = "--quick" not in sys.argv
+PID = "posledniy-chelovek-blender-v2" if FULL else "posledniy-chelovek-blender"
 P = RS / "engine" / "public" / "projects" / PID
 B = f"projects/{PID}"
 
@@ -25,6 +29,9 @@ def k(t, pos, tgt, fov=None, ease=None):
 
 
 def photo(sid, zoom=(1.0, 1.1), pan=(0, 0, 0, 0), **kw):
+    if FULL:  # the camera already moves inside the clip: keep only a light push in the edit
+        kw.pop("topShade", None)
+        return clip(sid, (1.0, 1.03), **kw)
     return {"block": "PhotoBG", "props": {"src": f"{B}/stills/{sid}.jpg", "zoom": list(zoom), "pan": list(pan), "topShade": 0.3, **kw}}
 
 
@@ -90,10 +97,12 @@ scenes = [
          "from": 8000000000, "to": 1, "steps": [{"at": "@один", "value": 1}], "dur": 0.6, "size": 128, "labelSize": 48,
          "label": "человек|человека|человек на Земле"}}]},
     # the hero alone among the stopped cars: the frame pulls back on «Машины»
-    {"id": "you", "at": "@И это", "transition": "blur", "camera": "still", "bg": photo("you", (1.22, 1.0), (0, 40, 0, 0))},
+    {"id": "you", "at": "@И это", "transition": "blur", "camera": "still",
+     "bg": clip("you", (1.0, 1.0)) if FULL else photo("you", (1.22, 1.0), (0, 40, 0, 0))},
     {"id": "cafe", "at": "@В кафе", "transition": "push", "camera": "still", "bg": photo("cafe", (1.0, 1.12), (0, 0, 0, 40))},
     {"id": "mom", "at": "@Пишешь", "transition": "whip", "camera": "still",
-     "bg": photo("cafe", (1.14, 1.2), blur=16, darken=0.4),
+     # v2: the same cafe clip keeps running behind the phone (startFrom = mom start - cafe start)
+     "bg": clip("cafe", (1.08, 1.1), startFrom=2.76, blur=16, darken=0.4) if FULL else photo("cafe", (1.14, 1.2), blur=16, darken=0.4),
      "layers": [{"block": "IPhone17", "pos": "full", "enter": "none", "sfx": False, "props": {
          "enter": "rise", "color": "#2C3A4F", "shadow": 0, "cam": PHONE_CAM,
          "screen": {"block": "ChatScreen", "props": {"name": "Мама", "sub": "была в сети вчера", "time": "8:14", "messages": [

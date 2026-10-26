@@ -115,7 +115,7 @@ def last(shot):
     e, cl, shells, spin = sk.earth(sd, night=0.0, r=sk.R, seg=(512, 256))
     lamp = sk.sun_light(sd, 4.5)
     lamp.data.use_shadow = False
-    planet.facing(spin, MOSCOW[0], MOSCOW[1] - 15.0, 0.0, 0.0, dur)
+    planet.facing(spin, MOSCOW[0], MOSCOW[1] - 15.0, 0.0, 3.0, dur)
     backlit(e, shells, sd, moon=0.05)
     dot = last_light(spin, strength=80.0, r=0.4)
     sc = bpy.context.scene
@@ -125,6 +125,17 @@ def last(shot):
     c = lib.camera((0, -272, 6), tuple(p), 40)
     c.data.clip_end = 5000
     c.data.clip_start = 1.0
+    # the planet turns a little, the camera pushes in and keeps the light dead centre (the «ТЫ» label sits there)
+    lib.animate_camera(c, [(0, (0, -272, 6)), (dur, (0, -257, 6))])
+    tr = c.constraints.new('TRACK_TO')
+    tr.target = dot
+    tr.track_axis = 'TRACK_NEGATIVE_Z'
+    tr.up_axis = 'UP_Y'
+    # the light flares once on «Земле»
+    em = dot.active_material.node_tree.nodes['Emission'].inputs['Strength']
+    tm = shot.get('events', {}).get('mark', dur * 0.6)
+    for t, v in ((0, 80.0), (tm - 0.15, 80.0), (tm + 0.12, 170.0), (tm + 0.6, 95.0), (dur, 90.0)):
+        lib.key_value(em, lib.sec2f(t), v)
     print('LAST dot world', tuple(round(x, 2) for x in p), flush=True)
     lib.bloom(0.45, 0.9, 8)
     return dict(fill=0.0, exposure=0.15, still_t=0.5)
