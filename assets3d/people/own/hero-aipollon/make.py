@@ -41,7 +41,7 @@ def bake_for_gltf(p):
     black = bpy.data.materials.get('HeroPupil')
     for side in 'LR':
         iris = bpy.data.objects['Hero_iris' + side]
-        disc = lib.sphere(1.0, segs=24, rings=8, mat_=black, scale=(0.025, 0.0015, 0.029), name='Hero_pupil' + side)
+        disc = lib.sphere(1.0, segs=24, rings=8, mat_=black, scale=(0.024, 0.0015, 0.0265), name='Hero_pupil' + side)
         disc.parent = iris.parent
         disc.location = iris.location + mathutils.Vector((0, -iris.scale.y + 0.0006, 0))
     head = p['head']
