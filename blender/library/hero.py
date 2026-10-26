@@ -248,10 +248,10 @@ def mats():
         skin=lib.mat('HeroSkinPeach', COL['skin'], rough=0.5),
         neck=lib.mat('HeroNeckShade', '#B88A6C', rough=0.6),
         head=_head_mat(),
-        brow=lib.mat('HeroBrow', COL['brow'], rough=0.8),
-        white=lib.mat('HeroEyeWhite', '#F7F6F2', rough=0.25),
-        iris=lib.mat('HeroIris', COL['iris'], rough=0.2),
-        pupil=lib.mat('HeroPupil', '#0E0B09', rough=0.15),
+        brow=_brow_mat(),
+        white=lib.mat('HeroEyeWhite', '#F7F6F2', rough=0.45),
+        iris=_iris_mat(),
+        pupil=lib.mat('HeroPupil', '#0E0B09', rough=0.5),
         glint=lib.mat('HeroGlint', '#FFFFFF', rough=0.1, emit='#FFFFFF', emit_strength=2.0),
         lips=lib.mat('HeroLips', COL['lips'], rough=0.5),
         shoe=lib.mat('HeroSneaker', COL['shoe'], rough=0.55, bump=0.05, bump_scale=90),
@@ -296,39 +296,177 @@ def _curve(name, pts, radii, m, parent, coll, bevel=1.0, res=3):
     return ob
 
 
-def _face(name, head, M, coll):
+EYE_Z = -0.07                                    # eye centre on the head (head-local z)
+EYE_X = 0.122
+EYE = (0.07, 0.026, 0.064)                       # sclera half sizes: width, depth, height
+GAZE = (-0.013, -0.002)                          # iris shift in the eye: like the reference, to the hero's right
+
+
+def _brow_mesh(sx, name):
+    """Thick brow like the reference: flat bottom, slightly arched top, heavy inner end, tip tapering at the
+    outer end. A thin slab wrapped onto the head surface; UV u runs along the brow (for the hair strokes)."""
+    nu, nv = 18, 6
+    x0, x1 = 0.035, 0.178                        # inner / outer end (head x)
+    zb = EYE_Z + 0.076                           # bottom line
+    def top(u):                                  # full height to ~45 %, then tapers to a point at the outer end
+        return 0.038 + 0.004 * math.sin(math.pi * min(1.0, u / 0.5)) - 0.03 * max(0.0, (u - 0.45) / 0.55) ** 1.3
+    def bot(u):
+        return 0.007 * max(0.0, (u - 0.6) / 0.4) ** 2
+    bm = bmesh.new()
+    uv = bm.loops.layers.uv.new('UVMap')
+    grids = []
+    for layer, out0 in ((0, 1), (1, 0)):         # front surface (bulging out), back surface (inside the skin)
+        g = []
+        for i in range(nu + 1):
+            u = i / nu
+            row = []
+            for j in range(nv + 1):
+                v = j / nv
+                z = zb + bot(u) + (top(u) - bot(u)) * v
+                bulge = 0.0065 * math.sin(math.pi * v) ** 0.6 * min(1.0, u / 0.08 + 0.35, (1 - u) / 0.12 + 0.2)
+                pt, n = _on_head(sx * (x0 + (x1 - x0) * u), z, out=(0.0025 + bulge) if out0 else -0.003)
+                row.append(bm.verts.new(pt))
+            g.append(row)
+        grids.append(g)
+    f, bk = grids
+    def face(vs, uvs):
+        fc = bm.faces.new(vs)
+        for lp, c in zip(fc.loops, uvs):
+            lp[uv].uv = c
+    for i in range(nu):
+        for j in range(nv):
+            q = [(i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)]
+            face([f[a][b] for a, b in q], [(a / nu, b / nv) for a, b in q])
+            face([bk[a][b] for a, b in reversed(q)], [(a / nu, b / nv) for a, b in reversed(q)])
+    for i in range(nu):                          # bottom and top rims
+        for j in (0, nv):
+            face([f[i][j], bk[i][j], bk[i + 1][j], f[i + 1][j]], [(i / nu, 0)] * 4)
+    for i in (0, nu):                            # ends
+        for j in range(nv):
+            face([f[i][j], f[i][j + 1], bk[i][j + 1], bk[i][j]], [(0, j / nv)] * 4)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return _mesh(name, bm)
+
+
+def _iris_mat():
+    """Iris like the reference: big black pupil, warm brown, lighter towards the bottom, dark ring at the edge
+    (object coords of the unit-ball mesh)."""
+    m = bpy.data.materials.get('HeroIrisRing')
+    if m:
+        return m
+    m = bpy.data.materials.new('HeroIrisRing')
+    m.use_nodes = True
+    nt = m.node_tree
+    L = nt.links
+    p = nt.nodes['Principled BSDF']
+    p.inputs['Roughness'].default_value = 0.45
+    p.inputs['Base Color'].default_value = lib.C(COL['iris'])   # what plain exporters (glTF) keep
+    tc = nt.nodes.new('ShaderNodeTexCoord')
+    sep = nt.nodes.new('ShaderNodeSeparateXYZ'); L.new(tc.outputs['Object'], sep.inputs[0])
+    comb = nt.nodes.new('ShaderNodeCombineXYZ')
+    L.new(sep.outputs['X'], comb.inputs['X']); L.new(sep.outputs['Z'], comb.inputs['Y'])
+    ln = nt.nodes.new('ShaderNodeVectorMath'); ln.operation = 'LENGTH'; L.new(comb.outputs[0], ln.inputs[0])
+    ramp = nt.nodes.new('ShaderNodeValToRGB')
+    el = ramp.color_ramp.elements
+    el[0].position = 0.5; el[0].color = lib.C('#060404')          # pupil
+    e = el.new(0.545); e.color = lib.C('#311A0D')
+    el[1].position = 1.0; el[1].color = lib.C('#170B05')
+    e = el.new(0.8); e.color = lib.C('#4A2A16')
+    e = el.new(0.9); e.color = lib.C('#24120A')
+    L.new(ln.outputs['Value'], ramp.inputs['Fac'])
+    low = nt.nodes.new('ShaderNodeMapRange')       # lighter lower half
+    low.inputs['From Min'].default_value = 0.0; low.inputs['From Max'].default_value = -0.8
+    low.inputs['To Max'].default_value = 0.3
+    L.new(sep.outputs['Z'], low.inputs['Value'])
+    mix = nt.nodes.new('ShaderNodeMix'); mix.data_type = 'RGBA'; mix.blend_type = 'SCREEN'
+    ring = nt.nodes.new('ShaderNodeMath'); ring.operation = 'GREATER_THAN'; ring.inputs[1].default_value = 0.54
+    L.new(ln.outputs['Value'], ring.inputs[0])
+    fac = nt.nodes.new('ShaderNodeMath'); fac.operation = 'MULTIPLY'
+    L.new(low.outputs['Result'], fac.inputs[0]); L.new(ring.outputs[0], fac.inputs[1])
+    L.new(fac.outputs[0], mix.inputs['Factor'])
+    L.new(ramp.outputs['Color'], mix.inputs['A']); mix.inputs['B'].default_value = lib.C('#5E3820')
+    L.new(mix.outputs['Result'], p.inputs['Base Color'])
+    return m
+
+
+def _brow_mat():
+    """Dark brow with fine hair strokes along it (UV u along the brow)."""
+    m = bpy.data.materials.get('HeroBrowHair')
+    if m:
+        return m
+    m = bpy.data.materials.new('HeroBrowHair')
+    m.use_nodes = True
+    nt = m.node_tree
+    L = nt.links
+    p = nt.nodes['Principled BSDF']
+    p.inputs['Roughness'].default_value = 0.6
+    p.inputs['Base Color'].default_value = lib.C(COL['brow'])
+    uvn = nt.nodes.new('ShaderNodeUVMap'); uvn.uv_map = 'UVMap'
+    mp = nt.nodes.new('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (3.0, 40.0, 1.0)
+    mp.inputs['Rotation'].default_value = (0, 0, 0.12)
+    L.new(uvn.outputs['UV'], mp.inputs['Vector'])
+    nz = nt.nodes.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value = 2.5; nz.inputs['Detail'].default_value = 3
+    L.new(mp.outputs['Vector'], nz.inputs['Vector'])
+    mix = nt.nodes.new('ShaderNodeMix'); mix.data_type = 'RGBA'
+    mix.inputs['A'].default_value = lib.C('#0D0B0A'); mix.inputs['B'].default_value = lib.C('#3A3230')
+    mr = nt.nodes.new('ShaderNodeMapRange'); mr.inputs['From Min'].default_value = 0.5
+    mr.inputs['From Max'].default_value = 0.75
+    L.new(nz.outputs['Fac'], mr.inputs['Value']); L.new(mr.outputs['Result'], mix.inputs['Factor'])
+    L.new(mix.outputs['Result'], p.inputs['Base Color'])
+    b = nt.nodes.new('ShaderNodeBump'); b.inputs['Strength'].default_value = 0.4; b.inputs['Distance'].default_value = 0.001
+    L.new(nz.outputs['Fac'], b.inputs['Height']); L.new(b.outputs['Normal'], p.inputs['Normal'])
+    return m
+
+
+def _face(name, head, M, coll, gaze=GAZE):
     """Eyes, brows, nose, mouth, ears on the head object (head-local coordinates)."""
+    gx, gz = gaze
     for side, sx in (('L', 1), ('R', -1)):
-        # eye: tall oval sclera sunk into the face, big brown iris looking slightly to the hero's left
-        pos, n = _on_head(sx * 0.104, -0.045, out=-0.006)
+        # eye: big round-oval sclera set into the face; the iris and pupil are caps on the same centre, so the
+        # sclera clips them like a real eyeball; two glints (big upper, small lower)
+        sink = 0.008
+        pos, n = _on_head(sx * EYE_X, EYE_Z, out=-sink)
         eye = lib.empty(name + '_eye' + side, pos, coll=coll)
         eye.parent = head
         eye.rotation_euler = n.to_track_quat('-Y', 'Z').to_euler()
         eye.empty_display_size = 0.03
-        _part(name + '_white' + side, 'ball', eye, (0, 0, 0), M['white'], coll, scale=(0.046, 0.022, 0.056))
-        look = (0.012, 0.004)                    # iris shift x (towards hero's left), z
-        _part(name + '_iris' + side, 'ball', eye, (look[0], -0.012, look[1]), M['iris'], coll,
-              scale=(0.036, 0.016, 0.043))
-        _part(name + '_pupil' + side, 'ball', eye, (look[0] * 1.15, -0.02, look[1]), M['pupil'], coll,
-              scale=(0.016, 0.012, 0.019))
-        _part(name + '_glint' + side, 'ball', eye, (look[0] - 0.012, -0.029, look[1] + 0.016), M['glint'], coll,
-              scale=(0.0075, 0.005, 0.0085))
-        # upper lash line
-        arc = [(0.047 * math.cos(a), -0.012 - 0.008 * math.sin(a), 0.057 * math.sin(a) - 0.002)
-               for a in [math.radians(d) for d in (190, 160, 125, 90, 55, 20, -5)]]
-        _curve(name + '_lash' + side, arc, [0.3, 0.8, 1.0, 1.0, 1.0, 0.85, 0.4], M['pupil'], eye, coll, bevel=0.0055)
-        # thick brow, heavier at the inner end, slightly arched
-        xs = [0.045, 0.075, 0.11, 0.145, 0.172]
-        zs = [0.068, 0.082, 0.09, 0.087, 0.072]
-        pts = [_on_head(sx * x, z, out=0.006)[0] for x, z in zip(xs, zs)]
-        _curve(name + '_brow' + side, pts, [1.0, 1.05, 1.0, 0.85, 0.55], M['brow'], head, coll, bevel=0.0135)
+        ex, ey, ez = EYE
+        _part(name + '_white' + side, 'ball', eye, (0, 0, 0), M['white'], coll, scale=(ex, ey, ez))
+        _part(name + '_iris' + side, 'ball', eye, (gx, 0, gz), M['iris'], coll, scale=(0.047, ey * 1.2, 0.053))
+        _part(name + '_glint' + side, 'ball', eye, (gx - 0.014, -ey * 1.25 - 0.001, gz + 0.017), M['glint'], coll,
+              scale=(0.0105, 0.003, 0.0115))
+        _part(name + '_glint2' + side, 'ball', eye, (gx + 0.015, -ey * 1.2 - 0.001, gz - 0.02), M['glint'], coll,
+              scale=(0.005, 0.002, 0.0055))
+        # upper lid: thick black line over the top of the eye, heavier towards the outer corner, small wing
+        # upper lid: thick black line along the top edge of the visible eye (where the sclera comes out of the skin),
+        # heavier towards the outer corner, ending in a small wing
+        R = eye.rotation_euler.to_matrix()
+        arc = []
+        for d in (172, 155, 132, 108, 84, 60, 38, 18, 4):
+            c, sn = math.cos(math.radians(d)), math.sin(math.radians(d))
+            t = 1.0
+            while t > 0.3:
+                e = Vector((sx * ex * t * c, -ey * math.sqrt(max(0.0, 1 - t * t)), ez * t * sn))
+                q = Vector(pos) + R @ e
+                if q.y < _on_head(q.x, q.z)[0].y:
+                    break
+                t -= 0.01
+            arc.append(_on_head(q.x, q.z + 0.002, out=0.0035)[0])
+        wing = arc[-1] + (arc[-1] - arc[-2]).normalized() * 0.01
+        arc.append(_on_head(wing.x, wing.z + 0.001, out=0.003)[0])
+        _curve(name + '_lid' + side, arc, [0.35, 0.7, 0.9, 1.0, 1.05, 1.12, 1.15, 1.1, 0.9, 0.35], M['pupil'], head,
+               coll, bevel=0.0068)
+        # brow
+        br = bpy.data.objects.new(name + '_brow' + side, _brow_mesh(sx, 'H_brow' + side))
+        lib._link(br, coll); lib._obj_mat(br, M['brow'])
+        br.parent = head
         # ear: flattened ball on the side, slightly forward-tilted
-        _part(name + '_ear' + side, 'ball', head, (sx * (HEAD_R[0] * 0.93), 0.03, -0.07), M['skin'], coll,
+        _part(name + '_ear' + side, 'ball', head, (sx * (HEAD_R[0] * 0.93), 0.03, -0.085), M['skin'], coll,
               scale=(0.026, 0.05, 0.068), rot=(0.15, 0, sx * -0.25))
-    nose, n = _on_head(0.0, -0.118, out=-0.004)
-    _part(name + '_nose', 'ball', head, nose, M['skin'], coll, scale=(0.028, 0.026, 0.026))
-    mouth = [_on_head(x, z, out=0.002)[0] for x, z in ((-0.036, -0.178), (-0.012, -0.186), (0.014, -0.185),
-                                                       (0.038, -0.174))]
+    nose, n = _on_head(0.0, -0.135, out=-0.006)
+    _part(name + '_nose', 'ball', head, nose, M['skin'], coll, scale=(0.035, 0.032, 0.032))
+    mouth = [_on_head(x, z, out=0.002)[0] for x, z in ((-0.036, -0.205), (-0.012, -0.212), (0.014, -0.211),
+                                                       (0.04, -0.199))]
     _curve(name + '_mouth', mouth, [0.6, 1.0, 1.0, 0.6], M['lips'], head, coll, bevel=0.0045)
 
 
@@ -386,9 +524,11 @@ def _collar_mesh():
     return _meshes['collar']
 
 
-def hero(loc=(0, 0, 0), heading=0.0, coll=None, pose='stand', name='Hero', rng=None, height=1.0, subsurf=1):
+def hero(loc=(0, 0, 0), heading=0.0, coll=None, pose='stand', name='Hero', rng=None, height=1.0, subsurf=1,
+         gaze=GAZE):
     """Build the hero. pose: 'stand' | 'cheer' | 'point' | 'sit' | 'still' (no idle motion) | 'walk' (key it
-    yourself with hero.walk). Returns the parts dict (people2 layout)."""
+    yourself with hero.walk). gaze = iris shift (x, z) in metres, (0, 0) looks straight ahead.
+    Returns the parts dict (people2 layout)."""
     rng = rng or random.Random(7)
     M = mats()
     root = lib.empty(name, loc, (0, 0, heading), coll=coll)
@@ -400,7 +540,7 @@ def hero(loc=(0, 0, 0), heading=0.0, coll=None, pose='stand', name='Hero', rng=N
     p.update(_hoodie(name, hips, M, coll))
     p['neck'] = _part(name + '_neck', 'ball', hips, (0, 0.01, 0.47), M['neck'], coll, scale=(0.065, 0.065, 0.09))
     p['head'] = _part(name + '_head', 'head', hips, (0, 0, HEAD_Z), M['head'], coll)
-    _face(name, p['head'], M, coll)
+    _face(name, p['head'], M, coll, gaze)
     for side, sx in (('L', 1), ('R', -1)):
         th = _part(name + '_thigh' + side, 'thigh', hips, (sx * 0.1, 0, 0), M['pants'], coll)
         sh = _part(name + '_shin' + side, 'shin', th, (0, 0, -L1), M['pants'], coll)
@@ -422,8 +562,8 @@ def hero(loc=(0, 0, 0), heading=0.0, coll=None, pose='stand', name='Hero', rng=N
         p['upper' + side], p['fore' + side], p['hand' + side] = ua, fa, hd
     if subsurf:
         for ob in [o for o in bpy.data.objects if o.name.startswith(name + '_') and o.type == 'MESH']:
-            if ob.data.name in ('H_torso', 'H_head', 'H_pocket', 'H_shoe', 'H_sole', 'H_collar', 'H_hand',
-                                'H_pelvis'):
+            if ob.data.name.split('.')[0] in ('H_torso', 'H_head', 'H_pocket', 'H_shoe', 'H_sole', 'H_collar',
+                                              'H_hand', 'H_browL', 'H_browR', 'H_pelvis'):
                 md = ob.modifiers.new('Subsurf', 'SUBSURF')
                 md.levels = subsurf
                 md.render_levels = subsurf

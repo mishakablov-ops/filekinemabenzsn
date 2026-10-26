@@ -10,7 +10,7 @@ import sys, os, math
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, '..', '..', '..', '..'))
 sys.path[:0] = [os.path.join(REPO, 'blender', 'kit', 'blender'), os.path.join(REPO, 'blender', 'library')]
-import bpy, bmesh
+import bpy, bmesh, mathutils
 import lib, hero
 
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
@@ -37,6 +37,13 @@ def bake_for_gltf(p):
         bpy.data.objects.remove(ob)
         nob.name = nob.name.split('.')[0]
         me.materials.clear(); me.materials.append(mat)
+    # the pupil lives in the iris shader; glTF keeps only flat colours, so give it a thin black disc
+    black = bpy.data.materials.get('HeroPupil')
+    for side in 'LR':
+        iris = bpy.data.objects['Hero_iris' + side]
+        disc = lib.sphere(1.0, segs=24, rings=8, mat_=black, scale=(0.025, 0.0015, 0.029), name='Hero_pupil' + side)
+        disc.parent = iris.parent
+        disc.location = iris.location + mathutils.Vector((0, -iris.scale.y + 0.0006, 0))
     head = p['head']
     me = head.data
     skin, hair = lib.C(hero.COL['skin']), lib.C(hero.COL['hair'])
