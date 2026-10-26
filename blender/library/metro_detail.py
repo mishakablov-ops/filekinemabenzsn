@@ -456,7 +456,7 @@ def build_detail(plan, M, coll, roads, focus, R, fps=24, frames=48, night=0.0, s
                 lamp_near = min(abs(((uu - (0 if side < 0 else 15)) + 15) % 30 - 15), 99)
                 if in_span(uu, 6.0) and lamp_near > 3.0 and rng.random() < p_tree:
                     x, y = P(uu, side * (hw + 1.5))
-                    if math.hypot(x - fx, y - fy) > 4 and not kept(x, y, 1.8):
+                    if math.hypot(x - fx, y - fy) > 4 and not kept(x, y, 6.0):     # no crown over the lens
                         Tr.prism(MB.ccw([(x - 0.7, y - 0.7), (x + 0.7, y - 0.7), (x + 0.7, y + 0.7), (x - 0.7, y + 0.7)]), 0.15, 0.17, D['pit'])
                         street_tree(Tr, D, x, y, 0.17, rng)
                         st['trees'] += 1

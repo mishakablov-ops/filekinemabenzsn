@@ -245,14 +245,14 @@ def k_skyline(rng):
             x = lm[0] + rng.uniform(-1500, 1500)
             y = MP.RIVER_S - (rng.uniform(4, 10) if mode == 'boro' else rng.uniform(30, 500))
             z = 2.0 if mode == 'boro' else rng.uniform(40, 140)
-            lens = rng.uniform(30, 55)
+            lens = rng.uniform(35, 60)
         elif mode == 'north':
             x, y, z = rng.uniform(-1500, 1500), MP.Y_TOP - rng.uniform(80, 450), rng.uniform(120, 300)
             lens = rng.uniform(35, 60)
         else:
             sx = 1 if mode == 'east' else -1
-            x, y, z = sx * rng.uniform(2000, 3000), rng.uniform(MP.RIVER_S + 150, -150), rng.uniform(60, 220)
-            lens = rng.uniform(30, 50)
+            x, y, z = sx * rng.uniform(2000, 2600), rng.uniform(MP.RIVER_S + 150, -150), rng.uniform(60, 200)
+            lens = rng.uniform(45, 70)                 # long lens: the skyline big through the haze
         cam = [x, y, z]
         tgt = [lm[0] + rng.uniform(-200, 200), lm[1] + rng.uniform(-200, 200), lm[2] * rng.uniform(0.25, 0.45)]
         if free(x, y, z) and clear(cam, tgt, 80):

@@ -153,25 +153,6 @@
  },
  {
   "reel": "places-demo",
-  "key": "street:demo/0",
-  "kind": "street",
-  "cam": [
-   1124.9,
-   2587.8,
-   1.6
-  ],
-  "target": [
-   571.6,
-   2498.9,
-   21.0
-  ],
-  "lens": 29,
-  "preset": "day",
-  "desc": "улица: тротуар, взгляд вдоль",
-  "seed": "demo/0#0"
- },
- {
-  "reel": "places-demo",
   "key": "corner:demo/3",
   "kind": "corner",
   "cam": [
@@ -188,25 +169,6 @@
   "preset": "night",
   "desc": "перекрёсток: угол тротуара, взгляд через перекрёсток",
   "seed": "demo/3#0"
- },
- {
-  "reel": "places-demo",
-  "key": "skyline:demo/6",
-  "kind": "skyline",
-  "cam": [
-   2966.0,
-   -432.3,
-   199.6
-  ],
-  "target": [
-   -421.9,
-   517.1,
-   153.7
-  ],
-  "lens": 31,
-  "preset": "golden",
-  "desc": "скайлайн (east)",
-  "seed": "demo/6#0"
  },
  {
   "reel": "places-demo",
@@ -245,5 +207,43 @@
   "preset": "dusk",
   "desc": "на пешеходной части: Новый мост",
   "seed": "demo/11#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "street:demo/0",
+  "kind": "street",
+  "cam": [
+   1124.9,
+   2587.8,
+   1.6
+  ],
+  "target": [
+   571.6,
+   2498.9,
+   21.0
+  ],
+  "lens": 29,
+  "preset": "day",
+  "desc": "улица: тротуар, взгляд вдоль",
+  "seed": "demo/0#0"
+ },
+ {
+  "reel": "places-demo",
+  "key": "skyline:demo/6",
+  "kind": "skyline",
+  "cam": [
+   2579.6,
+   -432.3,
+   182.2
+  ],
+  "target": [
+   -421.9,
+   517.1,
+   153.7
+  ],
+  "lens": 46,
+  "preset": "golden",
+  "desc": "скайлайн (east)",
+  "seed": "demo/6#0"
  }
 ]
