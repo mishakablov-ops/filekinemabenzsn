@@ -8,7 +8,8 @@
 
 | папка | что лежит | кто меняет |
 |---|---|---|
-| [`kinema/`](kinema/) | движок KINEMA (Remotion + three.js + Python), версия из архива `KINEMA-2026-10-25.zip` | обновляется целиком новым архивом или точечными правками движка |
+| `kinema/` | движок KINEMA (Remotion + three.js + Python). **В git не хранится**: свежая сборка — в репозитории [`Wpresser/Algorithm-for-aipollon`](https://github.com/Wpresser/Algorithm-for-aipollon); перед работой `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema` и скопировать поверх `kinema-extra/` | обновляется в репозитории движка |
+| [`kinema-extra/`](kinema-extra/) | своё поверх движка: аватарка, обложки для концовки, два звука | Claude, новая обложка = новый файл |
 | [`knowledge/`](knowledge/) | знания и правила канала: выжимка, правила оформления, звука, QA, Blender-пайплайн | Claude, при каждом новом пожелании пользователя |
 | [`skills/`](skills/) | тексты скиллов `/gibrid` и `/blender` (что делать по шагам) | Claude, при изменении процесса |
 | [`styles/`](styles/) | стили роликов: описание, правила, шаблон для нового стиля | Claude, новый стиль = новая папка по шаблону |
