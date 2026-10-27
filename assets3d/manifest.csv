@@ -1,2 +1,1 @@
 category,source,name,path,license,author,url,added,used_in,notes
-people,own,hero-aipollon,assets3d/people/own/hero-aipollon/hero-aipollon.glb,CC0,aipollon (Claude по референсу mike),,2026-10-26,,"главный герой канала; источник — blender/library/hero.py, пересборка make.py"
