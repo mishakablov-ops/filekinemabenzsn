@@ -1,0 +1,831 @@
+{
+ "id": "posledniy-chelovek-blender-v2",
+ "mode": "explainer",
+ "style": "dusk",
+ "fps": 60,
+ "voice": {
+  "src": "projects/posledniy-chelovek-blender-v2/voice.wav",
+  "words": "projects/posledniy-chelovek-blender-v2/words.json"
+ },
+ "music": {
+  "src": "music/dark-cinematic.m4a",
+  "volume": 0.11,
+  "duck": 0.45
+ },
+ "tail": 1.8,
+ "autoSfx": false,
+ "grain": 0.02,
+ "vignette": 0.12,
+ "captions": {
+  "mode": "editorial",
+  "pos": "top",
+  "uppercase": true
+ },
+ "sfx": [
+  {
+   "at": "@нет",
+   "id": "hit-sub",
+   "volume": 0.75,
+   "alignPeak": true
+  },
+  {
+   "at": "@Исчезли",
+   "id": "dread-rise",
+   "volume": 0.35,
+   "alignPeak": false
+  },
+  {
+   "at": "@8",
+   "id": "pk-digital-data-load-sfx-1",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@один",
+   "id": "pk-digital-digitasl-burst-sfx",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@ты",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@Машины",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@тёплый",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@Пишешь+0.45",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": false
+  },
+  {
+   "at": "@доходит",
+   "id": "pk-result-failure",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@гаснет+0.2",
+   "id": "switch-click",
+   "volume": 0.8,
+   "alignPeak": false
+  },
+  {
+   "at": "@гаснет+0.3",
+   "id": "hit-sub",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@Станциям",
+   "id": "pk-notify-system-alert-sfx",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@нет#2",
+   "id": "hit-soft",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@твои",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@неделю",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@пяти",
+   "id": "pk-click-ui-button",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@машина",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@бензин",
+   "id": "hit-punch",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@полгода",
+   "id": "pk-result-failure",
+   "volume": 0.55,
+   "alignPeak": true
+  },
+  {
+   "at": "@Млечный",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.55,
+   "alignPeak": false
+  },
+  {
+   "at": "@треть",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.6,
+   "alignPeak": true
+  },
+  {
+   "at": "@волки",
+   "id": "wolf-howl",
+   "volume": 0.7,
+   "alignPeak": false
+  },
+  {
+   "at": "@7",
+   "id": "pk-digital-digitasl-burst-sfx",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@заповедниках",
+   "id": "pk-click-ui-button",
+   "volume": 0.5,
+   "alignPeak": true
+  },
+  {
+   "at": "@Земле",
+   "id": "pk-notify-system-alert-sfx",
+   "volume": 0.45,
+   "alignPeak": false
+  },
+  {
+   "at": "@Тишина",
+   "id": "heartbeat",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@стучат",
+   "id": "door-knock",
+   "volume": 1.0,
+   "alignPeak": true
+  },
+  {
+   "at": "@Кстати",
+   "id": "pk-shimmer-ui-dissolvre-sfx",
+   "volume": 0.7,
+   "alignPeak": false
+  },
+  {
+   "at": "@нейросеть+1.2",
+   "id": "pk-pop-ui-menu",
+   "volume": 0.6,
+   "alignPeak": false
+  },
+  {
+   "at": "@шапку",
+   "id": "pk-click-ui-button",
+   "volume": 0.7,
+   "alignPeak": true
+  },
+  {
+   "at": "@профиля",
+   "id": "pk-notify-notification-sfx-1",
+   "volume": 0.8,
+   "alignPeak": true
+  }
+ ],
+ "scenes": [
+  {
+   "id": "wake",
+   "at": 0,
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/wake.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "count",
+   "at": "@Исчезли",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/count.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Counter",
+     "pos": "lower",
+     "props": {
+      "from": 8000000000,
+      "to": 1,
+      "steps": [
+       {
+        "at": "@один",
+        "value": 1
+       }
+      ],
+      "dur": 0.6,
+      "size": 128,
+      "labelSize": 48,
+      "label": "человек|человека|человек на Земле"
+     }
+    }
+   ]
+  },
+  {
+   "id": "you",
+   "at": "@И это",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/you.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "cafe",
+   "at": "@В кафе",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/cafe.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "mom",
+   "at": "@Пишешь",
+   "transition": "whip",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/cafe.mp4",
+     "zoom": [
+      1.08,
+      1.1
+     ],
+     "startFrom": 2.76,
+     "blur": 16,
+     "darken": 0.4
+    }
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "sfx": false,
+     "props": {
+      "enter": "rise",
+      "color": "#2C3A4F",
+      "shadow": 0,
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.0,
+         7.9
+        ],
+        "target": [
+         0,
+         1.98,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 5,
+        "pos": [
+         0.45,
+         2.05,
+         7.3
+        ],
+        "target": [
+         0,
+         1.98,
+         0
+        ],
+        "fov": 30
+       }
+      ],
+      "screen": {
+       "block": "ChatScreen",
+       "props": {
+        "name": "Мама",
+        "sub": "была в сети вчера",
+        "time": "8:14",
+        "messages": [
+         {
+          "text": "Позвони, как проснёшься",
+          "time": "вчера, 23:40"
+         },
+         {
+          "text": "Мам, ты где?",
+          "me": true,
+          "at": "@Пишешь+0.45",
+          "failAt": "@доходит"
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "blackout",
+   "at": "@Через",
+   "transition": "dip",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/blackout.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "station",
+   "at": "@Станциям",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/station.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "shops",
+   "at": "@Зато",
+   "transition": "whip",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/shops.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "bread",
+   "at": "@Хлеб",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/bread.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Counter",
+     "props": {
+      "from": 0,
+      "to": 7,
+      "label": "день|дня|дней до плесени",
+      "size": 190,
+      "labelSize": 50,
+      "dur": 0.9
+     },
+     "at": "@неделю",
+     "pos": "lower"
+    }
+   ]
+  },
+  {
+   "id": "cans",
+   "at": "@А консервы",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/cans.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Counter",
+     "props": {
+      "from": 0,
+      "to": 5,
+      "label": "год|года|лет хранятся консервы",
+      "size": 190,
+      "labelSize": 50,
+      "dur": 0.9
+     },
+     "at": "@пяти",
+     "pos": "lower"
+    }
+   ]
+  },
+  {
+   "id": "car",
+   "at": "@Любая",
+   "transition": "whip",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/car.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "fuel",
+   "at": "@Но бензин",
+   "transition": "slam",
+   "camera": "punch",
+   "style": "blaze",
+   "captions": {
+    "mode": "editorial",
+    "pos": "top"
+   },
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/fuel.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ],
+     "darken": 0.5
+    }
+   },
+   "layers": [
+    {
+     "block": "StatSlam",
+     "props": {
+      "value": "6",
+      "unit": "мес",
+      "label": "и бензин в баке испорчен"
+     },
+     "pos": {
+      "preset": "stage",
+      "dy": 150
+     }
+    }
+   ]
+  },
+  {
+   "id": "night",
+   "at": "@Ночью",
+   "transition": "dip",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/night.mp4",
+     "zoom": [
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "id": "third",
+   "at": "@Раньше",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/third.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Counter",
+     "props": {
+      "from": 0,
+      "to": 33,
+      "label": "людей не видели его из-за света городов",
+      "size": 170,
+      "labelSize": 50,
+      "dur": 0.9,
+      "suffix": " %"
+     },
+     "at": "@треть",
+     "pos": "lower"
+    }
+   ]
+  },
+  {
+   "id": "wolves",
+   "at": "@Через год",
+   "transition": "dip",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/wolves.mp4",
+     "zoom": [
+      1.0,
+      1.02
+     ]
+    }
+   }
+  },
+  {
+   "id": "chernobyl",
+   "at": "@В зоне",
+   "transition": "push",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/chernobyl.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "BarChart",
+     "at": "@Чернобыля",
+     "pos": {
+      "preset": "stage",
+      "dy": 430
+     },
+     "props": {
+      "title": "Волков в зоне Чернобыля",
+      "w": 920,
+      "bars": [
+       {
+        "label": "в заповедниках",
+        "value": 1,
+        "note": "1×",
+        "dim": true
+       },
+       {
+        "label": "в зоне",
+        "value": 7,
+        "note": "7×"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "last",
+   "at": "@Ты последний",
+   "transition": "zoom",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/last.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   },
+   "layers": [
+    {
+     "block": "Callout",
+     "at": "@Земле",
+     "pos": "full",
+     "props": {
+      "text": "ТЫ",
+      "x": 540,
+      "y": 960,
+      "lx": 700,
+      "ly": 820
+     }
+    }
+   ]
+  },
+  {
+   "id": "room",
+   "at": "@Сидишь",
+   "transition": "blur",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/room.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "knock",
+   "at": "@И вдруг",
+   "transition": "cut",
+   "camera": {
+    "move": "still",
+    "shakeAt": [
+     "@стучат"
+    ]
+   },
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/knock.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    }
+   }
+  },
+  {
+   "id": "cta",
+   "at": "@Кстати",
+   "transition": "fade",
+   "camera": "still",
+   "bg": {
+    "block": "VideoBG",
+    "props": {
+     "src": "projects/posledniy-chelovek-blender-v2/clips/cta.mp4",
+     "zoom": [
+      1.0,
+      1.03
+     ]
+    },
+    "dim": 0.5
+   },
+   "layers": [
+    {
+     "block": "IPhone17",
+     "pos": "full",
+     "enter": "none",
+     "props": {
+      "enter": "flip",
+      "flipAt": "@нейросеть",
+      "flipDur": 1.2,
+      "float": true,
+      "shadow": 0,
+      "color": "#2C3A4F",
+      "screen": {
+       "block": "TikTokProfile",
+       "props": {
+        "dark": true,
+        "name": "aipollon",
+        "handle": "videopollon",
+        "badge": "Verified business",
+        "bio": "Даем возможность делать самые качественные ролики с ии прямо здесь 👇🏻",
+        "link": "https://t.me/aipollonvideo",
+        "avatar": "brand/aipollon-avatar.png",
+        "tiles": [
+         "brand/tiles/cover-posledniy-chelovek-blender.jpg",
+         "brand/tiles/cover-posledniy-chelovek.jpg",
+         "brand/tiles/cover-kosmos-dlya-vseh-v2.jpg",
+         "brand/tiles/cover-edinyi-yazyk.jpg",
+         "brand/tiles/cover-coffee-agent.jpg",
+         "brand/tiles/cover-nuclear.jpg",
+         "brand/tiles/fr-gibrid.jpg",
+         "brand/tiles/cover-mir-bez-granic.jpg",
+         "brand/tiles/quiet-evenings.jpg"
+        ],
+        "pinned": 1,
+        "highlightAt": "@шапку"
+       }
+      },
+      "cam": [
+       {
+        "t": 0,
+        "pos": [
+         0,
+         2.3,
+         10.8
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 1.6,
+        "pos": [
+         0.35,
+         2.32,
+         10.4
+        ],
+        "target": [
+         0,
+         2.25,
+         0
+        ],
+        "fov": 30
+       },
+       {
+        "t": 2.6,
+        "pos": [
+         0,
+         2.53,
+         5.4
+        ],
+        "target": [
+         0,
+         2.7,
+         0
+        ],
+        "fov": 30,
+        "ease": "inOut"
+       },
+       {
+        "t": 6,
+        "pos": [
+         0,
+         2.5,
+         5.1
+        ],
+        "target": [
+         0,
+         2.5,
+         0
+        ],
+        "fov": 30
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

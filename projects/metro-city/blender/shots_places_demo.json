@@ -1,0 +1,304 @@
+{
+ "fps": 24,
+ "shots": [
+  {
+   "id": "p01_street",
+   "set": "metro",
+   "spot": {
+    "kind": "street",
+    "seed": "demo/0",
+    "desc": "улица: тротуар, взгляд вдоль"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    1124.9,
+    2587.8,
+    1.6
+   ],
+   "target": [
+    571.6,
+    2498.9,
+    21.0
+   ],
+   "lens": 29,
+   "preset": "day"
+  },
+  {
+   "id": "p02_avenue",
+   "set": "metro",
+   "spot": {
+    "kind": "avenue",
+    "seed": "demo/1",
+    "desc": "проспект: тротуар, взгляд вдоль"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    252.5,
+    2071.8,
+    1.8
+   ],
+   "target": [
+    171.5,
+    1556.3,
+    106.7
+   ],
+   "lens": 27,
+   "preset": "night"
+  },
+  {
+   "id": "p03_borough",
+   "set": "metro",
+   "spot": {
+    "kind": "borough",
+    "seed": "demo/2",
+    "desc": "Боро: тротуар, взгляд вдоль"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    -564.0,
+    -1398.5,
+    1.7
+   ],
+   "target": [
+    -1101.9,
+    -1238.3,
+    6.8
+   ],
+   "lens": 23,
+   "preset": "golden"
+  },
+  {
+   "id": "p04_corner",
+   "set": "metro",
+   "spot": {
+    "kind": "corner",
+    "seed": "demo/3",
+    "desc": "перекрёсток: угол тротуара, взгляд через перекрёсток"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    1187.3,
+    2294.0,
+    1.7
+   ],
+   "target": [
+    1308.2,
+    2389.2,
+    51.3
+   ],
+   "lens": 24,
+   "preset": "night"
+  },
+  {
+   "id": "p05_lookup",
+   "set": "metro",
+   "spot": {
+    "kind": "lookup",
+    "seed": "demo/4",
+    "desc": "взгляд вверх вдоль башни 380 м"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    -471.9,
+    726.1,
+    1.6
+   ],
+   "target": [
+    -360.0,
+    728.0,
+    257.0
+   ],
+   "lens": 21,
+   "preset": "golden"
+  },
+  {
+   "id": "p06_waterfront",
+   "set": "metro",
+   "spot": {
+    "kind": "waterfront",
+    "seed": "demo/5",
+    "desc": "набережная, вдоль берега"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    245.8,
+    6.3,
+    2.0
+   ],
+   "target": [
+    839.6,
+    -79.8,
+    16.0
+   ],
+   "lens": 33,
+   "preset": "day"
+  },
+  {
+   "id": "p07_skyline",
+   "set": "metro",
+   "spot": {
+    "kind": "skyline",
+    "seed": "demo/6",
+    "desc": "скайлайн (east)"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    2579.6,
+    -432.3,
+    182.2
+   ],
+   "target": [
+    -421.9,
+    517.1,
+    153.7
+   ],
+   "lens": 46,
+   "preset": "golden"
+  },
+  {
+   "id": "p08_river",
+   "set": "metro",
+   "spot": {
+    "kind": "river",
+    "seed": "demo/7",
+    "desc": "над рекой, вдоль реки на город"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    -2381.6,
+    -547.4,
+    43.0
+   ],
+   "target": [
+    387.9,
+    287.7,
+    80.4
+   ],
+   "lens": 33,
+   "preset": "dusk"
+  },
+  {
+   "id": "p09_aerial",
+   "set": "metro",
+   "spot": {
+    "kind": "aerial",
+    "seed": "demo/8",
+    "desc": "с высоты"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    -1614.5,
+    1106.5,
+    602.4
+   ],
+   "target": [
+    -1200.0,
+    -350.0,
+    28.3
+   ],
+   "lens": 35,
+   "preset": "night"
+  },
+  {
+   "id": "p10_rooftop",
+   "set": "metro",
+   "spot": {
+    "kind": "rooftop",
+    "seed": "demo/9",
+    "desc": "крыша дома 23 м"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    -843.0,
+    1833.5,
+    25.9
+   ],
+   "target": [
+    -620.0,
+    1560.0,
+    134.4
+   ],
+   "lens": 25,
+   "preset": "golden"
+  },
+  {
+   "id": "p11_bridge",
+   "set": "metro",
+   "spot": {
+    "kind": "bridge",
+    "seed": "demo/10",
+    "desc": "Новый мост с набережной города"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    554.0,
+    6.7,
+    2.0
+   ],
+   "target": [
+    1006.4,
+    -183.7,
+    44.2
+   ],
+   "lens": 26,
+   "preset": "golden"
+  },
+  {
+   "id": "p12_deck",
+   "set": "metro",
+   "spot": {
+    "kind": "deck",
+    "seed": "demo/11",
+    "desc": "на пешеходной части: Новый мост"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    949.0,
+    -340.4,
+    33.7
+   ],
+   "target": [
+    1011.9,
+    559.6,
+    92.3
+   ],
+   "lens": 23,
+   "preset": "dusk"
+  },
+  {
+   "id": "p13_park",
+   "set": "metro",
+   "spot": {
+    "kind": "park",
+    "seed": "demo/12",
+    "desc": "в парке"
+   },
+   "kind": "still",
+   "dur": 4.0,
+   "cam": [
+    114.8,
+    2631.3,
+    1.9
+   ],
+   "target": [
+    120.0,
+    380.0,
+    198.4
+   ],
+   "lens": 27,
+   "preset": "golden"
+  }
+ ]
+}

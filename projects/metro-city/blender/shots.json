@@ -1,0 +1,85 @@
+{
+ "fps": 24,
+ "shots": [
+  {
+   "id": "skyline_dusk",
+   "set": "metro",
+   "variant": "skyline_dusk",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "aerial_night",
+   "set": "metro",
+   "variant": "aerial_night",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "avenue",
+   "set": "metro",
+   "variant": "avenue",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "plaza",
+   "set": "metro",
+   "variant": "plaza",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "embankment",
+   "set": "metro",
+   "variant": "embankment",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "bridge",
+   "set": "metro",
+   "variant": "bridge",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "park",
+   "set": "metro",
+   "variant": "park",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "rooftop",
+   "set": "metro",
+   "variant": "rooftop",
+   "kind": "still",
+   "dur": 4.0
+  },
+  {
+   "id": "avenue_drive",
+   "set": "metro",
+   "variant": "avenue",
+   "kind": "clip",
+   "dur": 4.0,
+   "move": [
+    0.0,
+    40.0,
+    0.0
+   ]
+  },
+  {
+   "id": "aerial_night_drift",
+   "set": "metro",
+   "variant": "aerial_night",
+   "kind": "clip",
+   "dur": 4.0,
+   "move": [
+    -60.0,
+    30.0,
+    -10.0
+   ]
+  }
+ ]
+}

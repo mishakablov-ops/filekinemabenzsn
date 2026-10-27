@@ -3,6 +3,8 @@
 Это рабочая база проекта aipollon. Отвечать пользователю по-русски.
 
 1. В начале любой задачи прочитай `README.md` (карта папок) и `knowledge/aipollon-knowledge.md`.
+   Движка `kinema/` в git нет: если папки нет, `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema`
+   и `cp -r kinema-extra/skills kinema/` (аватарка и обложки канала).
    При расхождении главнее: свежие пожелания пользователя → `knowledge/rules/*` → `styles/<стиль>/README.md` →
    общие правила движка `kinema/AGENTS.md`, `kinema/skills/reel-studio/SKILL.md` и `references/`.
 2. Стиль ролика: `/gibrid` → `skills/gibrid/SKILL.md`, `/blender` → `skills/blender/SKILL.md`. Если стиль не назван — спроси.
