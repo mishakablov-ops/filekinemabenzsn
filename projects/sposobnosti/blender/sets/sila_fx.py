@@ -226,11 +226,24 @@ def bolt(coll, p0, p1, times, rng, col='#CFE6FF', width=0.06, strength=40.0, lig
     L = lib.light('POINT', tuple(mid), energy=0.0, color=col, size=1.0, name=name + 'L')
     for k, (ob, s) in enumerate(shapes):
         keys = [(0, 0.0)]
+        win = []
         for j, t in enumerate(times):
             if j % seeds != k and len(times) > 1:
                 continue
             keys += [(t - 0.02, 0.0), (t, strength), (t + 0.06, strength * 0.4), (t + 0.09, strength), (t + 0.16, 0.0)]
+            win.append([t - 0.03, t + 0.18])
         key(s, sorted(keys), 'CONSTANT')
+        # an unlit bolt reads as a black scribble in the sky: show the curve only while it flashes
+        merged = []
+        for w in sorted(win):
+            if merged and w[0] <= merged[-1][1]:
+                merged[-1][1] = max(merged[-1][1], w[1])
+            else:
+                merged.append(w)
+        vis = [(-1.0, False)]
+        for w0, w1 in merged:
+            vis += [(max(w0, -0.99), True), (w1, False)]
+        key_hide(ob, vis)
     lk = [(0, 0.0)]
     for t in times:
         lk += [(t - 0.02, 0.0), (t, light), (t + 0.16, 0.0)]
@@ -367,8 +380,10 @@ def cloud_mat(name, col='#8E959C', alpha=0.85, dark=None, soft=1.4, noise=2.5):
     for n in list(nt.nodes):
         nt.nodes.remove(n)
     out = nt.nodes.new('ShaderNodeOutputMaterial')
-    bsdf = nt.nodes.new('ShaderNodeBsdfPrincipled')
-    bsdf.inputs['Roughness'].default_value = 1.0
+    # diffuse over transparent (cheaper than a Principled BSDF: hundreds of overlapping puffs are drawn per pixel)
+    bsdf = nt.nodes.new('ShaderNodeBsdfDiffuse')
+    tr = nt.nodes.new('ShaderNodeBsdfTransparent')
+    sh = nt.nodes.new('ShaderNodeMixShader')
     lw = nt.nodes.new('ShaderNodeLayerWeight')
     lw.inputs['Blend'].default_value = 0.5
     edge = nt.nodes.new('ShaderNodeMath'); edge.operation = 'SUBTRACT'; edge.inputs[0].default_value = 1.0
@@ -378,7 +393,7 @@ def cloud_mat(name, col='#8E959C', alpha=0.85, dark=None, soft=1.4, noise=2.5):
     tc = nt.nodes.new('ShaderNodeTexCoord')
     nz = nt.nodes.new('ShaderNodeTexNoise')
     nz.inputs['Scale'].default_value = noise
-    nz.inputs['Detail'].default_value = 4.0
+    nz.inputs['Detail'].default_value = 2.0
     nz.inputs['Roughness'].default_value = 0.6
     L.new(tc.outputs['Object'], nz.inputs['Vector'])
     mr = nt.nodes.new('ShaderNodeMapRange')
@@ -389,7 +404,9 @@ def cloud_mat(name, col='#8E959C', alpha=0.85, dark=None, soft=1.4, noise=2.5):
     L.new(pw.outputs[0], a1.inputs[0]); L.new(mr.outputs['Result'], a1.inputs[1])
     a2 = nt.nodes.new('ShaderNodeMath'); a2.operation = 'MULTIPLY'; a2.use_clamp = True; a2.name = 'CloudAlpha'
     L.new(a1.outputs[0], a2.inputs[0]); a2.inputs[1].default_value = alpha * 1.6
-    L.new(a2.outputs[0], bsdf.inputs['Alpha'])
+    L.new(a2.outputs[0], sh.inputs['Fac'])
+    L.new(tr.outputs[0], sh.inputs[1])
+    L.new(bsdf.outputs[0], sh.inputs[2])
     # colour: darker underneath and in the noise hollows
     geo = nt.nodes.new('ShaderNodeNewGeometry')
     sep = nt.nodes.new('ShaderNodeSeparateXYZ'); L.new(geo.outputs['Normal'], sep.inputs[0])
@@ -406,13 +423,103 @@ def cloud_mat(name, col='#8E959C', alpha=0.85, dark=None, soft=1.4, noise=2.5):
     d = lib.C(dark) if dark else (c[0] * 0.45, c[1] * 0.45, c[2] * 0.47, 1.0)
     mix.inputs['A'].default_value = d
     mix.inputs['B'].default_value = c
-    L.new(mix.outputs['Result'], bsdf.inputs['Base Color'])
-    L.new(bsdf.outputs[0], out.inputs['Surface'])
+    L.new(mix.outputs['Result'], bsdf.inputs['Color'])
+    L.new(sh.outputs[0], out.inputs['Surface'])
     _blend(m)
     try:
         m.use_backface_culling = True
     except Exception:
         pass
+    return m
+
+
+def spiral_cloud_mat(name, r_eye, r_max, arms=2, twist=1.7, col='#E9ECEF', dark='#8D949C', noise=0.0028, alpha=1.0, seed=0.0):
+    """A hurricane seen from above on one flat disc (object space in metres): spiral bands of cloud around a clear eye,
+    broken up by twisted noise. The node 'Spin' (radians) turns the whole pattern: key it to make the storm rotate."""
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    N, L = nt.nodes, nt.links
+    for n in list(N):
+        N.remove(n)
+
+    def mth(op, a=None, b=None, clamp=False):
+        n = N.new('ShaderNodeMath')
+        n.operation = op
+        n.use_clamp = clamp
+        for i, v in enumerate((a, b)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                n.inputs[i].default_value = v
+            else:
+                L.new(v, n.inputs[i])
+        return n.outputs[0]
+
+    def mrange(v, a, b, c=0.0, d=1.0):
+        n = N.new('ShaderNodeMapRange')
+        n.clamp = True
+        L.new(v, n.inputs['Value'])
+        n.inputs['From Min'].default_value, n.inputs['From Max'].default_value = a, b
+        n.inputs['To Min'].default_value, n.inputs['To Max'].default_value = c, d
+        return n.outputs['Result']
+
+    tc = N.new('ShaderNodeTexCoord')
+    sep = N.new('ShaderNodeSeparateXYZ')
+    L.new(tc.outputs['Object'], sep.inputs[0])
+    x, y = sep.outputs['X'], sep.outputs['Y']
+    r = mth('SQRT', mth('ADD', mth('MULTIPLY', x, x), mth('MULTIPLY', y, y)))
+    th = mth('ARCTAN2', y, x)
+    spin = N.new('ShaderNodeValue')
+    spin.name = 'Spin'
+    spin.outputs[0].default_value = 0.0
+    lnr = mth('LOGARITHM', mth('MAXIMUM', r, 1.0), 2.718281828)
+    tw = mth('MULTIPLY', lnr, twist)
+    u = mth('ADD', mth('ADD', th, tw), spin.outputs[0])
+    band = mrange(mth('COSINE', mth('MULTIPLY', u, float(arms))), -1.0, 1.0)
+    band = mth('POWER', band, 1.3)
+    # noise on coordinates twisted with the spiral, so the clumps stretch along the bands
+    rot = N.new('ShaderNodeVectorRotate')
+    rot.rotation_type = 'Z_AXIS'
+    L.new(tc.outputs['Object'], rot.inputs['Vector'])
+    L.new(mth('ADD', tw, spin.outputs[0]), rot.inputs['Angle'])
+    sc = N.new('ShaderNodeMapping')
+    sc.inputs['Scale'].default_value = (1.0, 0.35, 1.0)
+    sc.inputs['Location'].default_value = (seed * 997.0, seed * 613.0, 0.0)
+    L.new(rot.outputs['Vector'], sc.inputs['Vector'])
+    nz = N.new('ShaderNodeTexNoise')
+    nz.inputs['Scale'].default_value = noise
+    nz.inputs['Detail'].default_value = 6.0
+    nz.inputs['Roughness'].default_value = 0.62
+    L.new(sc.outputs['Vector'], nz.inputs['Vector'])
+    nzf = mrange(nz.outputs['Fac'], 0.3, 0.7)
+    dens = mth('ADD', mth('MULTIPLY', band, 0.85), mth('MULTIPLY', nzf, 0.6))
+    dens = mrange(dens, 0.42, 0.98)
+    env = mth('MULTIPLY', mrange(r, r_eye, r_eye * 1.7), mrange(r, r_max * 0.55, r_max, 1.0, 0.0))
+    wall = mrange(r, r_eye * 0.9, r_eye * 2.2, 1.0, 0.0)            # the eye wall: dense and bright
+    dens = mth('MULTIPLY', mth('ADD', dens, mth('MULTIPLY', wall, 0.6)), env, clamp=True)
+    a = mth('MULTIPLY', dens, alpha * 1.5, clamp=True)
+    mix = N.new('ShaderNodeMix')
+    mix.data_type = 'RGBA'
+    L.new(mth('ADD', mth('MULTIPLY', mth('MULTIPLY', nzf, band), 1.1), mth('MULTIPLY', wall, 0.5), clamp=True), mix.inputs['Factor'])
+    mix.inputs['A'].default_value = lib.C(dark)
+    mix.inputs['B'].default_value = lib.C(col)
+    dif = N.new('ShaderNodeBsdfDiffuse')
+    L.new(mix.outputs['Result'], dif.inputs['Color'])
+    em = N.new('ShaderNodeEmission')
+    L.new(mix.outputs['Result'], em.inputs['Color'])
+    em.inputs['Strength'].default_value = 0.35
+    add = N.new('ShaderNodeAddShader')
+    L.new(dif.outputs[0], add.inputs[0])
+    L.new(em.outputs[0], add.inputs[1])
+    tr = N.new('ShaderNodeBsdfTransparent')
+    sh = N.new('ShaderNodeMixShader')
+    L.new(a, sh.inputs['Fac'])
+    L.new(tr.outputs[0], sh.inputs[1])
+    L.new(add.outputs[0], sh.inputs[2])
+    out = N.new('ShaderNodeOutputMaterial')
+    L.new(sh.outputs[0], out.inputs['Surface'])
+    _blend(m)
     return m
 
 

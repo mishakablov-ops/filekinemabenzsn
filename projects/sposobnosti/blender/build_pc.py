@@ -34,6 +34,7 @@ def main():
     ap.add_argument('--dry', action='store_true', help='build only, no render')
     ap.add_argument('--engine', default='', help='CYCLES for a CPU preview without a GPU')
     ap.add_argument('--fps', type=int, default=0, help='override the timeline fps (clips at 30 halve the render time)')
+    ap.add_argument('--hide', default='', help='profiling: hide objects whose names start with these prefixes ("Rain,AveDeck")')
     a = ap.parse_args(argv)
     shots = json.load(open(a.shots, encoding='utf-8'))
     shot = next(s for s in shots['shots'] if s['id'] == a.shot)
@@ -48,6 +49,7 @@ def main():
     if fill:
         lib.camera_fill(fill, color=res.get('fill_col', '#FFF4EA'))
     sc = bpy.context.scene
+    _lighten_shadows(sc, a.hide)
     sc.view_settings.exposure = shot.get('exposure', res.get('exposure', 0.1))
     sc.eevee.taa_render_samples = a.samples or shot.get('samples', res.get('samples', 64 if a.still else 32))
     sc.frame_end = max(sc.frame_start, int(round(shot['dur'] * fps)))
@@ -109,6 +111,29 @@ def main():
             t1 = time.time()
             bpy.ops.render.render(write_still=True)
             print(f'STILL {a.shot}{tag} f{f} {time.time() - t1:.1f}s', flush=True)
+
+
+def _lighten_shadows(sc, hide=''):
+    """Rain streaks, cloud puffs, auras and glows (all alpha-blended) cast no shadows: thousands of moving casters made
+    Eevee re-render shadow pages every sample. A bigger shadow pool stops the 'Shadow buffer full' thrashing."""
+    n = 0
+    for o in bpy.data.objects:
+        ms = [s.material for s in getattr(o, 'material_slots', []) if s.material]
+        if ms and all(getattr(m, 'surface_render_method', '') == 'BLENDED' for m in ms):
+            o.visible_shadow = False
+            n += 1
+    try:
+        sc.eevee.shadow_pool_size = '1024'
+    except Exception:
+        pass
+    pre = tuple(p for p in hide.split(',') if p)
+    k = 0
+    if pre:
+        for o in bpy.data.objects:
+            if o.name.startswith(pre):
+                o.hide_render = True
+                k += 1
+    print(f'SHADOWS off for {n} blended objects, hidden {k}', flush=True)
 
 
 try:

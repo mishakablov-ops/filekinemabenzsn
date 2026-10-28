@@ -341,21 +341,15 @@ def v_eye(shot, fps):
     p_, c = S.city(shot, fps, cam=tuple(c0), target=tuple(ctr), lens=30, cam_keys=[(0, c0, ctr), (dur, c1, ctr)])
     c.data.clip_end = 30000
     coll = lib.collection('Eye')
-    m = FX.cloud_mat('EyeMat', '#9BA2AA', 0.97)
-    piv = lib.empty('EyeSpin', (ctr.x, ctr.y, 1500), coll=coll)
-    for i in range(520):
-        rr = 260 + (rng.random() ** 0.8) * 4200
-        a = rng.uniform(0, 2 * math.pi)
-        a += math.log(rr / 260) * 1.1                       # spiral arms
-        s = rng.uniform(0.12, 0.2) * min(rr, 1600)
-        z = rng.uniform(-40, 40) + min(220, rr * 0.08)
-        p = lib.sphere(1.0, (rr * math.cos(a), rr * math.sin(a), z), m, 12, 8, scale=(s * 1.5, s * 0.8, s * 0.25), name=f'EyeP{i}', coll=coll)
-        p.rotation_euler.z = a + math.pi / 2
-        p.parent = piv
-    piv.keyframe_insert('rotation_euler', index=2, frame=F(0))
-    piv.rotation_euler.z = 0.35 * dur
-    piv.keyframe_insert('rotation_euler', index=2, frame=F(dur))
-    lib._set_interp(piv, 'LINEAR')
+    # the storm from above: three flat discs of spiral cloud bands at different heights, turning at different speeds,
+    # the city shows through the clear eye in the middle
+    for k, (z, r_eye, r_max, al, sp, col, dk) in enumerate(((1250, 330, 5200, 0.9, 0.30, '#AEB4BA', '#4F565E'),
+                                                            (1550, 280, 6200, 1.0, 0.22, '#EEF0F2', '#8F969E'),
+                                                            (1850, 420, 6800, 0.45, 0.16, '#F6F7F8', '#B5BBC1'))):
+        m = FX.spiral_cloud_mat(f'EyeMat{k}', r_eye, r_max, arms=2 + (k == 1), twist=1.6 + 0.15 * k, col=col, dark=dk,
+                                alpha=al, seed=k * 0.37)
+        lib.plane((r_max * 2.1, r_max * 2.1), (ctr.x, ctr.y, z), m, name=f'EyeDisc{k}', coll=coll)
+        FX.key(m.node_tree.nodes['Spin'].outputs[0], [(0, 0.0), (dur, sp * dur)], 'LINEAR')
     return dict(fill=0, exposure=p_['exposure'] + 0.2, samples=32)
 
 
@@ -560,7 +554,7 @@ def _queue_people(coll, rng, f, r, door, side, n=8, calm_t=None):
     for k in range(n):
         look, power = QUEUE[k % len(QUEUE)]
         q = door - f * (1.35 + k * 1.05) + r * side * (0.35 + rng.uniform(-0.15, 0.15))
-        z = S.ground(q.x, q.y)
+        z = S.ground(q.x, q.y, z0=1.6)       # under the balconies
         p = S.folk((q.x, q.y, z), S.face(q, door), rng, coll, look, height=0.82 if look == 'kid' else 0.9, name=f'Q{k}')
         P2.stand(p, rng)
         col = AURA[(k + 2) % len(AURA)]
@@ -570,8 +564,8 @@ def _queue_people(coll, rng, f, r, door, side, n=8, calm_t=None):
             FX.flame(coll, palm(p, coll, f'QPalm{k}'), (0, 0, 0.05), -1.0, None, scale=0.4, rng=rng, name=f'QFlame{k}')
             S.key_people(p, 'upperR', 0, [(0, -1.0)])
         if power == 'float':
+            p['root'].location.z += 0.45                 # before the sine: add_sine keys the current height
             lib.add_sine(p['root'], 'location', 2, 0.12, 1.6, k)
-            p['root'].location.z += 0.45
         out.append((p, q, z, power))
     return out
 
@@ -595,7 +589,7 @@ def v_queue(shot, fps):
     ppl = _queue_people(coll, rng, f, r, door, side)
     p0, q0, z0, _ = ppl[0]
     _bolt_hands(coll, rng, p0, q0, z0, f, r, 0.0, dur, 'QBolt')
-    zd = S.ground(door.x, door.y)
+    zd = S.ground(door.x, door.y, z0=1.6)
     h = H.load(coll, (door.x, door.y, zd), S.face(door, door - f))
     H.key_pose(h, 0, H.pose('stand', head=(0, 6, 0)))
     H.key_pose(h, dur, H.pose('reach_r', head=(0, 8, 0)))
@@ -622,9 +616,14 @@ def v_struggle(shot, fps):
     S.key_people(kid, 'upperR', 0, [(0, -0.5), (dur * 0.4, -2.6), (dur, -2.4)])
     S.key_people(kid, 'upperL', 0, [(0, -0.3), (dur * 0.45, -2.4), (dur, -2.3)])
     S.key_people(g, 'upperL', 0, [(0, 0.0), (dur * 0.5, 0.8)])
-    zd = S.ground(door.x, door.y)
+    zd = S.ground(door.x, door.y, z0=1.6)
     h = H.load(coll, (door.x, door.y, zd), S.face(door, door - f))
     H.key_pose(h, 0, H.pose('stand', head=(0, 6, 0)))
+    # frame the girl and the kid from the road side, the sparking man and the hero at the door behind them
+    aim = qg.lerp(qk, 0.5) + V((0, 0, 1.15))
+    cp = qk - f * 2.3 + r * side * 1.9 + V((0, 0, 1.3))
+    lib.animate_camera(c, [(0, cp), (dur, cp + f * 0.45)], [(0, aim), (dur, aim + f * 0.3 + V((0, 0, 0.15)))])
+    c.data.lens = 30
     return dict(fill=0.4, exposure=p_['exposure'], samples=32)
 
 
@@ -647,7 +646,7 @@ def v_calm(shot, fps):
     S.key_people(p0, 'upperL', 0, [(0, -1.0), (touch + 0.2, -1.0), (touch + 0.7, 0.0)])
     S.key_people(p0, 'upperR', 0, [(0, -1.0), (touch + 0.2, -1.0), (touch + 0.7, 0.0)])
     S.key_people(p0, 'head', 0, [(touch + 0.3, 0.0), (touch + 0.8, -0.15), (dur, -0.1)])
-    zd = S.ground(door.x, door.y)
+    zd = S.ground(door.x, door.y, z0=1.6)
     h = H.load(coll, (door.x, door.y, zd), S.face(door, q0r))
     H.key_pose(h, 0, H.pose('stand', head=(0, 6, 0)))
     H.key_pose(h, touch, H.pose('reach_r', head=(0, 8, 0)))
@@ -665,7 +664,7 @@ def v_you(shot, fps):
     f, r, door0 = _queue_layout(shot)
     # the camera stands in the queue's place and looks at him at his door (head and shoulders)
     p_, c, f, r, door, side = _queue_city(shot, fps, [(0, door0 - f * 1.5 + V((0, 0, 1.3)), door0 + V((0, 0, 1.2)))], n=0)
-    zd = S.ground(door.x, door.y)
+    zd = S.ground(door.x, door.y, z0=1.6)
     cam_p = door - f * 1.7 + r * side * 0.4 + V((0, 0, zd + 1.22))
     look = V((door.x, door.y, zd + 1.12))
     c.animation_data_clear()

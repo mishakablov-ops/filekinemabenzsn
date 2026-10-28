@@ -478,7 +478,7 @@ def v_airport(shot, fps):
     # nobody: only a few birds cross the empty apron
     pc.birds(coll, rng, 6, (-40, 95, 7), (7, 1.5, 0), dur, spread=(6, 4, 2), size=0.3)
     lib.bloom(0.2, 1.3, 6)
-    return dict(fill=0.35, exposure=0.15, samples=32)
+    return dict(fill=0.3, exposure=-0.15, samples=32)
 
 
 # ============================================================================= a13 / a14 the park: looking for his power
@@ -647,12 +647,15 @@ def v_crash(shot, fps):
     c0 = cam0 + V((0, 0, -0.3))
     p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (bush_c.x, bush_c.y), 3.0)],
                    cam_keys=[(0, c0, bush_c + V((0, 0, 1.2))), (dur, c0 + f * 0.4, bush_c + V((0, 0, 0.9)))])
-    c.data.lens = 34
+    c.data.lens = 36
     coll = lib.collection('Crash')
     side = road_side(shot, 10.0)
     wd = wall_dist(bush_c, -r * side, 1.0, 10.0)
     off = min(wd - 1.0, 2.6)
     q = bush_c - r * side * off
+    # aim between the path and the hedge, so the legs sticking out of it are near the middle of the frame
+    aim = bush_c.lerp(q, 0.6)
+    lib.animate_camera(c, [(0, c0), (dur, c0 + f * 0.4)], [(0, aim + V((0, 0, 1.3))), (dur, aim + V((0, 0, 1.1)))])
     z = S.ground(q.x, q.y)
     SS.hedge(coll, rng, (q.x - f.x * 3.5, q.y - f.y * 3.5, z), (q.x + f.x * 3.5, q.y + f.y * 3.5, z), h=1.0)
     z0 = S.ground(hp.x, hp.y)

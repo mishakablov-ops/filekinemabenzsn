@@ -172,7 +172,7 @@ def vlerp(a, b, w):
 
 # ----------------------------------------------------------------------------- other people: people2 with chibi heads
 LOOKS = {
-    'neighbour': dict(top='#3B4A63', pants='#2E3236', hair='#3D2B20', skin='#E0B99A', shoe='#1F1C1A', bag='#5A3E2A'),
+    'neighbour': dict(top='#3B4A63', pants='#5C7FA8', hair='#3D2B20', skin='#E0B99A', shoe='#E9E6E0', bag='#5A3E2A'),
     'granny': dict(top='#7E4E7A', pants='#4A4540', hair='#C9C5C0', skin='#E0B99A', shoe='#3A3631', scarf='#B8473B'),
     'courier': dict(top='#E8B92E', pants='#2B2826', hair='#1E1C1B', skin='#C69C7B', shoe='#2E2824', box='#E8B92E'),
     'agent': dict(top='#1B1D21', pants='#1B1D21', hair='#1E1C1B', skin='#D4A989', shoe='#111111', shades=True),
