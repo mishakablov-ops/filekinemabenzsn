@@ -1,6 +1,6 @@
 # Стиль 1 · Классика (обновлён 28.10.2026)
 
-> Пути в этом файле — как на ПК (`aipollon claude/…`). В репозитории: `AIpollon-Reel-Studio/skills/reel-studio` → `kinema/skills/reel-studio`, `blender-kit` → `blender/kit`, `references/` → `knowledge/rules/`, проекты → `projects/<id>/`. Полная таблица — в корневом `README.md`.
+> Пути: раздел «Как делать сейчас» — как в репозитории (на ПК: `blender/kit` → `KINEMA/skills/reel-studio/blender-kit`, `blender/library/sila_hero.py` → `blender-kit/blender/sets/sila_hero.py`, модель героя → `blender-kit/blender/assets/hero_rig.blend`, `projects/<id>/` → `<id>/`, задачи → `jobs/done/`). Разделы от 22.10.2026 ниже — как на ПК (`aipollon claude/…`); в репозитории `AIpollon-Reel-Studio/skills/reel-studio` → `kinema/skills/reel-studio`, `blender-kit` → `blender/kit`, `references/` → `knowledge/rules/`, проекты → `projects/<id>/`. Полная таблица — в корневом `README.md`.
 
 ## Как делать сейчас (28.10.2026, эталон «Каждому по способности»)
 

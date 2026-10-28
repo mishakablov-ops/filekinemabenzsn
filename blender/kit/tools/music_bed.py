@@ -24,6 +24,7 @@ SR = 48000
 HERE = os.path.dirname(os.path.abspath(__file__))
 MUSIC_DIRS = [os.environ.get('KINEMA_MUSIC', ''),
               os.path.join(HERE, '..', '..', 'engine', 'public', 'music'),                       # blender-kit inside reel-studio (ПК)
+              os.path.join(HERE, '..', '..', 'KINEMA', 'skills', 'reel-studio', 'engine', 'public', 'music'),  # <id>/tools (ПК)
               os.path.join(HERE, '..', '..', '..', 'kinema', 'skills', 'reel-studio', 'engine', 'public', 'music'),
               os.path.join(HERE, '..', '..', '..', '..', 'skills', 'reel-studio', 'engine', 'public', 'music')]
 
