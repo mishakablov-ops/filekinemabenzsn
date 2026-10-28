@@ -72,7 +72,7 @@ def fresnel_glow(name, color, strength=4.0, alpha=0.6, power=2.5):
     em.inputs['Strength'].default_value = strength
     lw = nt.nodes.new('ShaderNodeLayerWeight')
     lw.inputs['Blend'].default_value = 0.5
-    pw = nt.nodes.new('ShaderNodeMath'); pw.operation = 'POWER'; pw.inputs[1].default_value = 1.0 / power
+    pw = nt.nodes.new('ShaderNodeMath'); pw.operation = 'POWER'; pw.inputs[1].default_value = power
     nt.links.new(lw.outputs['Facing'], pw.inputs[0])
     k = nt.nodes.new('ShaderNodeMath'); k.operation = 'MULTIPLY'; k.use_clamp = True
     nt.links.new(pw.outputs[0], k.inputs[0]); k.inputs[1].default_value = alpha
@@ -267,13 +267,9 @@ def flame(coll, parent, loc, t_on, t_off=None, scale=1.0, rng=None, name='Flame'
     return root
 
 
-def smoke(coll, base, h, t0, t1, rng, col='#5E5A57', r0=3.0, n=10, rise=4.0, name='Smoke'):
+def smoke(coll, base, h, t0, t1, rng, col='#5E5A57', r0=3.0, n=10, rise=4.0, name='Smoke', alpha=0.6):
     """A smoke column: puffs rising from `base` and growing; looks continuous with a few overlapping puffs."""
-    m = lib.mat(name + 'Mat', col, rough=1.0)
-    nt = m.node_tree
-    bsdf = next(n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED')
-    bsdf.inputs['Alpha'].default_value = 0.55
-    _blend(m)
+    m = cloud_mat(name + 'Mat', col, alpha, noise=1.8)
     life = h / rise
     puffs = []
     for i in range(n):
@@ -288,7 +284,7 @@ def smoke(coll, base, h, t0, t1, rng, col='#5E5A57', r0=3.0, n=10, rise=4.0, nam
 
 
 # ----------------------------------------------------------------------------- telekinesis
-def float_glow(coll, obj, t0, t1, lift=3.0, col='#9EE7FF', spin=0.35, name='Lift'):
+def float_glow(coll, obj, t0, t1, lift=3.0, col='#9EE7FF', spin=0.35, name='Lift', ring=2.4):
     """Lift `obj` (root at the ground) from t0 to t1 with a soft wobble; a ring of light stays under it."""
     z0 = obj.location.z
     key_loc(obj, [(0, tuple(obj.location)), (t0, tuple(obj.location))])
@@ -299,8 +295,10 @@ def float_glow(coll, obj, t0, t1, lift=3.0, col='#9EE7FF', spin=0.35, name='Lift
     obj.keyframe_insert('rotation_euler', frame=F(t0))
     obj.rotation_euler = (r0.x + 0.12, r0.y - 0.08, r0.z + spin)
     obj.keyframe_insert('rotation_euler', frame=F(t1 + 1.5))
+    if not ring:
+        return None
     m, s, a = glow(name + 'Mat', col, 5.0, alpha=0.7)
-    bpy.ops.mesh.primitive_torus_add(major_radius=2.4, minor_radius=0.05, major_segments=48, minor_segments=8,
+    bpy.ops.mesh.primitive_torus_add(major_radius=ring, minor_radius=0.035, major_segments=48, minor_segments=8,
                                      location=(obj.location.x, obj.location.y, z0 + 0.05))
     ring = bpy.context.active_object
     ring.name = name + 'Ring'
@@ -359,12 +357,70 @@ def rain(coll, x0, x1, y0, y1, z_top, n, rng, speed=14.0, slant=(2.0, 0.0), calm
 
 
 # ----------------------------------------------------------------------------- hurricane
-def cloud_mat(name, col='#8E959C', alpha=0.85, dark='#4E5560'):
-    m = lib.mat(name, col, rough=1.0)
-    bsdf = next(n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
-    bsdf.inputs['Alpha'].default_value = alpha
+def cloud_mat(name, col='#8E959C', alpha=0.85, dark=None, soft=1.4, noise=2.5):
+    """Soft puff: opaque in the middle, fading to nothing at the silhouette (no hard disc edges), broken up by noise,
+    the underside darker. `noise` = noise scale in object space (puffs are unit spheres scaled up)."""
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    L = nt.links
+    for n in list(nt.nodes):
+        nt.nodes.remove(n)
+    out = nt.nodes.new('ShaderNodeOutputMaterial')
+    bsdf = nt.nodes.new('ShaderNodeBsdfPrincipled')
+    bsdf.inputs['Roughness'].default_value = 1.0
+    lw = nt.nodes.new('ShaderNodeLayerWeight')
+    lw.inputs['Blend'].default_value = 0.5
+    edge = nt.nodes.new('ShaderNodeMath'); edge.operation = 'SUBTRACT'; edge.inputs[0].default_value = 1.0
+    L.new(lw.outputs['Facing'], edge.inputs[1])
+    pw = nt.nodes.new('ShaderNodeMath'); pw.operation = 'POWER'; pw.inputs[1].default_value = soft
+    L.new(edge.outputs[0], pw.inputs[0])
+    tc = nt.nodes.new('ShaderNodeTexCoord')
+    nz = nt.nodes.new('ShaderNodeTexNoise')
+    nz.inputs['Scale'].default_value = noise
+    nz.inputs['Detail'].default_value = 4.0
+    nz.inputs['Roughness'].default_value = 0.6
+    L.new(tc.outputs['Object'], nz.inputs['Vector'])
+    mr = nt.nodes.new('ShaderNodeMapRange')
+    mr.inputs['From Min'].default_value = 0.32
+    mr.inputs['From Max'].default_value = 0.62
+    L.new(nz.outputs['Fac'], mr.inputs['Value'])
+    a1 = nt.nodes.new('ShaderNodeMath'); a1.operation = 'MULTIPLY'
+    L.new(pw.outputs[0], a1.inputs[0]); L.new(mr.outputs['Result'], a1.inputs[1])
+    a2 = nt.nodes.new('ShaderNodeMath'); a2.operation = 'MULTIPLY'; a2.use_clamp = True; a2.name = 'CloudAlpha'
+    L.new(a1.outputs[0], a2.inputs[0]); a2.inputs[1].default_value = alpha * 1.6
+    L.new(a2.outputs[0], bsdf.inputs['Alpha'])
+    # colour: darker underneath and in the noise hollows
+    geo = nt.nodes.new('ShaderNodeNewGeometry')
+    sep = nt.nodes.new('ShaderNodeSeparateXYZ'); L.new(geo.outputs['Normal'], sep.inputs[0])
+    up = nt.nodes.new('ShaderNodeMapRange')
+    up.inputs['From Min'].default_value = -0.6; up.inputs['From Max'].default_value = 0.8
+    L.new(sep.outputs['Z'], up.inputs['Value'])
+    f2 = nt.nodes.new('ShaderNodeMath'); f2.operation = 'MULTIPLY'
+    L.new(up.outputs['Result'], f2.inputs[0]); L.new(nz.outputs['Fac'], f2.inputs[1])
+    f3 = nt.nodes.new('ShaderNodeMath'); f3.operation = 'MULTIPLY_ADD'; f3.use_clamp = True
+    L.new(f2.outputs[0], f3.inputs[0]); f3.inputs[1].default_value = 1.4; f3.inputs[2].default_value = 0.1
+    mix = nt.nodes.new('ShaderNodeMix'); mix.data_type = 'RGBA'
+    L.new(f3.outputs[0], mix.inputs['Factor'])
+    c = lib.C(col)
+    d = lib.C(dark) if dark else (c[0] * 0.45, c[1] * 0.45, c[2] * 0.47, 1.0)
+    mix.inputs['A'].default_value = d
+    mix.inputs['B'].default_value = c
+    L.new(mix.outputs['Result'], bsdf.inputs['Base Color'])
+    L.new(bsdf.outputs[0], out.inputs['Surface'])
     _blend(m)
+    try:
+        m.use_backface_culling = True
+    except Exception:
+        pass
     return m
+
+
+def fade_cloud(m, keys):
+    """Key a cloud_mat's opacity: keys [(t, factor 0..1 of its alpha)]."""
+    n = m.node_tree.nodes['CloudAlpha']
+    a0 = n.inputs[1].default_value
+    key(n.inputs[1], [(t, a0 * v) for t, v in keys])
 
 
 def vortex(coll, center, z_top, z_bot, r_top, r_bot, rng, rings=9, per=26, period=6.0, col='#8E959C', name='Vortex'):

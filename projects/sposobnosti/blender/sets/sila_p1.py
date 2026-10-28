@@ -65,7 +65,7 @@ def v_night(shot, fps):
     far = cam.lerp(tgt, 0.75)
     near = cam.lerp(tgt, 0.3)
     FX.sparks(coll, (far.x, far.y), 900, 650, 0, 700, 0.0, dur, rng, size=2.6, speed=(160, 240), strength=26, name='GiftFar')
-    FX.sparks(coll, (near.x, near.y), 320, 520, 0, 220, 0.0, dur, rng, size=1.4, speed=(120, 180), strength=30, name='GiftNear')
+    FX.sparks(coll, (near.x, near.y), 320, 380, 0, 220, 0.0, dur, rng, size=0.9, speed=(120, 180), strength=22, name='GiftNear')
     gift = _ev(shot, 'gift', 1.9)
     MM.set_global('Lit', p['lit'], F(0))
     MM.set_global('Lit', p['lit'], F(gift))
@@ -92,20 +92,20 @@ def golden_wave(r, t0, t1, col='#FFC95A'):
     L.new(sub.outputs[0], ab.inputs[0])
     mr = nt.nodes.new('ShaderNodeMapRange')
     mr.inputs['From Min'].default_value = 0.0
-    mr.inputs['From Max'].default_value = 0.12 * r
+    mr.inputs['From Max'].default_value = 0.08 * r
     mr.inputs['To Min'].default_value = 1.0
     mr.inputs['To Max'].default_value = 0.0
     L.new(ab.outputs[0], mr.inputs['Value'])
     # behind the band the night side keeps a faint golden glow
     tr = nt.nodes.new('ShaderNodeMath'); tr.operation = 'LESS_THAN'
     L.new(sep.outputs['X'], tr.inputs[0]); L.new(val.outputs[0], tr.inputs[1])
-    trail = nt.nodes.new('ShaderNodeMath'); trail.operation = 'MULTIPLY'; trail.inputs[1].default_value = 0.12
+    trail = nt.nodes.new('ShaderNodeMath'); trail.operation = 'MULTIPLY'; trail.inputs[1].default_value = 0.03
     L.new(tr.outputs[0], trail.inputs[0])
     fac = nt.nodes.new('ShaderNodeMath'); fac.operation = 'MAXIMUM'
     L.new(mr.outputs['Result'], fac.inputs[0]); L.new(trail.outputs[0], fac.inputs[1])
     em = nt.nodes.new('ShaderNodeEmission')
     em.inputs['Color'].default_value = lib.C(col)
-    em.inputs['Strength'].default_value = 6.0
+    em.inputs['Strength'].default_value = 3.5
     trn = nt.nodes.new('ShaderNodeBsdfTransparent')
     mix = nt.nodes.new('ShaderNodeMixShader')
     L.new(fac.outputs[0], mix.inputs['Fac'])
@@ -138,7 +138,7 @@ def v_earth(shot, fps):
     golden_wave(sk.R, 0.15, one + 0.35)
     # golden glints pop on the night side as the band passes: people getting their powers
     rng = random.Random(2)
-    m, s, _ = FX.glow('Glint', '#FFD27A', 9.0)
+    m, s, _ = FX.glow('Glint', '#FFB547', 4.0)
     base = lib.sphere(0.32, (0, 0, 0), m, 8, 6, name='GlintBase')
     base.hide_render = base.hide_viewport = True
     coll = lib.collection('Glints')
@@ -151,7 +151,7 @@ def v_earth(shot, fps):
         coll.objects.link(ob)
         ob.location = (x * sk.R * 1.003, y * sk.R * 1.003, z * sk.R * 1.003)
         t = 0.15 + (x + 1.15) / 2.3 * (one + 0.2)
-        FX.key_scale(ob, [(0, 0.001), (t - 0.02, 0.001), (t + 0.08, 1.6), (t + 0.5, rng.uniform(0.5, 1.0))])
+        FX.key_scale(ob, [(0, 0.001), (t - 0.02, 0.001), (t + 0.08, 1.0), (t + 0.5, rng.uniform(0.3, 0.6))])
     c = lib.camera((0, -255, 30), (0, 0, 4), 36)
     c.data.clip_end = 5000
     c.data.clip_start = 1.0
@@ -230,16 +230,18 @@ def _room_shot(shot, fps, mode):
         S.fly_pose(nb, 'one')
         S.fly(nb, [(0, (-12, 18, 2.5)), (dur, (-30, 26, 4.0))])
     else:
-        # the neighbour drops past the window from above and flies away down the street, his head follows him
+        # the neighbour flies past the window, a metre outside the glass, waving; the hero's head follows him
         nb = S.folk((0, 0, 0), 0, rng, coll, 'neighbour', name='Nb')
         S.fly_pose(nb, 'one')
-        S.fly(nb, [(0, (-5.5, 4.2, 4.5)), (fly_t, (-2.5, 3.6, 2.2)), (fly_t + 0.7, (1.5, 4.4, 0.4)), (dur, (7.0, 7.5, -1.2))],
-              tilt=1.25, bob=0.0)
-        H.key_pose(h, 0, H.pose('sill', head=(-26, 4, 0)))
-        H.key_pose(h, fly_t + 0.2, H.pose('sill', head=(-10, 2, 0)))
-        H.key_pose(h, dur, H.pose('sill', head=(22, 12, 0), lean=14.0))
-        cam = lib.camera((0.95, 0.15, 1.5), (-0.6, 6.0, 1.2), 34)
-        lib.animate_camera(cam, [(0, (0.95, 0.15, 1.5)), (dur, (0.85, 0.35, 1.48))], [(0, (-0.8, 6.0, 1.3)), (dur, (0.8, 6.0, 0.6))])
+        S.fly(nb, [(0, (-7.5, 3.5, 2.7)), (fly_t, (-1.8, 3.0, 1.9)), (fly_t + 0.9, (1.4, 3.05, 1.8)), (dur, (5.5, 3.6, 2.3))],
+              tilt=1.3, bob=0.0)
+        FX.aura(coll, nb['root'], '#FFC857', r=0.45, z=0.9, t_on=-1.0, strength=3.0, alpha=0.5, name='NbAura', scale=(1, 1, 1.9))
+        H.key_pose(h, 0, H.pose('sill', head=(30, 4, 0)))
+        H.key_pose(h, fly_t, H.pose('sill', head=(22, 2, 0)))
+        H.key_pose(h, fly_t + 0.9, H.pose('sill', head=(-8, 0, 0)))
+        H.key_pose(h, dur, H.pose('sill', head=(-34, 4, 0), lean=10.0))
+        cam = lib.camera((-0.95, -0.15, 1.45), (0.3, 3.2, 1.6), 28)
+        lib.animate_camera(cam, [(0, (-0.95, -0.15, 1.45)), (dur, (-0.8, 0.1, 1.45))], [(0, (0.0, 3.2, 1.65)), (dur, (0.7, 3.2, 1.6))])
     cam.data.clip_start = 0.05
     lib.bloom(0.2, 1.2, 6)
     return dict(fill=0.35, exposure=0.35, samples=32)
@@ -256,7 +258,7 @@ def v_flyer(shot, fps):
 # ============================================================================= a06 / a07 / a08 the hero's street in Boro
 def _home_layout(shot):
     """Fixed spots on the hero's street (same for every scene there): granny, the car, the courier, the door."""
-    return dict(granny=S.ahead(shot, 8.0, 0.0)[0], car_d=10.5, courier=S.ahead(shot, 6.5, 0.0)[0], door_d=11.5)
+    return dict(granny=S.ahead(shot, 7.0, 0.0)[0], car_d=9.5, courier=S.ahead(shot, 5.0, 0.0)[0], door_d=9.0)
 
 
 def _home_city(shot, fps, keep_pts, cam_keys):
@@ -265,40 +267,46 @@ def _home_city(shot, fps, keep_pts, cam_keys):
 
 
 def _granny_car(shot, fps, mode):
+    """Granny near the kerb lifts a parked car (it takes the place of one of the parked cars) with her look."""
     dur = shot['dur']
     rng = random.Random(6)
     L = _home_layout(shot)
-    gp = L['granny']
-    pcar = S.ahead(shot, L['car_d'], 0.0)[0]
     f = S.ahead(shot, 1)[1]
     r = V((f.y, -f.x, 0))
     cam0 = V(shot['cam'])
+    side = 1
+    g_xy = L['granny'] + r * side * 1.1
+    car_xy = S.ahead(shot, L['car_d'], 0.0)[0] + r * side * 3.0
+    to_car = (car_xy - g_xy).normalized()
+    left = V((-to_car.y, to_car.x, 0)) * side
     if mode == 'granny':
-        ck = [(0, cam0 + V((0, 0, -0.2)), pcar + V((0, 0, 1.5))), (dur, cam0 + f * 1.2 + V((0, 0, -0.25)), pcar + V((0, 0, 3.0)))]
+        c0 = cam0 + f * 2.6 - r * side * 0.5 + V((0, 0, -0.3))
+        ck = [(0, c0, g_xy.lerp(car_xy, 0.5) + V((0, 0, 1.2))), (dur, c0 + f * 0.6, g_xy.lerp(car_xy, 0.55) + V((0, 0, 2.5)))]
     else:
-        c0 = gp - f * 1.6 + V((0, 0, 0.6))
-        ck = [(0, c0, pcar + V((0, 0, 3.4))), (dur, c0 + f * 0.5 + V((0, 0, -0.1)), pcar + V((0, 0, 4.0)))]
-    p_, c = _home_city(shot, fps, [gp, pcar], ck)
+        c0 = g_xy - to_car * 2.3 + left * 0.6 + V((0, 0, 0.85))
+        ck = [(0, c0, car_xy + V((0, 0, 3.2))), (dur, c0 - to_car * 0.3 + V((0, 0, -0.1)), car_xy + V((0, 0, 3.9)))]
+    p_, c = _home_city(shot, fps, [g_xy, car_xy], ck)
+    c.data.lens = 32 if mode == 'granny' else 28
     side = road_side(shot, 9.0)
+    if side != 1:                                   # the probe disagrees: mirror the layout to its side
+        print('SILA road side', side)
+    S.clear_mesh_near('MetroParked', (car_xy.x, car_xy.y), 3.2)
     coll = lib.collection('Granny')
-    zc = S.ground(pcar.x + r.x * side * 4.2, pcar.y + r.y * side * 4.2)
-    car_xy = pcar + r * side * 4.2
+    zc = S.ground(car_xy.x, car_xy.y)
     car = lib.car((car_xy.x, car_xy.y, zc), math.atan2(f.y, f.x), color='#8A2E25', coll=coll, lights=False, rng=rng, name='Lada')
-    gz = S.ground(gp.x + r.x * side * 0.6, gp.y + r.y * side * 0.6)
-    g_xy = gp + r * side * 0.6
+    gz = S.ground(g_xy.x, g_xy.y)
     g = S.folk((g_xy.x, g_xy.y, gz), S.face(g_xy, car_xy), rng, coll, 'granny', height=0.82, name='Granny')
     P2.stand(g, rng)
     lift = _ev(shot, 'lift', 0.9)
     if mode == 'granny':
         S.key_people(g, 'upperR', 0, [(0, 0.0), (lift - 0.25, 0.0), (lift + 0.1, -1.25), (dur, -1.3)])
-        FX.float_glow(coll, car, lift, dur + 0.8, lift=3.6, col='#B48CFF', spin=0.25, name='CarLift')
-        FX.aura(coll, g['root'], '#B48CFF', r=0.5, z=0.9, t_on=lift - 0.2, strength=3.0, alpha=0.45, name='GrAura', scale=(1, 1, 1.8))
+        FX.float_glow(coll, car, lift, dur + 0.8, lift=3.6, col='#B48CFF', spin=0.25, name='CarLift', ring=1.9)
+        FX.aura(coll, g['root'], '#B48CFF', r=0.5, z=0.9, t_on=lift - 0.2, strength=3.0, alpha=0.5, name='GrAura', scale=(1, 1, 1.8))
     else:
-        # continues in the air: rises a bit more, turns slowly, the purple ring stays under it
         car.location.z = zc + 2.8
-        FX.float_glow(coll, car, 0.0, dur + 0.5, lift=1.0, col='#B48CFF', spin=0.18, name='CarLift')
+        FX.float_glow(coll, car, 0.0, dur + 0.5, lift=1.0, col='#B48CFF', spin=0.18, name='CarLift', ring=0)
         S.key_people(g, 'upperR', 0, [(0, -1.3), (dur, -1.35)])
-        FX.aura(coll, g['root'], '#B48CFF', r=0.5, z=0.9, t_on=-1.0, strength=3.0, alpha=0.45, name='GrAura', scale=(1, 1, 1.8))
+        FX.aura(coll, g['root'], '#B48CFF', r=0.5, z=0.9, t_on=-1.0, strength=3.0, alpha=0.5, name='GrAura', scale=(1, 1, 1.8))
     return dict(fill=0.35, exposure=p_['exposure'], samples=32)
 
 
@@ -319,13 +327,18 @@ def v_courier(shot, fps):
     r = V((f.y, -f.x, 0))
     cam0 = V(shot['cam'])
     door0 = S.ahead(shot, L['door_d'], 0.0)[0]
-    ck = [(0, cam0 + V((0, 0, -0.25)), door0 + V((0, 0, 1.2))), (dur, cam0 + f * 1.0 + V((0, 0, -0.25)), door0 + V((0, 0, 1.2)))]
-    p_, c = _home_city(shot, fps, [cp, door0], ck)
+    vanish, appear = _ev(shot, 'vanish', 0.55), _ev(shot, 'appear', 2.2)
+    # the city first (walls are needed to find the door), then the camera: on the courier, a pan to the door
+    p_, c = _home_city(shot, fps, [cp, door0], [(0, cam0, door0 + V((0, 0, 1.2)))])
     side = road_side(shot, 9.0)
     coll = lib.collection('Courier')
     wd = wall_dist(door0, -r * side, 1.2, 12.0)
     door_xy = door0 - r * side * max(0.0, wd - 0.75)
-    vanish, appear = _ev(shot, 'vanish', 0.55), _ev(shot, 'appear', 2.2)
+    c0 = cam0 + f * 2.0 + r * side * 0.4 + V((0, 0, -0.3))
+    lib.animate_camera(c, [(0, c0), (vanish + 0.3, c0 + f * 0.3), (dur, c0 + f * 1.4)],
+                       [(0, cp + f * 0.5 + V((0, 0, 1.0))), (vanish + 0.3, cp + f * 1.2 + V((0, 0, 1.0))),
+                        (appear - 0.15, door_xy + V((0, 0, 1.05))), (dur, door_xy + V((0, 0, 1.1)))])
+    c.data.lens = 40
     cz = S.ground(cp.x, cp.y)
     a = S.folk((cp.x, cp.y, cz), S.face(cp, cp + f), rng, coll, 'courier', name='Cour')
     P2.walk(a, 1.0, 0.0, 0.9, fps)
@@ -373,22 +386,16 @@ def v_flyers(shot, fps):
     cam, tgt = V(shot['cam']), V(shot['target'])
     p_, c = S.city(shot, fps, cam_keys=[(0, cam, tgt), (dur, cam + V((0, 0, 0.2)), tgt + V((0, 0, 12)))])
     coll = lib.collection('Flyers')
-    f = (tgt - cam).normalized()
-    fh = V((f.x, f.y, 0)).normalized()
-    r = V((fh.y, -fh.x, 0))
-    for k in range(24):
-        d = rng.uniform(14, 90)
-        q = cam + f * d + r * rng.uniform(-0.5, 0.5) * d * 0.6
-        q.z = cam.z + max(6.0, f.z * d) + rng.uniform(-4, 6)
+    mid_t = tgt + V((0, 0, 6))
+    for k, (q, r) in enumerate(S.sky_spots(cam, mid_t, shot.get('lens', 21), 16, 5, 26, rng, u=(-0.7, 0.7), v=(-0.75, 0.75))):
         pp = S.folk((0, 0, 0), 0, rng, coll, None, name=f'Fl{k}')
         S.fly_pose(pp, rng.choice(['forward', 'one', 'forward']))
         sgn = 1 if k % 3 else -1
-        v = (r * sgn + fh * rng.uniform(-0.4, 0.4)).normalized() * rng.uniform(6, 11)
+        v = r * sgn * rng.uniform(5, 9)
         a = q - v * dur * 0.5
         S.fly(pp, [(0, tuple(a)), (dur, tuple(a + v * dur))], tilt=rng.uniform(1.25, 1.5), bob=0.1)
-        if rng.random() < 0.6:
-            FX.aura(coll, pp['root'], AURA[k % len(AURA)], r=0.45, z=0.9, t_on=-1, strength=3.0, alpha=0.35, name=f'FlA{k}',
-                    scale=(1, 1, 1.9))
+        FX.aura(coll, pp['root'], AURA[k % len(AURA)], r=0.45, z=0.9, t_on=-1, strength=3.0, alpha=0.5, name=f'FlA{k}',
+                scale=(1, 1, 1.9))
     return dict(fill=0.2, exposure=p_['exposure'], samples=32)
 
 
@@ -403,10 +410,10 @@ def v_planes(shot, fps):
     f = (tgt - cam).normalized()
     fh = V((f.x, f.y, 0)).normalized()
     r = V((fh.y, -fh.x, 0))
-    for k, (d, sd, alt, sp, sgn) in enumerate(((900, -0.15, 380, 75, 1), (1500, 0.2, 560, 80, -1), (2300, -0.3, 700, 85, 1),
-                                              (1200, 0.35, 470, 70, 1), (2800, 0.05, 820, 90, -1))):
+    for k, (d, sd, el, sp, sgn) in enumerate(((330, -0.12, 21, 55, 1), (620, 0.22, 13, 70, -1), (1050, -0.3, 17, 80, 1),
+                                             (1600, 0.3, 9.5, 80, 1), (2400, 0.02, 12, 90, -1))):
         q = cam + fh * d + r * sd * d
-        q.z = alt
+        q.z = cam.z + d * math.tan(math.radians(el))
         v = r * sgn * sp
         a = q - v * dur * 0.5
         hd = math.atan2(v.x, -v.y)
@@ -427,15 +434,51 @@ def v_airport(shot, fps):
     rng = random.Random(12)
     coll = lib.collection('Airport')
     SS.airport(coll, rng)
-    cam = lib.camera((-30, -70, 7.5), (10, 150, 9), 30)
-    lib.animate_camera(cam, [(0, (-30, -70, 7.5)), (dur, (-22, -52, 6.8))], [(0, (10, 150, 9)), (dur, (14, 150, 10))])
-    cam.data.clip_start = 0.5
-    cam.data.clip_end = 8000
-    # nobody: only a few birds walk on the empty apron
     import pcommon as pc
-    pc.birds(coll, rng, 6, (0, 20, 12), (6, 2, 0), dur, spread=(8, 6, 2), size=0.3)
+    # inside the terminal: the glass wall fills the frame, a parked jet noses at it, rows of empty seats, every flight cancelled
+    bpy.data.objects['Terminal'].hide_render = True
+    bpy.data.objects['Terminal'].hide_viewport = True
+    lib.box((520, 46, 0.03), (0, 165, 0.0), lib.mat('TermFloor', '#BDB8AE', rough=0.22, spec=0.6), bevel=0, name='TermFloor',
+            coll=coll, origin='bottom')
+    lib.box((520, 0.6, 0.5), (0, 142.1, 0.0), lib.mat('TermSill', '#8F9296', rough=0.4), bevel=0, name='TermSill', coll=coll,
+            origin='bottom')
+    seat_m = lib.mat('Seat', '#2E3A48', rough=0.45)
+    leg_m = lib.mat('SeatLeg', '#9AA0A6', rough=0.3, metal=0.6)
+    for row, y in enumerate((147.0, 149.6, 152.2)):
+        for x0 in (-21.0, -12.0, -1.0, 8.0):
+            w = 6.0
+            cx = x0 + w / 2
+            lib.box((w, 0.5, 0.07), (cx, y, 0.42), seat_m, bevel=0.02, name='SeatPan', coll=coll, origin='bottom')
+            lib.box((w, 0.06, 0.45), (cx, y + 0.26, 0.5), seat_m, rot=(-0.12, 0, 0), bevel=0.02, name='SeatBack', coll=coll,
+                    origin='bottom')
+            lib.box((w, 0.08, 0.06), (cx, y, 0.12), leg_m, bevel=0, name='SeatBeam', coll=coll, origin='bottom')
+            for k in range(11):
+                lib.box((0.05, 0.42, 0.2), (x0 + k * 0.6, y, 0.49), leg_m, bevel=0.01, name='SeatArm', coll=coll, origin='bottom')
+            for lx in (x0 + 0.4, x0 + w - 0.4):
+                lib.box((0.06, 0.06, 0.42), (lx, y, 0.0), leg_m, bevel=0, name='SeatLeg', coll=coll, origin='bottom')
+    # departures board hanging over the seats, facing the camera
+    bx, by, bz = -10.5, 146.0, 4.6
+    lib.box((6.4, 0.25, 3.3), (bx, by, bz), lib.mat('Board', '#14171B', rough=0.5), bevel=0.05, name='Board', coll=coll,
+            origin='bottom')
+    for lx in (bx - 2.6, bx + 2.6):
+        lib.cyl(0.03, 12.0, (lx, by, bz + 3.3), leg_m, verts=6, name='BoardWire', coll=coll, origin='bottom')
+    rot = (math.pi / 2, 0, math.pi)
+    pc.text('ВЫЛЕТ', 0.42, (bx, by + 0.14, bz + 2.75), rot, '#F2F2F0', strength=2.0, coll=coll, name='BoardHead')
+    flights = [('SU 1402', 'СОЧИ'), ('S7 2041', 'НОВОСИБИРСК'), ('U6 263', 'ЕКАТЕРИНБУРГ'), ('DP 405', 'КАЛИНИНГРАД'),
+               ('SU 1130', 'КАЗАНЬ'), ('FV 6551', 'МИНСК')]
+    for k, (no, city) in enumerate(flights):
+        zz = bz + 2.25 - k * 0.38
+        pc.text(no, 0.22, (bx + 2.85, by + 0.14, zz), rot, '#E8C15A', strength=1.6, coll=coll, align='LEFT', name=f'BNo{k}')
+        pc.text(city, 0.22, (bx + 1.6, by + 0.14, zz), rot, '#E8C15A', strength=1.6, coll=coll, align='LEFT', name=f'BCity{k}')
+        pc.text('ОТМЕНЕН', 0.22, (bx - 1.35, by + 0.14, zz), rot, '#FF4A3D', strength=2.6, coll=coll, align='LEFT', name=f'BSt{k}')
+    cam = lib.camera((-7.0, 158.5, 1.55), (-4.0, 80, 4.5), 24)
+    lib.animate_camera(cam, [(0, (-7.0, 158.5, 1.55)), (dur, (-7.3, 156.8, 1.6))], [(0, (-4.0, 80, 4.5)), (dur, (-4.6, 80, 4.9))])
+    cam.data.clip_start = 0.1
+    cam.data.clip_end = 8000
+    # nobody: only a few birds cross the empty apron
+    pc.birds(coll, rng, 6, (-40, 95, 7), (7, 1.5, 0), dur, spread=(6, 4, 2), size=0.3)
     lib.bloom(0.2, 1.3, 6)
-    return dict(fill=0.25, exposure=0.3, samples=32)
+    return dict(fill=0.35, exposure=0.15, samples=32)
 
 
 # ============================================================================= a13 / a14 the park: looking for his power
@@ -457,25 +500,33 @@ def v_search(shot, fps):
     H.key_pose(h, dur * 0.8, H.pose('shrug', head=(-8, -4, 6)))
     H.key_pose(h, dur, H.pose('shrug', head=(-10, -6, 8)))
     rng = random.Random(13)
-    _sky_flyers(lib.collection('ParkFlyers'), rng, cam0, f, dur, n=5, dmin=40, dmax=120, hmin=18, hmax=50)
+    _sky_flyers(lib.collection('ParkFlyers'), rng, cam0, f, dur, n=5, dmin=25, dmax=70, scale=1.4,
+                view=(c0, hp + V((0, 0, 0.95)), 40))
     return dict(fill=0.45, exposure=p_['exposure'], samples=32)
 
 
-def _sky_flyers(coll, rng, cam, f, dur, n=6, dmin=40, dmax=150, hmin=20, hmax=80, scale=1.0, aura=True):
+def _sky_flyers(coll, rng, cam, f, dur, n=6, dmin=40, dmax=150, hmin=20, hmax=80, scale=1.0, aura=True, view=None):
+    """People flying past. view=(cam, target, lens): put them where the camera sees open sky (sila.sky_spots)."""
     fh = V((f.x, f.y, 0)).normalized()
     r = V((fh.y, -fh.x, 0))
+    if view:
+        spots = S.sky_spots(view[0], view[1], view[2], n, dmin, dmax, rng, v=(0.0, 0.85))
+    else:
+        spots = []
+        for k in range(n):
+            d = rng.uniform(dmin, dmax)
+            q = cam + fh * d + r * rng.uniform(-0.6, 0.6) * d
+            q.z = cam.z + rng.uniform(hmin, hmax)
+            spots.append((q, r))
     out = []
-    for k in range(n):
-        d = rng.uniform(dmin, dmax)
-        q = cam + fh * d + r * rng.uniform(-0.6, 0.6) * d
-        q.z = cam.z + rng.uniform(hmin, hmax)
+    for k, (q, rr) in enumerate(spots):
         pp = S.folk((0, 0, 0), 0, rng, coll, None, name=f'Sky{k}_{rng.randint(0, 999)}')
         S.fly_pose(pp, rng.choice(['forward', 'one']))
-        v = (r * rng.choice((-1, 1)) + fh * rng.uniform(-0.5, 0.5)).normalized() * rng.uniform(5, 10)
+        v = (rr * rng.choice((-1, 1)) + fh * rng.uniform(-0.4, 0.4)).normalized() * rng.uniform(5, 10)
         S.fly(pp, [(0, tuple(q - v * dur * 0.5)), (dur, tuple(q + v * dur * 0.5))], bob=0.1)
         pp['root'].scale = (scale,) * 3
         if aura:
-            FX.aura(coll, pp['root'], AURA[k % len(AURA)], r=0.45, z=0.9, t_on=-1, strength=3.5, alpha=0.4,
+            FX.aura(coll, pp['root'], AURA[k % len(AURA)], r=0.45, z=0.9, t_on=-1, strength=3.5, alpha=0.5,
                     name=f'SkyA{k}_{rng.randint(0, 999)}', scale=(1, 1, 1.9))
         out.append(pp)
     return out
@@ -486,21 +537,21 @@ def v_bench(shot, fps):
     jump, fall = _ev(shot, 'jump', 1.15), _ev(shot, 'fall', 2.1)
     f = S.ahead(shot, 1)[1]
     r = V((f.y, -f.x, 0))
-    j = (r * 0.8 - f * 0.6).normalized()          # he jumps to the right and a bit towards the camera
-    bp = S.ahead(shot, 5.5, -0.8)[0]
+    j = (r * 0.95 + f * 0.3).normalized()          # he jumps across the frame, to the right and a bit away
+    bp = S.ahead(shot, 5.5, -1.2)[0]
     cam0 = V(shot['cam'])
-    c0 = cam0 + f * 1.2 + V((0, 0, -0.75))
-    land = bp + j * 1.9
+    c0 = cam0 + f * 1.6 + V((0, 0, -0.85))
+    land = bp + j * 1.8
     p_, c = S.city(shot, fps, keep=[((bp.x, bp.y), (land.x, land.y), 2.5)],
-                   cam_keys=[(0, c0, bp + j * 0.5 + V((0, 0, 1.0))), (dur, c0 + r * 0.6, bp + j * 1.2 + V((0, 0, 0.6)))])
-    c.data.lens = 30
+                   cam_keys=[(0, c0, bp + j * 0.5 + V((0, 0, 0.9))), (dur, c0 + r * 0.7, bp + j * 1.6 + V((0, 0, 0.45)))])
+    c.data.lens = 34
     coll = lib.collection('Bench')
     z = S.ground(bp.x, bp.y)
     hd = S.face(bp, bp + j)
     SS.bench(coll, (bp.x, bp.y, z), hd)
     r = j
     seat = z + 0.485
-    zl = S.ground(land.x, land.y)
+    zl = z                                         # the park is flat; a ray at the landing spot can hit a tree crown
     h = H.load(coll, (bp.x, bp.y, seat), hd)
     H.key_root(h, 0, (bp.x, bp.y, seat), hd)
     H.key_pose(h, 0, H.pose('stand', head=(0, -18, 0)))
@@ -563,11 +614,11 @@ def v_evening(shot, fps):
     dur = shot['dur']
     rng = random.Random(16)
     f, r, cam0 = _eve(shot)
-    a, b = S.ahead(shot, 11.0)[0], S.ahead(shot, 6.2)[0]
+    a, b = S.ahead(shot, 7.6)[0], S.ahead(shot, 3.9)[0]
     over = _ev(shot, 'over', 2.35)
     c0 = cam0 + V((0, 0, -0.45))
     p_, c = S.city(shot, fps, keep=[((a.x, a.y), (b.x, b.y), 2.5)],
-                   cam_keys=[(0, c0, a + V((0, 0, 1.6))), (dur, c0 - f * 0.6, b + V((0, 0, 2.2)))])
+                   cam_keys=[(0, c0, a + V((0, 0, 1.7))), (dur, c0 - f * 0.6, b + V((0, 0, 2.3)))])
     c.data.lens = 30
     coll = lib.collection('Evening')
     z = S.ground(a.x, a.y)
@@ -577,11 +628,12 @@ def v_evening(shot, fps):
     hp = a.lerp(b, over / dur)
     nb = S.folk((0, 0, 0), 0, rng, coll, 'neighbour', name='NbEve')
     S.fly_pose(nb, 'one')
-    p0 = cam0 - f * 4.0 + V((0, 0, 4.5))
-    p1 = hp + V((0, 0, 3.3))
-    p2 = hp + f * 30 + V((0, 0, 7.0))
-    t0 = over - (p1 - p0).length / 7.0
+    p0 = cam0 - f * 3.0 + V((0, 0, 3.4))
+    p1 = hp + V((0, 0, 2.5))
+    p2 = hp + f * 26 + V((0, 0, 6.0))
+    t0 = over - (p1 - p0).length / 6.0
     S.fly(nb, [(t0, tuple(p0)), (over, tuple(p1)), (dur + 0.5, tuple(p2))], tilt=1.3, bob=0.05)
+    FX.aura(coll, nb['root'], '#FFC857', r=0.45, z=0.9, t_on=-1.0, strength=3.5, alpha=0.55, name='NbEveAura', scale=(1, 1, 1.9))
     return dict(fill=0.45, exposure=p_['exposure'], samples=32)
 
 
@@ -590,8 +642,8 @@ def v_crash(shot, fps):
     rng = random.Random(17)
     f, r, cam0 = _eve(shot)
     crash = _ev(shot, 'crash', 0.6)
-    hp = S.ahead(shot, 4.2)[0]
-    bush_c = S.ahead(shot, 12.5)[0]
+    hp = S.ahead(shot, 3.2)[0]
+    bush_c = S.ahead(shot, 8.5)[0]
     c0 = cam0 + V((0, 0, -0.3))
     p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (bush_c.x, bush_c.y), 3.0)],
                    cam_keys=[(0, c0, bush_c + V((0, 0, 1.2))), (dur, c0 + f * 0.4, bush_c + V((0, 0, 0.9)))])
@@ -613,14 +665,17 @@ def v_crash(shot, fps):
     S.fly_pose(nb, 'forward')
     root = nb['root']
     hd = S.face(q, q + f)
-    for t, loc, tilt in ((0, q - f * 3 + V((0, 0, z + 6.0)), 1.4), (crash - 0.25, q - f * 0.8 + V((0, 0, z + 3.2)), 2.0),
-                         (crash, q + V((0, 0, z + 1.0)), 2.6), (crash + 0.25, q + V((0, 0, z + 0.55)), 2.9),
-                         (dur, q + V((0, 0, z + 0.5)), 2.95)):
+    # he flies in over the hero, his glow goes out next to him and he drops head first into the hedge, legs up
+    for t, loc, tilt in ((0, q - f * 7 + V((0, 0, z + 3.6)), 1.4), (crash - 0.25, q - f * 1.2 + V((0, 0, z + 2.6)), 1.9),
+                         (crash, q + V((0, 0, z + 2.3)), 2.6), (crash + 0.25, q + V((0, 0, z + 1.95)), 2.9),
+                         (dur, q + V((0, 0, z + 1.9)), 2.95)):     # root at his feet: head in the hedge, legs up
         root.location = loc
         root.rotation_euler = (tilt, 0, hd)
         root.keyframe_insert('location', frame=F(t))
         root.keyframe_insert('rotation_euler', frame=F(t))
     S.key_people(nb, 'thighL', 0, [(crash + 0.3, 0.1), (crash + 0.6, 0.6), (crash + 0.9, 0.1), (dur, 0.5)])
+    FX.aura(coll, root, '#FFC857', r=0.45, z=0.9, t_on=-1.0, t_off=crash - 0.3, strength=3.5, alpha=0.55, name='NbCrAura',
+            scale=(1, 1, 1.9))
     SS.leaves_burst(coll, (q.x, q.y, z + 1.0), crash, rng)
     return dict(fill=0.45, exposure=p_['exposure'], samples=32)
 
@@ -672,21 +727,23 @@ def v_ordinary(shot, fps):
     f, r, cam0 = _eve(shot)
     one = _ev(shot, 'one', 2.3)
     hp = S.ahead(shot, 5.0)[0]
-    c0 = hp - f * 3.2 + r * 0.6 + V((0, 0, 1.5))
-    c1 = hp - f * 26 + r * 6 + V((0, 0, 85))
+    c0 = hp - f * 3.0 + r * 0.5 + V((0, 0, 1.4))
+    c1 = hp - f * 8.5 + r * 1.5 + V((0, 0, 9.5))
     p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (hp.x, hp.y), 3.0)],
-                   cam_keys=[(0, c0, hp + V((0, 0, 1.0))), (one, c0.lerp(c1, 0.35), hp + V((0, 0, 0.5))), (dur, c1, hp)])
-    c.data.lens = 30
+                   cam_keys=[(0, c0, hp + V((0, 0, 1.0))), (one, c0.lerp(c1, 0.55), hp + V((0, 0, 0.8))),
+                             (dur, c1, hp + f * 2.0 + V((0, 0, 0.5)))])
+    c.data.lens = 28
     coll = lib.collection('Ordinary')
     z = S.ground(hp.x, hp.y)
     h = H.load(coll, (hp.x, hp.y, z), S.face(hp, c0))
     H.key_pose(h, 0, H.pose('stand', head=(0, -30, 0)))
     H.key_pose(h, dur, H.pose('stand', head=(10, -38, 0)))
     # around and above him: people with powers, glowing in the dusk
-    _sky_flyers(coll, rng, hp - f * 10, f, dur, n=22, dmin=-10, dmax=70, hmin=6, hmax=70)
-    for k in range(10):
-        q = hp + f * rng.uniform(-12, 18) + r * rng.uniform(-6, 6)
-        if (q - hp).length < 3:
+    _sky_flyers(coll, rng, hp - f * 10, f, dur, n=10, view=(c1, hp + f * 2.0, 28), dmin=12, dmax=40)
+    _sky_flyers(coll, rng, hp - f * 10, f, dur, n=8, view=(c0, hp + V((0, 0, 1.0)), 28), dmin=8, dmax=30)
+    for k in range(18):
+        q = hp + f * rng.uniform(-4, 14) + r * rng.uniform(-3.5, 3.5)
+        if (q - hp).length < 2.4:
             continue
         zq = S.ground(q.x, q.y)
         pp = S.folk((q.x, q.y, zq), rng.uniform(0, 6.28), rng, coll, None, name=f'Ord{k}')
@@ -701,6 +758,11 @@ def v_ordinary(shot, fps):
     coll.objects.link(ring)
     ring.data.materials.append(m)
     FX.key(a, [(0, 0.0), (one - 0.1, 0.0), (one + 0.3, 0.85), (dur, 0.85)])
+    spot = lib.light('SPOT', (hp.x, hp.y, z + 7.0), (0, 0, 0), energy=0.0, color='#FFF4E6', size=0.3, name='PlainSpot')
+    spot.data.spot_size = math.radians(28)
+    for t, e in ((0, 0.0), (one - 0.1, 0.0), (one + 0.3, 900.0), (dur, 900.0)):
+        spot.data.energy = e
+        spot.data.keyframe_insert('energy', frame=F(t))
     return dict(fill=0.35, exposure=p_['exposure'], samples=32)
 
 

@@ -58,7 +58,31 @@ def load(coll=None, loc=(0, 0, 0), heading=0.0, name='Hero', scale=1.0):
     hip = rig.data.bones['Hips'].head_local
     ank = rig.data.bones['LeftFoot'].head_local
     h['leg'] = (h['len']['LeftUpLeg'], h['len']['LeftLeg'], hip.z - ank.z, ank.z)
+    for m in body.data.materials:
+        _matte(m)
     return h
+
+
+def _matte(m):
+    """Back light made the short hair read white (grazing specular): less specular, rougher."""
+    if m is None or not m.use_nodes or m.get('sila_matte'):
+        return
+    nt = m.node_tree
+    for n in list(nt.nodes):
+        if n.type != 'BSDF_PRINCIPLED':
+            continue
+        n.inputs['Specular IOR Level'].default_value = 0.12
+        r = n.inputs['Roughness']
+        if r.is_linked:
+            src = r.links[0].from_socket
+            mr = nt.nodes.new('ShaderNodeMapRange')
+            mr.inputs['To Min'].default_value = 0.65
+            mr.inputs['To Max'].default_value = 1.0
+            nt.links.new(src, mr.inputs['Value'])
+            nt.links.new(mr.outputs['Result'], r)
+        else:
+            r.default_value = max(r.default_value, 0.7)
+    m['sila_matte'] = 1
 
 
 def _topo(bones):

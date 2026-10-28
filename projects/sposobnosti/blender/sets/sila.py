@@ -86,6 +86,35 @@ def drop_near(xy, r, prefix='MetroWalker'):
     return len(gone)
 
 
+def clear_mesh_near(name, xy, r, grow=8.0):
+    """Delete the pieces of a merged mesh (MetroParked: all parked cars in one object) that come within r of xy:
+    each touched piece goes whole (linked vertices), so no half cars are left."""
+    import bmesh
+    ob = bpy.data.objects.get(name)
+    if ob is None or ob.type != 'MESH':
+        return 0
+    inv = ob.matrix_world.inverted()
+    c = inv @ Vector((xy[0], xy[1], 0.0))
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    near = [v for v in bm.verts if (v.co.x - c.x) ** 2 + (v.co.y - c.y) ** 2 < (r + grow) ** 2]
+    pool = set(near)
+    todo = [v for v in near if (v.co.x - c.x) ** 2 + (v.co.y - c.y) ** 2 < r * r]
+    gone = set(todo)
+    while todo:
+        v = todo.pop()
+        for e in v.link_edges:
+            w = e.other_vert(v)
+            if w in pool and w not in gone:
+                gone.add(w)
+                todo.append(w)
+    if gone:
+        bmesh.ops.delete(bm, geom=list(gone), context='VERTS')
+        bm.to_mesh(ob.data)
+    bm.free()
+    return len(gone)
+
+
 def ground(x, y, z0=80.0, default=0.15):
     """Height of whatever is under (x, y): sidewalk, road, grass (ray cast against the built scene)."""
     bpy.context.view_layer.update()
@@ -106,6 +135,35 @@ def ahead(shot, d, side=0.0, cam=None, target=None):
 def face(frm, to):
     """Heading (rot z) that makes a figure at `frm` look towards `to` (forward = local -Y)."""
     return math.atan2(to[0] - frm[0], -(to[1] - frm[1]))
+
+
+def sky_spots(cam, target, lens, n, dmin, dmax, rng, u=(-0.85, 0.85), v=(-0.1, 0.85), tries=40):
+    """n points in front of the camera, each at distance dmin..dmax along a ray through the frame (u, v: -1..1 of the
+    half width / half height) that hits nothing before it: flyers placed there are in shot and in open sky.
+    Returns [(point, right)] with `right` the camera's horizontal right vector."""
+    c, t = Vector(cam), Vector(target)
+    f = (t - c).normalized()
+    r = f.cross(Vector((0, 0, 1)))
+    r = r.normalized() if r.length > 1e-6 else Vector((1, 0, 0))
+    up = r.cross(f).normalized()
+    tw = 18.0 / lens
+    th = tw * 1920.0 / 1080.0
+    bpy.context.view_layer.update()
+    dg = bpy.context.evaluated_depsgraph_get()
+    out = []
+    for _ in range(n * tries):
+        if len(out) >= n:
+            break
+        d = (f + r * (rng.uniform(*u) * tw) + up * (rng.uniform(*v) * th)).normalized()
+        dist = rng.uniform(dmin, dmax)
+        hit, loc, nrm, i, ob, M = bpy.context.scene.ray_cast(dg, c, d, distance=dist + 12.0)
+        if hit:
+            continue
+        q = c + d * dist
+        if any((q - o).length < 6.0 for o, _ in out):
+            continue
+        out.append((q, Vector((r.x, r.y, 0)).normalized()))
+    return out
 
 
 def vlerp(a, b, w):

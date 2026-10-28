@@ -208,8 +208,8 @@ def leaves_burst(coll, center, t, rng, n=40, col=('#5E8A3C', '#4C6E33', '#7FA14A
 # ----------------------------------------------------------------------------- airport
 def airport(coll, rng):
     """Apron around (0, 0), terminal along y = 140 facing -y, gates at x = -150..150; the camera looks north."""
-    day((0.4, -0.5, 0.45), 4.0, top='#4F82BE', horizon='#D9E2E8', fog=0.0016, fog_col='#CBD5DD')
-    conc = lib.mat('Apron', '#B7B4AD', rough=0.85, var=0.12, var_scale=0.08, bump=0.05, bump_scale=2)
+    day((0.4, -0.5, 0.45), 4.0, top='#4F82BE', horizon='#D9E2E8', fog=0.0009, fog_col='#CBD5DD')
+    conc = lib.mat('Apron', '#9C9992', rough=0.85, var=0.12, var_scale=0.08, bump=0.05, bump_scale=2)
     lib.plane((3000, 3000), (0, 0, 0), conc, name='Apron', coll=coll)
     yel = lib.mat('Mark', '#E2B93B', rough=0.6)
     wht = lib.mat('MarkW', '#ECEAE4', rough=0.6)
@@ -290,5 +290,5 @@ def plant(coll, rng, dur):
                 pts.append((x0 + (x1 - x0) * u + off * 0.94, y0 + (y1 - y0) * u + off * 0.34, 44 - 9 * math.sin(math.pi * u)))
         lib.curve_poly('Wire', [pts], bevel=0.12, mat_=wm, coll=coll)
     # the storm on the horizon: a huge dark wall and a funnel, far behind the plant
-    FX.cloud_deck(coll, (0, 4200, 1600), 1600, 3600, rng, n=90, col='#59606A', alpha=0.95, name='StormDeck', spin=0.01)
+    FX.cloud_deck(coll, (0, 4200, 1600), 3600, rng, n=90, col='#59606A', alpha=0.95, name='StormDeck', spin=0.01)
     FX.vortex(coll, (300, 4800, 0), 1500, 40, 1500, 200, rng, rings=8, per=30, period=14.0, col='#666E78', name='FarVortex')

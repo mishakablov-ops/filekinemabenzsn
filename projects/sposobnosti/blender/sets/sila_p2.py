@@ -60,8 +60,8 @@ def _hall(shot, fps, mode):
         S.key_people(a, 'head', 0, [(0, 0.0), (need, 0.12)])
         H.key_pose(h, 0, H.pose('stand', lean=-6.0, head=(0, -10, 0)))
         H.key_pose(h, dur, H.pose('stand', lean=-8.0, head=(4, -12, 0)))
-        cam = lib.camera((0.55, -1.1, 1.18), (0.25, 2.3, 1.45), 40)
-        lib.animate_camera(cam, [(0, (0.55, -1.1, 1.18)), (dur, (0.5, -0.8, 1.2))], [(0, (0.25, 2.3, 1.45)), (dur, (0.2, 2.3, 1.5))])
+        cam = lib.camera((0.62, -1.55, 1.3), (0.2, 2.3, 1.4), 36)
+        lib.animate_camera(cam, [(0, (0.62, -1.55, 1.3)), (dur, (0.58, -1.25, 1.3))], [(0, (0.2, 2.3, 1.4)), (dur, (0.18, 2.3, 1.45))])
     cam.data.clip_start = 0.03
     lib.bloom(0.35, 0.9, 8)
     return dict(fill=0.3, fill_col='#E9EEFF', exposure=0.7, samples=32)
@@ -128,7 +128,7 @@ def v_shop(shot, fps):
     # two shopping bags float down the aisle at hand height: nobody carries them
     bag_m = lib.mat('BagPlastic', '#F1F0EA', rough=0.6)
     bags = []
-    for k, (x, y0) in enumerate(((-0.45, 9.0), (0.5, 12.0))):
+    for k, (x, y0) in enumerate(((-0.45, 5.6), (0.5, 7.4))):
         b = lib.box((0.36, 0.2, 0.42), (x, y0, 0.55), bag_m, bevel=0.05, name=f'Bag{k}', coll=coll, origin='bottom')
         hd = lib.curve_poly(f'BagHandle{k}', [[(-0.12, 0, 0.42), (-0.1, 0, 0.6), (0.1, 0, 0.6), (0.12, 0, 0.42)]], bevel=0.008,
                             mat_=bag_m, coll=coll)
@@ -140,7 +140,7 @@ def v_shop(shot, fps):
         bags.append((b, x, y0, v))
     # goods jump off the shelves into the bags
     pm = [lib.mat('Good' + c, c, rough=0.45) for c in ('#C8282A', '#2F6FB0', '#E8B92E', '#3E8A4A', '#F0EDE4', '#7A3E8A')]
-    for i in range(22):
+    for i in range(34):
         b, x, y0, v = bags[i % 2]
         sx = -1 if x < 0 else 1
         t0 = rng.uniform(0.0, dur - 0.5)
@@ -153,8 +153,8 @@ def v_shop(shot, fps):
         FX.key_loc(g, [(0, tuple(src)), (t0, tuple(src)), (t0 + 0.22, tuple(mid)), (t0 + 0.45, tuple(dst))])
         FX.key_scale(g, [(0, 1.0), (t0 + 0.3, 1.0), (t0 + 0.45, 0.01)])
         lib.add_sine(g, 'rotation_euler', 2, 1.0, 0.7, i)
-    cam = lib.camera((0.2, 1.0, 1.15), (0.0, 12.0, 0.9), 34)
-    lib.animate_camera(cam, [(0, (0.2, 1.0, 1.15)), (dur, (0.1, 1.6, 1.1))], [(0, (0.0, 12.0, 0.9)), (dur, (0.0, 11.0, 0.85))])
+    cam = lib.camera((0.25, 0.4, 0.95), (0.0, 9.0, 0.8), 32)
+    lib.animate_camera(cam, [(0, (0.25, 0.4, 0.95)), (dur, (0.15, 0.7, 0.92))], [(0, (0.0, 9.0, 0.8)), (dur, (0.0, 8.0, 0.75))])
     cam.data.clip_start = 0.05
     return dict(fill=0.4, exposure=0.15, samples=32)
 
@@ -365,8 +365,8 @@ def v_power(shot, fps):
     rng = random.Random(31)
     coll = lib.collection('Plant')
     SS.plant(coll, rng, dur)
-    cam = lib.camera((-260, -320, 28), (0, 600, 120), 30)
-    lib.animate_camera(cam, [(0, (-260, -320, 28)), (dur, (-230, -250, 34))], [(0, (0, 600, 120)), (dur, (40, 600, 160))])
+    cam = lib.camera((-240, -300, 16), (0, 700, 330), 40)
+    lib.animate_camera(cam, [(0, (-240, -300, 16)), (dur, (-215, -235, 20))], [(0, (0, 700, 330)), (dur, (30, 700, 360))])
     cam.data.clip_start = 0.5
     cam.data.clip_end = 30000
     for k in range(3):
@@ -392,8 +392,11 @@ def _storm_scene(shot, fps, cam_keys, keep, rain_box, calm=None, calm_r=3.0, n_r
     FX.rain(coll, x0, x1, y0, y1, 15, n_rain, rng, speed=18, slant=(f.x * -6 + 3, f.y * -6 + 2), calm=calm, calm_r=calm_r, dur=dur,
             col='#D0DAE4', name='AveRain')
     if gone is not None:
+        # the funnel collapses into the ground and fades, the ceiling melts away (no leftover puffs in the sky)
         FX.key_scale(m, [(0, 1.0), (gone, 1.0), (gone + 0.7, 0.02)])
-        FX.key_scale(deck, [(0, 1.0), (gone + 0.1, 1.0), (gone + 0.9, 0.01)])
+        for mn in ('AveStormMat', 'AveDeckMat'):
+            if bpy.data.materials.get(mn):
+                FX.fade_cloud(bpy.data.materials[mn], [(0, 1.0), (gone + 0.05, 1.0), (gone + 0.8, 0.0)])
         rm = bpy.data.materials.get('AveRainMat')
         if rm:
             mix = next(n for n in rm.node_tree.nodes if n.type == 'MIX_SHADER')
@@ -478,7 +481,7 @@ def v_hand(shot, fps):
     f, r, cam0, mp = _pair(shot)
     h0 = mp - f * 2.6 + r * 0.7
     h1 = mp - f * 0.55 + r * 0.32
-    c0 = mp - f * 1.2 - r * 4.6 + V((0, 0, 1.3))
+    c0 = mp - f * 1.8 - r * 3.4 + V((0, 0, 1.45))
     box = (mp.x - 15, mp.x + 15, mp.y - 15, mp.y + 15)
 
     def at(t):
@@ -511,11 +514,12 @@ def v_vanish(shot, fps):
     gone = _ev(shot, 'gone', 0.42)
     f, r, cam0, mp = _pair(shot)
     hp = mp - f * 0.55 + r * 0.32
-    c0 = cam0 + f * 3.0 + V((0, 0, -0.4))
+    c0 = mp - f * 5.2 - r * 1.6 + V((0, 0, 0.9))
     box = (mp.x - 18, mp.x + 18, mp.y - 18, mp.y + 18)
-    p_, c, coll = _storm_scene(shot, fps, [(0, c0, mp + f * 40 + V((0, 0, 25))), (dur, c0 + f * 0.6, mp + f * 40 + V((0, 0, 40)))],
-                               [((mp.x, mp.y), (hp.x, hp.y), 3.0)], box, calm=lambda t: (hp.x, hp.y), calm_r=2.6, gone=gone)
-    c.data.lens = 24
+    p_, c, coll = _storm_scene(shot, fps, [(0, c0, mp + f * 30 + V((0, 0, 14))), (dur, c0 - f * 0.4, mp + f * 30 + V((0, 0, 20)))],
+                               [((mp.x, mp.y), (hp.x, hp.y), 3.0), ((c0.x, c0.y), (c0.x, c0.y), 1.5)], box,
+                               calm=lambda t: (hp.x, hp.y), calm_r=2.6, gone=gone)
+    c.data.lens = 26
     z = S.ground(mp.x, mp.y)
     g = S.folk((mp.x, mp.y, z), S.face(mp, mp + f), rng, coll, 'storm', height=1.0, name='WeatherMan')
     P2.stand(g, rng)
@@ -631,7 +635,7 @@ def v_calm(shot, fps):
     f, r, door0 = _queue_layout(shot)
     q0 = door0 - f * 1.35
     cam_a = q0 + r * 2.2 - f * 0.4 + V((0, 0, 1.3))
-    cam_b = q0 + r * 3.5 - f * 6.5 + V((0, 0, 4.0))
+    cam_b = q0 + r * 1.7 - f * 5.5 + V((0, 0, 2.6))
     ck = [(0, cam_a, q0.lerp(door0, 0.5) + V((0, 0, 1.15))), (still, cam_a.lerp(cam_b, 0.35), q0 + V((0, 0, 1.0))),
           (dur, cam_b, q0 - f * 2 + V((0, 0, 0.8)))]
     p_, c, f, r, door, side = _queue_city(shot, fps, ck)
