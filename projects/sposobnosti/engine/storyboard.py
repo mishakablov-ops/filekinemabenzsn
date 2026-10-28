@@ -1,6 +1,7 @@
 """Storyboard for «Каждому по способности» (sposobnosti), two parts: every scene is an animated Blender clip (VideoBG,
 the camera moves inside the clip), numbers are KINEMA counters, part 1 ends on the TikTok profile where «ЧАСТЬ 2»
-lands in the grid, part 2 ends on the usual CTA (the iPhone flips to the profile, the link in the bio lights up).
+lands in the grid, part 2 ends on the iPhone flipping to the profile. Since 28.10.2026 both endings are a calm invite
+(«Переходи в профиль…»), no ad and no highlighted link; the avatar is the Hermes engraving, the music is minimal-keys.
 
     python3 projects/sposobnosti/engine/storyboard.py [--out DIR]
 writes <RS>/engine/public/projects/sposobnosti-{1,2}/spec.json (or DIR/sposobnosti-{1,2}/spec.json);
@@ -52,14 +53,14 @@ def profile(tiles, **kw):
     return {"block": "TikTokProfile", "props": {
         "dark": True, "name": "aipollon", "handle": "videopollon", "badge": "Verified business",
         "bio": "Даем возможность делать самые качественные ролики с ии прямо здесь 👇🏻", "link": "https://t.me/aipollonvideo",
-        "avatar": "brand/aipollon-avatar.png", "tiles": tiles, "pinned": 1, **kw}}
+        "avatar": "brand/aipollon-avatar-hermes.png", "tiles": tiles, "pinned": 1, **kw}}
 
 
 def spec(pid, scenes, sfx, tail):
     return {
         "id": pid, "mode": "explainer", "style": "dusk", "fps": 60,
         "voice": {"src": f"projects/{pid}/voice.wav", "words": f"projects/{pid}/words.json"},
-        "music": {"src": "music/dark-cinematic.m4a", "volume": 0.11, "duck": 0.45},
+        "music": {"src": "music/minimal-keys.m4a", "volume": 0.13, "duck": 0.5},
         "tail": tail,
         "autoSfx": False,
         "grain": 0.02, "vignette": 0.12,
@@ -99,11 +100,11 @@ scenes1 = [
     s1("a17", "@И вдруг", "cut", camera={"move": "still", "shakeAt": ["@рухнул+0.25"]}),
     s1("a18", "@Тогда", "zoom"),
     s1("a19", "@Восемь миллиардов суперлюдей", "blur"),
-    # --- cliffhanger: a knock on the door; part 2 lands in the profile
+    # --- cliffhanger: a knock on the door; a calm invite: part 2 is already in the profile (28.10: no ad)
     s1("a20", "@А утром", "dip", camera={"move": "still", "shakeAt": ["@постучали"]},
-       layers=[{"block": "IPhone17", "at": "@Вторая-0.15", "pos": "full", "enter": "none", "props": {
+       layers=[{"block": "IPhone17", "at": "@Переходи-0.15", "pos": "full", "enter": "none", "props": {
            "enter": "rise", "float": True, "shadow": 0, "color": "#2C3A4F",
-           "screen": profile([COVER1] + OTHER, newTile={"src": COVER2, "label": "ЧАСТЬ 2", "at": "@профиле"}),
+           "screen": profile([COVER1] + OTHER, newTile={"src": COVER2, "label": "ЧАСТЬ 2", "at": "@вторая"}),
            "cam": [k(0, [0, 2.3, 10.8], [0, 2.25, 0], 30), k(1.2, [0.3, 2.32, 9.6], [0, 2.3, 0], 30),
                    k(4.5, [0, 2.6, 6.2], [0, 2.75, 0], 30, "inOut")]}}]),
 ]
@@ -131,7 +132,7 @@ sfx1 = [
     ("@постучали", "thud", 0.9, True),
     ("@постучали+0.27", "thud", 0.85, True),
     ("@постучали+0.54", "thud", 0.9, True),
-    ("@профиле", "pk-notify-notification-sfx-1", 0.7, True),
+    ("@вторая", "pk-notify-notification-sfx-1", 0.45, True),
 ]
 
 # ============================================================================= part 2
@@ -162,17 +163,21 @@ scenes2 = [
     s2("b13", "@Я пошёл", "push"),
     s2("b14", "@Я положил", "blur"),
     s2("b15", "@И ураган", "cut", captions={"mode": "slam", "pos": "middle"}, camera={"move": "still", "shakeAt": ["@исчез"]}),
-    # --- the end: a queue at my door; the most needed power is being ordinary; CTA
+    # --- the end: a queue at my door; the most needed power is being ordinary; a calm invite to the profile
     s2("b16", "@Теперь", "dip"),
     s2("b17", "@Те кто", "push"),
     s2("b18", "@Самая нужная", "blur"),
     s2("b19", "@А какую", "zoom"),
-    {"id": "b20", "at": "@Кстати", "transition": "fade", "camera": "still", "bg": {**clip(P2, "b20", (1.06, 1.12)), "dim": 0.45},
+    # 28.10: the end is a warm thank-you, no ad: «Если история зацепила, оставь лайк и подпишись. Для меня это настоящая
+    # суперсила.» The profile turns to the viewer, a few soft hearts float down on «лайк»
+    {"id": "b20", "at": "@Если", "transition": "fade", "camera": "still", "bg": {**clip(P2, "b20", (1.06, 1.12)), "dim": 0.45},
      "layers": [{"block": "IPhone17", "pos": "full", "enter": "none", "props": {
-         "enter": "flip", "flipAt": "@нейросеть", "flipDur": 1.2, "float": True, "shadow": 0, "color": "#2C3A4F",
-         "screen": profile([COVER2, COVER1] + OTHER, highlightAt="@шапку"),
-         "cam": [k(0, [0, 2.3, 10.8], [0, 2.25, 0], 30), k(1.6, [0.35, 2.32, 10.4], [0, 2.25, 0], 30),
-                 k(2.6, [0, 2.53, 5.4], [0, 2.7, 0], 30, "inOut"), k(6, [0, 2.5, 5.1], [0, 2.5, 0], 30)]}}]},
+         "enter": "flip", "flipAt": "@Если+0.1", "flipDur": 1.0, "float": True, "shadow": 0, "color": "#2C3A4F",
+         "screen": profile([COVER2, COVER1] + OTHER),
+         "cam": [k(0, [0, 2.3, 10.8], [0, 2.25, 0], 30), k(1.1, [0.35, 2.32, 10.4], [0, 2.25, 0], 30),
+                 k(2.1, [0, 2.53, 5.4], [0, 2.7, 0], 30, "inOut"), k(5, [0, 2.5, 5.1], [0, 2.5, 0], 30),
+                 k(8.9, [0, 2.48, 4.8], [0, 2.5, 0], 30, "inOut")]}},
+                {"block": "StarRain", "at": "@лайк", "pos": "full", "props": {"kind": "heart", "count": 24, "color": "#FF5C7A", "dur": 3.4}}]},
 ]
 sfx2 = [
     ("@пришли", "door-creak", 0.7, False),
@@ -194,12 +199,12 @@ sfx2 = [
     ("@силой", "glitch-short", 0.4, True),
     ("@обычным", "reveal-glow", 0.55, False),
     ("@ты#2", "sparkle", 0.5, True),
-    ("@нейросеть+1.2", "pk-pop-ui-menu", 0.6, False),
-    ("@шапку", "pk-click-ui-button", 0.7, True),
-    ("@профиля", "pk-notify-notification-sfx-1", 0.8, True),
+    ("@Если+0.1", "pk-pop-ui-menu", 0.45, False),
+    ("@лайк", "sparkle-rise", 0.35, False),
+    ("@суперсила", "sparkle", 0.4, True),
 ]
 
-SPECS = {P1: spec(P1, scenes1, sfx1, 2.6), P2: spec(P2, scenes2, sfx2, 1.8)}
+SPECS = {P1: spec(P1, scenes1, sfx1, 2.6), P2: spec(P2, scenes2, sfx2, 2.6)}
 
 if __name__ == "__main__":
     for pid, sp in SPECS.items():

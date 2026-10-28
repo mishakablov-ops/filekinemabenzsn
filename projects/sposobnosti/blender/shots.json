@@ -1,8 +1,8 @@
 {
  "fps": 30,
  "ends": {
-  "1": 61.54,
-  "2": 56.56
+  "1": 62.06,
+  "2": 59.04
  },
  "shots": [
   {
@@ -37,7 +37,7 @@
    "variant": "earth",
    "kind": "clip",
    "part": "1",
-   "dur": 3.73,
+   "dur": 3.75,
    "start": 3.27,
    "anchor": "@Каждый",
    "events": {
@@ -52,10 +52,10 @@
    "kind": "clip",
    "part": "1",
    "dur": 4.27,
-   "start": 6.75,
+   "start": 6.77,
    "anchor": "@8",
    "events": {
-    "second": 1.99
+    "second": 2.01
    },
    "place": "morning_ave",
    "cam": [
@@ -77,8 +77,8 @@
    "variant": "window",
    "kind": "clip",
    "part": "1",
-   "dur": 1.71,
-   "start": 10.77,
+   "dur": 1.69,
+   "start": 10.79,
    "anchor": "@Я выглянул",
    "events": {}
   },
@@ -101,7 +101,7 @@
    "variant": "granny",
    "kind": "clip",
    "part": "1",
-   "dur": 3.21,
+   "dur": 3.23,
    "start": 14.31,
    "anchor": "@Бабушка",
    "events": {
@@ -127,8 +127,8 @@
    "variant": "car",
    "kind": "clip",
    "part": "1",
-   "dur": 2.29,
-   "start": 17.27,
+   "dur": 2.27,
+   "start": 17.29,
    "anchor": "@А машина",
    "events": {},
    "place": "home",
@@ -151,7 +151,7 @@
    "variant": "courier",
    "kind": "clip",
    "part": "1",
-   "dur": 3.43,
+   "dur": 3.45,
    "start": 19.31,
    "anchor": "@Курьер",
    "events": {
@@ -178,8 +178,8 @@
    "variant": "empty",
    "kind": "clip",
    "part": "1",
-   "dur": 2.57,
-   "start": 22.49,
+   "dur": 2.53,
+   "start": 22.51,
    "anchor": "@К обеду",
    "events": {},
    "place": "noon",
@@ -205,8 +205,8 @@
    "variant": "flyers",
    "kind": "clip",
    "part": "1",
-   "dur": 2.73,
-   "start": 24.81,
+   "dur": 2.77,
+   "start": 24.79,
    "anchor": "@Полгорода",
    "events": {},
    "place": "towers",
@@ -229,8 +229,8 @@
    "variant": "planes",
    "kind": "clip",
    "part": "1",
-   "dur": 3.29,
-   "start": 27.29,
+   "dur": 3.27,
+   "start": 27.31,
    "anchor": "@Обычно",
    "events": {},
    "place": "jets",
@@ -266,7 +266,7 @@
    "variant": "search",
    "kind": "clip",
    "part": "1",
-   "dur": 2.63,
+   "dur": 2.65,
    "start": 32.93,
    "anchor": "@А я весь",
    "events": {},
@@ -290,12 +290,12 @@
    "variant": "bench",
    "kind": "clip",
    "part": "1",
-   "dur": 3.05,
-   "start": 35.31,
+   "dur": 3.03,
+   "start": 35.33,
    "anchor": "@Прыгнул",
    "events": {
-    "jump": 1.14,
-    "fall": 2.08
+    "jump": 1.12,
+    "fall": 2.06
    },
    "place": "park",
    "cam": [
@@ -317,7 +317,7 @@
    "variant": "mug",
    "kind": "clip",
    "part": "1",
-   "dur": 3.07,
+   "dur": 3.09,
    "start": 38.11,
    "anchor": "@Час",
    "events": {}
@@ -328,11 +328,11 @@
    "variant": "evening",
    "kind": "clip",
    "part": "1",
-   "dur": 3.91,
-   "start": 40.93,
+   "dur": 3.89,
+   "start": 40.95,
    "anchor": "@Вечером",
    "events": {
-    "over": 2.35
+    "over": 2.31
    },
    "place": "eve",
    "cam": [
@@ -385,7 +385,7 @@
    "anchor": "@Тогда",
    "events": {
     "wave": 3.4,
-    "others": 2.33
+    "others": 2.31
    },
    "place": "eve",
    "cam": [
@@ -407,11 +407,11 @@
    "variant": "ordinary",
    "kind": "clip",
    "part": "1",
-   "dur": 4.33,
+   "dur": 4.39,
    "start": 51.13,
    "anchor": "@Восемь миллиардов суперлюдей",
    "events": {
-    "one": 2.31
+    "one": 2.55
    },
    "place": "eve",
    "cam": [
@@ -433,11 +433,11 @@
    "variant": "knock",
    "kind": "clip",
    "part": "1",
-   "dur": 6.58,
-   "start": 55.21,
+   "dur": 7.04,
+   "start": 55.27,
    "anchor": "@А утром",
    "events": {
-    "knock": 1.55
+    "knock": 1.39
    }
   },
   {
@@ -732,7 +732,7 @@
    "variant": "dropped",
    "kind": "clip",
    "part": "2",
-   "dur": 2.85,
+   "dur": 2.93,
    "start": 29.19,
    "anchor": "@Меня высадили",
    "events": {
@@ -772,11 +772,11 @@
    "variant": "walk",
    "kind": "clip",
    "part": "2",
-   "dur": 3.81,
-   "start": 31.79,
+   "dur": 3.71,
+   "start": 31.87,
    "anchor": "@Я пошёл",
    "events": {
-    "calm": 2.79
+    "calm": 2.71
    },
    "place": "storm_ave",
    "cam": [
@@ -812,11 +812,11 @@
    "variant": "hand",
    "kind": "clip",
    "part": "2",
-   "dur": 2.27,
-   "start": 35.35,
+   "dur": 2.29,
+   "start": 35.33,
    "anchor": "@Я положил",
    "events": {
-    "touch": 1.03
+    "touch": 1.05
    },
    "place": "storm_ave",
    "cam": [
@@ -940,11 +940,11 @@
    "variant": "calm",
    "kind": "clip",
    "part": "2",
-   "dur": 5.15,
+   "dur": 5.13,
    "start": 43.65,
    "anchor": "@Самая нужная",
    "events": {
-    "touch": 0.57,
+    "touch": 0.59,
     "still": 2.55
    },
    "place": "home",
@@ -967,11 +967,11 @@
    "variant": "you",
    "kind": "clip",
    "part": "2",
-   "dur": 2.01,
-   "start": 48.55,
+   "dur": 2.05,
+   "start": 48.53,
    "anchor": "@А какую",
    "events": {
-    "turn": 0.53
+    "turn": 0.55
    },
    "place": "home",
    "cam": [
@@ -993,9 +993,9 @@
    "variant": "cta",
    "kind": "clip",
    "part": "2",
-   "dur": 6.5,
-   "start": 50.31,
-   "anchor": "@Кстати",
+   "dur": 8.96,
+   "start": 50.33,
+   "anchor": "@Если",
    "events": {},
    "place": "gold",
    "cam": [

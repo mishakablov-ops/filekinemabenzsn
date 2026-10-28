@@ -47,9 +47,10 @@ PARTS = {
         ("s5", "Surprise and then a slow realisation; 'рухнул в кусты' with a laugh in the voice, the last sentence "
                "quieter, amazed.",
          "Вечером сосед пролетал над моей головой. И вдруг рухнул в кусты. Тогда я понял. Рядом со мной чужие силы гаснут."),
-        ("s6", "Proud and a little lonely on 'обычный', then a sudden suspense on the knock; the last line short, "
-               "straight to the viewer.",
-         "Восемь миллиардов суперлюдей. И один обычный. А утром в мою дверь постучали. Вторая часть уже в профиле."),
+        # 28.10.2026: the ending is a calm invitation to the profile, no selling (new section id -> new takes)
+        ("s6n", "Proud and a little lonely on 'обычный', then a sudden suspense on the knock; the last sentence warm, "
+                "friendly and calm, a simple invitation to a friend, no selling.",
+         "Восемь миллиардов суперлюдей. И один обычный. А утром в мою дверь постучали. Переходи в профиль, вторая часть уже там."),
     ],
     "2": [
         ("s1", "The hook, sudden and tense: they came for him at six in the morning; the quote serious.",
@@ -64,8 +65,9 @@ PARTS = {
         ("s5", "Warm, light and smiling; the line about being ordinary sincere; then a friendly question to the viewer.",
          "Теперь у моей двери каждое утро очередь. Те, кто не справляется со своей силой. "
          "Самая нужная сила, оказывается, быть обычным. А какую силу выбрал бы ты?"),
-        ("s6", "Switch to warm, friendly, smiling and upbeat, a little playful, quick.",
-         "Кстати, это видео сделала нейросеть. Хочешь такие же? Тебе в шапку профиля."),
+        ("s6l", "Warm, sincere and a little playful, smiling: a gentle personal thank-you to a friend, no selling, no pressure; "
+                "'суперсила' with a soft smile.",
+         "Если история зацепила, оставь лайк и подпишись. Для меня это настоящая суперсила."),
     ],
 }
 

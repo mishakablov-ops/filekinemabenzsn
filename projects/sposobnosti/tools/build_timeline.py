@@ -15,7 +15,7 @@ ROOT = os.path.abspath(os.path.join(PROJ, '..', '..'))
 PUB = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'kinema', 'skills', 'reel-studio', 'engine', 'public', 'projects')
 LEAD = 0.07
 FPS = 30
-TAIL = {'1': 2.6, '2': 1.8}          # part 1: the profile card with «ЧАСТЬ 2» stays a bit longer
+TAIL = {'1': 2.6, '2': 2.6}          # both parts end on the profile; it stays on screen a bit (28.10: calm invite, no ad)
 
 # (id, variant, anchor) ; anchor '@word(s)[#n]' or 0.0
 PLAN = {
@@ -61,7 +61,7 @@ PLAN = {
         ('b17', 'struggle', '@Те кто'),
         ('b18', 'calm', '@Самая нужная'),
         ('b19', 'you', '@А какую'),
-        ('b20', 'cta', '@Кстати'),
+        ('b20', 'cta', '@Если'),
     ],
 }
 

@@ -161,50 +161,11 @@ def v_earth(shot, fps):
     return dict(fill=0.0, exposure=0.1, samples=32)
 
 
-# ============================================================================= a03 8 billion powers (avenue, morning)
+# ============================================================================= a03 8 billion powers
 def v_crowd(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(3)
-    cam = V(shot['cam'])
-    spots = [(d, rng.uniform(-1.4, 1.4)) for d in (3.6, 5.0, 6.4, 7.6, 9.0, 10.5, 12.0, 14.0, 16.5, 19.0, 22.0, 26.0)]
-    keep = []
-    for d, sd in spots:
-        p, f, r = S.ahead(shot, d, sd)
-        keep.append(((p.x, p.y), (p.x, p.y), 1.2))
-    f0 = S.ahead(shot, 1)[1]
-    end = cam + f0 * 2.2
-    tgt0 = cam + f0 * 30 + V((0, 0, 2.5))
-    p_, c = S.city(shot, fps, keep=keep, cam_keys=[(0, cam + V((0, 0, -0.1)), tgt0), (dur, end, tgt0 + V((0, 0, 1.0)))])
-    coll = lib.collection('Crowd')
-    order = list(range(len(spots)))
-    rng.shuffle(order)
-    t_of = {k: 0.25 + i * (dur - 0.9) / len(order) for i, k in enumerate(order)}
-    looks = [None, 'girl', 'kid', None, 'sparky', None, 'neighbour', None, None, 'girl', None, None]
-    for k, (d, sd) in enumerate(spots):
-        p, f, r = S.ahead(shot, d, sd)
-        z = S.ground(p.x, p.y)
-        towards = rng.random() < 0.5
-        hd = S.face(p, p - f) if towards else S.face(p, p + f)
-        pp = S.folk((p.x, p.y, z), hd, rng, coll, looks[k], name=f'Cr{k}')
-        t = t_of[k]
-        col = AURA[k % len(AURA)]
-        if k in (1, 6):                          # walk on
-            P2.walk(pp, 1.1, rng.random(), 0.9, fps)
-            dv = (-f if towards else f) * 1.1 * dur
-            lib.move_root(pp, [(p.x, p.y, z), (p.x + dv.x, p.y + dv.y, z)], 0.0, 1.1)
-        else:
-            P2.stand(pp, rng)
-        FX.aura(coll, pp['root'], col, r=0.5, z=0.95, t_on=t, strength=3.5, alpha=0.5, name=f'CrAura{k}', scale=(1, 1, 1.9))
-        FX.flash(coll, (p.x, p.y, z + 1.0), t, col=col, size=0.6, energy=600.0, name=f'CrFlash{k}')
-        if k == 0:                               # a flame in the palm
-            FX.flame(coll, palm(pp, coll, 'CrPalm'), (0, 0, 0.05), t + 0.1, None, scale=0.4, rng=rng, name='CrFlame')
-        if k == 3:                               # floats up
-            FX.key_loc(pp['root'], [(0, (p.x, p.y, z)), (t, (p.x, p.y, z)), (t + 1.2, (p.x, p.y, z + 0.7))])
-        if k == 4:                               # sparks between the hands
-            FX.bolt(coll, (p.x - r.x * 0.3, p.y - r.y * 0.3, z + 1.0), (p.x + r.x * 0.3, p.y + r.y * 0.3, z + 1.05),
-                    [t + 0.1 + 0.18 * i for i in range(int((dur - t) / 0.18))], rng, width=0.012, strength=30, light=300.0,
-                    name='CrBolt')
-    return dict(fill=0.35, exposure=p_['exposure'], samples=32)
+    """28.10.2026: a tiny toy planet covered with people whose auras light up in a wave (sila_tiny.py), not the avenue."""
+    import sila_tiny
+    return sila_tiny.v_crowd(shot, fps)
 
 
 # ============================================================================= a04 / a05 the window
@@ -255,105 +216,22 @@ def v_flyer(shot, fps):
     return _room_shot(shot, fps, 'flyer')
 
 
-# ============================================================================= a06 / a07 / a08 the hero's street in Boro
-def _home_layout(shot):
-    """Fixed spots on the hero's street (same for every scene there): granny, the car, the courier, the door."""
-    return dict(granny=S.ahead(shot, 7.0, 0.0)[0], car_d=9.5, courier=S.ahead(shot, 5.0, 0.0)[0], door_d=9.0)
-
-
-def _home_city(shot, fps, keep_pts, cam_keys):
-    keep = [((q.x, q.y), (q.x, q.y), 2.5) for q in keep_pts]
-    return S.city(shot, fps, keep=keep, cam_keys=cam_keys)
-
-
-def _granny_car(shot, fps, mode):
-    """Granny near the kerb lifts a parked car (it takes the place of one of the parked cars) with her look."""
-    dur = shot['dur']
-    rng = random.Random(6)
-    L = _home_layout(shot)
-    f = S.ahead(shot, 1)[1]
-    r = V((f.y, -f.x, 0))
-    cam0 = V(shot['cam'])
-    side = 1
-    g_xy = L['granny'] + r * side * 1.1
-    car_xy = S.ahead(shot, L['car_d'], 0.0)[0] + r * side * 3.0
-    to_car = (car_xy - g_xy).normalized()
-    left = V((-to_car.y, to_car.x, 0)) * side
-    if mode == 'granny':
-        c0 = cam0 + f * 2.6 - r * side * 0.5 + V((0, 0, -0.3))
-        ck = [(0, c0, g_xy.lerp(car_xy, 0.5) + V((0, 0, 1.2))), (dur, c0 + f * 0.6, g_xy.lerp(car_xy, 0.55) + V((0, 0, 2.5)))]
-    else:
-        c0 = g_xy - to_car * 2.3 + left * 0.6 + V((0, 0, 0.85))
-        ck = [(0, c0, car_xy + V((0, 0, 3.2))), (dur, c0 - to_car * 0.3 + V((0, 0, -0.1)), car_xy + V((0, 0, 3.9)))]
-    p_, c = _home_city(shot, fps, [g_xy, car_xy], ck)
-    c.data.lens = 32 if mode == 'granny' else 28
-    side = road_side(shot, 9.0)
-    if side != 1:                                   # the probe disagrees: mirror the layout to its side
-        print('SILA road side', side)
-    S.clear_mesh_near('MetroParked', (car_xy.x, car_xy.y), 3.2)
-    coll = lib.collection('Granny')
-    zc = S.ground(car_xy.x, car_xy.y)
-    car = lib.car((car_xy.x, car_xy.y, zc), math.atan2(f.y, f.x), color='#8A2E25', coll=coll, lights=False, rng=rng, name='Lada')
-    gz = S.ground(g_xy.x, g_xy.y)
-    g = S.folk((g_xy.x, g_xy.y, gz), S.face(g_xy, car_xy), rng, coll, 'granny', height=0.82, name='Granny')
-    P2.stand(g, rng)
-    lift = _ev(shot, 'lift', 0.9)
-    if mode == 'granny':
-        S.key_people(g, 'upperR', 0, [(0, 0.0), (lift - 0.25, 0.0), (lift + 0.1, -1.25), (dur, -1.3)])
-        FX.float_glow(coll, car, lift, dur + 0.8, lift=3.6, col='#B48CFF', spin=0.25, name='CarLift', ring=1.9)
-        FX.aura(coll, g['root'], '#B48CFF', r=0.5, z=0.9, t_on=lift - 0.2, strength=3.0, alpha=0.5, name='GrAura', scale=(1, 1, 1.8))
-    else:
-        car.location.z = zc + 2.8
-        FX.float_glow(coll, car, 0.0, dur + 0.5, lift=1.0, col='#B48CFF', spin=0.18, name='CarLift', ring=0)
-        S.key_people(g, 'upperR', 0, [(0, -1.3), (dur, -1.35)])
-        FX.aura(coll, g['root'], '#B48CFF', r=0.5, z=0.9, t_on=-1.0, strength=3.0, alpha=0.5, name='GrAura', scale=(1, 1, 1.8))
-    return dict(fill=0.35, exposure=p_['exposure'], samples=32)
-
-
+# ============================================================================= a06 / a07 / a08 the courtyard and the stairwell
 def v_granny(shot, fps):
-    return _granny_car(shot, fps, 'granny')
+    """28.10.2026: granny lifts the car in the courtyard by the entrance (sila_yard.py), not on the street."""
+    import sila_yard
+    return sila_yard.v_granny(shot, fps)
 
 
 def v_car(shot, fps):
-    return _granny_car(shot, fps, 'car')
+    import sila_yard
+    return sila_yard.v_car(shot, fps)
 
 
 def v_courier(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(8)
-    L = _home_layout(shot)
-    cp = L['courier']
-    f = S.ahead(shot, 1)[1]
-    r = V((f.y, -f.x, 0))
-    cam0 = V(shot['cam'])
-    door0 = S.ahead(shot, L['door_d'], 0.0)[0]
-    vanish, appear = _ev(shot, 'vanish', 0.55), _ev(shot, 'appear', 2.2)
-    # the city first (walls are needed to find the door), then the camera: on the courier, a pan to the door
-    p_, c = _home_city(shot, fps, [cp, door0], [(0, cam0, door0 + V((0, 0, 1.2)))])
-    side = road_side(shot, 9.0)
-    coll = lib.collection('Courier')
-    wd = wall_dist(door0, -r * side, 1.2, 12.0)
-    door_xy = door0 - r * side * max(0.0, wd - 0.75)
-    c0 = cam0 + f * 2.0 + r * side * 0.4 + V((0, 0, -0.3))
-    lib.animate_camera(c, [(0, c0), (vanish + 0.3, c0 + f * 0.3), (dur, c0 + f * 1.4)],
-                       [(0, cp + f * 0.5 + V((0, 0, 1.0))), (vanish + 0.3, cp + f * 1.2 + V((0, 0, 1.0))),
-                        (appear - 0.15, door_xy + V((0, 0, 1.05))), (dur, door_xy + V((0, 0, 1.1)))])
-    c.data.lens = 40
-    cz = S.ground(cp.x, cp.y)
-    a = S.folk((cp.x, cp.y, cz), S.face(cp, cp + f), rng, coll, 'courier', name='Cour')
-    P2.walk(a, 1.0, 0.0, 0.9, fps)
-    lib.move_root(a, [(cp.x, cp.y, cz), (cp.x + f.x * 2, cp.y + f.y * 2, cz)], 0.0, 1.0)
-    hide_person(a, vanish + 0.05, visible=False)
-    FX.flash(coll, (cp.x + f.x * 0.55, cp.y + f.y * 0.55, cz + 1.0), vanish, col='#9FE0FF', size=1.0, energy=1500, name='CourOut')
-    dz = S.ground(door_xy.x, door_xy.y)
-    b = S.folk((door_xy.x, door_xy.y, dz), S.face(door_xy, door_xy - r * side), random.Random(8), coll, 'courier', name='Cour2')
-    P2.stand(b, rng)
-    for o in [b['root']] + list(b['root'].children_recursive):
-        FX.key_hide(o, [(0, False), (appear, True)])
-    FX.flash(coll, (door_xy.x, door_xy.y, dz + 1.0), appear, col='#9FE0FF', size=1.0, energy=1500, name='CourIn')
-    S.key_people(b, 'upperR', 0, [(appear, -0.2), (appear + 0.35, -1.6), (appear + 0.5, -1.4), (appear + 0.65, -1.6),
-                                  (appear + 0.8, -1.4)])
-    return dict(fill=0.35, exposure=p_['exposure'], samples=32)
+    """28.10.2026: the courier is now in the stairwell (sila_stair.py), not on the street."""
+    import sila_stair
+    return sila_stair.v_courier(shot, fps)
 
 
 # ============================================================================= a09 no traffic jams
@@ -401,31 +279,9 @@ def v_flyers(shot, fps):
 
 # ============================================================================= a11 100 000 flights a day
 def v_planes(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(11)
-    cam, tgt = V(shot['cam']), V(shot['target'])
-    up = V((0, 0, 260))
-    p_, c = S.city(shot, fps, cam_keys=[(0, cam, tgt + up), (dur, cam, tgt + up + V((60, 0, 30)))])
-    coll = lib.collection('Jets')
-    f = (tgt - cam).normalized()
-    fh = V((f.x, f.y, 0)).normalized()
-    r = V((fh.y, -fh.x, 0))
-    for k, (d, sd, el, sp, sgn) in enumerate(((330, -0.12, 21, 55, 1), (620, 0.22, 13, 70, -1), (1050, -0.3, 17, 80, 1),
-                                             (1600, 0.3, 9.5, 80, 1), (2400, 0.02, 12, 90, -1))):
-        q = cam + fh * d + r * sd * d
-        q.z = cam.z + d * math.tan(math.radians(el))
-        v = r * sgn * sp
-        a = q - v * dur * 0.5
-        hd = math.atan2(v.x, -v.y)
-        jet = FX.plane_model(coll, tuple(a), heading=hd, livery='#F4F4F2', tail=['#C8282A', '#2B4A9A', '#1F7A5A', '#D98A1E', '#5A2B7A'][k],
-                             name=f'Jet{k}')
-        jet.rotation_euler.x = 0.04
-        FX.key_loc(jet, [(0, tuple(a)), (dur, tuple(a + v * dur))], 'LINEAR')
-        # contrail-ish haze behind
-        m, s, al = FX.glow(f'Trail{k}', '#FFFFFF', 0.6, alpha=0.25)
-        tr = lib.cyl(1.2, 260, (0, 155, 3.6), m, rot=(math.pi / 2, 0, 0), verts=12, r2=6.0, name=f'Trail{k}', coll=coll)
-        tr.parent = jet
-    return dict(fill=0, exposure=p_['exposure'], samples=32)
+    """28.10.2026: above a sea of clouds, jets with contrails (sila_sky.py), not over the city."""
+    import sila_sky
+    return sila_sky.v_planes(shot, fps)
 
 
 # ============================================================================= a12 empty airports
@@ -481,28 +337,11 @@ def v_airport(shot, fps):
     return dict(fill=0.3, exposure=-0.15, samples=32)
 
 
-# ============================================================================= a13 / a14 the park: looking for his power
+# ============================================================================= a13 / a14 looking for his power (roof, playground)
 def v_search(shot, fps):
-    dur = shot['dur']
-    hp = S.ahead(shot, 3.2, 0.0)[0]
-    cam0 = V(shot['cam'])
-    f = S.ahead(shot, 1)[1]
-    c0 = cam0 + V((0, 0, -0.5))
-    p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (hp.x, hp.y), 2.5)],
-                   cam_keys=[(0, c0, hp + V((0, 0, 0.95))), (dur, c0 + f * 0.6, hp + V((0, 0, 0.95)))])
-    c.data.lens = 40
-    coll = lib.collection('Search')
-    z = S.ground(hp.x, hp.y)
-    h = H.load(coll, (hp.x, hp.y, z), S.face(hp, cam0) + math.radians(28))
-    a, b = H.pose('hands_front', head=(0, 26, 0)), H.pose('hands_front', arm=(22, 38), fore=(30, 95), head=(10, 20, 6))
-    H.key_pose(h, 0, a)
-    H.key_pose(h, dur * 0.45, b)
-    H.key_pose(h, dur * 0.8, H.pose('shrug', head=(-8, -4, 6)))
-    H.key_pose(h, dur, H.pose('shrug', head=(-10, -6, 8)))
-    rng = random.Random(13)
-    _sky_flyers(lib.collection('ParkFlyers'), rng, cam0, f, dur, n=5, dmin=25, dmax=70, scale=1.4,
-                view=(c0, hp + V((0, 0, 0.95)), 40))
-    return dict(fill=0.45, exposure=p_['exposure'], samples=32)
+    """28.10.2026: on the roof of his block, trying to call up a power (sila_yard.py), not the city park."""
+    import sila_yard
+    return sila_yard.v_search(shot, fps)
 
 
 def _sky_flyers(coll, rng, cam, f, dur, n=6, dmin=40, dmax=150, hmin=20, hmax=80, scale=1.0, aura=True, view=None):
@@ -533,51 +372,9 @@ def _sky_flyers(coll, rng, cam, f, dur, n=6, dmin=40, dmax=150, hmin=20, hmax=80
 
 
 def v_bench(shot, fps):
-    dur = shot['dur']
-    jump, fall = _ev(shot, 'jump', 1.15), _ev(shot, 'fall', 2.1)
-    f = S.ahead(shot, 1)[1]
-    r = V((f.y, -f.x, 0))
-    j = (r * 0.95 + f * 0.3).normalized()          # he jumps across the frame, to the right and a bit away
-    bp = S.ahead(shot, 5.5, -1.2)[0]
-    cam0 = V(shot['cam'])
-    c0 = cam0 + f * 1.6 + V((0, 0, -0.85))
-    land = bp + j * 1.8
-    p_, c = S.city(shot, fps, keep=[((bp.x, bp.y), (land.x, land.y), 2.5)],
-                   cam_keys=[(0, c0, bp + j * 0.5 + V((0, 0, 0.9))), (dur, c0 + r * 0.7, bp + j * 1.6 + V((0, 0, 0.45)))])
-    c.data.lens = 34
-    coll = lib.collection('Bench')
-    z = S.ground(bp.x, bp.y)
-    hd = S.face(bp, bp + j)
-    SS.bench(coll, (bp.x, bp.y, z), hd)
-    r = j
-    seat = z + 0.485
-    zl = z                                         # the park is flat; a ray at the landing spot can hit a tree crown
-    h = H.load(coll, (bp.x, bp.y, seat), hd)
-    H.key_root(h, 0, (bp.x, bp.y, seat), hd)
-    H.key_pose(h, 0, H.pose('stand', head=(0, -18, 0)))
-    H.key_pose(h, jump - 0.6, H.pose('arms_up', head=(0, -25, 0)))
-    H.key_pose(h, jump - 0.22, H.pose('crouch', head=(0, -10, 0)))
-    H.key_root(h, jump - 0.22, (bp.x, bp.y, seat))
-    H.key_pose(h, jump + 0.05, H.pose('superman', thigh=-10.0, shin=-25.0, foot=-30.0))
-    apex = bp + r * 0.9
-    H.key_root(h, jump + 0.35, (apex.x, apex.y, seat + 0.7))
-    H.key_pose(h, fall - 0.12, H.pose('superman', thigh=-12.0, shin=-30.0, foot=-30.0, head=(0, -30, 0)))
-    H.key_pose(h, fall, H.pose('flat'))
-    H.key_root(h, fall, (land.x, land.y, zl + 0.16))
-    rig = h['rig']
-    rig.rotation_euler.x = 0.0
-    rig.keyframe_insert('rotation_euler', index=0, frame=F(jump + 0.05))
-    rig.rotation_euler.x = math.radians(35)
-    rig.keyframe_insert('rotation_euler', index=0, frame=F(jump + 0.4))
-    rig.rotation_euler.x = math.radians(90)
-    rig.keyframe_insert('rotation_euler', index=0, frame=F(fall))
-    H.key_pose(h, fall + 0.25, H.pose('flat', arm=(40, 150), fore=(40, 160)))
-    H.key_pose(h, dur, H.pose('flat', arm=(40, 150), fore=(40, 160), head=(0, -10, 0)))
-    H.key_root(h, dur, (land.x, land.y, zl + 0.16))
-    # a little dust where he lands
-    FX.smoke(coll, (land.x + r.x * 0.6, land.y + r.y * 0.6, zl), 0.6, fall, fall + 0.6, random.Random(14), col='#B8A98E', r0=0.25,
-             n=4, rise=0.9, name='Dust')
-    return dict(fill=0.45, exposure=p_['exposure'], samples=32)
+    """28.10.2026: the bench jump is on the courtyard playground (sila_yard.py)."""
+    import sila_yard
+    return sila_yard.v_bench(shot, fps)
 
 
 # ============================================================================= a15 an hour staring at a mug
@@ -587,6 +384,7 @@ def v_mug(shot, fps):
     coll = lib.collection('Kitchen')
     mug, hands, sun = SS.kitchen(coll, rng)
     h = H.load(coll, (0.0, 0.98, 0.075), 0.0)
+    h['body']['eye_look'], h['body']['eye_spread'] = (0.0, -0.4), 0.08     # he stares at the mug
     H.key_pose(h, 0, H.pose('sit_stare', head=(0, 14, 0)))
     H.key_pose(h, dur * 0.5, H.pose('sit_stare', lean=24.0, head=(0, 18, -4)))
     H.key_pose(h, dur, H.pose('sit_stare', lean=27.0, head=(0, 20, 4)))
@@ -603,170 +401,26 @@ def v_mug(shot, fps):
     return dict(fill=0.35, exposure=0.45, samples=32)
 
 
-# ============================================================================= a16 / a17 / a18 / a19 the evening street
-def _eve(shot):
-    f = S.ahead(shot, 1)[1]
-    r = V((f.y, -f.x, 0))
-    return f, r, V(shot['cam'])
-
-
+# ============================================================================= a16 / a17 / a18 / a19 the evening
+# 28.10.2026: in his courtyard at dusk (sila_yard.py), not the city street: the neighbour falls into a bush there
 def v_evening(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(16)
-    f, r, cam0 = _eve(shot)
-    a, b = S.ahead(shot, 7.6)[0], S.ahead(shot, 3.9)[0]
-    over = _ev(shot, 'over', 2.35)
-    c0 = cam0 + V((0, 0, -0.45))
-    p_, c = S.city(shot, fps, keep=[((a.x, a.y), (b.x, b.y), 2.5)],
-                   cam_keys=[(0, c0, a + V((0, 0, 1.7))), (dur, c0 - f * 0.6, b + V((0, 0, 2.3)))])
-    c.data.lens = 30
-    coll = lib.collection('Evening')
-    z = S.ground(a.x, a.y)
-    h = H.load(coll, (a.x, a.y, z), S.face(a, b))
-    H.walk(h, 0.0, dur, [(a.x, a.y), (b.x, b.y)], speed=(a - b).length / dur * 0.98)
-    # the neighbour comes over his head from behind the camera and flies off down the street
-    hp = a.lerp(b, over / dur)
-    nb = S.folk((0, 0, 0), 0, rng, coll, 'neighbour', name='NbEve')
-    S.fly_pose(nb, 'one')
-    p0 = cam0 - f * 3.0 + V((0, 0, 3.4))
-    p1 = hp + V((0, 0, 2.5))
-    p2 = hp + f * 26 + V((0, 0, 6.0))
-    t0 = over - (p1 - p0).length / 6.0
-    S.fly(nb, [(t0, tuple(p0)), (over, tuple(p1)), (dur + 0.5, tuple(p2))], tilt=1.3, bob=0.05)
-    FX.aura(coll, nb['root'], '#FFC857', r=0.45, z=0.9, t_on=-1.0, strength=3.5, alpha=0.55, name='NbEveAura', scale=(1, 1, 1.9))
-    return dict(fill=0.45, exposure=p_['exposure'], samples=32)
+    import sila_yard
+    return sila_yard.v_evening(shot, fps)
 
 
 def v_crash(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(17)
-    f, r, cam0 = _eve(shot)
-    crash = _ev(shot, 'crash', 0.6)
-    hp = S.ahead(shot, 3.2)[0]
-    bush_c = S.ahead(shot, 8.5)[0]
-    c0 = cam0 + V((0, 0, -0.3))
-    p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (bush_c.x, bush_c.y), 3.0)],
-                   cam_keys=[(0, c0, bush_c + V((0, 0, 1.2))), (dur, c0 + f * 0.4, bush_c + V((0, 0, 0.9)))])
-    c.data.lens = 36
-    coll = lib.collection('Crash')
-    side = road_side(shot, 10.0)
-    wd = wall_dist(bush_c, -r * side, 1.0, 10.0)
-    off = min(wd - 1.0, 2.6)
-    q = bush_c - r * side * off
-    # aim between the path and the hedge, so the legs sticking out of it are near the middle of the frame
-    aim = bush_c.lerp(q, 0.6)
-    lib.animate_camera(c, [(0, c0), (dur, c0 + f * 0.4)], [(0, aim + V((0, 0, 1.3))), (dur, aim + V((0, 0, 1.1)))])
-    z = S.ground(q.x, q.y)
-    SS.hedge(coll, rng, (q.x - f.x * 3.5, q.y - f.y * 3.5, z), (q.x + f.x * 3.5, q.y + f.y * 3.5, z), h=1.0)
-    z0 = S.ground(hp.x, hp.y)
-    h = H.load(coll, (hp.x, hp.y, z0), S.face(hp, hp + f))
-    H.key_pose(h, 0, H.pose('stand', head=(0, -22, 0)))
-    H.key_pose(h, crash - 0.1, H.pose('stand', head=(0, -10, 0)))
-    H.key_pose(h, crash + 0.2, H.pose('shrug', head=(0, 5, 0)))
-    H.key_pose(h, dur, H.pose('shrug', arm=(30, 20), head=(0, 8, 0)))
-    nb = S.folk((0, 0, 0), 0, rng, coll, 'neighbour', name='NbCrash')
-    S.fly_pose(nb, 'forward')
-    root = nb['root']
-    hd = S.face(q, q + f)
-    # he flies in over the hero, his glow goes out next to him and he drops head first into the hedge, legs up
-    for t, loc, tilt in ((0, q - f * 7 + V((0, 0, z + 3.6)), 1.4), (crash - 0.25, q - f * 1.2 + V((0, 0, z + 2.6)), 1.9),
-                         (crash, q + V((0, 0, z + 2.3)), 2.6), (crash + 0.25, q + V((0, 0, z + 1.95)), 2.9),
-                         (dur, q + V((0, 0, z + 1.9)), 2.95)):     # root at his feet: head in the hedge, legs up
-        root.location = loc
-        root.rotation_euler = (tilt, 0, hd)
-        root.keyframe_insert('location', frame=F(t))
-        root.keyframe_insert('rotation_euler', frame=F(t))
-    S.key_people(nb, 'thighL', 0, [(crash + 0.3, 0.1), (crash + 0.6, 0.6), (crash + 0.9, 0.1), (dur, 0.5)])
-    FX.aura(coll, root, '#FFC857', r=0.45, z=0.9, t_on=-1.0, t_off=crash - 0.3, strength=3.5, alpha=0.55, name='NbCrAura',
-            scale=(1, 1, 1.9))
-    SS.leaves_burst(coll, (q.x, q.y, z + 1.0), crash, rng)
-    return dict(fill=0.45, exposure=p_['exposure'], samples=32)
+    import sila_yard
+    return sila_yard.v_crash(shot, fps)
 
 
 def v_realize(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(18)
-    f, r, cam0 = _eve(shot)
-    wave, others = _ev(shot, 'wave', 3.4), _ev(shot, 'others', 2.3)
-    hp = S.ahead(shot, 3.4)[0]
-    gp = S.ahead(shot, 6.4, 1.3)[0]
-    bp = S.ahead(shot, 7.2, -1.4)[0]
-    c0 = cam0 + V((0, 0, -0.4))
-    p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (bp.x, bp.y), 3.0), ((gp.x, gp.y), (gp.x, gp.y), 1.5)],
-                   cam_keys=[(0, c0, hp + V((0, 0, 1.0))), (dur, c0 + f * 0.9, hp + V((0, 0, 1.05)))])
-    c.data.lens = 52
-    coll = lib.collection('Realize')
-    z = S.ground(hp.x, hp.y)
-    h = H.load(coll, (hp.x, hp.y, z), S.face(hp, cam0) + math.radians(18))
-    H.key_pose(h, 0, H.pose('hands_front', head=(0, 24, 0)))
-    H.key_pose(h, others - 0.4, H.pose('hands_front', head=(0, 20, 0)))
-    H.key_pose(h, others, H.pose('stand', head=(-30, 0, 0)))
-    H.key_pose(h, wave - 0.2, H.pose('stand', head=(-26, -2, 0)))
-    H.key_pose(h, wave + 0.6, H.pose('shrug', head=(0, -4, 6)))
-    H.key_pose(h, dur, H.pose('shrug', head=(4, -6, 8)))
-    # a girl with a flame on her palm, a guy floating above the pavement: both lose it in the wave
-    zg = S.ground(gp.x, gp.y)
-    g = S.folk((gp.x, gp.y, zg), S.face(gp, hp), rng, coll, 'girl', name='GirlF')
-    P2.stand(g, rng)
-    S.key_people(g, 'upperR', 0, [(0, -1.1), (wave + 0.4, -1.1), (wave + 0.8, -0.2)])
-    S.key_people(g, 'foreR', 0, [(0, -0.6), (wave + 0.4, -0.6), (wave + 0.8, -0.2)])
-    FX.flame(coll, palm(g, coll, 'GirlPalm'), (0, 0, 0.05), -1.0, wave + 0.2, scale=0.45, rng=rng, name='GirlFlame')
-    zb = S.ground(bp.x, bp.y)
-    b = S.folk((bp.x, bp.y, zb + 0.8), S.face(bp, hp), rng, coll, 'sparky', name='FloatGuy')
-    P2.stand(b, rng)
-    FX.key_loc(b['root'], [(0, (bp.x, bp.y, zb + 0.75)), (wave + 0.25, (bp.x, bp.y, zb + 0.82)), (wave + 0.5, (bp.x, bp.y, zb))])
-    lib.add_sine(b['root'], 'location', 2, 0.04, 1.4)
-    FX.aura(coll, b['root'], '#7FD8FF', r=0.5, z=0.9, t_on=-1.0, t_off=wave + 0.2, strength=3.5, alpha=0.5, name='FgAura',
-            scale=(1, 1, 1.9))
-    FX.aura(coll, g['root'], '#FF9C5B', r=0.5, z=0.9, t_on=-1.0, t_off=wave + 0.2, strength=3.0, alpha=0.4, name='GfAura',
-            scale=(1, 1, 1.9))
-    FX.ripple(coll, (hp.x, hp.y, z + 0.05), wave, 1.1, 10.0)
-    return dict(fill=0.45, exposure=p_['exposure'], samples=32)
+    import sila_yard
+    return sila_yard.v_realize(shot, fps)
 
 
 def v_ordinary(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(19)
-    f, r, cam0 = _eve(shot)
-    one = _ev(shot, 'one', 2.3)
-    hp = S.ahead(shot, 5.0)[0]
-    c0 = hp - f * 3.0 + r * 0.5 + V((0, 0, 1.4))
-    c1 = hp - f * 8.5 + r * 1.5 + V((0, 0, 9.5))
-    p_, c = S.city(shot, fps, keep=[((hp.x, hp.y), (hp.x, hp.y), 3.0)],
-                   cam_keys=[(0, c0, hp + V((0, 0, 1.0))), (one, c0.lerp(c1, 0.55), hp + V((0, 0, 0.8))),
-                             (dur, c1, hp + f * 2.0 + V((0, 0, 0.5)))])
-    c.data.lens = 28
-    coll = lib.collection('Ordinary')
-    z = S.ground(hp.x, hp.y)
-    h = H.load(coll, (hp.x, hp.y, z), S.face(hp, c0))
-    H.key_pose(h, 0, H.pose('stand', head=(0, -30, 0)))
-    H.key_pose(h, dur, H.pose('stand', head=(10, -38, 0)))
-    # around and above him: people with powers, glowing in the dusk
-    _sky_flyers(coll, rng, hp - f * 10, f, dur, n=10, view=(c1, hp + f * 2.0, 28), dmin=12, dmax=40)
-    _sky_flyers(coll, rng, hp - f * 10, f, dur, n=8, view=(c0, hp + V((0, 0, 1.0)), 28), dmin=8, dmax=30)
-    for k in range(18):
-        q = hp + f * rng.uniform(-4, 14) + r * rng.uniform(-3.5, 3.5)
-        if (q - hp).length < 2.4:
-            continue
-        zq = S.ground(q.x, q.y)
-        pp = S.folk((q.x, q.y, zq), rng.uniform(0, 6.28), rng, coll, None, name=f'Ord{k}')
-        P2.stand(pp, rng)
-        FX.aura(coll, pp['root'], AURA[k % len(AURA)], r=0.5, z=0.9, t_on=-1, strength=3.5, alpha=0.45, name=f'OrdA{k}', scale=(1, 1, 1.9))
-    # one ordinary man: a plain white ring around him lights up
-    m, s, a = FX.glow('PlainRing', '#FFFFFF', 3.0, alpha=0.8)
-    bpy.ops.mesh.primitive_torus_add(major_radius=1.1, minor_radius=0.03, major_segments=64, minor_segments=8, location=(hp.x, hp.y, z + 0.04))
-    ring = bpy.context.active_object
-    for cc in ring.users_collection:
-        cc.objects.unlink(ring)
-    coll.objects.link(ring)
-    ring.data.materials.append(m)
-    FX.key(a, [(0, 0.0), (one - 0.1, 0.0), (one + 0.3, 0.85), (dur, 0.85)])
-    spot = lib.light('SPOT', (hp.x, hp.y, z + 7.0), (0, 0, 0), energy=0.0, color='#FFF4E6', size=0.3, name='PlainSpot')
-    spot.data.spot_size = math.radians(28)
-    for t, e in ((0, 0.0), (one - 0.1, 0.0), (one + 0.3, 900.0), (dur, 900.0)):
-        spot.data.energy = e
-        spot.data.keyframe_insert('energy', frame=F(t))
-    return dict(fill=0.35, exposure=p_['exposure'], samples=32)
+    import sila_yard
+    return sila_yard.v_ordinary(shot, fps)
 
 
 # ============================================================================= a20 the knock (under the profile card)

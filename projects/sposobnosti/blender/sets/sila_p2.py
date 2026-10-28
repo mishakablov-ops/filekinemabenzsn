@@ -16,7 +16,7 @@ import sila as S
 import sila_fx as FX
 import sila_hero as H
 import sila_sets as SS
-from sila_p1 import AURA, _ev, _home_layout, _sky_flyers, palm, road_side, wall_dist
+from sila_p1 import _ev, _sky_flyers, road_side
 
 F = lib.sec2f
 STORM_C = '#6A727C'
@@ -383,8 +383,9 @@ def _storm_scene(shot, fps, cam_keys, keep, rain_box, calm=None, calm_r=3.0, n_r
     m = _storm_master(coll, (ctr.x, ctr.y), rng, 1300, 0, 1100, 80, rings=11, per=30, period=5.0, name='AveStorm')
     deck = FX.cloud_deck(coll, (ctr.x, ctr.y, 1300), 3800, rng, n=90, col='#5F666F', alpha=0.95, name='AveDeck', spin=0.04)
     x0, x1, y0, y1 = rain_box
+    ca, cb = cam_keys[0][1], cam_keys[-1][1]
     FX.rain(coll, x0, x1, y0, y1, 15, n_rain, rng, speed=18, slant=(f.x * -6 + 3, f.y * -6 + 2), calm=calm, calm_r=calm_r, dur=dur,
-            col='#D0DAE4', name='AveRain')
+            col='#D0DAE4', name='AveRain', clear=[((ca.x, ca.y), (cb.x, cb.y), 2.4, (ca.z + cb.z) / 2)])
     if gone is not None:
         # the funnel collapses into the ground and fades, the ceiling melts away (no leftover puffs in the sky)
         FX.key_scale(m, [(0, 1.0), (gone, 1.0), (gone + 0.7, 0.02)])
@@ -526,159 +527,25 @@ def v_vanish(shot, fps):
     return dict(fill=0.3, exposure=p_['exposure'], samples=32)
 
 
-# ============================================================================= b16-b19 the queue at his door (Boro, morning)
-def _queue_layout(shot):
-    L = _home_layout(shot)
-    f = S.ahead(shot, 1)[1]
-    r = V((f.y, -f.x, 0))
-    door0 = S.ahead(shot, L['door_d'], 0.0)[0]
-    return f, r, door0
-
-
-def _queue_city(shot, fps, cam_keys, n=8):
-    f, r, door0 = _queue_layout(shot)
-    q_end = door0 - f * (1.3 + n * 1.05)
-    p_, c = S.city(shot, fps, keep=[((door0.x, door0.y), (q_end.x, q_end.y), 2.5)], cam_keys=cam_keys)
-    side = road_side(shot, 9.0)
-    wd = wall_dist(door0, -r * side, 1.2, 12.0)
-    door = door0 - r * side * max(0.0, wd - 0.8)
-    return p_, c, f, r, door, side
-
-
-QUEUE = [('sparky', 'bolt'), ('girl', 'float'), ('kid', None), (None, 'flame'), ('neighbour', None), (None, 'aura'), ('girl', 'aura'),
-         (None, None)]
-
-
-def _queue_people(coll, rng, f, r, door, side, n=8, calm_t=None):
-    out = []
-    for k in range(n):
-        look, power = QUEUE[k % len(QUEUE)]
-        q = door - f * (1.35 + k * 1.05) + r * side * (0.35 + rng.uniform(-0.15, 0.15))
-        z = S.ground(q.x, q.y, z0=1.6)       # under the balconies
-        p = S.folk((q.x, q.y, z), S.face(q, door), rng, coll, look, height=0.82 if look == 'kid' else 0.9, name=f'Q{k}')
-        P2.stand(p, rng)
-        col = AURA[(k + 2) % len(AURA)]
-        off = calm_t if (k == 0 and calm_t is not None) else None
-        FX.aura(coll, p['root'], col, r=0.5, z=0.9, t_on=-1.0, t_off=off, strength=3.0, alpha=0.4, name=f'QA{k}', scale=(1, 1, 1.9))
-        if power == 'flame':
-            FX.flame(coll, palm(p, coll, f'QPalm{k}'), (0, 0, 0.05), -1.0, None, scale=0.4, rng=rng, name=f'QFlame{k}')
-            S.key_people(p, 'upperR', 0, [(0, -1.0)])
-        if power == 'float':
-            p['root'].location.z += 0.45                 # before the sine: add_sine keys the current height
-            lib.add_sine(p['root'], 'location', 2, 0.12, 1.6, k)
-        out.append((p, q, z, power))
-    return out
-
-
-def _bolt_hands(coll, rng, p, q, z, f, r, t0, t1, name):
-    times = [t0 + 0.09 * i + rng.uniform(0, 0.03) for i in range(max(1, int((t1 - t0) / 0.09)))]
-    return FX.bolt(coll, (q.x - r.x * 0.28, q.y - r.y * 0.28, z + 1.0), (q.x + r.x * 0.28, q.y + r.y * 0.28, z + 1.08), times, rng,
-                   width=0.012, strength=35, light=400.0, name=name)
-
-
+# ============================================================================= b16-b19 the queue at his door: since 28.10.2026 in the stairwell
 def v_queue(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(36)
-    f, r, door0 = _queue_layout(shot)
-    cam0 = V(shot['cam'])
-    c0 = cam0 + V((0, 0, -0.2))
-    ck = [(0, c0, door0 + V((0, 0, 1.4))), (dur, c0 + f * 1.4, door0 + V((0, 0, 1.4)))]
-    p_, c, f, r, door, side = _queue_city(shot, fps, ck)
-    c.data.lens = 30
-    coll = lib.collection('Queue')
-    ppl = _queue_people(coll, rng, f, r, door, side)
-    p0, q0, z0, _ = ppl[0]
-    _bolt_hands(coll, rng, p0, q0, z0, f, r, 0.0, dur, 'QBolt')
-    zd = S.ground(door.x, door.y, z0=1.6)
-    h = H.load(coll, (door.x, door.y, zd), S.face(door, door - f))
-    H.key_pose(h, 0, H.pose('stand', head=(0, 6, 0)))
-    H.key_pose(h, dur, H.pose('reach_r', head=(0, 8, 0)))
-    return dict(fill=0.4, exposure=p_['exposure'], samples=32)
+    import sila_stair
+    return sila_stair.v_queue(shot, fps)
 
 
 def v_struggle(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(36)
-    f, r, door0 = _queue_layout(shot)
-    q1 = door0 - f * (1.35 + 1.05)
-    cam_p = q1 - f * 2.6 + r * 1.6 + V((0, 0, 1.25))
-    ck = [(0, cam_p, q1 + V((0, 0, 1.2))), (dur, cam_p + f * 0.4, q1 + V((0, 0, 1.4)))]
-    p_, c, f, r, door, side = _queue_city(shot, fps, ck)
-    c.data.lens = 36
-    coll = lib.collection('Queue')
-    ppl = _queue_people(coll, rng, f, r, door, side)
-    p0, q0, z0, _ = ppl[0]
-    _bolt_hands(coll, rng, p0, q0, z0, f, r, 0.0, dur, 'QBolt')
-    # the floating girl drifts up, the kid behind her grabs her hand and pulls her down
-    g, qg, zg, _ = ppl[1]
-    FX.key_loc(g['root'], [(0, (qg.x, qg.y, zg + 0.45)), (dur * 0.6, (qg.x, qg.y, zg + 1.15)), (dur, (qg.x, qg.y, zg + 0.95))])
-    kid, qk, zk, _ = ppl[2]
-    S.key_people(kid, 'upperR', 0, [(0, -0.5), (dur * 0.4, -2.6), (dur, -2.4)])
-    S.key_people(kid, 'upperL', 0, [(0, -0.3), (dur * 0.45, -2.4), (dur, -2.3)])
-    S.key_people(g, 'upperL', 0, [(0, 0.0), (dur * 0.5, 0.8)])
-    zd = S.ground(door.x, door.y, z0=1.6)
-    h = H.load(coll, (door.x, door.y, zd), S.face(door, door - f))
-    H.key_pose(h, 0, H.pose('stand', head=(0, 6, 0)))
-    # frame the girl and the kid from the road side, the sparking man and the hero at the door behind them
-    aim = qg.lerp(qk, 0.5) + V((0, 0, 1.15))
-    cp = qk - f * 2.3 + r * side * 1.9 + V((0, 0, 1.3))
-    lib.animate_camera(c, [(0, cp), (dur, cp + f * 0.45)], [(0, aim), (dur, aim + f * 0.3 + V((0, 0, 0.15)))])
-    c.data.lens = 30
-    return dict(fill=0.4, exposure=p_['exposure'], samples=32)
+    import sila_stair
+    return sila_stair.v_struggle(shot, fps)
 
 
 def v_calm(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(36)
-    touch, still = _ev(shot, 'touch', 0.6), _ev(shot, 'still', 2.5)
-    f, r, door0 = _queue_layout(shot)
-    q0 = door0 - f * 1.35
-    cam_a = q0 + r * 2.2 - f * 0.4 + V((0, 0, 1.3))
-    cam_b = q0 + r * 1.7 - f * 5.5 + V((0, 0, 2.6))
-    ck = [(0, cam_a, q0.lerp(door0, 0.5) + V((0, 0, 1.15))), (still, cam_a.lerp(cam_b, 0.35), q0 + V((0, 0, 1.0))),
-          (dur, cam_b, q0 - f * 2 + V((0, 0, 0.8)))]
-    p_, c, f, r, door, side = _queue_city(shot, fps, ck)
-    c.data.lens = 34
-    coll = lib.collection('Queue')
-    ppl = _queue_people(coll, rng, f, r, door, side, calm_t=touch + 0.15)
-    p0, q0r, z0, _ = ppl[0]
-    _bolt_hands(coll, rng, p0, q0r, z0, f, r, 0.0, touch + 0.2, 'QBolt')
-    S.key_people(p0, 'upperL', 0, [(0, -1.0), (touch + 0.2, -1.0), (touch + 0.7, 0.0)])
-    S.key_people(p0, 'upperR', 0, [(0, -1.0), (touch + 0.2, -1.0), (touch + 0.7, 0.0)])
-    S.key_people(p0, 'head', 0, [(touch + 0.3, 0.0), (touch + 0.8, -0.15), (dur, -0.1)])
-    zd = S.ground(door.x, door.y, z0=1.6)
-    h = H.load(coll, (door.x, door.y, zd), S.face(door, q0r))
-    H.key_pose(h, 0, H.pose('stand', head=(0, 6, 0)))
-    H.key_pose(h, touch, H.pose('reach_r', head=(0, 8, 0)))
-    H.key_pose(h, still - 0.2, H.pose('reach_r', head=(0, 6, 0)))
-    H.key_pose(h, still + 0.5, H.pose('stand', head=(-35, -4, 0)))
-    H.key_pose(h, dur, H.pose('stand', head=(-40, -6, 0)))
-    FX.ripple(coll, (q0r.x, q0r.y, z0 + 0.05), touch + 0.1, 0.8, 2.5, strength=2.0)
-    return dict(fill=0.4, exposure=p_['exposure'], samples=32)
+    import sila_stair
+    return sila_stair.v_calm(shot, fps)
 
 
 def v_you(shot, fps):
-    dur = shot['dur']
-    rng = random.Random(36)
-    turn = _ev(shot, 'turn', 0.5)
-    f, r, door0 = _queue_layout(shot)
-    # the camera stands in the queue's place and looks at him at his door (head and shoulders)
-    p_, c, f, r, door, side = _queue_city(shot, fps, [(0, door0 - f * 1.5 + V((0, 0, 1.3)), door0 + V((0, 0, 1.2)))], n=0)
-    zd = S.ground(door.x, door.y, z0=1.6)
-    cam_p = door - f * 1.7 + r * side * 0.4 + V((0, 0, zd + 1.22))
-    look = V((door.x, door.y, zd + 1.12))
-    c.animation_data_clear()
-    lib.animate_camera(c, [(0, cam_p), (dur, cam_p + (look - cam_p).normalized() * 0.25)], [(0, look), (dur, look)])
-    c.data.lens = 50
-    coll = lib.collection('You')
-    h = H.load(coll, (door.x, door.y, zd), S.face(door, cam_p) + math.radians(55))
-    H.key_pose(h, 0, H.pose('stand', head=(-30, 4, 0)))
-    H.key_pose(h, turn, H.pose('stand', head=(-30, 2, 0)))
-    H.key_root(h, turn, None, S.face(door, cam_p) + math.radians(55))
-    H.key_pose(h, turn + 0.45, H.pose('stand', head=(0, 0, 3)))
-    H.key_root(h, turn + 0.6, None, S.face(door, cam_p) + math.radians(8))
-    H.key_pose(h, dur, H.pose('stand', head=(0, -2, 4)))
-    return dict(fill=0.45, exposure=p_['exposure'], samples=32)
+    import sila_stair
+    return sila_stair.v_you(shot, fps)
 
 
 # ============================================================================= b20 the golden city (under the CTA)

@@ -326,9 +326,18 @@ def float_glow(coll, obj, t0, t1, lift=3.0, col='#9EE7FF', spin=0.35, name='Lift
 
 
 # ----------------------------------------------------------------------------- rain and the calm around the hero
+def _seg_dist(px, py, a, b):
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    ll = dx * dx + dy * dy
+    t = 0.0 if ll < 1e-9 else max(0.0, min(1.0, ((px - a[0]) * dx + (py - a[1]) * dy) / ll))
+    return math.hypot(px - a[0] - t * dx, py - a[1] - t * dy)
+
+
 def rain(coll, x0, x1, y0, y1, z_top, n, rng, speed=14.0, slant=(2.0, 0.0), calm=None, calm_r=4.0, dur=6.0,
-         col='#C9D6E2', name='Rain'):
-    """Falling streaks over a box. `calm(t) -> (x, y)` is a moving point (the hero): drops within calm_r of it hide."""
+         col='#C9D6E2', name='Rain', clear=None):
+    """Falling streaks over a box. `calm(t) -> (x, y)` is a moving point (the hero): drops within calm_r of it hide.
+    `clear` = [((ax, ay), (bx, by), r, z)]: camera paths at height z; drops that pass within r of one are not made
+    (a drop right at the lens reads as a thick white bar across the frame)."""
     m, _, _ = glow(name + 'Mat', col, 1.6, alpha=0.55)
     base = lib.cyl(0.012, 0.9, (0, 0, 0), m, verts=4, name=name + 'Base', coll=coll)
     base.hide_render = True
@@ -340,6 +349,9 @@ def rain(coll, x0, x1, y0, y1, z_top, n, rng, speed=14.0, slant=(2.0, 0.0), calm
     for i in range(n):
         x, y = rng.uniform(x0, x1), rng.uniform(y0, y1)
         ph = rng.uniform(0, fall)
+        if clear and any(_seg_dist(x + slant[0] * fall * (1 - zz / z_top), y + slant[1] * fall * (1 - zz / z_top), a, b) < cr
+                         for a, b, cr, cz in clear for zz in (max(0.0, cz - 1.5), cz, min(z_top, cz + 2.5))):
+            continue
         ob = bpy.data.objects.new(f'{name}{i}', base.data)
         coll.objects.link(ob)
         ob.rotation_euler = tilt

@@ -53,6 +53,8 @@ def main():
     sc.view_settings.exposure = shot.get('exposure', res.get('exposure', 0.1))
     sc.eevee.taa_render_samples = a.samples or shot.get('samples', res.get('samples', 64 if a.still else 32))
     sc.frame_end = max(sc.frame_start, int(round(shot['dur'] * fps)))
+    if 'sila_hero' in sys.modules:               # 28.10.2026: the hero blinks, looks around, breathes
+        sys.modules['sila_hero'].alive_all(sc, seed=sum(map(ord, a.shot)))
     print(f'BUILD {a.shot} set={shot["set"]}/{shot.get("variant")} frames={sc.frame_end} built in {time.time() - t0:.1f}s', flush=True)
     if a.dry:
         print(f'DRY {a.shot} objects={len(bpy.data.objects)}', flush=True)
