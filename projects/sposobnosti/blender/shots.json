@@ -1,0 +1,1015 @@
+{
+ "fps": 30,
+ "ends": {
+  "1": 61.54,
+  "2": 56.56
+ },
+ "shots": [
+  {
+   "id": "a01",
+   "set": "sila",
+   "variant": "night",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.52,
+   "start": 0.0,
+   "anchor": 0.0,
+   "events": {
+    "gift": 1.9
+   },
+   "place": "sky_night",
+   "cam": [
+    -8.1,
+    834.5,
+    485.4
+   ],
+   "target": [
+    1350.0,
+    1150.0,
+    61.1
+   ],
+   "lens": 29,
+   "preset": "night"
+  },
+  {
+   "id": "a02",
+   "set": "sila",
+   "variant": "earth",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.73,
+   "start": 3.27,
+   "anchor": "@Каждый",
+   "events": {
+    "one": 1.59,
+    "forever": 2.33
+   }
+  },
+  {
+   "id": "a03",
+   "set": "sila",
+   "variant": "crowd",
+   "kind": "clip",
+   "part": "1",
+   "dur": 4.27,
+   "start": 6.75,
+   "anchor": "@8",
+   "events": {
+    "second": 1.99
+   },
+   "place": "morning_ave",
+   "cam": [
+    11.9,
+    4175.4,
+    1.7
+   ],
+   "target": [
+    -97.0,
+    4579.5,
+    100.9
+   ],
+   "lens": 23,
+   "preset": "golden"
+  },
+  {
+   "id": "a04",
+   "set": "sila",
+   "variant": "window",
+   "kind": "clip",
+   "part": "1",
+   "dur": 1.71,
+   "start": 10.77,
+   "anchor": "@Я выглянул",
+   "events": {}
+  },
+  {
+   "id": "a05",
+   "set": "sila",
+   "variant": "flyer",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.33,
+   "start": 12.23,
+   "anchor": "@Сосед сверху",
+   "events": {
+    "fly": 0.65
+   }
+  },
+  {
+   "id": "a06",
+   "set": "sila",
+   "variant": "granny",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.21,
+   "start": 14.31,
+   "anchor": "@Бабушка",
+   "events": {
+    "lift": 0.87
+   },
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "a07",
+   "set": "sila",
+   "variant": "car",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.29,
+   "start": 17.27,
+   "anchor": "@А машина",
+   "events": {},
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "a08",
+   "set": "sila",
+   "variant": "courier",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.43,
+   "start": 19.31,
+   "anchor": "@Курьер",
+   "events": {
+    "vanish": 0.53,
+    "appear": 2.19
+   },
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "a09",
+   "set": "sila",
+   "variant": "empty",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.57,
+   "start": 22.49,
+   "anchor": "@К обеду",
+   "events": {},
+   "place": "noon",
+   "cam": [
+    -1969.3,
+    515.0,
+    336.4
+   ],
+   "target": [
+    -370.0,
+    470.0,
+    140.9
+   ],
+   "lens": 34,
+   "preset": "day",
+   "over": {
+    "traffic": 0.0
+   }
+  },
+  {
+   "id": "a10",
+   "set": "sila",
+   "variant": "flyers",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.73,
+   "start": 24.81,
+   "anchor": "@Полгорода",
+   "events": {},
+   "place": "towers",
+   "cam": [
+    -472.5,
+    1023.5,
+    1.6
+   ],
+   "target": [
+    -422.9,
+    998.0,
+    215.8
+   ],
+   "lens": 21,
+   "preset": "day"
+  },
+  {
+   "id": "a11",
+   "set": "sila",
+   "variant": "planes",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.29,
+   "start": 27.29,
+   "anchor": "@Обычно",
+   "events": {},
+   "place": "jets",
+   "cam": [
+    1579.2,
+    -1031.9,
+    58.7
+   ],
+   "target": [
+    365.1,
+    2175.3,
+    148.0
+   ],
+   "lens": 50,
+   "preset": "day"
+  },
+  {
+   "id": "a12",
+   "set": "sila",
+   "variant": "airport",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.85,
+   "start": 30.33,
+   "anchor": "@А сегодня",
+   "events": {
+    "empty": 1.71
+   }
+  },
+  {
+   "id": "a13",
+   "set": "sila",
+   "variant": "search",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.63,
+   "start": 32.93,
+   "anchor": "@А я весь",
+   "events": {},
+   "place": "park",
+   "cam": [
+    118.8,
+    2929.9,
+    1.9
+   ],
+   "target": [
+    -150.0,
+    560.0,
+    160.6
+   ],
+   "lens": 29,
+   "preset": "golden"
+  },
+  {
+   "id": "a14",
+   "set": "sila",
+   "variant": "bench",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.05,
+   "start": 35.31,
+   "anchor": "@Прыгнул",
+   "events": {
+    "jump": 1.14,
+    "fall": 2.08
+   },
+   "place": "park",
+   "cam": [
+    118.8,
+    2929.9,
+    1.9
+   ],
+   "target": [
+    -150.0,
+    560.0,
+    160.6
+   ],
+   "lens": 29,
+   "preset": "golden"
+  },
+  {
+   "id": "a15",
+   "set": "sila",
+   "variant": "mug",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.07,
+   "start": 38.11,
+   "anchor": "@Час",
+   "events": {}
+  },
+  {
+   "id": "a16",
+   "set": "sila",
+   "variant": "evening",
+   "kind": "clip",
+   "part": "1",
+   "dur": 3.91,
+   "start": 40.93,
+   "anchor": "@Вечером",
+   "events": {
+    "over": 2.35
+   },
+   "place": "eve",
+   "cam": [
+    -1778.1,
+    3922.9,
+    1.8
+   ],
+   "target": [
+    -1193.1,
+    3923.5,
+    39.3
+   ],
+   "lens": 24,
+   "preset": "dusk"
+  },
+  {
+   "id": "a17",
+   "set": "sila",
+   "variant": "crash",
+   "kind": "clip",
+   "part": "1",
+   "dur": 2.23,
+   "start": 44.59,
+   "anchor": "@И вдруг",
+   "events": {
+    "crash": 0.57
+   },
+   "place": "eve",
+   "cam": [
+    -1778.1,
+    3922.9,
+    1.8
+   ],
+   "target": [
+    -1193.1,
+    3923.5,
+    39.3
+   ],
+   "lens": 24,
+   "preset": "dusk"
+  },
+  {
+   "id": "a18",
+   "set": "sila",
+   "variant": "realize",
+   "kind": "clip",
+   "part": "1",
+   "dur": 4.81,
+   "start": 46.57,
+   "anchor": "@Тогда",
+   "events": {
+    "wave": 3.4,
+    "others": 2.33
+   },
+   "place": "eve",
+   "cam": [
+    -1778.1,
+    3922.9,
+    1.8
+   ],
+   "target": [
+    -1193.1,
+    3923.5,
+    39.3
+   ],
+   "lens": 24,
+   "preset": "dusk"
+  },
+  {
+   "id": "a19",
+   "set": "sila",
+   "variant": "ordinary",
+   "kind": "clip",
+   "part": "1",
+   "dur": 4.33,
+   "start": 51.13,
+   "anchor": "@Восемь миллиардов суперлюдей",
+   "events": {
+    "one": 2.31
+   },
+   "place": "eve",
+   "cam": [
+    -1778.1,
+    3922.9,
+    1.8
+   ],
+   "target": [
+    -1193.1,
+    3923.5,
+    39.3
+   ],
+   "lens": 24,
+   "preset": "dusk"
+  },
+  {
+   "id": "a20",
+   "set": "sila",
+   "variant": "knock",
+   "kind": "clip",
+   "part": "1",
+   "dur": 6.58,
+   "start": 55.21,
+   "anchor": "@А утром",
+   "events": {
+    "knock": 1.55
+   }
+  },
+  {
+   "id": "b01",
+   "set": "sila",
+   "variant": "door",
+   "kind": "clip",
+   "part": "2",
+   "dur": 1.86,
+   "start": 0.0,
+   "anchor": 0.0,
+   "events": {
+    "open": 0.5
+   }
+  },
+  {
+   "id": "b02",
+   "set": "sila",
+   "variant": "agents",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.63,
+   "start": 1.61,
+   "anchor": "@Люди",
+   "events": {
+    "need": 1.41
+   }
+  },
+  {
+   "id": "b03",
+   "set": "sila",
+   "variant": "broken",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.13,
+   "start": 3.99,
+   "anchor": "@За неделю",
+   "events": {},
+   "place": "chaos",
+   "cam": [
+    598.3,
+    -999.5,
+    612.7
+   ],
+   "target": [
+    960.0,
+    -350.0,
+    27.4
+   ],
+   "lens": 31,
+   "preset": "day",
+   "over": {
+    "sun_E": 2.5,
+    "fog": "#A49A8E",
+    "dens": 0.0006,
+    "zen": "#6C7884",
+    "mid": "#A9A196"
+   }
+  },
+  {
+   "id": "b04",
+   "set": "sila",
+   "variant": "shop",
+   "kind": "clip",
+   "part": "2",
+   "dur": 1.97,
+   "start": 5.87,
+   "anchor": "@Невидимки",
+   "events": {}
+  },
+  {
+   "id": "b05",
+   "set": "sila",
+   "variant": "sparky",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.79,
+   "start": 7.59,
+   "anchor": "@Парень",
+   "events": {
+    "zap": 0.49,
+    "out": 1.77
+   },
+   "place": "dark_st",
+   "cam": [
+    -799.0,
+    322.6,
+    1.6
+   ],
+   "target": [
+    -1351.4,
+    362.5,
+    65.7
+   ],
+   "lens": 27,
+   "preset": "night"
+  },
+  {
+   "id": "b06",
+   "set": "sila",
+   "variant": "volts",
+   "kind": "clip",
+   "part": "2",
+   "dur": 3.37,
+   "start": 10.13,
+   "anchor": "@А в одной",
+   "events": {
+    "strike": 0.28
+   },
+   "place": "needle",
+   "cam": [
+    -142.5,
+    -1065.5,
+    110.9
+   ],
+   "target": [
+    -119.2,
+    742.1,
+    129.5
+   ],
+   "lens": 58,
+   "preset": "night"
+  },
+  {
+   "id": "b07",
+   "set": "sila",
+   "variant": "stormman",
+   "kind": "clip",
+   "part": "2",
+   "dur": 3.97,
+   "start": 13.25,
+   "anchor": "@Но самый",
+   "events": {
+    "raise": 1.93
+   },
+   "place": "roof",
+   "cam": [
+    -1106.7,
+    1791.3,
+    22.5
+   ],
+   "target": [
+    -620.0,
+    1560.0,
+    160.7
+   ],
+   "lens": 30,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b08",
+   "set": "sila",
+   "variant": "hurricane",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.73,
+   "start": 16.97,
+   "anchor": "@Он закрутил",
+   "events": {},
+   "place": "storm_sky",
+   "cam": [
+    -395.5,
+    3840.3,
+    272.6
+   ],
+   "target": [
+    -527.9,
+    1575.3,
+    101.4
+   ],
+   "lens": 47,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b09",
+   "set": "sila",
+   "variant": "wind",
+   "kind": "clip",
+   "part": "2",
+   "dur": 3.55,
+   "start": 19.45,
+   "anchor": "@Ветер",
+   "events": {},
+   "place": "storm_st",
+   "cam": [
+    -564.4,
+    3487.9,
+    1.6
+   ],
+   "target": [
+    -1071.3,
+    3347.5,
+    16.1
+   ],
+   "lens": 25,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b10",
+   "set": "sila",
+   "variant": "eye",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.77,
+   "start": 22.75,
+   "anchor": "@Такой ураган",
+   "events": {},
+   "place": "storm_sky",
+   "cam": [
+    -395.5,
+    3840.3,
+    272.6
+   ],
+   "target": [
+    -527.9,
+    1575.3,
+    101.4
+   ],
+   "lens": 47,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b11",
+   "set": "sila",
+   "variant": "power",
+   "kind": "clip",
+   "part": "2",
+   "dur": 4.17,
+   "start": 25.27,
+   "anchor": "@в 200",
+   "events": {}
+  },
+  {
+   "id": "b12",
+   "set": "sila",
+   "variant": "dropped",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.85,
+   "start": 29.19,
+   "anchor": "@Меня высадили",
+   "events": {
+    "edge": 1.73
+   },
+   "place": "storm_ave",
+   "cam": [
+    -492.9,
+    2522.7,
+    1.7
+   ],
+   "target": [
+    -450.8,
+    2013.0,
+    44.6
+   ],
+   "lens": 24,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b13",
+   "set": "sila",
+   "variant": "walk",
+   "kind": "clip",
+   "part": "2",
+   "dur": 3.81,
+   "start": 31.79,
+   "anchor": "@Я пошёл",
+   "events": {
+    "calm": 2.79
+   },
+   "place": "storm_ave",
+   "cam": [
+    -492.9,
+    2522.7,
+    1.7
+   ],
+   "target": [
+    -450.8,
+    2013.0,
+    44.6
+   ],
+   "lens": 24,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b14",
+   "set": "sila",
+   "variant": "hand",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.27,
+   "start": 35.35,
+   "anchor": "@Я положил",
+   "events": {
+    "touch": 1.03
+   },
+   "place": "storm_ave",
+   "cam": [
+    -492.9,
+    2522.7,
+    1.7
+   ],
+   "target": [
+    -450.8,
+    2013.0,
+    44.6
+   ],
+   "lens": 24,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b15",
+   "set": "sila",
+   "variant": "vanish",
+   "kind": "clip",
+   "part": "2",
+   "dur": 1.43,
+   "start": 37.37,
+   "anchor": "@И ураган",
+   "events": {
+    "gone": 0.42
+   },
+   "place": "storm_ave",
+   "cam": [
+    -492.9,
+    2522.7,
+    1.7
+   ],
+   "target": [
+    -450.8,
+    2013.0,
+    44.6
+   ],
+   "lens": 24,
+   "preset": "day",
+   "over": {
+    "sun_E": 0.9,
+    "zen": "#59626C",
+    "mid": "#7C858D",
+    "fog": "#7F878E",
+    "dens": 0.0011,
+    "fogh": 900.0,
+    "lit": 0.2,
+    "street": 0.6,
+    "neon": 0.7,
+    "glow": 0.0,
+    "exposure": 0.35,
+    "traffic": 0.3
+   }
+  },
+  {
+   "id": "b16",
+   "set": "sila",
+   "variant": "queue",
+   "kind": "clip",
+   "part": "2",
+   "dur": 3.27,
+   "start": 38.55,
+   "anchor": "@Теперь",
+   "events": {},
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "b17",
+   "set": "sila",
+   "variant": "struggle",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.33,
+   "start": 41.57,
+   "anchor": "@Те кто",
+   "events": {},
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "b18",
+   "set": "sila",
+   "variant": "calm",
+   "kind": "clip",
+   "part": "2",
+   "dur": 5.15,
+   "start": 43.65,
+   "anchor": "@Самая нужная",
+   "events": {
+    "touch": 0.57,
+    "still": 2.55
+   },
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "b19",
+   "set": "sila",
+   "variant": "you",
+   "kind": "clip",
+   "part": "2",
+   "dur": 2.01,
+   "start": 48.55,
+   "anchor": "@А какую",
+   "events": {
+    "turn": 0.53
+   },
+   "place": "home",
+   "cam": [
+    1374.4,
+    -1037.6,
+    1.6
+   ],
+   "target": [
+    1008.9,
+    -1041.3,
+    18.2
+   ],
+   "lens": 24,
+   "preset": "day"
+  },
+  {
+   "id": "b20",
+   "set": "sila",
+   "variant": "cta",
+   "kind": "clip",
+   "part": "2",
+   "dur": 6.5,
+   "start": 50.31,
+   "anchor": "@Кстати",
+   "events": {},
+   "place": "gold",
+   "cam": [
+    -1179.9,
+    3937.9,
+    178.8
+   ],
+   "target": [
+    147.8,
+    1928.9,
+    130.3
+   ],
+   "lens": 47,
+   "preset": "golden"
+  }
+ ]
+}
