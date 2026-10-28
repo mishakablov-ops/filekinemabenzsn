@@ -50,6 +50,12 @@
 - **Тени от прозрачных эффектов (28.10.2026, `sposobnosti`):** тысячи движущихся полупрозрачных объектов (дождь, облака-сферы, ауры) отбрасывали тени, Eevee Next писал «Shadow buffer full» и считал кадр 70–124 с. Всем объектам с `BLENDED`-материалами `visible_shadow = False` и `eevee.shadow_pool_size = '1024'` (`projects/sposobnosti/blender/build_pc.py`, `_lighten_shadows`) — 3–5 с на кадр, картинка та же. Молнию (кривая с emission) прятать между вспышками (`hide_render`), иначе она чёрная черта в небе.
 - **Передача файлов на ПК:** после записи в `/mnt/project-files/` сверять md5 на ПК после `device_commit_files` — сетевой том иногда отдаёт прошлую версию файла.
 - **Задачи PowerShell 5.1:** `.ps1` с кириллицей сохранять в UTF-8 с BOM либо держать скрипт ASCII. Для `ffmpeg` в задачах дописывать `.runtime\bin` в начало `PATH`. JSON в аргументы `node` передавать через Python `subprocess` (`rs_stills.py`), иначе PowerShell съедает кавычки.
+- **Лог `render.py` в задачах** (28.10.2026, `sposobnosti`): не обрезать его `Select-Object -Last N` — при падении Remotion
+  остаётся только хвост стектрейса, а сама ошибка теряется. Отфильтровывать прогресс (`Rendered`, `Encoded`, `Bundling`,
+  `Copying public`) и строки `at …`. Рендер сразу после пакета стоп-кадров один раз упал в компоновщике Remotion
+  (Rust panic), повторный запуск прошёл без изменений.
+- **Длинные числа в `Counter`:** при `size` 180 «8 000 000 000» шире кадра (1246 px), «300 000 000» — 1108 px;
+  брать 128 и 150. Единицу `StatSlam` вида «км/ч» писать с word joiner (`км/\u2060ч`), иначе «ч» уходит на новую строку.
 - **Replicate из Python `urllib`:**
   - нужен заголовок `User-Agent`, иначе Cloudflare отвечает 1010;
   - для community-моделей (resemble-ai/…) вызывать `POST /v1/predictions` с `version`, а не `/models/.../predictions`.

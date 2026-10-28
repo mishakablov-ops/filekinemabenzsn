@@ -25,7 +25,7 @@ if ($miss.Count) { "MISSING " + ($miss -join ' '); exit 1 }
 # covers: the reel's own frame with the hook caption, cropped 3:4 like render.py does, 540x720
 Push-Location "$rs\engine"
 $env:KINEMA_RS = $rs
-foreach ($c in @(@(1, '2.9'), @(2, '1.6'))) {
+foreach ($c in @(@(1, '2.9'), @(2, '1.25'))) {
   $n = $c[0]; $o = "$rs\engine\out\sp$n" + "_cover"
   & $py -I "$P\tools\rs_stills.py" "sposobnosti-$n" $o --seconds $c[1] --scale 1 2>&1 | ForEach-Object { "$_" } | Select-Object -Last 2
   $png = Get-ChildItem "$o\f*.png" | Select-Object -First 1

@@ -76,7 +76,7 @@ scenes1 = [
     # --- hook: the night of the gifts, the Earth, a street full of powers
     s1("a01", 0, "cut", zoom=(1.0, 1.04)),
     s1("a02", "@Каждый", "zoom"),
-    s1("a03", "@8", "blur", layers=[{**counter(8000000000, "суперсила|суперсилы|суперсил"), "at": "@8", "pos": "lower"}]),
+    s1("a03", "@8", "blur", layers=[{**counter(8000000000, "суперсила|суперсилы|суперсил", size=128), "at": "@8", "pos": "lower"}]),
     # --- the morning at home: the neighbour flies past the window, granny lifts a car, the courier teleports
     s1("a04", "@Я выглянул", "dip"),
     s1("a05", "@Сосед сверху", "whip"),
@@ -146,11 +146,11 @@ scenes2 = [
     s2("b04", "@Невидимки", "whip"),
     s2("b05", "@Парень", "push", camera={"move": "still", "shakeAt": ["@света"]}),
     s2("b06", "@А в одной", "cut", camera={"move": "still", "shakeAt": ["@одной+0.2"]},
-       layers=[{**counter(300000000, "вольт|вольта|вольт в молнии"), "at": "@молнии+0.3", "pos": "lower"}]),
+       layers=[{**counter(300000000, "вольт|вольта|вольт в молнии", size=150), "at": "@молнии+0.3", "pos": "lower"}]),
     # --- the hurricane: the weather man, 250 km/h, x200 the power of all power stations
     s2("b07", "@Но самый", "dip"),
     s2("b08", "@Он закрутил", "zoom"),
-    s2("b09", "@Ветер", "whip", layers=[{"block": "StatSlam", "at": "@больше+0.1", "props": {"value": "250", "unit": "км/ч",
+    s2("b09", "@Ветер", "whip", layers=[{"block": "StatSlam", "at": "@больше+0.1", "props": {"value": "250", "unit": "км/\u2060ч",  # word joiner: «км/» and «ч» wrapped apart
                                                                                           "label": "скорость ветра"},
                                           "pos": {"preset": "stage", "dy": 160}}]),
     s2("b10", "@Такой ураган", "blur"),

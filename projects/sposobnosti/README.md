@@ -45,7 +45,11 @@
 3. Стоп-кадры и клипы — задачи воркера: `python3 tools/mkjob.py NAME still|clip SCALE shot[:t[:tag]] …`
    (`blender/build_pc.py`: `--ts 0.3,0.85` — несколько кадров одной сборки; `--mp4 … --fps 30 --samples 24` — клип).
 4. Клипы `a*` → `engine/public/projects/sposobnosti-1/clips/`, `b*` → `sposobnosti-2/clips/`.
-5. `python3 engine/storyboard.py` → `spec.json` обеих частей, затем `render.py sposobnosti-1` и `sposobnosti-2`, `qa.py`.
+5. `python3 engine/storyboard.py` → `spec.json` обеих частей. Обложки частей — кадр самого ролика на хуке, 3:4
+   (`jobs/415_assemble.ps1`: часть 1 — 2,9 с, часть 2 — 1,25 с, `jobs/bg_416_cover2.ps1`; на 1,6 с уже идёт переход в b02),
+   в `engine/public/brand/tiles/cover-sposobnosti-{1,2}.jpg` — они же плитки «ЧАСТЬ 2» в профиле на концовках.
+6. Проверка наложений по стоп-кадрам раз в секунду (`tools/rs_stills.py … --every 1 --qa --sheet`), затем
+   `render.py sposobnosti-1` и `sposobnosti-2` (`jobs/418_render_final.ps1`, сам вызывает `qa.py`).
 
 ## Структура
 
