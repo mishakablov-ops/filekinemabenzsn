@@ -24,11 +24,10 @@ if ($miss.Count) { "MISSING " + ($miss -join ' '); exit 1 }
 
 # covers: the reel's own frame with the hook caption, cropped 3:4 like render.py does, 540x720
 Push-Location "$rs\engine"
-# Windows PowerShell 5.1 drops bare quotes in native arguments: \" survives as a quote for node
-function Props($n) { return '{\"project\":\"sposobnosti-' + $n + '\",\"fps\":30}' }
+$env:KINEMA_RS = $rs
 foreach ($c in @(@(1, '2.9'), @(2, '1.6'))) {
-  $n = $c[0]; $props = Props $n; $o = "$rs\engine\out\sp$n" + "_cover"
-  & node tools/stills.mjs --comp Reel --props $props --seconds $c[1] --scale 1 --out $o 2>&1 | ForEach-Object { "$_" } | Select-Object -Last 2
+  $n = $c[0]; $o = "$rs\engine\out\sp$n" + "_cover"
+  & $py -I "$P\tools\rs_stills.py" "sposobnosti-$n" $o --seconds $c[1] --scale 1 2>&1 | ForEach-Object { "$_" } | Select-Object -Last 2
   $png = Get-ChildItem "$o\f*.png" | Select-Object -First 1
   if ($png) {
     & $ff -hide_banner -loglevel error -y -i $png.FullName -vf "crop=1080:1440:0:240,scale=540:720" -q:v 2 "$pub\brand\tiles\cover-sposobnosti-$n.jpg"
@@ -37,8 +36,7 @@ foreach ($c in @(@(1, '2.9'), @(2, '1.6'))) {
 }
 # overlap QA on stills, one per second
 foreach ($n in 1, 2) {
-  $props = Props $n
-  & node tools/stills.mjs --comp Reel --props $props --every 1 --scale 0.4 --qa --out "$rs\engine\out\sp$n`_st" --sheet "$P\qa\sp$n`_sheet.png" 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'QA|sheet' }
+  & $py -I "$P\tools\rs_stills.py" "sposobnosti-$n" "$rs\engine\out\sp$n`_st" --every 1 --scale 0.4 --qa --sheet "$P\qa\sp$n`_sheet.png" 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -match 'QA|sheet' }
 }
 Pop-Location
 
