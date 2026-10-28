@@ -1,1 +1,2 @@
 category,source,name,path,license,author,url,added,used_in,notes
+people,own,sposobnosti-hero,assets3d/people/own/sposobnosti-hero/hero_rig.blend,own (generated for the channel),aipollon (nano-banana-pro + hyper3d/rodin by the user's reference sheets),,2026-10-28,sposobnosti,"главный герой «Каждому по способности»: чиби-парень в чёрном худи, 1.55 м, скелет HeroRig (projects/sposobnosti/hero/rig_hero.py), позы — blender/sets/sila_hero.py"

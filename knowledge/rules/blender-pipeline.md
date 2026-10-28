@@ -47,7 +47,18 @@
 - **Remotion `OffthreadVideo`:** ошибка «No frame found at position» решается так:
   1. клипы кодировать с `-bf 0 -g 30 -keyint_min 30`;
   2. в `engine/remotion.config.ts` добавить `Config.setOffthreadVideoCacheSizeInBytes(3 GiB)` — уже добавлено.
+- **Тени от прозрачных эффектов (28.10.2026, `sposobnosti`):** тысячи движущихся полупрозрачных объектов (дождь, облака-сферы, ауры) отбрасывали тени, Eevee Next писал «Shadow buffer full» и считал кадр 70–124 с. Всем объектам с `BLENDED`-материалами `visible_shadow = False` и `eevee.shadow_pool_size = '1024'` (`projects/sposobnosti/blender/build_pc.py`, `_lighten_shadows`) — 3–5 с на кадр, картинка та же. Молнию (кривая с emission) прятать между вспышками (`hide_render`), иначе она чёрная черта в небе.
+- **Передача файлов на ПК:** после записи в `/mnt/project-files/` сверять md5 на ПК после `device_commit_files` — сетевой том иногда отдаёт прошлую версию файла.
 - **Задачи PowerShell 5.1:** `.ps1` с кириллицей сохранять в UTF-8 с BOM либо держать скрипт ASCII. Для `ffmpeg` в задачах дописывать `.runtime\bin` в начало `PATH`. JSON в аргументы `node` передавать через Python `subprocess` (`rs_stills.py`), иначе PowerShell съедает кавычки.
+- **Лог `render.py` в задачах** (28.10.2026, `sposobnosti`): не обрезать его `Select-Object -Last N` — при падении Remotion
+  остаётся только хвост стектрейса, а сама ошибка теряется. Отфильтровывать прогресс (`Rendered`, `Encoded`, `Bundling`,
+  `Copying public`) и строки `at …`. Рендер сразу после пакета стоп-кадров один раз упал в компоновщике Remotion
+  (Rust panic), повторный запуск прошёл без изменений.
+- **Крупные числа и кнопки TikTok** (28.10.2026, `sposobnosti`): ниже y 900 правые 140 px заняты кнопками
+  (`references/storyboard.md`), а QA движка этого не ловит, только выход за кадр. В `Counter` при `size` 180
+  «8 000 000 000» шире кадра (1246 px), «300 000 000» — 1108 px; в кадр и мимо кнопок влезают при 110 и 125.
+  В `StatSlam` единица рядом с «250» уезжала под кнопки и ещё переносилась («км/» + «ч»), поэтому «км/ч» ушло в `label`.
+  «×200» сжимать через `pos: {scale: 0.9, dx: -20}`. Проверять по кадру готового MP4.
 - **Replicate из Python `urllib`:**
   - нужен заголовок `User-Agent`, иначе Cloudflare отвечает 1010;
   - для community-моделей (resemble-ai/…) вызывать `POST /v1/predictions` с `version`, а не `/models/.../predictions`.
