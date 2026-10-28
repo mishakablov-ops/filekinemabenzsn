@@ -47,6 +47,8 @@
 - **Remotion `OffthreadVideo`:** ошибка «No frame found at position» решается так:
   1. клипы кодировать с `-bf 0 -g 30 -keyint_min 30`;
   2. в `engine/remotion.config.ts` добавить `Config.setOffthreadVideoCacheSizeInBytes(3 GiB)` — уже добавлено.
+- **Тени от прозрачных эффектов (28.10.2026, `sposobnosti`):** тысячи движущихся полупрозрачных объектов (дождь, облака-сферы, ауры) отбрасывали тени, Eevee Next писал «Shadow buffer full» и считал кадр 70–124 с. Всем объектам с `BLENDED`-материалами `visible_shadow = False` и `eevee.shadow_pool_size = '1024'` (`projects/sposobnosti/blender/build_pc.py`, `_lighten_shadows`) — 3–5 с на кадр, картинка та же. Молнию (кривая с emission) прятать между вспышками (`hide_render`), иначе она чёрная черта в небе.
+- **Передача файлов на ПК:** после записи в `/mnt/project-files/` сверять md5 на ПК после `device_commit_files` — сетевой том иногда отдаёт прошлую версию файла.
 - **Задачи PowerShell 5.1:** `.ps1` с кириллицей сохранять в UTF-8 с BOM либо держать скрипт ASCII. Для `ffmpeg` в задачах дописывать `.runtime\bin` в начало `PATH`. JSON в аргументы `node` передавать через Python `subprocess` (`rs_stills.py`), иначе PowerShell съедает кавычки.
 - **Replicate из Python `urllib`:**
   - нужен заголовок `User-Agent`, иначе Cloudflare отвечает 1010;
