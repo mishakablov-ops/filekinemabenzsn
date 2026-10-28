@@ -1,0 +1,23 @@
+{
+ "name": "Aipollon",
+ "handle": "videopollon",
+ "badge": "",
+ "bio": "Возможность делать самые качественные инфоролики вместе с ИИ 👇🏻",
+ "link": "https://t.me/aipollonvideo",
+ "avatar": "brand/aipollon-avatar-hermes.png",
+ "tiles": [
+  "brand/tiles/sposobnosti-2.jpg",
+  "brand/tiles/sposobnosti-1.jpg",
+  "brand/tiles/kosmos-dlya-vseh-v2.jpg",
+  "brand/tiles/kosmos-dlya-vseh.jpg",
+  "brand/tiles/edinyi-yazyk.jpg",
+  "brand/tiles/odin-yazyk.jpg",
+  "brand/tiles/fr-gibrid.jpg",
+  "brand/tiles/fr-test-1.jpg",
+  "brand/tiles/fr-test-1b.jpg",
+  "brand/tiles/fr-test-3.jpg",
+  "brand/tiles/fr-test-2.jpg",
+  "brand/tiles/mir-bez-granic.jpg"
+ ],
+ "cta": "Кстати, этот ролик собрал агент. Хочешь так же? Тебе в шапку профиля."
+}
