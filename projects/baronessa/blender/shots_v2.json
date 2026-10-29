@@ -1,0 +1,534 @@
+{
+ "fps": 30,
+ "end": 145.58,
+ "shots": [
+  {
+   "id": "d01",
+   "set": "bar_v2",
+   "variant": "hook",
+   "kind": "clip",
+   "dur": 2.2,
+   "start": 0.0,
+   "anchor": 0.0,
+   "events": {},
+   "mouth": [
+    [
+     0.0,
+     1.5
+    ]
+   ],
+   "voice_offset": 0.0
+  },
+  {
+   "id": "d02",
+   "set": "bar_v2",
+   "variant": "night_map",
+   "kind": "clip",
+   "dur": 4.21,
+   "start": 1.95,
+   "anchor": "@За одну ночь",
+   "events": {}
+  },
+  {
+   "id": "d03",
+   "set": "bar_v2",
+   "variant": "coupon_rain",
+   "kind": "clip",
+   "dur": 5.27,
+   "start": 5.91,
+   "anchor": "@Без единого",
+   "events": {}
+  },
+  {
+   "id": "d04",
+   "set": "bar_v2",
+   "variant": "hq_ext",
+   "kind": "clip",
+   "dur": 4.61,
+   "start": 10.93,
+   "anchor": "@Год сорок",
+   "events": {}
+  },
+  {
+   "id": "d05",
+   "set": "bar_v2",
+   "variant": "hq_map",
+   "kind": "clip",
+   "dur": 5.71,
+   "start": 15.29,
+   "anchor": "@Ставка",
+   "events": {},
+   "mouth": [
+    [
+     5.53,
+     5.71
+    ]
+   ],
+   "voice_offset": 15.29
+  },
+  {
+   "id": "d06",
+   "set": "bar_v2",
+   "variant": "hq_chek",
+   "kind": "clip",
+   "dur": 4.11,
+   "start": 20.75,
+   "anchor": "@Товарищи",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     3.33
+    ]
+   ],
+   "voice_offset": 20.75
+  },
+  {
+   "id": "d07",
+   "set": "bar_v2",
+   "variant": "hq_faint",
+   "kind": "clip",
+   "dur": 2.97,
+   "start": 24.61,
+   "anchor": "@Один генерал",
+   "events": {
+    "faint": 1.43
+   }
+  },
+  {
+   "id": "d08",
+   "set": "bar_v2",
+   "variant": "army",
+   "kind": "clip",
+   "dur": 4.71,
+   "start": 27.33,
+   "anchor": "@Через сутки",
+   "events": {}
+  },
+  {
+   "id": "d09",
+   "set": "bar_v2",
+   "variant": "identical",
+   "kind": "clip",
+   "dur": 4.29,
+   "start": 31.79,
+   "anchor": "@Все одинаковые",
+   "events": {}
+  },
+  {
+   "id": "d10",
+   "set": "bar_v2",
+   "variant": "tank",
+   "kind": "clip",
+   "dur": 3.31,
+   "start": 35.83,
+   "anchor": "@Танки",
+   "events": {}
+  },
+  {
+   "id": "d11",
+   "set": "bar_v2",
+   "variant": "tank_queue",
+   "kind": "clip",
+   "dur": 3.41,
+   "start": 38.89,
+   "anchor": "@Очередь на танк",
+   "events": {},
+   "mouth": [
+    [
+     3.23,
+     3.41
+    ]
+   ],
+   "voice_offset": 38.89
+  },
+  {
+   "id": "d12",
+   "set": "bar_v2",
+   "variant": "load",
+   "kind": "clip",
+   "dur": 2.67,
+   "start": 42.05,
+   "anchor": "@Пулемёты",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     2.15
+    ]
+   ],
+   "voice_offset": 42.05
+  },
+  {
+   "id": "d13",
+   "set": "bar_v2",
+   "variant": "castle",
+   "kind": "clip",
+   "dur": 3.97,
+   "start": 44.47,
+   "anchor": "@Первый удар",
+   "events": {}
+  },
+  {
+   "id": "d13b",
+   "set": "bar_v2",
+   "variant": "strike_map",
+   "kind": "clip",
+   "dur": 3.27,
+   "start": 48.19,
+   "anchor": "@Стрелка",
+   "events": {}
+  },
+  {
+   "id": "d14",
+   "set": "bar_v2",
+   "variant": "heels",
+   "kind": "clip",
+   "dur": 2.53,
+   "start": 51.21,
+   "anchor": "@Медленно",
+   "events": {},
+   "mouth": [
+    [
+     2.35,
+     2.53
+    ]
+   ],
+   "voice_offset": 51.21
+  },
+  {
+   "id": "d15",
+   "set": "bar_v2",
+   "variant": "fire",
+   "kind": "clip",
+   "dur": 1.35,
+   "start": 53.49,
+   "anchor": "@Огонь",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     0.77
+    ]
+   ],
+   "voice_offset": 53.49
+  },
+  {
+   "id": "d16",
+   "set": "bar_v2",
+   "variant": "volley",
+   "kind": "clip",
+   "dur": 2.23,
+   "start": 54.59,
+   "anchor": "@Шесть тысяч",
+   "events": {}
+  },
+  {
+   "id": "d17",
+   "set": "bar_v2",
+   "variant": "wallet",
+   "kind": "clip",
+   "dur": 3.41,
+   "start": 56.57,
+   "anchor": "@У врага",
+   "events": {},
+   "mouth": [
+    [
+     3.23,
+     3.41
+    ]
+   ],
+   "voice_offset": 56.57
+  },
+  {
+   "id": "d18",
+   "set": "bar_v2",
+   "variant": "chek_gate",
+   "kind": "clip",
+   "dur": 1.97,
+   "start": 59.73,
+   "anchor": "@А чек",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     1.19
+    ]
+   ],
+   "voice_offset": 59.73
+  },
+  {
+   "id": "d19",
+   "set": "bar_v2",
+   "variant": "surrender",
+   "kind": "clip",
+   "dur": 3.91,
+   "start": 61.45,
+   "anchor": "@Графство сдаётся",
+   "events": {
+    "give": 0.69
+   }
+  },
+  {
+   "id": "d20",
+   "set": "bar_v2",
+   "variant": "siege",
+   "kind": "clip",
+   "dur": 4.13,
+   "start": 65.11,
+   "anchor": "@Крепость Эрмес",
+   "events": {}
+  },
+  {
+   "id": "d21",
+   "set": "bar_v2",
+   "variant": "balloon",
+   "kind": "clip",
+   "dur": 3.23,
+   "start": 68.99,
+   "anchor": "@Враг предлагает",
+   "events": {},
+   "mouth": [
+    [
+     3.05,
+     3.23
+    ]
+   ],
+   "voice_offset": 68.99
+  },
+  {
+   "id": "d22",
+   "set": "bar_v2",
+   "variant": "insult",
+   "kind": "clip",
+   "dur": 4.05,
+   "start": 71.97,
+   "anchor": "@Минус пятьдесят#2",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     3.11
+    ]
+   ],
+   "voice_offset": 71.97
+  },
+  {
+   "id": "d23",
+   "set": "bar_v2",
+   "variant": "boutique",
+   "kind": "clip",
+   "dur": 7.03,
+   "start": 75.77,
+   "anchor": "@На сорок первый",
+   "events": {}
+  },
+  {
+   "id": "d24",
+   "set": "bar_v2",
+   "variant": "assault",
+   "kind": "clip",
+   "dur": 6.41,
+   "start": 82.55,
+   "anchor": "@Эрмесовка",
+   "events": {}
+  },
+  {
+   "id": "d24b",
+   "set": "bar_v2",
+   "variant": "army",
+   "kind": "clip",
+   "dur": 4.29,
+   "start": 88.71,
+   "anchor": "@Баронессы идут",
+   "events": {}
+  },
+  {
+   "id": "d25",
+   "set": "bar_v2",
+   "variant": "wall_cap",
+   "kind": "clip",
+   "dur": 3.43,
+   "start": 92.75,
+   "anchor": "@Стена тоже",
+   "events": {}
+  },
+  {
+   "id": "d26",
+   "set": "bar_v2",
+   "variant": "parachutes",
+   "kind": "clip",
+   "dur": 6.93,
+   "start": 95.93,
+   "anchor": "@С неба",
+   "events": {},
+   "mouth": [
+    [
+     6.75,
+     6.93
+    ]
+   ],
+   "voice_offset": 95.93
+  },
+  {
+   "id": "d27",
+   "set": "bar_v2",
+   "variant": "no_retreat",
+   "kind": "clip",
+   "dur": 3.29,
+   "start": 102.61,
+   "anchor": "@Ни шагу",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     2.69
+    ]
+   ],
+   "voice_offset": 102.61
+  },
+  {
+   "id": "d28",
+   "set": "bar_v2",
+   "variant": "city_gives",
+   "kind": "clip",
+   "dur": 7.57,
+   "start": 105.65,
+   "anchor": "@Город сдаёт",
+   "events": {
+    "keys": 2.99,
+    "cash": 1.61,
+    "bags": 4.37,
+    "size": 5.27
+   }
+  },
+  {
+   "id": "d29",
+   "set": "bar_v2",
+   "variant": "map_orange",
+   "kind": "clip",
+   "dur": 3.77,
+   "start": 112.97,
+   "anchor": "@К утру",
+   "events": {}
+  },
+  {
+   "id": "d29b",
+   "set": "bar_v2",
+   "variant": "map_all",
+   "kind": "clip",
+   "dur": 6.25,
+   "start": 116.49,
+   "anchor": "@Луивиттония",
+   "events": {}
+  },
+  {
+   "id": "d30",
+   "set": "bar_v2",
+   "variant": "market",
+   "kind": "clip",
+   "dur": 2.83,
+   "start": 122.49,
+   "anchor": "@Кроме рынка",
+   "events": {},
+   "mouth": [
+    [
+     2.65,
+     2.83
+    ]
+   ],
+   "voice_offset": 122.49
+  },
+  {
+   "id": "d31",
+   "set": "bar_v2",
+   "variant": "textbook",
+   "kind": "clip",
+   "dur": 3.85,
+   "start": 125.07,
+   "anchor": "@Запишите",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     3.27
+    ]
+   ],
+   "voice_offset": 125.07
+  },
+  {
+   "id": "d32",
+   "set": "bar_v2",
+   "variant": "parade",
+   "kind": "clip",
+   "dur": 3.93,
+   "start": 128.67,
+   "anchor": "@Так родилась",
+   "events": {}
+  },
+  {
+   "id": "d33",
+   "set": "bar_v2",
+   "variant": "strict1",
+   "kind": "clip",
+   "dur": 1.37,
+   "start": 132.35,
+   "anchor": "@Строгая",
+   "events": {}
+  },
+  {
+   "id": "d34",
+   "set": "bar_v2",
+   "variant": "strict2",
+   "kind": "clip",
+   "dur": 1.21,
+   "start": 133.47,
+   "anchor": "@Полная",
+   "events": {}
+  },
+  {
+   "id": "d35",
+   "set": "bar_v2",
+   "variant": "strict3",
+   "kind": "clip",
+   "dur": 2.45,
+   "start": 134.43,
+   "anchor": "@Непобедимая",
+   "events": {}
+  },
+  {
+   "id": "d36",
+   "set": "bar_v2",
+   "variant": "cta",
+   "kind": "clip",
+   "dur": 5.69,
+   "start": 136.63,
+   "anchor": "@Если поржал",
+   "events": {},
+   "mouth": [
+    [
+     5.51,
+     5.69
+    ]
+   ],
+   "voice_offset": 136.63
+  },
+  {
+   "id": "d37",
+   "set": "bar_v2",
+   "variant": "dismiss",
+   "kind": "clip",
+   "dur": 3.76,
+   "start": 142.07,
+   "anchor": "@Свободны",
+   "events": {},
+   "mouth": [
+    [
+     0.07,
+     1.11
+    ]
+   ],
+   "voice_offset": 142.07
+  }
+ ]
+}

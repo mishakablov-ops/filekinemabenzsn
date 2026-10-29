@@ -1,0 +1,397 @@
+{
+ "fps": 30,
+ "end": 103.38,
+ "shots": [
+  {
+   "id": "c01",
+   "set": "bar_sets",
+   "variant": "album",
+   "kind": "clip",
+   "dur": 3.1,
+   "start": 0.0,
+   "anchor": 0.0,
+   "events": {}
+  },
+  {
+   "id": "c02",
+   "set": "bar_sets",
+   "variant": "studio",
+   "kind": "clip",
+   "dur": 3.55,
+   "start": 2.85,
+   "anchor": "@А теперь",
+   "events": {
+    "flash": 1.85
+   }
+  },
+  {
+   "id": "c03",
+   "set": "bar_sets",
+   "variant": "street1918",
+   "kind": "clip",
+   "dur": 5.25,
+   "start": 6.15,
+   "anchor": "@1918",
+   "events": {}
+  },
+  {
+   "id": "c04",
+   "set": "bar_sets",
+   "variant": "crib",
+   "kind": "clip",
+   "dur": 2.25,
+   "start": 11.15,
+   "anchor": "@Её первое слово",
+   "events": {}
+  },
+  {
+   "id": "c05",
+   "set": "bar_sets",
+   "variant": "dustbag",
+   "kind": "clip",
+   "dur": 2.61,
+   "start": 13.15,
+   "anchor": "@Её первое слово#2",
+   "events": {
+    "word": 1.61
+   }
+  },
+  {
+   "id": "c06",
+   "set": "bar_sets",
+   "variant": "zipper",
+   "kind": "clip",
+   "dur": 5.31,
+   "start": 15.51,
+   "anchor": "@В 5",
+   "events": {
+    "zip": 3.19
+   }
+  },
+  {
+   "id": "c07",
+   "set": "bar_sets",
+   "variant": "queue",
+   "kind": "clip",
+   "dur": 4.63,
+   "start": 20.57,
+   "anchor": "@В 10",
+   "events": {}
+  },
+  {
+   "id": "c08",
+   "set": "bar_sets",
+   "variant": "crate",
+   "kind": "clip",
+   "dur": 3.63,
+   "start": 24.95,
+   "anchor": "@Взрослой",
+   "events": {
+    "open": 1.45
+   }
+  },
+  {
+   "id": "c09",
+   "set": "bar_sets",
+   "variant": "gun",
+   "kind": "clip",
+   "dur": 3.17,
+   "start": 28.33,
+   "anchor": "@Пулемёт",
+   "events": {
+    "fire": 1.19
+   }
+  },
+  {
+   "id": "c10",
+   "set": "bar_sets",
+   "variant": "tags",
+   "kind": "clip",
+   "dur": 2.41,
+   "start": 31.25,
+   "anchor": "@600",
+   "events": {}
+  },
+  {
+   "id": "c11",
+   "set": "bar_sets",
+   "variant": "sale",
+   "kind": "clip",
+   "dur": 2.87,
+   "start": 33.41,
+   "anchor": "@Ни одной",
+   "events": {}
+  },
+  {
+   "id": "c12",
+   "set": "bar_sets",
+   "variant": "castle",
+   "kind": "clip",
+   "dur": 3.03,
+   "start": 36.03,
+   "anchor": "@Первым",
+   "events": {}
+  },
+  {
+   "id": "c13",
+   "set": "bar_sets",
+   "variant": "gates",
+   "kind": "clip",
+   "dur": 3.11,
+   "start": 38.81,
+   "anchor": "@Баронесса не",
+   "events": {}
+  },
+  {
+   "id": "c14",
+   "set": "bar_sets",
+   "variant": "check",
+   "kind": "clip",
+   "dur": 1.91,
+   "start": 41.67,
+   "anchor": "@А чек",
+   "events": {}
+  },
+  {
+   "id": "c15",
+   "set": "bar_sets",
+   "variant": "surrender",
+   "kind": "clip",
+   "dur": 2.55,
+   "start": 43.33,
+   "anchor": "@Графство сдалось",
+   "events": {
+    "give": 0.81
+   }
+  },
+  {
+   "id": "c16",
+   "set": "bar_sets",
+   "variant": "fortress",
+   "kind": "clip",
+   "dur": 2.05,
+   "start": 45.63,
+   "anchor": "@Потом",
+   "events": {}
+  },
+  {
+   "id": "c17",
+   "set": "bar_sets",
+   "variant": "calendar",
+   "kind": "clip",
+   "dur": 4.25,
+   "start": 47.43,
+   "anchor": "@40",
+   "events": {}
+  },
+  {
+   "id": "c18",
+   "set": "bar_sets",
+   "variant": "balloon",
+   "kind": "clip",
+   "dur": 2.45,
+   "start": 51.43,
+   "anchor": "@Скидку в",
+   "events": {}
+  },
+  {
+   "id": "c19",
+   "set": "bar_sets",
+   "variant": "wall",
+   "kind": "clip",
+   "dur": 1.87,
+   "start": 53.63,
+   "anchor": "@Мы не",
+   "events": {}
+  },
+  {
+   "id": "c20",
+   "set": "bar_sets",
+   "variant": "list",
+   "kind": "clip",
+   "dur": 1.91,
+   "start": 55.25,
+   "anchor": "@Только лист",
+   "events": {
+    "unroll": 0.25
+   }
+  },
+  {
+   "id": "c21",
+   "set": "bar_sets",
+   "variant": "salecity",
+   "kind": "clip",
+   "dur": 2.09,
+   "start": 56.91,
+   "anchor": "@А в год",
+   "events": {}
+  },
+  {
+   "id": "c22",
+   "set": "bar_sets",
+   "variant": "enter",
+   "kind": "clip",
+   "dur": 2.39,
+   "start": 58.75,
+   "anchor": "@она взяла",
+   "events": {}
+  },
+  {
+   "id": "c23",
+   "set": "bar_sets",
+   "variant": "keys",
+   "kind": "clip",
+   "dur": 3.57,
+   "start": 60.89,
+   "anchor": "@Город",
+   "events": {
+    "keys": 0.77,
+    "cash": 1.57,
+    "bags": 2.51
+   }
+  },
+  {
+   "id": "c24",
+   "set": "bar_sets",
+   "variant": "hall",
+   "kind": "clip",
+   "dur": 2.33,
+   "start": 64.21,
+   "anchor": "@Над ратушей",
+   "events": {
+    "raise": 0.95
+   }
+  },
+  {
+   "id": "c25",
+   "set": "bar_sets",
+   "variant": "flag",
+   "kind": "clip",
+   "dur": 2.67,
+   "start": 66.29,
+   "anchor": "@Оранжевый",
+   "events": {}
+  },
+  {
+   "id": "c26",
+   "set": "bar_sets",
+   "variant": "capital",
+   "kind": "clip",
+   "dur": 3.65,
+   "start": 68.71,
+   "anchor": "@Так родилась",
+   "events": {}
+  },
+  {
+   "id": "c27",
+   "set": "bar_sets",
+   "variant": "palace",
+   "kind": "clip",
+   "dur": 2.27,
+   "start": 72.11,
+   "anchor": "@Столица",
+   "events": {}
+  },
+  {
+   "id": "c28",
+   "set": "bar_sets",
+   "variant": "shrine",
+   "kind": "clip",
+   "dur": 1.95,
+   "start": 74.13,
+   "anchor": "@Святыня",
+   "events": {
+    "reveal": 0.79
+   }
+  },
+  {
+   "id": "c29",
+   "set": "bar_sets",
+   "variant": "motto",
+   "kind": "clip",
+   "dur": 3.07,
+   "start": 75.83,
+   "anchor": "@Девиз",
+   "events": {
+    "motto": 0.71
+   }
+  },
+  {
+   "id": "c30",
+   "set": "bar_sets",
+   "variant": "passport",
+   "kind": "clip",
+   "dur": 2.53,
+   "start": 78.65,
+   "anchor": "@У каждого",
+   "events": {}
+  },
+  {
+   "id": "c31",
+   "set": "bar_sets",
+   "variant": "passbag",
+   "kind": "clip",
+   "dur": 2.73,
+   "start": 80.93,
+   "anchor": "@А у каждого",
+   "events": {
+    "in": 0.97
+   }
+  },
+  {
+   "id": "c32",
+   "set": "bar_sets",
+   "variant": "swamp",
+   "kind": "clip",
+   "dur": 3.69,
+   "start": 83.41,
+   "anchor": "@Говорят",
+   "events": {}
+  },
+  {
+   "id": "c33",
+   "set": "bar_sets",
+   "variant": "fitting",
+   "kind": "clip",
+   "dur": 2.69,
+   "start": 86.85,
+   "anchor": "@Зашла",
+   "events": {
+    "in": 0.37,
+    "out": 1.47
+   }
+  },
+  {
+   "id": "c34",
+   "set": "bar_sets",
+   "variant": "promise",
+   "kind": "clip",
+   "dur": 3.95,
+   "start": 89.29,
+   "anchor": "@Я вернусь",
+   "events": {}
+  },
+  {
+   "id": "c38",
+   "set": "bar_sets",
+   "variant": "cta",
+   "kind": "clip",
+   "dur": 6.71,
+   "start": 92.99,
+   "anchor": "@Если",
+   "events": {}
+  },
+  {
+   "id": "c39",
+   "set": "bar_sets",
+   "variant": "approve",
+   "kind": "clip",
+   "dur": 4.18,
+   "start": 99.45,
+   "anchor": "@Баронесса одобряет",
+   "events": {
+    "nod": 0.83
+   }
+  }
+ ]
+}
