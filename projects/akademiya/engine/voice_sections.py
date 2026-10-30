@@ -57,6 +57,52 @@ EPISODES = {
          "Вечером он сел рядом и закашлялся. «Моя сила меня сжигает. А рядом с тобой я впервые за сорок лет отдыхаю». "
          "Следующая серия скоро в профиле."),
     ],
+    "4": [
+        ("s1", "The hook: a funny paradox told with a crooked smile; 'мусор' plain and a bit embarrassed, then "
+               "'И это был мой первый урок' with quiet pride.",
+         "Месяц в Академии героев я таскал мусор. И это был мой первый урок."),
+        ("s2", "Early morning, fresh and a little sleepy at first, then curious; numbers clear; the mentor's order "
+               "slower, low and calm.",
+         "Пять утра. Пляж за Академией. Тридцать лет туда свозили старое железо. Холодильники, машины, рельсы. "
+         "Мой круг гасит любую силу рядом. Сейчас он шесть метров. Эммет сказал: «Расчисти пляж. И сожми его до ладони»."),
+        ("s3", "Honest about failing, self-ironic, faster; CJ's mocking line '«Ноль тренируется!»' teasing and loud-ish; "
+               "the last sentence tired and funny.",
+         "Первую неделю я не мог сдвинуть холодильник. Си-Джей бегал мимо и смеялся. «Ноль тренируется!» "
+         "Круг не сжимался. Он просто гас. На десятый день я уснул прямо на песке."),
+        ("s4", "The turn: quiet respect, steady rhythm like work; 'Каждый день. В пять утра.' measured; "
+               "the last two sentences a growing, amazed joy.",
+         "Эммет ничего не сказал. Он встал рядом и тоже взял железо. Каждый день. В пять утра. "
+         "Через месяц пляж был пустой. А круг сжался до ладони."),
+        ("s5", "Warm and tender with a smile about Denise; the old man's words slower, kind, a little sad.",
+         "Дениз приходила каждое утро. Останавливала время, чтобы я поспал ещё десять секунд. "
+         "Эммет сказал: «Я тоже так начинал. Один. Сорок лет назад»."),
+        ("s6", "The mentor's rule, slow, low and wise, worth remembering; a clear beat before the last word.",
+         "«Правило второе. Повторение сильнее таланта»."),
+        ("s7", "Evening, a spark of challenge: CJ's words cocky and short; then the last sentence calm and friendly, "
+               "a simple invitation, no selling.",
+         "Вечером Си-Джей кинул мне перчатку. «Завтра учебный бой. Ты и я». Следующая серия скоро в профиле."),
+    ],
+    "5": [
+        ("s1", "The hook: a bold paradox with a sly grin; 'с нулём' plain; 'И выиграл за восемь секунд' quick and proud.",
+         "Против сильнейшего в Академии я вышел с нулём. И выиграл за восемь секунд."),
+        ("s2", "Brisk, setting the rules like before a game; the mentor's one word calm and low.",
+         "Учебный бой. Двое на двое. Я и Дениз против Си-Джея и Сезара. Надо сорвать флаг соперника. "
+         "Эммет сказал мне одно слово: «Думай»."),
+        ("s3", "Fast and painful, losing; CJ's line mocking; the stands laughing again said with a bitter smile.",
+         "Сезар забрал наш флаг за секунду. Си-Джей прижал меня к стене. «Где твоя сила, Ноль?» "
+         "Первый раунд проигран. Трибуны снова смеялись."),
+        ("s4", "The turn: calm and sly, slowing down on the trick, then quick and excited as it works; "
+               "'Восемь секунд' a short triumphant beat.",
+         "Во втором раунде я ничего не делал. Я просто поднял ладонь. Си-Джей решил, что я погашу его силу. "
+         "Он замер. Сезар кинулся его прикрывать. А Дениз остановила время. И взяла их флаг. Восемь секунд."),
+        ("s5", "Warm, friends after the fight; CJ's line gruff but respectful; the last sentence touched.",
+         "Си-Джей подошёл и протянул руку. «В следующий раз я не поверю». Дениз засмеялась первой. "
+         "А Эммет на трибуне впервые улыбнулся."),
+        ("s6", "The mentor's rule, slow, low and wise, worth remembering.",
+         "«Правило третье. Противник решает за полсекунды. Покажи ему то, что нужно тебе»."),
+        ("s7", "Night, sudden unease, quieter and slower; then the last sentence calm and friendly, no selling.",
+         "А ночью на стене Академии кто-то выжег «НОЛЬ». Следующая серия скоро в профиле."),
+    ],
 }
 
 

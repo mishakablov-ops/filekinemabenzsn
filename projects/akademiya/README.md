@@ -85,7 +85,8 @@ Drive (5002 поста за 2021–2026, тексты разобраны 29.10.2
 akademiya/
   README.md, script-3.md, script-4.md, script-5.md
   blender/  shots.json (из tools/build_timeline.py); sets/: akad.py (небо, Академия, арена, табло, голем),
-            akad_e3.py (сцены серии 3), cast.py (low-poly друзья: загрузка GLB, кости под позы героя)
+            akad_e3.py (сцены серии 3), akad_e4.py (пляж с металлоломом и сцены серии 4),
+            cast.py (low-poly друзья: загрузка GLB, кости под позы героя); shots-4.json и дальше — по серии
   engine/   voice_sections.py (голос по секциям), storyboard.py (spec.json для KINEMA)
   tools/    build_timeline.py (сцены по словам голоса), mkjob.py (задачи рендера для воркера)
   jobs/     задачи воркера 610–…
@@ -113,3 +114,7 @@ akademiya/
   - Эммет прыгает с трибуны;
   - вокруг Эммета вместо «яиц» сидят зрители people2.
   - Задачи 613 (29 клипов) и 614 (сборка, QA, MP4) поставлены в очередь.
+- 30.10.2026 — заготовка серии 4 «Пять утра»:
+  - пляж с металлоломом на рассвете и на закате (`akad_e4.py`), 25 сцен по тексту, превью проверены в облаке;
+  - голос серий 4 и 5 по секциям (`voice_sections.py 4 5`);
+  - план сцен серии 4 (`build_timeline.py … 4` → `blender/shots-4.json`; `mkjob.py … shots=shots-4.json …`).

@@ -16,7 +16,7 @@ PUB = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'KINEMA', 'skills
 EP = sys.argv[2] if len(sys.argv) > 2 else '3'
 LEAD = 0.07
 FPS = 30
-TAIL = {'3': 2.6}            # the ending stays on screen a bit (calm «скоро в профиле»)
+TAIL = {'3': 2.6, '4': 2.6, '5': 2.6}   # the ending stays on screen a bit (calm «скоро в профиле»)
 
 # (id, variant, anchor) ; anchor '@word(s)[#n]' or 0.0
 PLAN = {
@@ -51,6 +51,33 @@ PLAN = {
         ('c21b', 'calm', '@А рядом'),
         ('c22', 'rest', '@Следующая'),
     ],
+    '4': [                                     # «Пять утра»: ids d.. (EVENTS are shared by id)
+        ('d00', 'haul', 0.0),                  # hook: «я таскал мусор»
+        ('d00b', 'lesson', '@И это'),
+        ('d01', 'dawn', '@Пять утра'),
+        ('d02', 'heaps', '@30'),
+        ('d03', 'junk', '@Холодильники'),
+        ('d04', 'circle6', '@Мой круг'),
+        ('d05', 'order', '@Эммет сказал'),
+        ('d05b', 'palm', '@И сожми'),
+        ('d06', 'cantmove', '@Первую'),
+        ('d07', 'jog', '@Си-Джей бегал'),
+        ('d07b', 'mock', '@Ноль'),
+        ('d08', 'fizzle', '@Круг не'),
+        ('d09', 'asleep', '@На 10'),
+        ('d10', 'silent', '@Эммет ничего'),
+        ('d11', 'together', '@Он встал'),
+        ('d12', 'days', '@Каждый день'),
+        ('d13', 'empty', '@Через месяц'),
+        ('d14', 'palmring', '@А круг'),
+        ('d15', 'denise', '@Дениз'),
+        ('d16', 'sleep10', '@Останавливала'),
+        ('d17', 'alone', '@Эммет сказал#2'),
+        ('d18', 'rule2', '@Правило'),
+        ('d19', 'glove', '@Вечером'),
+        ('d19b', 'duel', '@Завтра'),
+        ('d20', 'rest4', '@Следующая'),
+    ],
 }
 
 # events: shot id -> {name: (phrase, nth, delta)} ; time = start of the phrase - shot start + delta
@@ -71,6 +98,14 @@ EVENTS = {
     'c19b': {'ask': ('Почему', 1, -0.05)},
     'c19c': {'rule': ('Правило', 1, 0.0)},
     'c20': {'cough': ('закашлялся', 1, 0.0)},
+    'd04': {'ring': ('круг', 1, 0.0)},
+    'd05': {'point': ('Расчисти', 1, -0.1)},
+    'd08': {'out': ('гас', 1, 0.0)},
+    'd14': {'shrink': ('сжался', 1, 0.0)},
+    'd16': {'stop': ('Останавливала', 1, 0.0)},
+    'd18': {'rule': ('Правило', 1, 0.0)},
+    'd19': {'throw': ('кинул', 1, -0.1)},
+    'd19b': {'me': ('Ты и', 1, 0.0)},
 }
 
 
@@ -115,7 +150,7 @@ def build(ep):
 
 
 if __name__ == '__main__':
-    out = os.path.join(PROJ, 'blender', 'shots.json')
+    out = os.path.join(PROJ, 'blender', 'shots.json' if EP == '3' else f'shots-{EP}.json')   # build_pc.py --shots
     old = {}
     if os.path.exists(out):
         old = {s['id']: s for s in json.load(open(out, encoding='utf-8'))['shots']}
