@@ -2,9 +2,10 @@
 
 Это рабочая база проекта aipollon. Отвечать пользователю по-русски.
 
-1. В начале любой задачи прочитай `README.md` (карта папок) и `knowledge/aipollon-knowledge.md`.
+1. В начале любой задачи прочитай `README.md` (карта папок), `knowledge/aipollon-knowledge.md` и `knowledge/rules/marketing.md`
+   (с 30.10.2026 ролики делаем по файлу маркетолога: карточка продвижения до сценария).
    Движка `kinema/` в git нет: если папки нет, `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema`
-   и `cp -r kinema-extra/skills kinema/` (аватарка и обложки канала).
+   и `cp -r kinema/aipollon/kinema-extra/skills kinema/` (код движка канала, аватарка и обложки; сведён с новым KINEMA 30.10.2026).
    При расхождении главнее: свежие пожелания пользователя → `knowledge/rules/*` → `styles/<стиль>/README.md` →
    общие правила движка `kinema/AGENTS.md`, `kinema/skills/reel-studio/SKILL.md` и `references/`.
 2. Стиль ролика: `/gibrid` → `skills/gibrid/SKILL.md`, `/blender` → `skills/blender/SKILL.md`. Если стиль не назван — спроси.

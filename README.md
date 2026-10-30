@@ -8,9 +8,9 @@
 
 | папка | что лежит | кто меняет |
 |---|---|---|
-| `kinema/` | движок KINEMA (Remotion + three.js + Python). **В git не хранится**: свежая сборка — в репозитории [`Wpresser/Algorithm-for-aipollon`](https://github.com/Wpresser/Algorithm-for-aipollon); перед работой `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema` и скопировать поверх `kinema-extra/` | обновляется в репозитории движка |
+| `kinema/` | движок KINEMA (Remotion + three.js + Python). **В git не хранится**: свежая сборка — в репозитории [`Wpresser/Algorithm-for-aipollon`](https://github.com/Wpresser/Algorithm-for-aipollon); перед работой `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema` и скопировать поверх слой канала из него же: `cp -r kinema/aipollon/kinema-extra/skills kinema/` (код движка канала, обложки; сведён с новым KINEMA 30.10.2026) | обновляется в репозитории движка |
 | [`kinema-extra/`](kinema-extra/) | своё поверх движка: аватарка, обложки для концовки, два звука | Claude, новая обложка = новый файл |
-| [`knowledge/`](knowledge/) | знания и правила канала: выжимка, правила оформления, звука, QA, Blender-пайплайн | Claude, при каждом новом пожелании пользователя |
+| [`knowledge/`](knowledge/) | знания и правила канала: выжимка, правила оформления, звука, QA, Blender-пайплайн, **продвижение по файлу маркетолога** (`rules/marketing.md`, с 30.10.2026) | Claude, при каждом новом пожелании пользователя |
 | [`skills/`](skills/) | тексты скиллов `/gibrid` и `/blender` (что делать по шагам) | Claude, при изменении процесса |
 | [`styles/`](styles/) | стили роликов: описание, правила, шаблон для нового стиля | Claude, новый стиль = новая папка по шаблону |
 | [`blender/`](blender/) | blender-kit (lib.py, базовые сцены, инструменты, воркер) и библиотека готовых сцен из кода | Claude |
