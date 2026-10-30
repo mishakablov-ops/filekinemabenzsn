@@ -465,17 +465,13 @@ def golem_wakes(g, t):
 
 
 def v_golem(shot, fps):
-    """«И тут каменный голем вышел из-под контроля»: the hunched exam golem and the boy who drives it; on the word it
-    straightens up, arms up, the eyes flare, and the boy backs away (no dust in front of it)."""
+    """«И тут каменный голем вышел из-под контроля»: the hunched exam golem; on the word it straightens up, arms up, the
+    eyes flare (no dust in front of it; the boy who drove it read as a black post at the frame edge and was dropped)."""
     dur = shot['dur']
     rng = random.Random(42)
     rise = ev(shot, 'rise', min(1.6, dur * 0.6))
     coll, info, g = golem_scene(shot, rng, heading=0.0)
     golem_wakes(g, rise)
-    kid = S.folk((-2.4, 8.6, 0), face((-2.4, 8.6), (0, 14)), rng, coll, 'kid', height=0.9, name='GolemKid')
-    S.key_people(kid, 'upperR', 0, [(0, -1.6), (rise, -1.7), (rise + 0.25, -2.7), (dur, -2.6)])
-    S.key_people(kid, 'upperL', 0, [(0, -1.6), (rise, -1.5), (rise + 0.25, -2.7), (dur, -2.7)])
-    lib.move_root(kid, [(-2.4, 8.6, 0), (-3.0, 7.4, 0)], rise + 0.15, 2.2)
     cam((4.6, 3.2, 0.8), (-0.4, 14, 4.0), (4.1, 4.2, 0.75), (-0.4, 14, 4.4), 23, dur)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
