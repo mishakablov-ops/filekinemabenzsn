@@ -63,7 +63,7 @@ scenes = [
     scene("c11", "@А меня", "push"),
     scene("c12", "@Я показал", "cut"),
     scene("c12b", "@На табло", "slam"),
-    scene("c12c", "@Все смеялись", "cut"),
+    scene("c12c", "@Все-0.15", "cut"),                       # ≥ 1 s on screen (QA rhythm), the zero still lands in c12b
     # --- the golem: everyone runs, I walk towards it, it falls apart
     scene("c13", "@И тут", "cut", camera=shake("@контроля")),
     scene("c14", "@Он пошёл", "whip", camera=shake("@трибуны")),
@@ -102,7 +102,6 @@ sfx = [
     ("@навстречу", "steps-concrete", 0.4, False),
     ("@рассыпался", "shockwave-hit", 0.85, True),
     ("@рассыпался+0.2", "steps-debris", 0.6, False),
-    ("@рассыпался+0.4", "usr-crowd-gasp-mid-swell-172", 0.45, False),
     ("@встал", "reveal-glow", 0.4, False),
     ("@учеников", "whoosh-short", 0.5, True),
     ("@ко мне", "hit-soft", 0.5, True),
