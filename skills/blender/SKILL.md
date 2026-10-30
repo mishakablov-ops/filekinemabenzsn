@@ -11,6 +11,16 @@ description: Сделать вертикальный ролик aipollon в ст
 `styles/blender/README.md` и `knowledge/aipollon-knowledge.md`: они свежее и главнее копии скилла в аккаунте.
 Нет репозитория — работать по этому тексту.
 
+**Продвижение (mike, 30.10.2026): ролики делаем по файлу маркетолога, чтобы лучше продвигались.** До сценария —
+карточка продвижения в README проекта (точка Б, тип виральности, хук-парадокс, что сохранят, что перешлют,
+самопроверка «досмотрел бы, сохранил бы, переслал бы»). Правила и источник — `knowledge/rules/marketing.md`.
+
+**Движок (30.10.2026): новый KINEMA + Blender MCP.** Ролики собираем свежим KINEMA из `Wpresser/Algorithm-for-aipollon`
+(`kinema/AGENTS.md`, агентские команды `kinema.py doctor / validate / review / render --preview`, звуки mike `usr-*` по
+`kinema/skills/reel-studio/assets/user-sound-library/CATALOG.md`, черновик `renderQuality: "draft"` для превью) со слоем
+канала `kinema/aipollon/kinema-extra/` поверх. Сцены Blender 5.2.3 строим кодом и проверяем/правим через официальный
+Blender MCP, когда он подключён к сессии; рендер клипов — воркер на ПК.
+
 **Дизайн «Классика» (с 28.10.2026) — главный эталон этого стиля:** `styles/01-klassika/README.md`, раздел
 «Как делать сейчас» (конвейер, живой главный герой, места, атмосфера, концовки, музыка). Образец —
 `output/sposobnosti-{1,2}-v4-story.mp4` («Каждому по способности», исходники `projects/sposobnosti/`).
@@ -32,7 +42,7 @@ description: Сделать вертикальный ролик aipollon в ст
 1. **Проект.** `projects/<id>/` по `projects/_template/README.md`. Рабочая папка на ПК:
    `bash blender/kit/new_blender_project.sh <id>`; для городских сцен с новыми людьми — от `projects/fr-klassika/`.
    Нужные готовые сцены взять из `blender/library/` (копировать в `blender/sets/` проекта — модули импортируют друг друга по имени).
-2. **Факты → сценарий** → `script_lint.py` до `LINT OK` (хук ≤ 7 слов, Algenib ≈ 2 слова/с, факт каждые 2–3 предложения).
+2. **Карточка продвижения** (`knowledge/rules/marketing.md`) → **факты → сценарий** → `script_lint.py` до `LINT OK` (хук ≤ 7 слов, Algenib ≈ 2 слова/с, факт каждые 2–3 предложения).
 3. **Голос** Gemini «Algenib», 2 дубля на секцию, Whisper, −16 LUFS → `words.json`.
 4. **Таймлайн.** `tools/build_timeline.py` → `blender/shots.json` → сцены в `blender/sets/<set>.py`.
 5. **Картинка (правила).** Модели только из кода (`blender/kit/blender/lib.py`, `blender/library/`), матовые формы.
@@ -44,6 +54,8 @@ description: Сделать вертикальный ролик aipollon в ст
    **Главный герой** — `blender/library/sila_hero.py` + `assets3d/people/own/sposobnosti-hero/hero_rig.blend`,
    живой в каждой сцене с лицом (моргает, водит глазами, дышит). Атмосфера тёплая и благоприятная.
    На фоне признаки цивилизации (`civ.py`). Люди и конфликты стилизованно, без крови.
+   **30.10.2026: больше персонажей с деталями** — кроме героя 2–5 персонажей со своими действиями и предметы-детали
+   вокруг (`styles/blender/README.md`, «Картинка»); референсы и CC0/CC-BY модели можно брать из интернета.
    Камера двумя ключами на сцену, ~44 мм при «1x», `clip_start` ≥ 0.1 (на облётах 1.0). Не класть плоскости одной высоты внахлёст.
 6. **Стоп-кадры** `tools/stills.sh` и контактный лист — смотреть самому до рендера.
 7. **Рендер** на ПК: задачи в `jobs/queue/` (пользователь запускает `START_WORKER.bat`), `tools/mkrender.sh`,
