@@ -3,8 +3,9 @@ Denise, CJ, Emmet, Cesar, Saul. GLB rigs (18 bones) are imported, their bones re
 LeftForeArm, LeftUpLeg, LeftLeg, Spine2 ...) by their real side, so every pose of sila_hero.py works on them:
     p = load('cj', coll, loc, heading, height=1.7)
     sila_hero.key_pose(p, t, sila_hero.pose('stand')); sila_hero.walk(p, t0, t1, path)
-mouth(p, keys) opens the jaw (shape key jawOpen). Pack clips (Run, FastNod, Scream, ShockRecoil, IdlePhone) can be played
-with clip(p, 'Run', t0, t1).
+mouth(p, keys) opens the jaw (shape key jawOpen). Pack clips (Run, FastNod, Scream, ShockRecoil, IdlePhone) are NOT usable
+after load(): their F-curves keep the old bone names, so the arms and legs stay in the T-pose (seen on c12c, 30.10.2026).
+Animate the cast with sila_hero.key_pose / walk (or akad_e3.laugh) instead; clip() is kept only for the hips and spine.
 """
 import math
 import os

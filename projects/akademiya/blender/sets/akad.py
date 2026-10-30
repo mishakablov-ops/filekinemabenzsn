@@ -472,7 +472,7 @@ def golem_crumble(g, t, rng, ground=0.0, spread=4.0):
     # the rest of the hierarchy (and the eye light) switches off
     for k in ('head',):
         for c in g[k].children:
-            if c.type in ('LIGHT',) or c.name.endswith('_eye'):
+            if c.type in ('LIGHT',) or '_eye' in c.name:          # Golem_eye, Golem_eye.001
                 FX.key_hide(c, [(0, False), (t, True)])
 
 

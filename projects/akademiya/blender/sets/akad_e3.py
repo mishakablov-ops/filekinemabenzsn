@@ -83,7 +83,7 @@ def v_board(shot, fps):
     h = H.load(coll, (0, 0, 0), math.pi)
     pose_all(h, dur, H.pose('stand', head=(0, -14, 0)))
     fans_laugh(rng)
-    cam((0.8, -4.8, 0.7), (0, 34.9, 11.0), (0.55, -3.8, 0.75), (0, 34.9, 10.6), 26, dur)
+    cam((0.6, -6.5, 1.0), (0, 34.9, 10.5), (0.45, -5.6, 1.0), (0, 34.9, 10.3), 45, dur)
     lib.bloom(0.3, 1.0, 7)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
@@ -99,7 +99,6 @@ def v_first(shot, fps):
     em = K.load('emmet', coll, (-0.55, 0.2, 0), 0.0)
     H.key_pose(em, 0, H.pose('stand', head=(24, 0, 0)))
     H.key_pose(em, dur, H.pose('stand', head=(18, -2, 0)))
-    FX.aura(coll, em['rig'], '#FFE7A0', r=0.6, z=1.0, strength=2.0, alpha=0.3, name='EmAura')
     cam((0.1, -2.9, 0.85), (0, 0, 1.4), (0.08, -2.5, 0.88), (0, 0, 1.38), 24, dur)
     lib.bloom(0.3, 1.0, 7)
     return dict(fill=0.5, exposure=0.4, samples=32)
@@ -107,18 +106,21 @@ def v_first(shot, fps):
 
 # ============================================================================= c01 the letter
 def v_letter(shot, fps):
+    """The envelope flies in through the window, he catches it and turns to us with it (camera inside the room)."""
     dur = shot['dur']
     rng = random.Random(31)
     coll = lib.collection('Room')
     SS.room(coll, rng, morning=True)
     h = H.load(coll, (0.2, 1.05, 0), math.pi)
     catch = ev(shot, 'catch', min(1.3, dur * 0.45))
+    turn = min(dur - 0.2, catch + 0.55)
     H.key_pose(h, 0, H.pose('sill', head=(0, 6, 0)))
     H.key_root(h, 0, (0.2, 1.05, 0), math.pi)
-    H.key_root(h, catch - 0.5, (0.2, 1.05, 0), math.pi)
-    H.key_root(h, catch, (0.2, 0.9, 0), math.pi + 0.35)
+    H.key_root(h, catch - 0.3, (0.2, 1.05, 0), math.pi)
     H.key_pose(h, catch - 0.15, H.pose('reach_r', head=(0, -10, 0)))
-    H.key_pose(h, catch + 0.3, H.pose('hands_front', head=(0, 24, 0)))
+    H.key_pose(h, catch + 0.2, H.pose('hands_front', head=(0, 20, 0)))
+    H.key_root(h, turn, (0.2, 0.95, 0), 0.0)
+    H.key_pose(h, turn, H.pose('hands_front', head=(0, 22, 0)))
     H.key_pose(h, dur, H.pose('hands_front', head=(4, 26, 0)))
     env_m = lib.mat('Envelope', '#F4EFE4', rough=0.6)
     seal_m = lib.mat('Seal', '#C9302C', rough=0.35)
@@ -127,15 +129,15 @@ def v_letter(shot, fps):
     seal.parent = env
     gold = lib.mat('AkGold', '#E7B64A', rough=0.3, metal=0.85)
     A.text('А', 0.04, (0, 0, 0.009), (0, 0, 0), gold, coll, extrude=0.002, name='SealA').parent = env
-    lib.key_obj(env, F(0), loc=(1.6, 4.5, 2.6), rot=(0.4, 0.2, 0.3))
-    lib.key_obj(env, F(catch * 0.55), loc=(0.9, 2.2, 1.9), rot=(1.1, -0.4, 0.9))
-    lib.key_obj(env, F(catch), loc=(0.05, 0.62, 1.05), rot=(1.35, 0.0, math.pi))
-    lib.key_obj(env, F(catch + 0.35), loc=(0.2, 0.55, 1.12), rot=(1.25, 0.0, math.pi))
-    lib.key_obj(env, F(dur), loc=(0.2, 0.52, 1.12), rot=(1.25, 0.0, math.pi))
-    FX.sparks(coll, (0.9, 2.4), 0.6, 2.4, 1.0, 40, 0.0, catch, rng, col='#FFD27A', size=0.012, speed=(0.8, 1.4), strength=18,
-              name='LetterSpark')
-    cam((1.55, 1.35, 1.3), (0.1, 0.8, 1.05), (1.45, 1.2, 1.28), (0.15, 0.75, 1.05), 24, dur)
-    return dict(fill=0.5, exposure=0.4, samples=32)
+    lib.key_obj(env, F(0), loc=(1.4, 4.2, 2.3), rot=(0.4, 0.2, 0.3))
+    lib.key_obj(env, F(catch * 0.6), loc=(0.8, 2.3, 1.6), rot=(1.1, -0.4, 0.9))
+    # in the right hand at the catch, then held in both hands at chest height (wrists at z 0.61)
+    lib.key_obj(env, F(catch), loc=(0.5, 1.08, 0.72), rot=(1.2, 0.0, 0.6))
+    lib.key_obj(env, F(catch + 0.23), loc=(0.3, 0.76, 0.67), rot=(1.45, 0.0, 0.25))
+    lib.key_obj(env, F(turn), loc=(0.2, 0.7, 0.68), rot=(math.pi / 2 - 0.25, 0.0, 0.0))
+    lib.key_obj(env, F(dur), loc=(0.2, 0.69, 0.69), rot=(math.pi / 2 - 0.3, 0.0, 0.0))
+    cam((0.75, -1.1, 1.3), (0.2, 1.0, 1.0), (0.6, -0.8, 1.26), (0.2, 1.0, 0.98), 30, dur)
+    return dict(fill=0.35, exposure=0.05, samples=32)
 
 
 # ============================================================================= c02 / c03 the Academy
@@ -185,9 +187,9 @@ def saul_steps(shot, rng, coll, close=False):
     A.sky('morning', sun_dir=(-0.6, -0.5, 0.35))
     A.academy(coll, rng, dur=dur, city=not close)
     sl = K.load('saul', coll, (0, -12.5, 0), 0.0)
-    H.key_pose(sl, 0, H.pose('stand', arm=((26, 6), (20, 60)), fore=((18, 16), (14, 100)), head=(0, -4, 0)))
-    H.key_pose(sl, dur * 0.4, H.pose('stand', arm=((30, 40), (22, 45)), fore=((30, 80), (14, 85)), head=(-6, -2, 0)))
-    H.key_pose(sl, dur, H.pose('stand', arm=((26, 6), (24, 70)), fore=((18, 16), (16, 105)), head=(5, -4, 0)))
+    H.key_pose(sl, 0, H.pose('stand', arm=((12, 4), (16, 40)), fore=((8, 10), (14, 80)), head=(0, -4, 0)))
+    H.key_pose(sl, dur * 0.4, H.pose('stand', arm=((12, 4), (20, 55)), fore=((8, 10), (16, 95)), head=(-6, -2, 0)))
+    H.key_pose(sl, dur, H.pose('stand', arm=((12, 4), (16, 45)), fore=((8, 10), (14, 85)), head=(5, -4, 0)))
     K.talk(sl, 0.1, dur - 0.1, seed=4)
     lst = []
     for k in range(16):
@@ -205,6 +207,27 @@ def nod(p, t0, t1, period=0.7, amp=0.22):
         S.key_people(p, 'head', 0, [(t, 0.0), (t + period * 0.5, amp)])
         t += period
     S.key_people(p, 'head', 0, [(t1, 0.0)])
+
+
+def laugh(p, t0, t1, seed=0, period=0.42, point=False):
+    """A cast member laughs: doubles over (hands on the belly, head down) and throws the head back, in turn;
+    point=True: the right hand points at the camera (at the hero) the whole time.
+    Pack clips (FastNod ...) keep the GLB bone names, so after cast.load renames the bones they leave a T-pose."""
+    r = random.Random(seed)
+    H.key_pose(p, 0, H.pose('stand', arm=(18, 20), fore=(-36, 64)))
+    t, k = t0, 0
+    while t < t1:
+        if k % 2 == 0:
+            H.key_pose(p, t, H.pose('stand', arm=((18, 24), (-14, 80)) if point else (18, 24),
+                                    fore=((-42, 70), (-18, 86)) if point else (-42, 70), lean=13.0 + r.uniform(-3, 3),
+                                    head=(0, 16 + r.uniform(-4, 4), r.uniform(-6, 6))))
+        else:
+            H.key_pose(p, t, H.pose('stand', arm=((20, 14), (-14, 86)) if point else (20, 14),
+                                    fore=((-30, 58), (-18, 92)) if point else (-30, 58), lean=-5.0 + r.uniform(-2, 2),
+                                    head=(0, -18 + r.uniform(-4, 4), r.uniform(-6, 6))))
+        t += period * r.uniform(0.85, 1.15)
+        k += 1
+    K.talk(p, t0, t1, rate=9, amp=0.9, seed=seed)
 
 
 def v_saul(shot, fps):
@@ -256,17 +279,16 @@ def v_bus(shot, fps, close=False):
     cj = K.load('cj', coll, (0, 0, 0), 0.0)
     lift = ev(shot, 'lift', 0.5 if not close else 0.0)
     b = bus(coll, (0, 0.6, 0), 0.0)
-    top = 1.74 + 0.65
+    top = 2.17 - 0.45                      # the body's underside (0.45 above the pivot) rests on CJ's raised palm
     lib.key_obj(b, F(0), loc=(0, 0.6, 0.0), rot=(0, 0, 0))
     lib.key_obj(b, F(lift), loc=(0, 0.6, 0.0), rot=(0, 0, 0))
     lib.key_obj(b, F(lift + 0.6), loc=(0, 0.25, top), rot=(0.0, 0.0, 0.0))
-    lib.key_obj(b, F(dur), loc=(0, 0.25, top + 0.08), rot=(0.0, 0.03, 0.0))
+    lib.key_obj(b, F(dur), loc=(0, 0.25, top + 0.04), rot=(0.0, 0.03, 0.0))
     H.key_pose(cj, 0, H.pose('crouch', arm=((20, -10), (20, 60)), fore=((18, 0), (10, 90))))
     H.key_pose(cj, lift, H.pose('crouch', arm=((20, -10), (10, 120)), fore=((18, 0), (6, 150))))
     H.key_pose(cj, lift + 0.6, H.pose('stand', arm=((30, 10), (4, 178)), fore=((26, 30), (2, 178)), head=(0, -25, 0)))
     H.key_pose(cj, dur, H.pose('stand', arm=((34, 14), (4, 178)), fore=((30, 40), (2, 178)), head=(4, -22, 0)))
-    FX.aura(coll, cj['rig'], '#FF9C5B', r=0.6, z=1.0, t_on=max(0.0, lift - 0.2), strength=3.0, alpha=0.4, name='CJAura')
-    FX.smoke(coll, (0, 1.4, 0.0), 0.5, lift, lift + 0.8, rng, col='#D8BF8E', r0=0.9, n=5, rise=0.8, name='SandDust', alpha=0.35)
+    FX.aura(coll, cj['rig'], '#FF9C5B', r=0.5, z=1.0, t_on=max(0.0, lift - 0.2), strength=2.0, alpha=0.18, name='CJAura')
     if close:
         cam((1.8, -3.2, 0.5), (0, 0.3, 2.6), (1.4, -2.9, 0.45), (0, 0.3, 2.8), 20, dur)
     else:
@@ -280,28 +302,40 @@ def v_tons(shot, fps):
 
 # ============================================================================= c09 Cesar runs a lap in a second
 def v_cesar(shot, fps):
+    """Set like a sprinter on the start line, gone in a streak round the track, back on the line a second later."""
     dur = shot['dur']
     rng = random.Random(38)
     coll, info = arena_set(rng)
     R = (38.0, 27.0)
-    cz = K.load('cesar', coll, (0, -R[1], 0), -math.pi / 2)
-    K.clip(cz, 'Run', 0, dur, speed=2.2)
     go = ev(shot, 'go', 0.4)
     n, lap = 48, 1.0
+    cz = K.load('cesar', coll, (0, -R[1], 0), math.pi / 2)
     rig = cz['rig']
+    lib.key_obj(rig, F(0), loc=(0, -R[1], 0), rot=(0, 0, math.pi / 2), interp='LINEAR')
     for j in range(n + 1):
         t = go + lap * j / n
         a = -math.pi / 2 + math.tau * j / n
         p = (math.cos(a) * R[0], math.sin(a) * R[1], 0)
-        tang = V((-math.sin(a) * R[0], math.cos(a) * R[1], 0))
-        hd = math.atan2(tang.x, -tang.y)
+        hd = math.pi / 2 + math.tau * j / n
         lib.key_obj(rig, F(t), loc=p, rot=(0, 0, hd), interp='LINEAR')
-    lib.key_obj(rig, F(0), loc=(0, -R[1], 0), rot=(0, 0, math.atan2(R[0], 0)), interp='LINEAR')
+    lib.key_obj(rig, F(dur), loc=(0, -R[1], 0), rot=(0, 0, math.pi / 2 + math.tau), interp='LINEAR')
+    # set - sprint (legs swap every 0.07 s) - upright on the line again
+    H.key_pose(cz, 0, H.pose('crouch', arm=(14, -25), fore=(10, -10), lean=34.0, head=(0, -16, 0)))
+    H.key_pose(cz, go - 0.05, H.pose('crouch', arm=(14, -25), fore=(10, -10), lean=34.0, head=(0, -16, 0)))
+    t, k = go, 0
+    while t < go + lap:
+        H.key_pose(cz, t, H.pose('stand', arm=((20, -40 if k % 2 else 60), (20, 60 if k % 2 else -40)),
+                                 fore=(30, 90), thigh=(60.0, -25.0) if k % 2 == 0 else (-25.0, 60.0),
+                                 shin=(-70.0, -20.0) if k % 2 == 0 else (-20.0, -70.0),
+                                 lean=22.0))
+        t += 0.07
+        k += 1
+    H.key_pose(cz, go + lap + 0.12, H.pose('stand', arm=(22, 8), fore=(30, 40), lean=6.0, head=(0, -6, 0)))
+    H.key_pose(cz, dur, H.pose('stand', arm=(22, 8), fore=(30, 40), lean=2.0, head=(0, -10, 6)))
     m, s_sock, a_sock = FX.glow('LapTrail', '#FFE7B0', 2.5, alpha=0.6)
-    A.ring('LapTrail', (R[0] - 0.4, R[1] - 0.4), (R[0] + 0.4, R[1] + 0.4), 0.02, 0.6, m, coll, n=96)
-    FX.key(a_sock, [(0, 0.0), (go, 0.0), (go + lap, 0.6), (dur, 0.0)])
-    FX.smoke(coll, (0, -R[1], 0), 0.6, go, go + 0.8, rng, col='#D8BF8E', r0=1.2, n=8, rise=1.0, name='StartDust')
-    cam((0, -46, 16), (0, 0, 0), (0, -44, 14), (0, 0, 0), 22, dur, clip=0.5)
+    A.ring('LapTrail', (R[0] - 0.08, R[1] - 0.08), (R[0] + 0.08, R[1] + 0.08), 0.02, 0.04, m, coll, n=128)
+    FX.key(a_sock, [(0, 0.0), (go, 0.0), (go + lap, 0.6), (dur, 0.15)])
+    cam((2.3, -31.2, 1.3), (-0.4, -26.0, 1.0), (2.0, -30.6, 1.25), (-0.4, -26.0, 1.1), 30, dur, clip=0.3)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
 
@@ -357,13 +391,12 @@ def v_laugh(shot, fps):
     H.key_pose(h, 0, H.pose('stand'))
     H.key_pose(h, sh, H.pose('shrug'))
     H.key_pose(h, dur, H.pose('shrug', head=(0, 8, 6)))
-    cj = K.load('cj', coll, (-3.2, 3.0, 0), face((-3.2, 3.0), (0, 0)))
-    K.clip(cj, 'FastNod', 0.2, dur, speed=1.2)
-    K.talk(cj, sh, dur, rate=9, amp=0.9, seed=2)
+    cj = K.load('cj', coll, (-1.9, 2.6, 0), face((-1.9, 2.6), (0, 0)))
+    laugh(cj, 0.1, dur, seed=2)
     for o in bpy.data.objects:
         if o.name.startswith('Fan_'):
             lib.add_sine(o, 'location', 2, 0.05, 0.28, rng.uniform(0, 6))
-    cam((0.6, -4.2, 1.0), (0, 0, 1.0), (0.4, -3.6, 1.0), (0, 0, 1.05), 30, dur)
+    cam((0.5, -3.0, 0.95), (-0.3, 0, 0.9), (0.35, -2.5, 0.95), (-0.3, 0, 0.92), 30, dur)
     return dict(fill=0.5, exposure=0.38, samples=32)
 
 
@@ -372,7 +405,7 @@ def v_zero(shot, fps):
     dur = shot['dur']
     rng = random.Random(52)
     coll, info = arena_set(rng, zero=ev(shot, 'zero', 0.35))
-    cam((3.0, 19.0, 8.6), (0, 34.9, 11.6), (2.0, 21.5, 9.2), (0, 34.9, 11.4), 30, dur)
+    cam((2.5, 13.0, 8.0), (0.5, 34.9, 11.3), (1.8, 15.5, 8.6), (0.5, 34.9, 11.2), 26, dur)
     lib.bloom(0.35, 1.0, 7)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
@@ -382,12 +415,11 @@ def v_laugh2(shot, fps):
     dur = shot['dur']
     rng = random.Random(53)
     coll, info = arena_set(rng, zero=0.0)
-    for n, x, y, seed in (('cj', -0.75, 3.0, 2), ('cesar', 0.8, 3.3, 6)):
+    for n, x, y, seed in (('cj', -0.55, 2.1, 2), ('cesar', 0.6, 2.35, 6)):
         p = K.load(n, coll, (x, y, 0), face((x, y), (0, 0)))
-        K.clip(p, 'FastNod', 0.1 * seed, dur, speed=1.1 + 0.05 * seed)
-        K.talk(p, 0.1, dur, rate=9, amp=0.9, seed=seed)
+        laugh(p, 0.0, dur, seed=seed, period=0.36 + 0.02 * seed, point=(n == 'cj'))
     fans_laugh(rng, 0.07)
-    cam((0.15, -0.6, 1.55), (0, 3.1, 1.3), (0.1, 0.0, 1.52), (0, 3.1, 1.35), 30, dur)
+    cam((0.5, -0.4, 1.0), (0.15, 2.2, 1.3), (0.45, -0.1, 1.0), (0.15, 2.2, 1.35), 30, dur)
     return dict(fill=0.5, exposure=0.38, samples=32)
 
 
@@ -403,29 +435,55 @@ def golem_scene(shot, rng, walk=None, crumble=None, rise=None, heading=math.pi):
         A.golem_walk(g, *walk)
     if crumble is not None:
         A.golem_crumble(g, crumble, rng)
-        y = walk[3][1] if walk else 14
-        FX.smoke(coll, (0, y, 0), 2.5, crumble, crumble + 1.2, rng, col='#C9B48A', r0=4.5, n=16, rise=3.0, name='CrumbleDust')
     return coll, info, g
 
 
+def golem_wakes(g, t):
+    """The exam golem stands hunched with dim eyes; at t it straightens up, throws its arms up and the eyes flare."""
+    root, ch, hd = g['root'], g['chest'], g['head']
+    z0 = root.location.z
+    for o, path, idx, keys in ((ch, 'rotation_euler', 0, [(0, 0.42), (t, 0.42), (t + 0.3, -0.14), (t + 0.9, -0.08)]),
+                               (hd, 'rotation_euler', 0, [(0, 0.3), (t, 0.3), (t + 0.25, -0.25), (t + 0.9, -0.15)]),
+                               (root, 'location', 2, [(0, z0 - 0.45), (t, z0 - 0.45), (t + 0.3, z0 + 0.1), (t + 0.6, z0)])):
+        for tt, v in keys:
+            getattr(o, path)[idx] = v
+            o.keyframe_insert(path, index=idx, frame=F(tt))
+    for side in ('L', 'R'):
+        a = g['arm' + side]
+        for tt, v in ((0, 0.12), (t, 0.12), (t + 0.32, -2.5), (t + 0.9, -2.35)):
+            a.rotation_euler.x = v
+            a.keyframe_insert('rotation_euler', index=0, frame=F(tt))
+    em = bpy.data.materials.get('GolemEye')
+    if em:
+        st = next(n for n in em.node_tree.nodes if n.type == 'EMISSION').inputs['Strength']
+        FX.key(st, [(0, 1.5), (t, 1.5), (t + 0.12, 24.0), (t + 0.5, 12.0)])
+    li = bpy.data.objects.get('Golem_eyeLight')
+    if li:
+        for tt, v in ((0, 4.0), (t, 4.0), (t + 0.12, 300.0), (t + 0.5, 140.0)):
+            li.data.energy = v
+            li.data.keyframe_insert('energy', frame=F(tt))
+
+
 def v_golem(shot, fps):
+    """«И тут каменный голем вышел из-под контроля»: the hunched exam golem and the boy who drives it; on the word it
+    straightens up, arms up, the eyes flare, and the boy backs away (no dust in front of it)."""
     dur = shot['dur']
     rng = random.Random(42)
     rise = ev(shot, 'rise', min(1.6, dur * 0.6))
-    coll, info, g = golem_scene(shot, rng, rise=rise)
-    kid = S.folk((5.0, 8.0, 0), face((5, 8), (0, 14)), rng, coll, 'kid', height=0.9, name='GolemKid')
-    S.key_people(kid, 'upperR', 0, [(0, -1.6), (dur, -1.8)])
-    S.key_people(kid, 'upperL', 0, [(0, -1.6), (dur, -1.4)])
-    au, s = FX.aura(coll, kid['torso'], '#FF9C5B', r=0.55, z=0.0, strength=3.0, alpha=0.5, name='KidAura')
-    FX.key(s, [(0, 3.0), (rise, 6.0), (rise + 0.2, 1.0), (rise + 0.4, 6.0), (rise + 0.6, 0.5), (dur, 5.0)])
-    cam((9, -6, 1.1), (0, 14, 4.5), (8, -4, 1.0), (0, 14, 5.0), 24, dur)
+    coll, info, g = golem_scene(shot, rng, heading=0.0)
+    golem_wakes(g, rise)
+    kid = S.folk((-2.4, 8.6, 0), face((-2.4, 8.6), (0, 14)), rng, coll, 'kid', height=0.9, name='GolemKid')
+    S.key_people(kid, 'upperR', 0, [(0, -1.6), (rise, -1.7), (rise + 0.25, -2.7), (dur, -2.6)])
+    S.key_people(kid, 'upperL', 0, [(0, -1.6), (rise, -1.5), (rise + 0.25, -2.7), (dur, -2.7)])
+    lib.move_root(kid, [(-2.4, 8.6, 0), (-3.0, 7.4, 0)], rise + 0.15, 2.2)
+    cam((4.6, 3.2, 0.8), (-0.4, 14, 4.0), (4.1, 4.2, 0.75), (-0.4, 14, 4.4), 23, dur)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
 
 def v_stands(shot, fps):
     dur = shot['dur']
     rng = random.Random(43)
-    coll, info, g = golem_scene(shot, rng, walk=(0, dur, (0, 14, 0), (0, 22, 0)), heading=0.0)
+    coll, info, g = golem_scene(shot, rng, walk=(0, dur, (0, 14, 0), (0, 22, 0)), heading=math.pi)
     for k in range(18):                                       # the people on the north stands run aside
         x = rng.uniform(-16, 16)
         p = S.folk((x, 36.5, 2.6), math.pi, rng, coll, rng.choice(['girl', 'kid', 'sparky', None]), height=0.9, name=f'Flee{k}')
@@ -433,14 +491,14 @@ def v_stands(shot, fps):
         P2.walk(p, sp, rng.random(), 0.9)
         x1 = x + (1 if x > 0 else -1) * sp * dur * 1.1
         lib.move_root(p, [(x, 36.5, 2.6), (x1, 36.5 + 0.8, 2.6 + 0.4)], rng.uniform(0.0, 0.3), sp)
-    cam((-6, -2, 1.0), (0, 22, 5.0), (-5, 1, 1.0), (0, 24, 5.5), 22, dur)
+    cam((-5.5, -1.0, 1.1), (0, 22, 4.2), (-4.6, 2.0, 1.1), (0, 24, 4.6), 28, dur)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
 
 def v_toward(shot, fps):
     dur = shot['dur']
     rng = random.Random(44)
-    coll, info, g = golem_scene(shot, rng, walk=(0, dur, (0, 20, 0), (0, 18, 0)), heading=math.pi)
+    coll, info, g = golem_scene(shot, rng, walk=(0, dur, (0, 20, 0), (0, 18, 0)), heading=0.0)
     h = H.load(coll, (0, 4, 0), 0.0)
     H.walk(h, 0, dur, [(0, 4), (0, 4 + 0.9 * dur)], speed=0.9)
     cam((0.8, 2.2, 0.35), (0, 18, 6.0), (0.7, 2.6, 0.35), (0, 18, 6.2), 18, dur)
@@ -451,22 +509,60 @@ def v_crumble(shot, fps):
     dur = shot['dur']
     rng = random.Random(45)
     hit = ev(shot, 'hit', 0.45)
-    coll, info, g = golem_scene(shot, rng, walk=(0, hit, (0, 13.2, 0), (0, 12.6, 0)), crumble=hit, heading=math.pi)
+    coll, info, g = golem_scene(shot, rng, walk=(0, hit, (0, 13.2, 0), (0, 12.6, 0)), crumble=hit, heading=0.0)
     h = H.load(coll, (0, 9.5, 0), 0.0)
     H.walk(h, 0, hit, [(0, 9.5), (0, 9.5 + 0.9 * hit)], speed=0.9)
     H.key_pose(h, hit + 0.1, H.pose('stand', head=(0, -30, 0)))
     H.key_pose(h, dur, H.pose('stand', head=(0, -12, 0)))
-    m, s_sock, a_sock = FX.glow('RadiusRing', '#FFF2C8', 3.0, alpha=0.7)
-    r = A.ring('Radius', (6.6, 6.6), (7.0, 7.0), 0.02, 0.05, m, coll)
+    # the hero's radius: one thin ring on the sand runs out from him on the word (the motif of the season)
+    m, s_sock, a_sock = FX.glow('RadiusRing', '#FFF2C8', 1.5, alpha=0.7)
+    r = A.ring('Radius', (5.9, 5.9), (6.0, 6.0), 0.02, 0.03, m, coll)
     r.location = (0, 9.5 + 0.9 * hit, 0)
-    FX.key_scale(r, [(0, 0.05), (max(0.0, hit - 0.15), 0.05), (hit + 0.25, 1.0), (dur, 1.05)])
-    FX.key(a_sock, [(0, 0.0), (max(0.0, hit - 0.15), 0.7), (dur, 0.15)])
-    FX.ripple(coll, (0, 9.5 + 0.9 * hit, 1.0), hit, dur=0.8, rmax=9.0, col='#FFF2C8', strength=3.0, name='HitRipple')
-    cam((7.5, 2.0, 1.4), (0, 12, 3.0), (6.5, 3.0, 1.2), (0, 12, 2.0), 22, dur)
+    FX.key_scale(r, [(0, 0.05), (max(0.0, hit - 0.1), 0.05), (hit + 0.3, 1.0), (dur, 1.03)])
+    FX.key(a_sock, [(0, 0.0), (max(0.0, hit - 0.1), 0.7), (dur, 0.2)])
+    cam((6.5, 3.0, 1.2), (0, 11.5, 3.4), (5.8, 3.8, 1.1), (0, 11.5, 2.2), 20, dur)
     return dict(fill=0.45, exposure=0.38, samples=32)
 
 
 # ============================================================================= c17 - c19 Emmet
+def clear_fans(inside):
+    """Take the cheap egg-spectators out where the camera comes close (inside(centre) -> True): every person is two
+    UV spheres of 52 verts in a Fan_ mesh, so whole spheres are deleted by their centre."""
+    import bmesh
+    for o in [o for o in bpy.data.objects if o.name.startswith('Fan_') and o.type == 'MESH']:
+        bm = bmesh.new()
+        bm.from_mesh(o.data)
+        bm.verts.ensure_lookup_table()
+        nv, kill = 52, []
+        for j in range(len(bm.verts) // nv):
+            vs = bm.verts[j * nv:(j + 1) * nv]
+            c = sum((v.co for v in vs), V()) / nv
+            if inside(c):
+                kill.extend(vs)
+        if kill:
+            bmesh.ops.delete(bm, geom=kill, context='VERTS')
+            bm.to_mesh(o.data)
+        bm.free()
+
+
+def seat_folk(rng, rows, xs, skip=(), R=(46.0, 34.0), sd=1.1, sh=0.55, name='Seat'):
+    """Low-poly spectators (people2 + chibi heads) seated on the south stands, rows x xs, facing the field."""
+    out = []
+    for i in rows:
+        rx, ry = R[0] + 0.9 + i * sd + 0.3, R[1] + 0.9 + i * sd + 0.3
+        for x0 in xs:
+            x = x0 + rng.uniform(-0.15, 0.15)
+            if (i, round(x0, 1)) in skip or rng.random() < 0.18:
+                continue
+            y = -ry * math.sqrt(max(0.0, 1.0 - (x / rx) ** 2))
+            z = 1.8 + (i + 1) * sh - 0.43
+            p = S.folk((x, y, z), face((x, y), (0, 0)), rng, None, rng.choice(['girl', 'kid', 'sparky', None]), height=0.9,
+                       name=f'{name}{i}_{len(out)}')
+            P2.sit(p, rng)
+            out.append(p)
+    return out
+
+
 def v_emmet(shot, fps):
     dur = shot['dur']
     rng = random.Random(46)
@@ -477,6 +573,10 @@ def v_emmet(shot, fps):
     z = 1.8 + (i + 1) * sh
     em = K.load('emmet', coll, (2.0, y, z - 0.45), 0.0)
     up = ev(shot, 'up', 0.5)
+    # close to the camera the egg crowd looks cheap: real low-poly people sit around Emmet instead
+    clear_fans(lambda c: abs(c.x - 2.0) < 4.6 and -(34.9 + 10 * sd) < c.y < -34.0)
+    xs = [-2.0 + 0.9 * k for k in range(10)]
+    seat_folk(rng, range(0, 10), xs, skip={(i, round(-2.0 + 0.9 * k, 1)) for i in (i,) for k in (4, 5)})
     H.key_pose(em, 0, H.pose('sit', head=(0, 10, 0)))
     H.key_root(em, 0, (2.0, y, z - 0.45))
     H.key_root(em, up, (2.0, y, z - 0.45))
@@ -484,24 +584,24 @@ def v_emmet(shot, fps):
     H.key_pose(em, up + 0.7, H.pose('stand', head=(0, 12, 0)))
     H.key_root(em, up + 0.7, (2.0, y - 0.1, z))
     H.key_pose(em, dur, H.pose('stand', head=(0, 14, 0)))
-    FX.aura(coll, em['rig'], '#FFE7A0', r=0.6, z=1.0, t_on=up + 0.4, strength=2.5, alpha=0.35, name='EmAura')
+    FX.aura(coll, em['rig'], '#FFE7A0', r=0.55, z=1.0, t_on=up + 0.4, strength=2.0, alpha=0.2, name='EmAura')
     c0 = V((2.0, y + 6.5, z + 0.6))
     cam(c0, (2.0, y, z + 1.4), c0 + V((-0.6, -1.2, 0.2)), (2.0, y, z + 1.6), 32, dur)
     return dict(fill=0.5, exposure=0.4, samples=32)
 
 
 def v_secret(shot, fps):
-    """In a blink Emmet is down on the field: a streak of wind from the stands to the hero."""
+    """In a blink Emmet is down on the field behind the hero (no streak or dust: one figure carries the move)."""
     dur = shot['dur']
     rng = random.Random(47)
     coll, info = arena_set(rng, zero=0.0)
     h = H.load(coll, (0, 0, 0), math.pi)
     pose_all(h, dur, H.pose('stand'))
-    start = (1.0, -12.0, 4.6)
+    start = (2.0, -(34.9 + 5.55 * info['step_d']), 1.8 + 6 * info['step_h'])      # where c17 left him on the stands
     em = K.load('emmet', coll, start, 0.0)
     go = ev(shot, 'go', 0.5)
     land = (0.0, -1.6, 0.0)
-    for t, p, hd in ((0, start, math.pi), (go, start, math.pi), (go + 0.25, (0.6, -6.0, 2.0), math.pi), (go + 0.45, land, math.pi),
+    for t, p, hd in ((0, start, math.pi), (go, start, math.pi), (go + 0.25, (1.0, -16.0, 4.0), math.pi), (go + 0.45, land, math.pi),
                      (dur, land, math.pi)):
         lib.key_obj(em['rig'], F(t), loc=p, rot=(0, 0, hd), interp='LINEAR')
     H.key_pose(em, 0, H.pose('stand'))
@@ -509,15 +609,7 @@ def v_secret(shot, fps):
     H.key_pose(em, go + 0.5, H.pose('crouch'))
     H.key_pose(em, go + 0.9, H.pose('stand', head=(0, 10, 0)))
     H.key_pose(em, dur, H.pose('stand', head=(0, 12, 0)))
-    m, _, a = FX.glow('WindStreak', '#FFF6DA', 4.0, alpha=0.6)
-    st = lib.cyl(0.18, 1.0, (0, 0, 0), m, verts=12, name='WindStreak', coll=coll)
-    a0, a1 = V(start) + V((0, 0, 0.8)), V(land) + V((0, 0, 0.8))
-    st.location = (a0 + a1) / 2
-    st.rotation_euler = (a1 - a0).to_track_quat('Z', 'Y').to_euler()
-    st.scale = (1, 1, (a1 - a0).length)
-    FX.key(a, [(0, 0.0), (go, 0.0), (go + 0.2, 0.7), (go + 0.9, 0.0)])
-    FX.smoke(coll, land, 1.2, go + 0.45, go + 1.2, rng, col='#D8BF8E', r0=1.5, n=10, rise=1.2, name='LandDust')
-    cam((4.5, 3.5, 1.3), (0, -2, 1.4), (3.6, 3.0, 1.2), (0, -1.5, 1.3), 26, dur)
+    cam((3.0, 2.8, 2.1), (0.2, -1.2, 1.0), (2.6, 2.4, 2.0), (0.2, -1.2, 0.95), 30, dur)
     return dict(fill=0.5, exposure=0.4, samples=32)
 
 
@@ -572,8 +664,7 @@ def v_rule(shot, fps):
     H.key_pose(em, up + 0.4, H.pose('point', arm=((24, 4), (30, 150)), fore=((18, 16), (10, 30)), head=(0, -6, 0)))
     H.key_pose(em, dur, H.pose('point', arm=((24, 4), (30, 150)), fore=((18, 16), (10, 30)), head=(4, -6, 0)))
     K.talk(em, 0.1, dur - 0.2, rate=6, amp=0.6, seed=8)
-    FX.aura(coll, em['rig'], '#FFE7A0', r=0.6, z=1.0, t_on=up, strength=2.5, alpha=0.35, name='EmAura')
-    cam((-0.45, 1.35, 1.66), (0, -1.5, 1.42), (-0.38, 1.1, 1.64), (0, -1.5, 1.44), 42, dur)
+    cam((-1.15, 1.0, 1.7), (0, -1.5, 1.45), (-1.0, 0.8, 1.68), (0, -1.5, 1.46), 45, dur)
     lib.bloom(0.3, 1.0, 7)
     return dict(fill=0.5, exposure=0.4, samples=32)
 
