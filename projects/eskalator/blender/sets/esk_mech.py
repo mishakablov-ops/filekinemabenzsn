@@ -78,18 +78,18 @@ def bm_cyl(bm, center, r, h, axis='Y', segs=20, mi=0):
     bmesh.ops.transform(bm, matrix=Matrix.Translation(center) @ rot, verts=res['verts'])
     for f in {f for v in res['verts'] for f in v.link_faces}: f.material_index = mi
 
-def bm_tube(bm, pts, prof_w, prof_h, mi=0, normal_up=True):
-    """rectangular tube along a 3D polyline (profile in the plane perpendicular to the path, Y kept constant)"""
+def bm_tube(bm, pts, prof_w, prof_h, mi=0, normal_up=True, side=(0, 1, 0)):
+    """rectangular tube along a 3D polyline; `side` is the profile's width axis (kept perpendicular to the path)"""
     rings = []
+    S = Vector(side).normalized()
     for i, p in enumerate(pts):
         a = pts[max(0, i - 1)]; b = pts[min(len(pts) - 1, i + 1)]
         t = (Vector(b) - Vector(a)).normalized()
-        side = Vector((0, 1, 0))
-        up = side.cross(t).normalized() * -1 if normal_up else Vector((0, 0, 1))
-        up = t.cross(side).normalized() * -1
-        if up.z < 0: up = -up
+        sd = (S - t * S.dot(t)).normalized()
+        up = t.cross(sd).normalized() * -1
+        if S.y != 0 and up.z < 0: up = -up
         p = Vector(p)
-        ring = [bm.verts.new(p + side * sx * prof_w / 2 + up * sz * prof_h / 2) for sx, sz in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        ring = [bm.verts.new(p + sd * sx * prof_w / 2 + up * sz * prof_h / 2) for sx, sz in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
         rings.append(ring)
     for r0, r1 in zip(rings, rings[1:]):
         for k in range(4):
@@ -232,7 +232,8 @@ def materials():
 
 class Escalator:
     def __init__(self, origin=(0, 0, 0), rise=3.0, name='Esk', cutaway=True, glass_truss=True, machine=True,
-                 balustrade=True, land_lo=2.0, land_hi=2.4):
+                 balustrade=True, land_lo=2.0, land_hi=2.4, truss=True, chain=True, rails=True, sprockets=True,
+                 glass=True, prints=True):
         self.origin = Vector(origin)
         self.name = name
         self.col = coll(name)
@@ -241,13 +242,15 @@ class Escalator:
         self.root = bpy.data.objects.new(name + 'Root', None)
         self.root.location = self.origin
         self.col.objects.link(self.root)
+        self.opt = dict(glass=glass, prints=prints)
+        self.links = []; self.sprockets = []; self.prints = []
         self._build_steps()
-        self._build_chain()
-        self._build_rails()
-        self._build_sprockets()
+        if chain: self._build_chain()
+        if rails: self._build_rails()
+        if sprockets: self._build_sprockets()
         self._build_landings()
         if balustrade: self._build_balustrade()
-        self._build_truss(cutaway, glass_truss)
+        if truss: self._build_truss(cutaway, glass_truss)
         if machine: self._build_machine()
 
     def _parent(self, ob):
@@ -374,8 +377,11 @@ class Escalator:
                 v = [bm.verts.new((a.x, y, a.z + 0.12)), bm.verts.new((b.x, y, b.z + 0.12)),
                      bm.verts.new((b.x, y, b.z + 0.86)), bm.verts.new((a.x, y, a.z + 0.86))]
                 bm.faces.new(v)
-            g = self._parent(obj_from_bm(bm, f'{self.name}Glass{sy}', [M['glass']], self.col))
-            g.visible_shadow = False
+            if self.opt['glass']:
+                g = self._parent(obj_from_bm(bm, f'{self.name}Glass{sy}', [M['glass']], self.col))
+                g.visible_shadow = False
+            else:
+                bm.free()
             # handrail (top run) as tube
             top = [Vector((p.x, y, p.z + 0.92)) for p in pts]
             bm = bmesh.new(); bm_tube(bm, top, 0.08, 0.045, 0)
@@ -393,6 +399,8 @@ class Escalator:
             self.handrail_pts[sy] = top
         # moving prints on the handrail (white marks) -> show it moves with the steps
         self.prints = []
+        if not self.opt['prints']:
+            return
         bmp = bmesh.new(); bm_box(bmp, (-0.06, -0.035, -0.002), (0.06, 0.035, 0.002), 0)
         pme = bpy.data.meshes.new(self.name + 'PrintMesh'); bmp.to_mesh(pme); bmp.free(); pme.materials.append(M['print'])
         for sy in (-1, 1):
@@ -469,6 +477,13 @@ class Escalator:
             self._parent(hw); self.hr_wheels.append(hw)
 
     # ------------------------------------------------------------------------- animation
+    def pose(self, s=0.0):
+        """place the steps once (no keyframes): for far / still shots"""
+        P = self.path
+        for i, ob in enumerate(self.steps):
+            p, th = P.at(s + i * P.pitch)
+            ob.location = p; ob.rotation_euler = (0, th, 0)
+
     def animate(self, f0, f1, fps, speed=0.75, s0=0.0, every=1):
         """bake positions for frames f0..f1; speed in m/s along the chain"""
         P = self.path
@@ -500,7 +515,7 @@ class Escalator:
                 g1.rotation_euler = (0, ang * 0.30 / 0.12, 0); g1.keyframe_insert('rotation_euler', frame=f)
                 for hw in self.hr_wheels:
                     hw.rotation_euler = (0, s / 0.16, 0); hw.keyframe_insert('rotation_euler', frame=f)
-            if hasattr(self, 'prints'):
+            if self.prints:
                 for (sy, k, ob) in self.prints:
                     pts = self.handrail_pts[sy]
                     Ltop = sum((b - a).length for a, b in zip(pts, pts[1:]))
