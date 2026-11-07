@@ -490,7 +490,7 @@ def _rest_cos(body, rig):
 def hide_under_clothes(body, rig, z_hip=0.97, z_chest=1.40, x_torso=0.16):
     """Тело под штанами и футболкой ведущего прячем маской: иначе икры и спина «протыкают» ткань
     (белые пятна на штанах сзади в S01). Ведущий всегда в длинных штанах, обуви и футболке."""
-    if any(md.type == 'MASK' for md in body.modifiers):
+    if body.modifiers.get('EskHide'):      # у MPFB своя маска (группа удаления одежды) — её не считаем
         return 0
     idx = [i for i, (x, y, z) in enumerate(_rest_cos(body, rig))
            if (z < z_hip and abs(x) < 0.26) or (z < z_chest and abs(x) < x_torso)]   # кисти в позе покоя дальше 0.4
