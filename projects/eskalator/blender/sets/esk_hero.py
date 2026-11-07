@@ -176,8 +176,8 @@ def nudge(rig, bname, dw, k=1.0):
 
 POSES = {
     # MakeHuman смотрит в -Y, левая рука (.L) на +X
-    'stand': {'upperarm01.L': (0.09, 0.03, -1.0), 'lowerarm01.L': (0.02, -0.16, -1.0),
-              'upperarm01.R': (-0.09, 0.03, -1.0), 'lowerarm01.R': (-0.02, -0.16, -1.0)},
+    'stand': {'upperarm01.L': (0.06, 0.05, -1.0), 'lowerarm01.L': (0.0, -0.22, -1.0),
+              'upperarm01.R': (-0.06, 0.05, -1.0), 'lowerarm01.R': (0.0, -0.22, -1.0)},
     'rail':  {'upperarm01.L': (0.18, 0.06, -1.0), 'lowerarm01.L': (0.08, -0.25, -1.0),
               'upperarm01.R': (-0.42, -0.10, -1.0), 'lowerarm01.R': (-0.30, -0.95, -0.25)},
     'phone': {'upperarm01.L': (0.10, 0.10, -1.0), 'lowerarm01.L': (-0.30, -0.95, 0.45),
@@ -191,6 +191,46 @@ def pose(rig, name):
     for b, d in POSES[name].items():
         if b in rig.pose.bones:
             aim(rig, b, d)
+    relax_hands(rig)
+
+
+def relax_hands(rig, k=1.0):
+    """Пальцы чуть согнуты, как у живого человека: прямые растопыренные пальцы — главный признак манекена.
+    Направление сгиба ищется по нормали ладони в текущей позе, поэтому работает при любом положении рук."""
+    P = rig.pose.bones
+    mw = rig.matrix_world
+    for side, sgn in (('L', -1.0), ('R', 1.0)):
+        need = ['wrist.' + side, 'finger2-1.' + side, 'finger3-1.' + side, 'finger5-1.' + side]
+        if not all(n in P for n in need):
+            continue
+        bpy.context.view_layer.update()
+        w = mw @ P['wrist.' + side].head
+        i2 = mw @ P['finger2-1.' + side].head
+        i3 = mw @ P['finger3-1.' + side].head
+        i5 = mw @ P['finger5-1.' + side].head
+        palm = ((i2 - i5).cross(i3 - w)).normalized() * sgn
+        for f, base in ((1, 10), (2, 18), (3, 22), (4, 26), (5, 30)):
+            for seg, mul in ((1, 1.0), (2, 1.3), (3, 0.9)):
+                n = 'finger%d-%d.%s' % (f, seg, side)
+                if n not in P:
+                    continue
+                pb = P[n]
+                pb.rotation_mode = 'XYZ'
+                pb.rotation_euler = (0, 0, 0)
+                bpy.context.view_layer.update()
+                t0 = mw @ pb.tail
+                best = (0.0, 0, 1.0)
+                for ax in (0, 2):                      # ось сгиба: та, что ведёт кончик к ладони сильнее
+                    e = [0.0, 0.0, 0.0]; e[ax] = 0.3
+                    pb.rotation_euler = e
+                    bpy.context.view_layer.update()
+                    d = ((mw @ pb.tail) - t0).dot(palm)
+                    if abs(d) > abs(best[0]):
+                        best = (d, ax, 1.0 if d > 0 else -1.0)
+                ang = math.radians(base * mul * k) * best[2] * (0.6 if f == 1 else 1.0)
+                e = [0.0, 0.0, 0.0]; e[best[1]] = ang
+                pb.rotation_euler = e
+    bpy.context.view_layer.update()
 
 
 def smile(rig, k=1.0):
