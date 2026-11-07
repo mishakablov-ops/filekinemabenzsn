@@ -271,14 +271,15 @@ F = 0.0
 M = 1.0
 CROWD = [
     # name, gender, age, weight, height, skin, hair, clothes, tints, pose, hair_rgb
-    ('P01', F, 0.45, 0.50, 0.45, 'young_caucasian_female', 'bob02', ['female_casualsuit01', 'shoes02'], {}, 'phone', (0.10, 0.06, 0.03)),
-    ('P02', M, 0.60, 0.60, 0.60, 'middleage_caucasian_male', 'short02', ['male_casualsuit02', 'shoes01'], {}, 'rail', (0.04, 0.03, 0.02)),
-    ('P03', F, 0.35, 0.45, 0.40, 'young_caucasian_female2', 'ponytail01', ['female_sportsuit01', 'shoes03'], {}, 'stand', (0.30, 0.18, 0.08)),
-    ('P04', M, 0.40, 0.45, 0.55, 'young_caucasian_male', 'short04', ['male_casualsuit04', 'shoes06'], {}, 'phone', (0.05, 0.035, 0.02)),
-    ('P05', M, 0.80, 0.65, 0.45, 'old_caucasian_male', 'short03', ['male_worksuit01', 'shoes05'], {}, 'rail', (0.30, 0.30, 0.30)),
+    # Тинты затемняют одинаковые голубые футболки/джинсы MakeHuman: в ноябрьском метро одеты темнее.
+    ('P01', F, 0.45, 0.50, 0.45, 'young_caucasian_female', 'bob02', ['female_casualsuit01', 'shoes02'], {'female_casualsuit01': (0.45, 0.40, 0.42)}, 'phone', (0.10, 0.06, 0.03)),
+    ('P02', M, 0.60, 0.60, 0.60, 'middleage_caucasian_male', 'short02', ['male_casualsuit02', 'shoes01'], {'male_casualsuit02': (0.30, 0.30, 0.32)}, 'rail', (0.04, 0.03, 0.02)),
+    ('P03', F, 0.35, 0.45, 0.40, 'young_caucasian_female2', 'ponytail01', ['female_sportsuit01', 'shoes03'], {'female_sportsuit01': (0.35, 0.25, 0.30)}, 'stand', (0.30, 0.18, 0.08)),
+    ('P04', M, 0.40, 0.45, 0.55, 'young_caucasian_male', 'short04', ['male_casualsuit04', 'shoes06'], {'male_casualsuit04': (0.55, 0.45, 0.35)}, 'phone', (0.05, 0.035, 0.02)),
+    ('P05', M, 0.80, 0.65, 0.45, 'old_caucasian_male', 'short03', ['male_worksuit01', 'shoes05'], {'male_worksuit01': (0.30, 0.33, 0.40)}, 'rail', (0.30, 0.30, 0.30)),
     ('P06', F, 0.70, 0.60, 0.35, 'middleage_caucasian_female', 'bob01', ['female_elegantsuit01', 'shoes04'], {}, 'rail', (0.20, 0.10, 0.05)),
-    ('P07', M, 0.45, 0.50, 0.65, 'young_asian_male', 'short02', ['male_casualsuit06', 'shoes02'], {}, 'pocket', (0.02, 0.02, 0.02)),
-    ('P08', F, 0.40, 0.48, 0.50, 'young_caucasian_female', 'long01', ['female_casualsuit02', 'shoes03'], {}, 'phone', (0.05, 0.03, 0.02)),
+    ('P07', M, 0.45, 0.50, 0.65, 'young_asian_male', 'short02', ['male_casualsuit06', 'shoes02'], {'male_casualsuit06': (0.25, 0.27, 0.30)}, 'pocket', (0.02, 0.02, 0.02)),
+    ('P08', F, 0.40, 0.48, 0.50, 'young_caucasian_female', 'long01', ['female_casualsuit02', 'shoes03'], {'female_casualsuit02': (0.60, 0.40, 0.45)}, 'phone', (0.05, 0.03, 0.02)),
     ('P09', M, 0.55, 0.55, 0.50, 'middleage_caucasian_male', 'short01', ['male_casualsuit03', 'shoes01'], {}, 'stand', (0.06, 0.04, 0.03)),
     ('P10', M, 0.30, 0.42, 0.55, 'young_caucasian_male2', 'cortu_short_messy_hair', ['male_casualsuit05', 'shoes06'], {}, 'rail', (0.12, 0.08, 0.04)),
 ]
