@@ -176,8 +176,8 @@ def nudge(rig, bname, dw, k=1.0):
 
 POSES = {
     # MakeHuman смотрит в -Y, левая рука (.L) на +X
-    'stand': {'upperarm01.L': (0.18, 0.06, -1.0), 'lowerarm01.L': (0.08, -0.25, -1.0),
-              'upperarm01.R': (-0.18, 0.06, -1.0), 'lowerarm01.R': (-0.08, -0.25, -1.0)},
+    'stand': {'upperarm01.L': (0.09, 0.03, -1.0), 'lowerarm01.L': (0.02, -0.16, -1.0),
+              'upperarm01.R': (-0.09, 0.03, -1.0), 'lowerarm01.R': (-0.02, -0.16, -1.0)},
     'rail':  {'upperarm01.L': (0.18, 0.06, -1.0), 'lowerarm01.L': (0.08, -0.25, -1.0),
               'upperarm01.R': (-0.42, -0.10, -1.0), 'lowerarm01.R': (-0.30, -0.95, -0.25)},
     'phone': {'upperarm01.L': (0.10, 0.10, -1.0), 'lowerarm01.L': (-0.30, -0.95, 0.45),
@@ -200,9 +200,13 @@ def smile(rig, k=1.0):
 
 
 # ---------------------------------------------------------------- очки
-def glasses(rig, name='Glasses', eye_x=0.0305, plane_y=-0.181, a=0.0235, bh=0.0165, th=0.0018):
-    """Очки кривыми с толщиной, привязаны к кости head. Размеры под тело MPFB ростом ~1.67 м."""
+def glasses(rig, name='Glasses', eye_x=0.0305, plane_y=-0.165, a=0.0235, bh=0.0165, th=0.0018):
+    """Очки кривыми с толщиной, привязаны к кости head.
+    Посадка снята лучами с головы ведущего (07.11.2026, после «очки летают»): перемычка лежит на переносице
+    (кожа y=-0.157 на высоте зрачков), носоупоры касаются носа, линзы в ~1.5 см от глаз, дужки идут
+    по виску (x=0.054..0.075) поверх уха (верх уха z≈1.69) и заходят за ухо вниз."""
     eye_z = (rig.matrix_world @ rig.pose.bones['eye.L'].head).z
+    dz = eye_z - 1.6854                       # всё ниже измерено при eye_z = 1.6854
     mf = bpy.data.materials.get('GlassesFrame') or bpy.data.materials.new('GlassesFrame')
     mf.use_nodes = True
     b = mf.node_tree.nodes['Principled BSDF']
@@ -223,33 +227,38 @@ def glasses(rig, name='Glasses', eye_x=0.0305, plane_y=-0.181, a=0.0235, bh=0.01
     zc = eye_z + 0.003
     lens = {}
 
-    def poly(pts, cyc=False):
+    def poly(pts, cyc=False, depth=None):
         sp = cu.splines.new('POLY')
         sp.points.add(len(pts) - 1)
         for p, co in zip(sp.points, pts):
-            p.co = (*co, 1)
+            p.co = (co[0], co[1], co[2], 1)
         sp.use_cyclic_u = cyc
+        return sp
 
     for sx in (1, -1):
         cx = sx * eye_x
         pts = []
         for i in range(48):
             t = 2 * math.pi * i / 48
-            c, s = math.cos(t), math.sin(t)
+            c, s_ = math.cos(t), math.sin(t)
             x = a * math.copysign(abs(c) ** (2 / n), c)
-            z = bh * math.copysign(abs(s) ** (2 / n), s)
+            z = bh * math.copysign(abs(s_) ** (2 / n), s_)
             if z < 0:
                 x *= 1 - 0.10 * (-z / bh)
             o = max(0.0, sx * x) / a
             pts.append((cx + x, plane_y + 0.007 * o * o, zc + z))
         poly(pts, True)
         lens[sx] = pts
-        hx = sx * (eye_x + a + 0.002)
-        poly([(hx, plane_y + 0.008, zc + 0.009), (sx * 0.064, -0.165, zc + 0.009), (sx * 0.069, -0.13, zc + 0.008),
-              (sx * 0.072, -0.09, zc + 0.006), (sx * 0.075, -0.06, zc + 0.002), (sx * 0.074, -0.045, zc - 0.010),
-              (sx * 0.071, -0.037, zc - 0.026)])
-    poly([(-eye_x + a * 0.9, plane_y - 0.0005, zc + 0.006), (-0.005, plane_y - 0.003, zc + 0.009),
-          (0.005, plane_y - 0.003, zc + 0.009), (eye_x - a * 0.9, plane_y - 0.0005, zc + 0.006)])
+        # дужка: шарнир -> висок -> над ухом -> за ухо вниз
+        Z = 1.698 + dz
+        poly([(sx * 0.0565, plane_y + 0.0065, zc + 0.009), (sx * 0.059, -0.150, Z), (sx * 0.0655, -0.130, Z),
+              (sx * 0.0685, -0.100, Z), (sx * 0.0720, -0.075, Z), (sx * 0.0765, -0.055, Z - 0.001),
+              (sx * 0.0775, -0.040, Z - 0.005), (sx * 0.0765, -0.030, Z - 0.016), (sx * 0.0745, -0.024, Z - 0.033)])
+        # носоупор: дужка от нижнего внутреннего края оправы к носу
+        poly([(sx * 0.0092, plane_y + 0.0003, zc - 0.012), (sx * 0.0088, -0.1620, zc - 0.014), (sx * 0.0085, -0.1607, zc - 0.0155)])
+    # перемычка лежит на переносице
+    poly([(-eye_x + a * 0.9, plane_y, zc + 0.006), (-0.0045, -0.1612, zc + 0.0085), (0.0, -0.1605, zc + 0.009),
+          (0.0045, -0.1612, zc + 0.0085), (eye_x - a * 0.9, plane_y, zc + 0.006)])
     fr = bpy.data.objects.new(name, cu)
     fr.data.materials.append(mf)
     me = bpy.data.meshes.new(name + '_lens')
@@ -261,11 +270,23 @@ def glasses(rig, name='Glasses', eye_x=0.0305, plane_y=-0.181, a=0.0235, bh=0.01
         c = len(verts) - 1
         for i in range(len(pts)):
             faces.append((base + i, base + (i + 1) % len(pts), c))
+    # прозрачные подушечки носоупоров
+    import bmesh
+    bm = bmesh.new()
+    for sx in (1, -1):
+        r = bmesh.ops.create_uvsphere(bm, u_segments=10, v_segments=6, radius=1.0)
+        for v in r['verts']:
+            v.co = Vector((v.co.x * 0.0028, v.co.y * 0.0012, v.co.z * 0.0055)) + Vector((sx * 0.0083, -0.1597, zc - 0.0158))
+    pad = bpy.data.meshes.new(name + '_pads')
+    bm.to_mesh(pad)
+    bm.free()
     me.from_pydata(verts, [], faces)
     me.materials.append(ml)
     ln = bpy.data.objects.new(name + '_lens', me)
+    pd = bpy.data.objects.new(name + '_pads', pad)
+    pad.materials.append(ml)
     col = rig.users_collection[0]
-    for o in (fr, ln):
+    for o in (fr, ln, pd):
         col.objects.link(o)
         mw = o.matrix_world.copy()
         o.parent = rig

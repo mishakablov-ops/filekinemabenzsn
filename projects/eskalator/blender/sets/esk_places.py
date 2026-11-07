@@ -95,42 +95,60 @@ def ground_section(rise=63.0, seed=2):
     rnd = random.Random(seed)
     L = rise / math.sin(math.radians(30))
     run = L * math.cos(math.radians(30))
-    # земля: слои
+    # земля: слои; вырезы (туннель, шахта к вестибюлю, зал станции) делаем колонками, без boolean
     layers = [('#6B4A2F', 0, 4), ('#8A6A45', 4, 15), ('#A88A5C', 15, 30), ('#7D7468', 30, 48), ('#5E5953', 48, 90)]
-    bm = bmesh.new()
-    for i, (c, a, b) in enumerate(layers):
-        E.bm_box(bm, (-70, 0, -b), (run + 60, 30, -a), i)
-    earth = E.obj_from_bm(bm, 'Earth', [E.mat('Earth%d' % i, c, rough=0.95) for i, (c, a, b) in enumerate(layers)], col)
-    # асфальт, тротуар, газон на поверхности
-    bm = bmesh.new()
-    E.bm_box(bm, (-70, -30, -0.2), (run + 60, 0, 0), 0)
-    E.bm_box(bm, (-70, -14, 0), (run + 60, -6, 0.02), 1)
-    E.obj_from_bm(bm, 'Surface', [E.mat('Pavement', '#9C9A96', rough=0.9), E.mat('Asphalt', '#3A3B3E', rough=0.85)], col)
-    # туннель: труба в разрезе (половина ближе к камере срезана), внутри три ленты ступеней
     tun_r = 4.2
-    # вырез в земле под туннель, шахту к вестибюлю и зал станции (boolean, резак скрыт)
     def zc0(x):
         return -6.0 - x * math.tan(math.radians(30))
-    me = bpy.data.meshes.new('EarthCutter')
-    bmc = bmesh.new()
-    def prism(xa, xb, ya, yb, lo, hi, f):
-        vs = [bmc.verts.new((x, y, f(x) + z)) for x in (xa, xb) for y in (ya, yb) for z in (lo, hi)]
-        idx = [(0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)]
-        for q in idx:
-            bmc.faces.new([vs[i] for i in q])
-    prism(-2.0, run + 2.0, -1.0, 8.6, -1.6, 1.0 + tun_r * 0.8 + 0.3, zc0)
-    prism(-4.0, 1.0, -1.0, 8.6, -8.0, 0.5, lambda x: 0.0)
-    prism(run - 3.0, run + 41.0, -1.0, 12.5, -1.5, 7.6, lambda x: zc0(run) - 1.0)
-    bmesh.ops.recalc_face_normals(bmc, faces=bmc.faces)
-    bmc.to_mesh(me); bmc.free()
-    cutter = bpy.data.objects.new('EarthCutter', me)
-    col.objects.link(cutter)
-    cutter.hide_render = True
-    cutter.display_type = 'WIRE'
-    md = earth.modifiers.new('Cut', 'BOOLEAN')
-    md.operation = 'DIFFERENCE'
-    md.object = cutter
-    md.solver = 'EXACT'
+    zst = zc0(run) - 1.0
+    holes = [  # (x_from, x_to, lo(x), hi(x), y задней стенки)
+        (-2.0, run + 2.0, lambda x: zc0(x) - 1.6, lambda x: zc0(x) + 1.0 + tun_r * 0.8 + 0.3, 8.6),
+        (-4.0, 1.0, lambda x: -8.0, lambda x: 0.5, 8.6),
+        (run - 3.0, run + 41.0, lambda x: zst - 1.5, lambda x: zst + 7.6, 12.5),
+    ]
+    bm = bmesh.new()
+    def prism(xa, xb, ya, yb, flo, fhi, mi):
+        za0, za1, zb0, zb1 = flo(xa), fhi(xa), flo(xb), fhi(xb)
+        za1 = max(za0, za1); zb1 = max(zb0, zb1)
+        if za1 - za0 < 1e-3 and zb1 - zb0 < 1e-3:
+            return
+        P = [(xa, ya, za0), (xb, ya, zb0), (xb, ya, zb1), (xa, ya, za1), (xa, yb, za0), (xb, yb, zb0), (xb, yb, zb1), (xa, yb, za1)]
+        v = [bm.verts.new(p) for p in P]
+        for q in ((0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (3, 7, 6, 2), (0, 4, 7, 3), (1, 2, 6, 5)):
+            bm.faces.new([v[i] for i in q]).material_index = mi
+    dx = 0.5
+    x = -70.0
+    while x < run + 60:
+        xa, xb = x, min(x + dx, run + 60)
+        xm = (xa + xb) / 2
+        cuts = [h for h in holes if h[0] <= xm <= h[1]]
+        for li, (c, a_, b_) in enumerate(layers):
+            pieces = [((lambda z: (lambda x: z))(-b_), (lambda z: (lambda x: z))(-a_))]
+            inside = []
+            for (h0, h1, hlo, hhi, yb) in cuts:
+                nxt = []
+                for (flo, fhi) in pieces:
+                    lo, hi, hl, hh = flo(xm), fhi(xm), hlo(xm), hhi(xm)
+                    if hh <= lo or hl >= hi:
+                        nxt.append((flo, fhi)); continue
+                    if hl > lo:
+                        nxt.append((flo, hlo))
+                    if hh < hi:
+                        nxt.append((hhi, fhi))
+                    inside.append(((lambda f, g: (lambda x: max(f(x), g(x))))(flo, hlo),
+                                   (lambda f, g: (lambda x: min(f(x), g(x))))(fhi, hhi), yb))
+                pieces = nxt
+            for (flo, fhi) in pieces:
+                prism(xa, xb, 0.0, 30.0, flo, fhi, li)
+            for (flo, fhi, yb) in inside:
+                prism(xa, xb, yb, 30.0, flo, fhi, li)
+        x = xb
+    earth = E.obj_from_bm(bm, 'Earth', [E.mat('Earth%d' % i, c, rough=0.95) for i, (c, a, b) in enumerate(layers)], col)
+    # улица на поверхности за срезом: асфальт и тротуар (до плоскости среза ничего нет)
+    bm = bmesh.new()
+    E.bm_box(bm, (-70, 0.0, 0.0), (run + 60, 30, 0.02), 0)
+    E.bm_box(bm, (2.0, 15.0, 0.02), (run + 60, 22.0, 0.04), 1)
+    E.obj_from_bm(bm, 'Surface', [E.mat('Pavement', '#9C9A96', rough=0.9), E.mat('Asphalt', '#3A3B3E', rough=0.85)], col)
     bm = bmesh.new()
     n = 18
     xs = [i * 1.0 for i in range(int(run) + 1)]
@@ -189,26 +207,29 @@ def ground_section(rise=63.0, seed=2):
     mm = MT.M()
     _txt(col, 'M', 2.2, mm['metro_m'], loc=(-7, -0.35, 7.6), extrude=0.15, name='MetroM')
     # дом в 20 этажей рядом с вестибюлем: высота = подъём эскалатора
-    hs, H = panel_building(col, -52, 1.0, 0.0, w=30, d=12, floors=20, fh=rise / 20.0, seed=5)
+    hs, H = panel_building(col, run - 34, 1.0, 0.0, w=30, d=12, floors=20, fh=rise / 20.0, seed=5)
     # улица: машины, деревья, фонари
     cols = ['#C0392B', '#2C3E50', '#ECF0F1', '#16A085', '#7F8C8D', '#F1C40F', '#2980B9']
     for i in range(14):
-        car(col, (-60 + i * 7.5 + rnd.uniform(-1, 1), -10.0 + (i % 2) * 3.4, 0.0), 0 if i % 2 else math.pi, cols[i % len(cols)])
-    for i in range(10):
-        tree(col, (-58 + i * 9 + rnd.uniform(-1, 1), -4.0, 0.0), h=rnd.uniform(5, 7), seed=i)
+        car(col, (5 + i * 7.5 + rnd.uniform(-1, 1), 16.8 + (i % 2) * 3.4, 0.04), 0 if i % 2 else math.pi, cols[i % len(cols)])
+    for i in range(14):
+        xt = -68 + i * 11 + rnd.uniform(-1, 1)
+        if run - 36 < xt < run - 2 or -16 < xt < 2:
+            continue
+        tree(col, (xt, 3.0, 0.02), h=rnd.uniform(5, 7), seed=i)
     bm = bmesh.new()
     for i in range(9):
-        x = -55 + i * 11
-        E.bm_cyl(bm, Vector((x, -5.5, 3.5)), 0.08, 7.0, 'Z', 8, 0)
-        E.bm_box(bm, (x - 0.1, -6.6, 6.9), (x + 0.1, -5.5, 7.05), 0)
+        x = 4 + i * 11
+        E.bm_cyl(bm, Vector((x, 14.0, 3.5)), 0.08, 7.0, 'Z', 8, 0)
+        E.bm_box(bm, (x - 0.1, 14.0, 6.9), (x + 0.1, 15.1, 7.05), 0)
     E.obj_from_bm(bm, 'StreetLamps', [E.mat('LampPole', '#3A3D42', rough=0.4, metal=0.7)], col)
     # высотные метки «63 м»: рядом с домом и у туннеля
     red = E.mat('SecMark', '#E21B23', rough=0.4, emit=2.0)
     bm = bmesh.new()
-    E.bm_tube(bm, [Vector((-20.0, -0.5, 0.0)), Vector((-20.0, -0.5, H))], 0.25, 0.25, 0)
+    E.bm_tube(bm, [Vector((run - 37.0, -0.5, 0.0)), Vector((run - 37.0, -0.5, H))], 0.25, 0.25, 0)
     E.bm_tube(bm, [Vector((run + 2, -0.5, zb)), Vector((run + 2, -0.5, 0.0))], 0.25, 0.25, 0)
     for z in (0.0, H):
-        E.bm_tube(bm, [Vector((-21.5, -0.5, z)), Vector((-18.5, -0.5, z))], 0.25, 0.25, 0)
+        E.bm_tube(bm, [Vector((run - 38.5, -0.5, z)), Vector((run - 35.5, -0.5, z))], 0.25, 0.25, 0)
     for z in (zb, 0.0):
         E.bm_tube(bm, [Vector((run + 0.5, -0.5, z)), Vector((run + 3.5, -0.5, z))], 0.25, 0.25, 0)
     E.obj_from_bm(bm, 'HeightMarks', [red], col)

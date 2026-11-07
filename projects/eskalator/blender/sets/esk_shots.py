@@ -116,7 +116,7 @@ def fill_steps(sc, m, dur, rng, density=0.5, skip=(), margin=1.1):
     return k_n
 
 
-def fill_hall(sc, m, rng, n=30, top=True, depth=11.0):
+def fill_hall(sc, m, rng, n=30, top=True, depth=11.0, avoid=()):
     ppl = crowd()
     if not ppl:
         return 0
@@ -136,6 +136,8 @@ def fill_hall(sc, m, rng, n=30, top=True, depth=11.0):
         y = rng.uniform(-W / 2 + 0.7, W / 2 - 0.7)
         if near and min(abs(y - ly) for ly in lanes) < 0.85:
             continue
+        if any((x - ax) ** 2 + (y - ay) ** 2 < ar * ar for (ax, ay, ar) in avoid):
+            continue
         H.place_person(sc, rng.choice(ppl), (x, y, z), rng.uniform(0, 2 * math.pi))
         c += 1
     return c
@@ -145,15 +147,15 @@ def metro_light(strength=0.25):
     S.world('#FFE8C8', strength)
 
 
-def metro(sc, fps, rise=6.0, lanes=3, every=1, seed=1, density=0.55, hall_n=30, skip=(), lamp_every=3.2, speeds=None):
+def metro(sc, fps, rise=6.0, lanes=3, every=1, seed=1, density=0.55, hall_n=30, skip=(), lamp_every=3.2, speeds=None, avoid=()):
     n = sc.frame_end
     m = MT.build(rise=rise, lanes=lanes, animate=(1, n, fps), every=every, lamp_every=lamp_every, speeds=speeds)
     rng = random.Random(seed)
     dur = n / fps
     fill_steps(sc, m, dur, rng, density=density, skip=skip)
     if hall_n:
-        fill_hall(sc, m, rng, n=hall_n, top=True)
-        fill_hall(sc, m, rng, n=hall_n // 2, top=False)
+        fill_hall(sc, m, rng, n=hall_n, top=True, avoid=avoid)
+        fill_hall(sc, m, rng, n=hall_n // 2, top=False, avoid=avoid)
     metro_light()
     return m
 
@@ -163,7 +165,7 @@ def studio_esk(sc, dur, fps, near_truss=True, s0=0.0, speed=0.75, rise=3.0):
     if not near_truss:
         bpy.data.objects.remove(esk.truss[-1])
     esk.animate(1, sc.frame_end, fps, speed=speed, s0=s0)
-    S.world('#F3F1EE', 0.8); S.backdrop(center=(4, 0, 0)); S.lights(center=(4, 0, 1.5))
+    S.world('#F3F1EE', 0.8, cam_col='#B5121B'); S.backdrop(center=(4, 0, 0)); S.lights(center=(4, 0, 1.5))
     return esk
 
 
@@ -196,7 +198,7 @@ def S02(sc, dur, fps, info):      # «Вверх ногами» - обратна
 def S03(sc, dur, fps, info):      # «Эскалатор это одна длинная петля» - вся петля, 3/4 снизу
     studio_esk(sc, dur, fps)
     # снизу-сбоку вдоль подъёма: петля уходит по диагонали кадра и заполняет вертикаль
-    cam_move(sc, dur, fps, (-3.6, -3.4, -0.9), (-2.6, -3.9, -0.4), (4.2, 0, 1.4), (4.6, 0, 1.6), lens=(22, 22))
+    cam_move(sc, dur, fps, (-1.4, -2.3, -0.35), (-0.8, -2.6, 0.05), (3.4, 0, 1.25), (3.9, 0, 1.45), lens=(18, 18))
     return {}
 
 
@@ -228,9 +230,9 @@ def S07(sc, dur, fps, info):      # «У каждой ступени две па
     n = sc.frame_end
     for f in range(1, n + 1):
         u = (f - 1) / max(1, n - 1)
-        st.rotation_euler = (0, 0, math.radians(-35 + 70 * u)); st.keyframe_insert('rotation_euler', frame=f)
-    S.world('#F3F1EE', 0.9); S.backdrop(center=(0, 0, 0), wall_y=2.0); S.lights(center=(0, 0, 0.8))
-    cam_move(sc, dur, fps, (-1.05, -1.25, 1.55), (-0.95, -1.05, 1.40), (-0.17, 0, 0.72), (-0.17, 0, 0.74), lens=(45, 50), dof=4.0)
+        st.rotation_euler = (0, 0, math.radians(20 + 55 * u)); st.keyframe_insert('rotation_euler', frame=f)
+    S.world('#F3F1EE', 0.9, cam_col='#B5121B'); S.backdrop(center=(0, 0, 0), wall_y=2.0); S.lights(center=(0, 0, 0.8))
+    cam_move(sc, dur, fps, (-1.35, -1.55, 1.70), (-1.20, -1.35, 1.55), (-0.17, 0, 0.72), (-0.17, 0, 0.74), lens=(52, 58), dof=4.0)
     return {}
 
 
@@ -278,7 +280,7 @@ def S12(sc, dur, fps, info):      # «чтобы в щель не затянул
     y = e.origin.y
     z = P.rise + E.TREAD_Z
     cam_move(sc, dur, fps, (xc + 0.45, y - 0.12, z + 0.16), (xc + 0.32, y - 0.10, z + 0.12),
-             (xc - 0.45, y + 0.04, z + 0.02), (xc - 0.25, y + 0.05, z + 0.01), lens=(28, 32), dof=4.0)
+             (xc - 0.45, y + 0.04, z + 0.06), (xc - 0.22, y + 0.06, z + 0.04), lens=(55, 65), dof=2.8)
     return {}
 
 
@@ -312,7 +314,8 @@ def S14(sc, dur, fps, info):      # «поэтому он едет с той ж�
 
 # ============================================================================= 7. Москва
 def S15(sc, dur, fps, info):      # «В московском метро таких машин 1133» - зал наверху, вниз уходят 3 ленты
-    m = metro(sc, fps, rise=6.0, seed=15, density=0.7, hall_n=45)
+    P0 = E.Path(rise=6.0, land_lo=3.0, land_hi=3.0)
+    m = metro(sc, fps, rise=6.0, seed=15, density=0.7, hall_n=45, avoid=[(P0.x1 + 5.5, 1.2, 2.6)])
     P = m['path']
     zt = P.rise + E.TREAD_Z
     cam_move(sc, dur, fps, (P.x1 + 6.5, 1.6, zt + 3.4), (P.x1 + 4.6, 0.8, zt + 2.9), (P.x0 + 2, 0, 1.0), (P.x0 + 1, 0, 0.6), lens=(22, 24))
@@ -341,7 +344,7 @@ def S17(sc, dur, fps, info):      # «а подъём на 63 метра. Это
     sc.collection.objects.link(so)
     run, zb = g['run'], g['zb']
     # портрет: смотрим на разрез под углом ~58°, чтобы туннель (109 м по горизонтали) сжался и дом с глубиной влезли по высоте
-    cam_move(sc, dur, fps, (70, -30, -40), (-43, -39, 5), (100, 2, -58), (22, 0, -4), lens=(28, 30), p=1.6)
+    cam_move(sc, dur, fps, (run - 4, -38, -48), (run - 14, -122, -4), (run - 4, 0, -52), (run - 14, 0, -4), lens=(40, 50), p=1.6)
     return {}
 
 
@@ -416,19 +419,25 @@ def S20B(sc, dur, fps, info):     # «так уже звали любую дви
             for k in range(14):
                 x = rng.uniform(P.x0 - 7, P.x1 + 7); y = rng.choice([-1, 1]) * rng.uniform(7.5, 11.5)
                 H.place_person(sc, rng.choice(ppl), (x, y, lvl * d['lvl'] + E.TREAD_Z), rng.uniform(0, 6.28))
-    S.world('#F4F2EE', 0.25)
-    S.area('Sky', ((P.x0 + P.x1) / 2, 0, 18), ((P.x0 + P.x1) / 2, 0, 0), 9000, 14, col='#FFFFFF')
+    S.world('#F4F2EE', 0.2)
     cx = (P.x0 + P.x1) / 2
-    cam_move(sc, dur, fps, (cx - 1, -10.5, 1.8), (cx + 0.5, -10.0, 8.5), (cx, 0, 4.0), (cx, 0, 8.0), lens=(22, 22))
+    S.area('Sky', (cx, 0, 18), (cx, 0, 0), 6000, 14, col='#FFFFFF')
+    for lv in range(3):
+        for xx in (P.x0 - 4, cx, P.x1 + 4):
+            for yy in (-9.5, 9.5):
+                S.area('Ceil', (xx, yy, lv * d['lvl'] + 4.3), (xx, yy, lv * d['lvl']), 600, 3.0, col='#FFF4E6', shadow=False)
+    cam_move(sc, dur, fps, (P.x0 - 0.6, -4.6, 1.7), (P.x0 + 0.4, -4.4, 8.8), (P.x1 + 1, 0.8, 4.2), (P.x1 + 1, 0.8, 9.2), lens=(20, 20))
     return {}
 
 
 # ============================================================================= 9. Концовка
 def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал что-то новое» - ведущий поворачивается к камере
-    m = metro(sc, fps, rise=6.0, seed=21, density=0.6, hall_n=40)
+    P0 = E.Path(rise=6.0, land_lo=3.0, land_hi=3.0)
+    hx, hy = P0.x1 + 3.2, -3.9
+    m = metro(sc, fps, rise=6.0, seed=21, density=0.6, hall_n=40,
+              avoid=[(hx, hy, 1.3), (hx + 0.6, hy - 0.75, 1.0), (hx + 1.2, hy - 1.45, 1.2), (hx + 2.0, hy - 2.4, 1.2)])
     P = m['path']
     zt = P.rise + E.TREAD_Z
-    hx, hy = P.x1 + 3.2, -3.9
     rig = hero(sc, loc=(hx, hy, zt), rot_z=0.0, pose='stand')
     n = sc.frame_end
     if rig:

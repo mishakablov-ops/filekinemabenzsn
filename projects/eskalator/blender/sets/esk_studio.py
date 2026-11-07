@@ -3,11 +3,23 @@ import bpy, bmesh, math
 from mathutils import Vector
 import esk_mech as E
 
-def world(col='#F3F1EE', strength=0.9):
+def world(col='#F3F1EE', strength=0.9, cam_col=None):
+    """world light; cam_col: what the camera sees where there is no geometry (red studio), lighting stays col"""
     w = bpy.data.worlds.new('EskWorld'); bpy.context.scene.world = w
     w.use_nodes = True
-    bg = w.node_tree.nodes['Background']
+    nt = w.node_tree
+    bg = nt.nodes['Background']
     bg.inputs['Color'].default_value = E.srgb(col); bg.inputs['Strength'].default_value = strength
+    if cam_col:
+        bg2 = nt.nodes.new('ShaderNodeBackground')
+        bg2.inputs['Color'].default_value = E.srgb(cam_col); bg2.inputs['Strength'].default_value = 1.0
+        lp = nt.nodes.new('ShaderNodeLightPath')
+        mix = nt.nodes.new('ShaderNodeMixShader')
+        out = nt.nodes['World Output']
+        nt.links.new(lp.outputs['Is Camera Ray'], mix.inputs[0])
+        nt.links.new(bg.outputs[0], mix.inputs[1])
+        nt.links.new(bg2.outputs[0], mix.inputs[2])
+        nt.links.new(mix.outputs[0], out.inputs['Surface'])
     return w
 
 def backdrop(center=(4, 0, 0), size=40, col_floor='#F2F2F2', col_wall='#C4141C', wall_y=3.2):
@@ -52,7 +64,7 @@ def camera(loc, target, lens=35, name='Cam'):
 
 def render_setup(engine='CYCLES', w=1080, h=1920, pct=100, samples=64, fps=30):
     sc = bpy.context.scene
-    r = sc.render; r.engine = engine
+    r = sc.render; r.engine = {'EEVEE': 'BLENDER_EEVEE'}.get(engine, engine)
     r.resolution_x, r.resolution_y, r.resolution_percentage = w, h, pct
     r.fps = fps
     if engine == 'CYCLES':
