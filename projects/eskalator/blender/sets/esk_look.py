@@ -507,6 +507,22 @@ def hide_under_clothes(body, rig, z_hip=0.97, z_chest=1.40, x_torso=0.16):
     return len(idx)
 
 
+def trim_shoes(ob, rig, z_top=0.115):
+    """Задник/язык кедов выше щиколотки протыкает штаны сзади (светлые овалы на икрах в S01) — срезаем маской."""
+    if ob.modifiers.get('EskHide'):
+        return 0
+    idx = [i for i, (x, y, z) in enumerate(_rest_cos(ob, rig)) if z > z_top]
+    if not idx:
+        return 0
+    vg = ob.vertex_groups.new(name='esk_hidden')
+    vg.add(idx, 1.0, 'REPLACE')
+    md = ob.modifiers.new('EskHide', 'MASK')
+    md.vertex_group = 'esk_hidden'
+    md.invert_vertex_group = True
+    ob.modifiers.move(ob.modifiers.find(md.name), 0)
+    return len(idx)
+
+
 def _stubble(g, pb):
     """в группу кожи: точки щетины по маске 'esk_beard' (нет атрибута = 0, у толпы ничего не меняется)"""
     at = _n(g, 'ShaderNodeAttribute', -1200, -1200, attribute_type='GEOMETRY', attribute_name='esk_beard')
@@ -639,6 +655,9 @@ def apply(sc=None, tex_dir=TEX_DIR, bevel=True):
                 any(s.material and s.material.name.startswith('Hero.body') for s in ob.material_slots):
             stats['beard_verts'] = beard_mask(ob, ob.parent)
             stats['hidden_verts'] = hide_under_clothes(ob, ob.parent)
+            for o2 in ob.parent.children:
+                if o2.type == 'MESH' and any(s.material and 'shoes' in s.material.name for s in o2.material_slots):
+                    stats['shoe_trim'] = trim_shoes(o2, ob.parent)
     nb = bevel_edges() if bevel else 0
     render_quality(sc)
     stats['bevel'] = nb
