@@ -60,6 +60,10 @@ def obj_from_bm(bm, name, mats, col, loc=(0, 0, 0), smooth=False):
     for m in mats: me.materials.append(m)
     if smooth:
         for p in me.polygons: p.use_smooth = True
+        try:
+            me.set_sharp_from_angle(angle=math.radians(35))   # boxes stay crisp, cylinders smooth (no «blob» motor)
+        except Exception:
+            pass
     ob = bpy.data.objects.new(name, me); ob.location = loc
     col.objects.link(ob)
     return ob

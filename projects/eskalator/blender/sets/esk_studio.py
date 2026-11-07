@@ -10,7 +10,7 @@ def world(col='#F3F1EE', strength=0.9):
     bg.inputs['Color'].default_value = E.srgb(col); bg.inputs['Strength'].default_value = strength
     return w
 
-def backdrop(center=(4, 0, 0), size=40, col_floor='#F2F2F2', col_wall='#D8262C', wall_y=3.2):
+def backdrop(center=(4, 0, 0), size=40, col_floor='#F2F2F2', col_wall='#C4141C', wall_y=3.2):
     c = E.coll('Studio')
     bm = bmesh.new(); E.bm_box(bm, (-size / 2, -size / 2, -2.1), (size / 2, size / 2, -2.0), 0)
     fl = E.obj_from_bm(bm, 'StudioFloor', [E.mat('StudioFloor', col_floor, rough=0.4)], c, loc=center)
@@ -24,7 +24,7 @@ def backdrop(center=(4, 0, 0), size=40, col_floor='#F2F2F2', col_wall='#D8262C',
         rows.append([bm.verts.new((x, y, z)) for (y, z) in prof])
     for k in range(len(prof) - 1):
         bm.faces.new([rows[0][k], rows[1][k], rows[1][k + 1], rows[0][k + 1]])
-    wall = E.obj_from_bm(bm, 'StudioWall', [E.mat('StudioWall', col_wall, rough=0.6)], c, loc=(center[0], 0, center[2]), smooth=True)
+    wall = E.obj_from_bm(bm, 'StudioWall', [E.mat('StudioWall', col_wall, rough=0.75)], c, loc=(center[0], 0, center[2]), smooth=True)
     return fl, wall
 
 def area(name, loc, target, energy, size, col='#FFFFFF', shadow=True):

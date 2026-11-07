@@ -126,17 +126,46 @@ def make_human(name, ph, skin, hair, clothes, eyebrows='eyebrow001', eyes='high-
 
 
 # ---------------------------------------------------------------- поза
-def aim(rig, bname, world_dir):
-    """Повернуть кость так, чтобы её ось Y смотрела в world_dir (мировые координаты)."""
+def aim(rig, bname, char_dir, world=False):
+    """Повернуть кость так, чтобы её ось Y смотрела в char_dir: в осях персонажа (MakeHuman: лицом в -Y,
+    левая рука на +X), или в мировых осях при world=True. Так позы работают при любом повороте рига."""
     pb = rig.pose.bones[bname]
     pb.rotation_mode = 'QUATERNION'
     pb.rotation_quaternion = (1, 0, 0, 0)
     bpy.context.view_layer.update()
     M = (rig.matrix_world @ pb.matrix).to_3x3().normalized()
     cur = M.col[1]
-    q = cur.rotation_difference(Vector(world_dir).normalized())
+    want = Vector(char_dir) if world else rig.matrix_world.to_3x3().normalized() @ Vector(char_dir)
+    q = cur.rotation_difference(want.normalized())
     pb.rotation_quaternion = (M.inverted() @ q.to_matrix() @ M).to_quaternion()
     bpy.context.view_layer.update()
+
+
+def reach(rig, side, target, pole=(0, 0, -1)):
+    """Двухзвенная IK руки: кисть (wrist.<side>) в мировую точку target, локоть в сторону pole (мир)."""
+    for b in ('upperarm01.', 'upperarm02.', 'lowerarm01.', 'lowerarm02.'):
+        pb = rig.pose.bones.get(b + side)
+        if pb:
+            pb.rotation_mode = 'QUATERNION'
+            pb.rotation_quaternion = (1, 0, 0, 0)
+    bpy.context.view_layer.update()
+    mw = rig.matrix_world
+    S = mw @ rig.pose.bones['upperarm01.' + side].head
+    E0 = mw @ rig.pose.bones['lowerarm01.' + side].head
+    W0 = mw @ rig.pose.bones['wrist.' + side].head
+    L1 = (E0 - S).length
+    L2 = (W0 - E0).length
+    d = Vector(target) - S
+    D = min(d.length, (L1 + L2) * 0.995)
+    u = d.normalized()
+    a = (L1 * L1 - L2 * L2 + D * D) / (2 * D)
+    h = math.sqrt(max(0.0, L1 * L1 - a * a))
+    p = Vector(pole)
+    p = (p - u * p.dot(u)).normalized()
+    E = S + u * a + p * h
+    aim(rig, 'upperarm01.' + side, E - S, world=True)
+    aim(rig, 'lowerarm01.' + side, (S + u * D) - E, world=True)
+    return E
 
 
 def nudge(rig, bname, dw, k=1.0):

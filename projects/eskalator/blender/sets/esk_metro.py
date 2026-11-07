@@ -148,8 +148,46 @@ def font():
             _FONT = bpy.data.fonts.load(p, check_existing=True); return _FONT
     return None
 
-def build(rise=6.0, lanes=3, animate=(1, 90, 30), land_lo=3.0, land_hi=3.0, glass=False, chain=False, name='Met'):
-    """returns dict with escalators and the path of the middle lane"""
+AD_WORDS = ['КИНО', 'ТЕАТР', 'КОНЦЕРТ', 'ВЫСТАВКА', 'СКИДКИ −50%', 'КНИГИ', 'МУЗЕЙ', 'КОФЕ', 'ФИТНЕС', 'НОВЫЙ СЕЗОН',
+            'ЦИРК', 'ВАКАНСИИ', 'АКЦИЯ', 'ФЕСТИВАЛЬ', 'ПРЕМЬЕРА']
+AD_COLS = ['#E8452C', '#2C7BE8', '#F2B705', '#22A06B', '#8E44AD', '#FF6F91', '#1ABC9C', '#F39C12', '#34495E', '#E84393']
+
+def ads(col, path, y_wall, face, mm, every=3.2, seed=1, h_above=1.25, w=1.25, h=0.85):
+    """illuminated ad lightboxes on the tunnel wall (face=+1: faces +Y). Moscow incline tunnels are full of them."""
+    import random
+    rnd = random.Random(seed)
+    x = path.x0 + 1.1 + rnd.random()
+    frame_m = E.mat('MetAdFrame', '#2A2A2C', rough=0.35, metal=0.7)
+    k = 0
+    while x < path.x1 - 1.0:
+        z = path.z_of(x) + E.TREAD_Z + h_above
+        bm = bmesh.new(); E.bm_box(bm, (-w / 2 - 0.04, -0.05, -h / 2 - 0.04), (w / 2 + 0.04, 0.0, h / 2 + 0.04), 0)
+        fr = E.obj_from_bm(bm, 'AdFrame', [frame_m], col, loc=(x, y_wall, z))
+        c = AD_COLS[rnd.randrange(len(AD_COLS))]
+        m = E.mat('MetAd' + c, c, rough=0.5, emit=2.2)
+        bm = bmesh.new(); E.bm_box(bm, (-w / 2, -0.06, -h / 2), (w / 2, -0.05, h / 2), 0)
+        pn = E.obj_from_bm(bm, 'AdPanel', [m], col, loc=(x, y_wall, z))
+        # incline: panels follow the tunnel slope like the real ones
+        ang = math.atan2(path.z_of(x + 0.3) - path.z_of(x - 0.3), 0.6)
+        for o in (fr, pn):
+            o.rotation_euler = (0, ang, math.pi) if face > 0 else (0, -ang, 0)
+        cu = bpy.data.curves.new('AdTxt', 'FONT'); cu.body = AD_WORDS[rnd.randrange(len(AD_WORDS))]
+        cu.size = h * 0.24; cu.align_x = 'CENTER'; cu.align_y = 'CENTER'
+        f = font()
+        if f: cu.font = f
+        t = bpy.data.objects.new('AdTxt', cu); col.objects.link(t); t.data.materials.append(mm['signw'])
+        t.parent = pn; t.location = (0, -0.065, h * 0.12); t.rotation_euler = (math.pi / 2, 0, 0)
+        # a light "picture" block under the word
+        bm = bmesh.new(); E.bm_box(bm, (-w * 0.38, -0.064, -h * 0.40), (w * 0.38, -0.061, -h * 0.08), 0)
+        pic = E.obj_from_bm(bm, 'AdPic', [E.mat('MetAdPic' + str(k % 3), ['#FFFFFF', '#FFE9B0', '#D7F0FF'][k % 3], rough=0.5, emit=1.6)], col)
+        pic.parent = pn
+        x += every
+        k += 1
+
+def build(rise=6.0, lanes=3, animate=(1, 90, 30), land_lo=3.0, land_hi=3.0, glass=False, chain=False, name='Met',
+          speeds=None, ads_on=True, every=1, lamp_every=3.2):
+    """returns dict with escalators and the path of the middle lane.
+    speeds: per lane m/s, negative = runs down (default: middle lane down)"""
     col = E.coll(name)
     mm = M()
     escs = []
@@ -163,14 +201,19 @@ def build(rise=6.0, lanes=3, animate=(1, 90, 30), land_lo=3.0, land_hi=3.0, glas
     vault(col, path, 0.0, width, mm=mm)
     for i in range(lanes - 1):
         y = (i - (lanes - 1) / 2) * LANE + LANE / 2
-        deck(col, path, y, LANE - E.STEP_W - 0.28, mm)
+        deck(col, path, y, LANE - E.STEP_W - 0.28, mm, lamp_every=lamp_every)
     for sy in (-1, 1):
         deck(col, path, sy * (lanes * LANE / 2 + 0.05), 0.3, mm, lamps=False)
+    if ads_on:
+        R = width / 2
+        ads(col, path, -R + 0.02, +1, mm, seed=3)
+        ads(col, path, R - 0.02, -1, mm, seed=7)
     hall(col, path.x0 - 14, path.x0 - 0.6, E.TREAD_Z, 0.0, width + 6, mm, name='HallLow')
     hall(col, path.x1 + 0.6, path.x1 + 14, path.rise + E.TREAD_Z, 0.0, width + 6, mm, name='HallTop')
+    if speeds is None:
+        speeds = [0.75 if (k != lanes // 2 or lanes < 3) else -0.75 for k in range(lanes)]
     if animate:
         f0, f1, fps = animate
         for k, e in enumerate(escs):
-            sp = 0.75 if k != 1 else -0.75   # middle lane goes down
-            e.animate(f0, f1, fps, speed=sp if sp > 0 else 0.75, s0=k * 0.13)
-    return dict(escs=escs, path=path, col=col, mm=mm)
+            e.animate(f0, f1, fps, speed=speeds[k], s0=k * 0.13, every=every)
+    return dict(escs=escs, path=path, col=col, mm=mm, speeds=speeds, width=width)
