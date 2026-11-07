@@ -391,6 +391,10 @@ def _people(m, base):
         return 'hair'
     shoes = 'shoe' in low or 'boot' in low
     for pb in pbs:
+        ai = pb.inputs['Alpha']          # у штанов MPFB в альфе текстуры дыры-овалы: сквозь них видно фон
+        for l in list(ai.links):
+            nt.links.remove(l)
+        ai.default_value = 1.0
         if shoes:
             pb.inputs['Roughness'].default_value = 0.45
             pb.inputs['Specular IOR Level'].default_value = 0.4
