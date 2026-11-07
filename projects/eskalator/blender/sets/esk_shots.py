@@ -14,23 +14,30 @@ def ease(u, p=1.8):
     return u ** p / (u ** p + (1 - u) ** p) if 0 < u < 1 else u
 
 
-def cam_move(sc, dur, fps, a, b, ta, tb, lens=(35, 35), name='Cam', step=1, dof=None, parent=None, p=1.8):
+def cam_move(sc, dur, fps, a, b, ta, tb, lens=(35, 35), name='Cam', step=1, dof=None, parent=None, p=1.8, focus=None):
     """camera from a->b looking from ta->tb, smooth ease, baked keys (linear between bakes).
     parent: object to ride on (keys are then in its local space)"""
     cam = S.camera(a, ta, lens=lens[0], name=name)
     tgt = bpy.data.objects.new(name + 'Tgt', None); sc.collection.objects.link(tgt)
     con = cam.constraints.new('TRACK_TO'); con.target = tgt; con.track_axis = 'TRACK_NEGATIVE_Z'; con.up_axis = 'UP_Y'
+    foc = None
+    if focus:      # точка резкости отдельно от точки взгляда (лицо, а не центр тела за ним)
+        foc = bpy.data.objects.new(name + 'Foc', None); sc.collection.objects.link(foc)
     if dof:
-        cam.data.dof.use_dof = True; cam.data.dof.focus_object = tgt; cam.data.dof.aperture_fstop = dof
+        cam.data.dof.use_dof = True; cam.data.dof.focus_object = foc or tgt; cam.data.dof.aperture_fstop = dof
     if parent is not None:
         cam.parent = parent; tgt.parent = parent
+        if foc:
+            foc.parent = parent
     n = sc.frame_end
     for f in range(1, n + 1, step):
         u = ease((f - 1) / max(1, n - 1), p)
         cam.location = Vector(a).lerp(Vector(b), u); cam.keyframe_insert('location', frame=f)
         tgt.location = Vector(ta).lerp(Vector(tb), u); tgt.keyframe_insert('location', frame=f)
+        if foc:
+            foc.location = Vector(focus[0]).lerp(Vector(focus[1]), u); foc.keyframe_insert('location', frame=f)
         cam.data.lens = lens[0] + (lens[1] - lens[0]) * u; cam.data.keyframe_insert('lens', frame=f)
-    for ob in (cam, tgt, cam.data):
+    for ob in (cam, tgt, cam.data) + ((foc,) if foc else ()):
         ad = ob.animation_data
         if ad and ad.action:
             for fc in E.iter_fcurves(ad.action):
@@ -459,8 +466,10 @@ def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал
                         H.nudge(rig, bn + side, dw, k)
                         pb.keyframe_insert('location', frame=f)
     host_light(sc, (hx, hy, zt + 1.66), (cx, cy))
+    L = math.hypot(cx - hx, cy - hy)
+    eye = (hx + (cx - hx) / L * 0.14, hy + (cy - hy) / L * 0.14, zt + 1.685)   # глаза ~14 см перед осью рига
     cam_move(sc, dur, fps, (cx + 0.10, cy - 0.04, zt + 1.62), (cx, cy, zt + 1.61),
-             (hx, hy, zt + 1.52), (hx, hy, zt + 1.53), lens=(68, 72), dof=2.0)
+             (hx, hy, zt + 1.52), (hx, hy, zt + 1.53), lens=(68, 72), dof=5.6, focus=(eye, eye))
     return {}
 
 

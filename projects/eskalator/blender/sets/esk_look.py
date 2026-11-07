@@ -370,9 +370,15 @@ def _people(m, base):
             pb.inputs['Coat Roughness'].default_value = 0.03
         return 'eyes'
     if any(k in low for k in ('short0', 'bob0', 'ponytail', 'long0', 'hair', 'braid', 'afro')):
-        for pb in pbs:
-            pb.inputs['Roughness'].default_value = 0.45
-            pb.inputs['Specular IOR Level'].default_value = 0.35
+        for pb in pbs:   # матовые, с разнотоном: блестящая «каска» — главный признак пластиковых волос
+            pb.inputs['Roughness'].default_value = 0.62
+            pb.inputs['Specular IOR Level'].default_value = 0.28
+            inp = pb.inputs['Base Color']
+            if inp.is_linked:
+                tc = _n(nt, 'ShaderNodeTexCoord', -1400, -500)
+                nz = _noise(nt, tc.outputs['Object'], 60.0, 6.0, 0.6, -1200, -500)
+                f = _maprange(nt, nz, 0.3, 0.7, 0.75, 1.15, -1000, -500)
+                nt.links.new(_scale_col(nt, inp.links[0].from_socket, f, -600, -400), inp)
         return 'hair'
     shoes = 'shoe' in low or 'boot' in low
     for pb in pbs:
