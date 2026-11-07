@@ -352,7 +352,16 @@ def _skin_group(n):
 def _people(m, base):
     nt = m.node_tree
     low = base.lower()
-    if 'eyebrow' in low or 'eyelash' in low:
+    if 'eyebrow' in low:      # брови гуще и темнее: светлые бровки делают лицо «кукольным»
+        for pb in [n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED']:
+            inp = pb.inputs['Base Color']
+            if inp.is_linked:
+                k = _n(nt, 'ShaderNodeValue', -900, -600)
+                k.outputs[0].default_value = 0.4
+                nt.links.new(_scale_col(nt, inp.links[0].from_socket, k.outputs[0], -600, -400), inp)
+            pb.inputs['Roughness'].default_value = 0.6
+        return 'brows'
+    if 'eyelash' in low:
         return 'skip'
     groups = [n for n in nt.nodes if n.type == 'GROUP' and n.node_tree and 'Pore scale' in n.inputs]
     if groups:
@@ -444,7 +453,7 @@ def beard_mask(body, rig):
             if k.value and not k.mute:
                 for i, (a, b) in enumerate(zip(k.data, base.data)):
                     cos[i] += (a.co - b.co) * k.value
-    vals = []
+    vals, lv = [], []
     for co in cos:
         x, y, z = M @ co
         ax = abs(x)
@@ -457,8 +466,11 @@ def beard_mask(body, rig):
             * _smooth(up_lip + 0.007, up_lip + 0.002, z) * _smooth(-0.140, -0.152, y)
         m *= 1.0 - lips
         vals.append(m)
+        lv.append(lips * _smooth(0.026, 0.016, ax))
     at = me.attributes.new('esk_beard', 'FLOAT', 'POINT')
     at.data.foreach_set('value', vals)
+    al = me.attributes.new('esk_lips', 'FLOAT', 'POINT')
+    al.data.foreach_set('value', lv)
     return sum(1 for v in vals if v > 0.5)
 
 
@@ -478,11 +490,16 @@ def _stubble(g, pb):
     g.links.new(at.outputs['Fac'], mu.inputs[0]); g.links.new(sp.outputs['Result'], mu.inputs[1])
     mix = _n(g, 'ShaderNodeMixRGB', -500, -1200, blend_type='MULTIPLY')
     g.links.new(mu.outputs[0], mix.inputs['Fac'])
-    mix.inputs['Color2'].default_value = (0.50, 0.45, 0.42, 1)
+    mix.inputs['Color2'].default_value = (0.36, 0.32, 0.30, 1)
+    al = _n(g, 'ShaderNodeAttribute', -1200, -1600, attribute_type='GEOMETRY', attribute_name='esk_lips')
+    lip = _n(g, 'ShaderNodeMixRGB', -300, -1300, blend_type='MULTIPLY')    # губы чуть темнее и розовее кожи
+    g.links.new(al.outputs['Fac'], lip.inputs['Fac'])
+    lip.inputs['Color2'].default_value = (0.82, 0.55, 0.52, 1)
+    g.links.new(mix.outputs['Color'], lip.inputs['Color1'])
     inp = pb.inputs['Base Color']
     if inp.is_linked:
         g.links.new(inp.links[0].from_socket, mix.inputs['Color1'])
-        g.links.new(mix.outputs['Color'], inp)
+        g.links.new(lip.outputs['Color'], inp)
 
 
 # ============================================================================ фаски
