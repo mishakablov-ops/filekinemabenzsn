@@ -346,6 +346,7 @@ def _skin_group(n):
             ad = _n(g, 'ShaderNodeMath', -600, -900, operation='ADD', use_clamp=True)
             g.links.new(src, ad.inputs[0]); g.links.new(mr.outputs['Result'], ad.inputs[1])
             g.links.new(ad.outputs[0], ri)
+        _stubble(g, pb)
 
 
 def _people(m, base):
@@ -370,10 +371,8 @@ def _people(m, base):
         return 'eyes'
     if any(k in low for k in ('short0', 'bob0', 'ponytail', 'long0', 'hair', 'braid', 'afro')):
         for pb in pbs:
-            pb.inputs['Roughness'].default_value = 0.40
-            pb.inputs['Specular IOR Level'].default_value = 0.45
-            pb.inputs['Sheen Weight'].default_value = 0.25
-            pb.inputs['Sheen Roughness'].default_value = 0.35
+            pb.inputs['Roughness'].default_value = 0.45
+            pb.inputs['Specular IOR Level'].default_value = 0.35
         return 'hair'
     shoes = 'shoe' in low or 'boot' in low
     for pb in pbs:
@@ -385,12 +384,99 @@ def _people(m, base):
         else:   # ткань: ворс (sheen), матовость, мелкое плетение
             pb.inputs['Roughness'].default_value = max(0.82, pb.inputs['Roughness'].default_value)
             pb.inputs['Specular IOR Level'].default_value = 0.22
-            pb.inputs['Sheen Weight'].default_value = 0.6
+            pb.inputs['Sheen Weight'].default_value = 0.12    # больше 0.2 на тёмной ткани = серый «велюр»
             pb.inputs['Sheen Roughness'].default_value = 0.5
             tc = _n(nt, 'ShaderNodeTexCoord', -1400, -500)
             nz = _noise(nt, tc.outputs['Object'], 900.0, 2.0, 0.5, -1200, -500)
-            _bump(nt, pb, nz, 0.12, 0.0004)
+            _bump(nt, pb, nz, 0.08, 0.0004)
     return 'shoes' if shoes else 'cloth'
+
+
+def _lens(m):
+    """Стекло очков: прозрачное с бликом. Пропускание с IOR в Eevee без трассировки преломления даёт
+    молочно-серые «солнечные» очки, поэтому линза — почти прозрачный слой с отражением."""
+    pb = m.node_tree.nodes.get('Principled BSDF')
+    if not pb:
+        return
+    pb.inputs['Transmission Weight'].default_value = 0.0
+    pb.inputs['Base Color'].default_value = (0.02, 0.02, 0.02, 1)
+    pb.inputs['Roughness'].default_value = 0.03
+    pb.inputs['Specular IOR Level'].default_value = 0.5
+    pb.inputs['Alpha'].default_value = 0.10
+    try:
+        m.surface_render_method = 'BLENDED'
+    except Exception:
+        pass
+    m.use_backface_culling = False
+
+
+def _smooth(e0, e1, x):
+    t = min(1.0, max(0.0, (x - e0) / (e1 - e0)))
+    return t * t * (3 - 2 * t)
+
+
+def beard_mask(body, rig):
+    """Щетина ведущего (у ведущего образца лёгкая небритость; гладкий подбородок = «манекен»).
+    Маска пишется в атрибут вершин 'esk_beard' по позе покоя, ориентиры — кости лица рига MakeHuman
+    (лицо смотрит в -Y): губы oris05/oris01, низ носа levator06, подбородок special04, челюсть, уши."""
+    me = body.data
+    if 'esk_beard' in me.attributes:
+        return 0
+    B = rig.data.bones
+    def hz(n, d):
+        return B[n].head_local.z if n in B else d
+    nose = hz('levator06.L', 1.6437) - 0.006     # низ носа
+    up_lip = hz('oris05', 1.625)
+    lo_lip = hz('oris01', 1.5986)
+    chin = hz('special04', 1.5629)
+    M = rig.matrix_world.inverted() @ body.matrix_world
+    cos = [v.co.copy() for v in me.vertices]
+    if me.shape_keys:
+        kb = me.shape_keys.key_blocks
+        base = kb[0]
+        for k in kb[1:]:
+            if k.value and not k.mute:
+                for i, (a, b) in enumerate(zip(k.data, base.data)):
+                    cos[i] += (a.co - b.co) * k.value
+    vals = []
+    for co in cos:
+        x, y, z = M @ co
+        ax = abs(x)
+        top = nose + max(0.0, ax - 0.022) * 0.85          # линия щеки: от носа к виску
+        m = _smooth(top + 0.004, top - 0.006, z)          # ниже линии щеки
+        m *= _smooth(chin - 0.020, chin - 0.002, z)       # и чуть под подбородок на шею
+        m *= _smooth(-0.045, -0.075, y)                   # только спереди ушей и шеи
+        m *= _smooth(0.074, 0.064, ax)                    # не заходить на уши
+        lips = _smooth(0.030, 0.020, ax) * _smooth(lo_lip - 0.008, lo_lip - 0.002, z) \
+            * _smooth(up_lip + 0.007, up_lip + 0.002, z) * _smooth(-0.140, -0.152, y)
+        m *= 1.0 - lips
+        vals.append(m)
+    at = me.attributes.new('esk_beard', 'FLOAT', 'POINT')
+    at.data.foreach_set('value', vals)
+    return sum(1 for v in vals if v > 0.5)
+
+
+def _stubble(g, pb):
+    """в группу кожи: точки щетины по маске 'esk_beard' (нет атрибута = 0, у толпы ничего не меняется)"""
+    at = _n(g, 'ShaderNodeAttribute', -1200, -1200, attribute_type='GEOMETRY', attribute_name='esk_beard')
+    tc = _n(g, 'ShaderNodeTexCoord', -1400, -1400)
+    nz = _n(g, 'ShaderNodeTexNoise', -1200, -1400)
+    nz.inputs['Scale'].default_value = 2600.0
+    nz.inputs['Detail'].default_value = 0.0
+    g.links.new(tc.outputs['Object'], nz.inputs['Vector'])
+    sp = _n(g, 'ShaderNodeMapRange', -1000, -1400)
+    sp.inputs['From Min'].default_value = 0.42; sp.inputs['From Max'].default_value = 0.62
+    sp.inputs['To Min'].default_value = 0.55; sp.inputs['To Max'].default_value = 1.0
+    g.links.new(nz.outputs['Fac'], sp.inputs['Value'])
+    mu = _n(g, 'ShaderNodeMath', -800, -1300, operation='MULTIPLY')
+    g.links.new(at.outputs['Fac'], mu.inputs[0]); g.links.new(sp.outputs['Result'], mu.inputs[1])
+    mix = _n(g, 'ShaderNodeMixRGB', -500, -1200, blend_type='MULTIPLY')
+    g.links.new(mu.outputs[0], mix.inputs['Fac'])
+    mix.inputs['Color2'].default_value = (0.50, 0.45, 0.42, 1)
+    inp = pb.inputs['Base Color']
+    if inp.is_linked:
+        g.links.new(inp.links[0].from_socket, mix.inputs['Color1'])
+        g.links.new(mix.outputs['Color'], inp)
 
 
 # ============================================================================ фаски
@@ -467,6 +553,10 @@ def apply(sc=None, tex_dir=TEX_DIR, bevel=True):
         m['esk_look'] = 1
         base = re.sub(r'\.\d{3}$', '', m.name)
         nt = m.node_tree
+        if base == 'GlassesLens':
+            _lens(m)
+            stats['lens'] = 1
+            continue
         if re.match(r'^(P\d\dr|Hero)\.', base):
             cls = _people(m, base)
             stats[cls] = stats.get(cls, 0) + 1
@@ -488,6 +578,10 @@ def apply(sc=None, tex_dir=TEX_DIR, bevel=True):
             _proc(m, pb, cls if cls not in PBR else 'generic')
         key = cls + ('' if ok or cls not in PBR else '~proc')
         stats[key] = stats.get(key, 0) + 1
+    for ob in bpy.data.objects:                      # щетина только у ведущего
+        if ob.type == 'MESH' and ob.parent and ob.parent.type == 'ARMATURE' and \
+                any(s.material and s.material.name.startswith('Hero.body') for s in ob.material_slots):
+            stats['beard_verts'] = beard_mask(ob, ob.parent)
     nb = bevel_edges() if bevel else 0
     render_quality(sc)
     stats['bevel'] = nb

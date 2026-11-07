@@ -436,7 +436,7 @@ def S20B(sc, dur, fps, info):     # «так уже звали любую дви
 def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал что-то новое» - ведущий поворачивается к камере
     P0 = E.Path(rise=6.0, land_lo=3.0, land_hi=3.0)
     hx, hy = P0.x1 + 6.0, -2.6
-    cx, cy = hx + 1.30, hy - 0.50                      # камера; за спиной ведущего выходы эскалаторов и люди
+    cx, cy = hx + 0.84, hy - 0.32                      # камера ~0,9 м, 70 мм: голова и грудь, как в образце
     m = metro(sc, fps, rise=6.0, seed=21, density=0.6, hall_n=40,
               avoid=[(hx, hy, 1.2), (cx, cy, 1.1), ((hx + cx) / 2, (hy + cy) / 2, 0.9), (cx + 1.0, cy - 0.4, 1.0)])
     P = m['path']
@@ -458,9 +458,9 @@ def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал
                     if pb:
                         H.nudge(rig, bn + side, dw, k)
                         pb.keyframe_insert('location', frame=f)
-    host_light(sc, (hx, hy, zt + 1.55), (cx, cy))
-    cam_move(sc, dur, fps, (cx + 0.15, cy - 0.06, zt + 1.56), (cx, cy, zt + 1.55),
-             (hx, hy, zt + 1.40), (hx, hy, zt + 1.42), lens=(55, 58), dof=2.2)
+    host_light(sc, (hx, hy, zt + 1.66), (cx, cy))
+    cam_move(sc, dur, fps, (cx + 0.10, cy - 0.04, zt + 1.62), (cx, cy, zt + 1.61),
+             (hx, hy, zt + 1.52), (hx, hy, zt + 1.53), lens=(68, 72), dof=2.0)
     return {}
 
 
@@ -472,9 +472,11 @@ def host_light(sc, head, cam_xy, parent=None):
     L = math.hypot(dx, dy) or 1.0
     ux, uy = dx / L, dy / L
     side = (-uy, ux)
-    key = S.area('HostKey', (hx + ux * 1.3 + side[0] * 0.8, hy + uy * 1.3 + side[1] * 0.8, hz + 0.5), head, 70, 1.0, col='#FFE4C8')
-    rim = S.area('HostRim', (hx - ux * 1.0 - side[0] * 0.5, hy - uy * 1.0 - side[1] * 0.5, hz + 0.6), head, 45, 0.8, col='#DCE8FF', shadow=False)
-    for o in (key, rim):
+    # ключ под ~45° сбоку и выше: светотень лепит лицо (фронтальный свет делает его плоским, «пластиковым»)
+    key = S.area('HostKey', (hx + ux * 1.0 + side[0] * 1.0, hy + uy * 1.0 + side[1] * 1.0, hz + 0.6), head, 80, 0.9, col='#FFE4C8')
+    fill = S.area('HostFill', (hx + ux * 1.4 - side[0] * 0.9, hy + uy * 1.4 - side[1] * 0.9, hz + 0.1), head, 14, 1.5, col='#FFF4EA', shadow=False)
+    rim = S.area('HostRim', (hx - ux * 1.0 - side[0] * 0.5, hy - uy * 1.0 - side[1] * 0.5, hz + 0.6), head, 55, 0.8, col='#DCE8FF', shadow=False)
+    for o in (key, fill, rim):
         o.data.use_shadow = o is key
         if parent is not None:
             mw = o.matrix_world.copy(); o.parent = parent; o.matrix_world = mw
