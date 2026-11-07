@@ -412,8 +412,9 @@ class Escalator:
     def _build_truss(self, cutaway, glass):
         """side truss: lattice of beams under the steps; the camera-side (-Y) panel is cut away with red cut faces"""
         P = self.path; M = self.M
-        bm = bmesh.new()
+        self.truss = {}
         for sy in (-1, 1):
+            bm = bmesh.new()
             y = sy * (STEP_W / 2 + 0.32)
             top = [Vector((x, y, P.z_of(x) - 0.25)) for x in [P.x0 - 1.4 + i * 0.1 for i in range(int((P.x1 - P.x0 + 2.8) / 0.1))]]
             bot = [Vector((p.x, y, p.z - P.drop - 0.75)) for p in top]
@@ -424,7 +425,7 @@ class Escalator:
                 bm_tube(bm, [a, b], 0.06, 0.06, 0)
                 if i + 8 < len(top):
                     bm_tube(bm, [a, bot[i + 8]], 0.04, 0.04, 0)
-        self._parent(obj_from_bm(bm, self.name + 'Truss', [M['truss']], self.col))
+            self.truss[sy] = self._parent(obj_from_bm(bm, f'{self.name}Truss{sy:+d}', [M['truss']], self.col))
         # bottom cover (far side panel only, so the camera on -Y sees inside)
         bm = bmesh.new()
         y = STEP_W / 2 + 0.36
