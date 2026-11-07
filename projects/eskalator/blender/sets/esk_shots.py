@@ -367,6 +367,8 @@ def S18(sc, dur, fps, info):      # «Едешь почти три минуты�
     # камера на ступенях выше и смотрит вниз на лицо, за спиной туннель уходит вниз
     cam_move(sc, dur, fps, (1.55, -0.30, 2.25), (1.35, -0.22, 2.15), (-0.15, 0.05, 1.80), (-0.15, 0.05, 1.78),
              lens=(40, 44), dof=2.8, parent=st, name='CamS18')
+    k1 = S.area('HostKey', (0.9, -0.9, 2.5), (-0.15, 0.05, 1.85), 60, 1.0, col='#FFE4C8')
+    k1.parent = st
     return {}
 
 
@@ -419,9 +421,9 @@ def S20B(sc, dur, fps, info):     # «так уже звали любую дви
             for k in range(14):
                 x = rng.uniform(P.x0 - 7, P.x1 + 7); y = rng.choice([-1, 1]) * rng.uniform(7.5, 11.5)
                 H.place_person(sc, rng.choice(ppl), (x, y, lvl * d['lvl'] + E.TREAD_Z), rng.uniform(0, 6.28))
-    S.world('#F4F2EE', 0.2)
+    S.world('#F4F2EE', 0.12)
     cx = (P.x0 + P.x1) / 2
-    S.area('Sky', (cx, 0, 18), (cx, 0, 0), 6000, 14, col='#FFFFFF')
+    S.area('Sky', (cx, 0, 18), (cx, 0, 0), 4000, 14, col='#FFFFFF')
     for lv in range(3):
         for xx in (P.x0 - 4, cx, P.x1 + 4):
             for yy in (-9.5, 9.5):
@@ -433,29 +435,47 @@ def S20B(sc, dur, fps, info):     # «так уже звали любую дви
 # ============================================================================= 9. Концовка
 def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал что-то новое» - ведущий поворачивается к камере
     P0 = E.Path(rise=6.0, land_lo=3.0, land_hi=3.0)
-    hx, hy = P0.x1 + 3.2, -3.9
+    hx, hy = P0.x1 + 6.0, -2.6
+    cx, cy = hx + 1.30, hy - 0.50                      # камера; за спиной ведущего выходы эскалаторов и люди
     m = metro(sc, fps, rise=6.0, seed=21, density=0.6, hall_n=40,
-              avoid=[(hx, hy, 1.3), (hx + 0.6, hy - 0.75, 1.0), (hx + 1.2, hy - 1.45, 1.2), (hx + 2.0, hy - 2.4, 1.2)])
+              avoid=[(hx, hy, 1.2), (cx, cy, 1.1), ((hx + cx) / 2, (hy + cy) / 2, 0.9), (cx + 1.0, cy - 0.4, 1.0)])
     P = m['path']
     zt = P.rise + E.TREAD_Z
-    rig = hero(sc, loc=(hx, hy, zt), rot_z=0.0, pose='stand')
+    face = math.atan2(cy - hy, cx - hx) + math.pi / 2   # MakeHuman смотрит в -Y
+    rig = hero(sc, loc=(hx, hy, zt), rot_z=face, pose='stand')
     n = sc.frame_end
     if rig:
-        # поворот к камере за первые ~0.6 с + улыбка
-        a0, a1 = math.radians(-30), math.radians(40)
-        t_turn = int(0.65 * fps)
+        a0, a1 = face - math.radians(65), face
+        t_turn = int(0.6 * fps)
         for f in range(1, n + 1):
             u = ease(min(1.0, (f - 1) / t_turn))
             rig.rotation_euler = (0, 0, a0 + (a1 - a0) * u)
             rig.keyframe_insert('rotation_euler', frame=f)
+            k = ease(min(1.0, max(0.0, (f - t_turn * 0.6) / (0.5 * fps))))
             for side, sx in (('L', 1), ('R', -1)):
-                k = ease(min(1.0, max(0.0, (f - t_turn * 0.6) / (0.5 * fps))))
                 for bn, dw in (('risorius03.', (sx * 0.003, 0.002, 0.0035)), ('levator05.', (0, 0, 0.0015))):
                     pb = rig.pose.bones.get(bn + side)
                     if pb:
                         H.nudge(rig, bn + side, dw, k)
                         pb.keyframe_insert('location', frame=f)
-    # камера: средний план на уровне глаз, ведущий слева, за ним выходы эскалаторов и люди
-    cam_move(sc, dur, fps, (hx + 1.30, hy - 1.55, zt + 1.55), (hx + 1.10, hy - 1.30, zt + 1.55),
-             (hx, hy, zt + 1.42), (hx, hy, zt + 1.45), lens=(45, 48), dof=2.0)
+    host_light(sc, (hx, hy, zt + 1.55), (cx, cy))
+    cam_move(sc, dur, fps, (cx + 0.15, cy - 0.06, zt + 1.56), (cx, cy, zt + 1.55),
+             (hx, hy, zt + 1.40), (hx, hy, zt + 1.42), lens=(55, 58), dof=2.2)
     return {}
+
+
+def host_light(sc, head, cam_xy, parent=None):
+    """мягкий тёплый ключ на лицо ведущего сбоку от камеры + холодный контровой сзади"""
+    hx, hy, hz = head
+    cx, cy = cam_xy
+    dx, dy = cx - hx, cy - hy
+    L = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / L, dy / L
+    side = (-uy, ux)
+    key = S.area('HostKey', (hx + ux * 1.3 + side[0] * 0.8, hy + uy * 1.3 + side[1] * 0.8, hz + 0.5), head, 70, 1.0, col='#FFE4C8')
+    rim = S.area('HostRim', (hx - ux * 1.0 - side[0] * 0.5, hy - uy * 1.0 - side[1] * 0.5, hz + 0.6), head, 45, 0.8, col='#DCE8FF', shadow=False)
+    for o in (key, rim):
+        o.data.use_shadow = o is key
+        if parent is not None:
+            mw = o.matrix_world.copy(); o.parent = parent; o.matrix_world = mw
+    return key, rim

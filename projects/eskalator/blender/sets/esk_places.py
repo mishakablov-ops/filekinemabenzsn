@@ -390,7 +390,7 @@ def mall():
         escs.append(e)
     P = escs[0].path
     white = E.mat('MallWhite', '#F2F1EE', rough=0.35)
-    floor_m = E.mat('MallFloor', '#D8D2C8', rough=0.15, coat=0.5)
+    floor_m = E.mat('MallFloor', '#9C9286', rough=0.2, coat=0.5)
     glass = E.mat('MallGlass', '#DDEFF5', rough=0.03, alpha=0.2)
     bm = bmesh.new()
     E.bm_box(bm, (-30, -30, E.TREAD_Z - 0.3), (40, 30, E.TREAD_Z), 0)
