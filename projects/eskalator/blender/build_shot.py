@@ -1,7 +1,7 @@
 """Build and render one shot of «Эскалатор».
 
 blender -b --python build_shot.py -- <SHOT> [--dur 3.0] [--pct 100] [--samples 64] [--still 0.5,1.5] [--out DIR]
-                                            [--engine CYCLES|EEVEE] [--blend]
+                                            [--engine CYCLES|EEVEE] [--blend] [--look 0] [--tex DIR]
 Frames -> <out>/<SHOT>/####.jpg (resumable), stills -> <out>/stills/<SHOT>_<t>.jpg
 Shot durations come from shots.json next to this file (written from the voice timings) unless --dur is given.
 """
@@ -38,6 +38,9 @@ sc.frame_start = 1
 sc.frame_end = max(2, int(round(dur * fps)))
 info = getattr(SH, shot)(sc, dur, fps, shots.get(shot, {}))
 S.render_setup(engine, pct=pct, samples=samples, fps=fps)
+if opt('--look', '1') != '0':      # «без пластика»: фото-текстуры, кожа с SSS, фаски (sets/esk_look.py)
+    import esk_look as LK
+    LK.apply(sc, opt('--tex', LK.TEX_DIR))
 if engine == 'CYCLES':
     prefs = bpy.context.preferences.addons['cycles'].preferences
     for dt in ('OPTIX', 'CUDA'):
