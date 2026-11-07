@@ -19,6 +19,7 @@ ap.add_argument('--music-vol', type=float, default=0.12)
 ap.add_argument('--fps', type=int, default=30)
 ap.add_argument('--xf', type=float, default=0.3)
 ap.add_argument('--only-clips', action='store_true')
+ap.add_argument('--grain', type=float, default=2.5)   # лёгкое плёночное зерно: убирает «стерильность» CG и полосы в градиентах
 a = ap.parse_args()
 FF = a.ffmpeg
 os.makedirs(a.work, exist_ok=True)
@@ -142,7 +143,8 @@ run([FF, '-y', '-v', 'error', '-i', a.voice, '-stream_loop', '-1', '-i', a.music
 # ----------------------------------------------------------------------------- финал
 fontsdir = FONTS.replace('\\', '/').replace(':', '\\:')
 assf = assp.replace('\\', '/').replace(':', '\\:')
-run([FF, '-y', '-v', 'error', '-i', video, '-i', mix, '-vf', "ass='%s':fontsdir='%s'" % (assf, fontsdir),
+vf = ("noise=alls=%.1f:allf=t," % a.grain if a.grain > 0 else '') + "ass='%s':fontsdir='%s'" % (assf, fontsdir)
+run([FF, '-y', '-v', 'error', '-i', video, '-i', mix, '-vf', vf,
      '-map', '0:v', '-map', '1:a', '-c:v', 'libx264', '-crf', '16', '-preset', 'slow', '-pix_fmt', 'yuv420p',
      '-r', str(a.fps), '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-movflags', '+faststart', '-t', '%.3f' % END, a.out])
 print('ASSEMBLED', a.out)
