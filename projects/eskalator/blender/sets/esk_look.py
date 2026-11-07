@@ -474,6 +474,35 @@ def beard_mask(body, rig):
     return sum(1 for v in vals if v > 0.5)
 
 
+def _rest_cos(body, rig):
+    me = body.data
+    M = rig.matrix_world.inverted() @ body.matrix_world
+    cos = [v.co.copy() for v in me.vertices]
+    if me.shape_keys:
+        kb = me.shape_keys.key_blocks
+        for k in kb[1:]:
+            if k.value and not k.mute:
+                for i, (a, b) in enumerate(zip(k.data, kb[0].data)):
+                    cos[i] += (a.co - b.co) * k.value
+    return [M @ c for c in cos]
+
+
+def hide_under_clothes(body, rig, z_hip=0.97, z_chest=1.40, x_torso=0.16):
+    """Тело под штанами и футболкой ведущего прячем маской: иначе икры и спина «протыкают» ткань
+    (белые пятна на штанах сзади в S01). Ведущий всегда в длинных штанах, обуви и футболке."""
+    if any(md.type == 'MASK' for md in body.modifiers):
+        return 0
+    idx = [i for i, (x, y, z) in enumerate(_rest_cos(body, rig))
+           if (z < z_hip and abs(x) < 0.26) or (z < z_chest and abs(x) < x_torso)]   # кисти в позе покоя дальше 0.4
+    vg = body.vertex_groups.new(name='esk_hidden')
+    vg.add(idx, 1.0, 'REPLACE')
+    md = body.modifiers.new('EskHide', 'MASK')
+    md.vertex_group = 'esk_hidden'
+    md.invert_vertex_group = True
+    body.modifiers.move(body.modifiers.find(md.name), 0)     # маска первой: меньше работы арматуре и сабдиву
+    return len(idx)
+
+
 def _stubble(g, pb):
     """в группу кожи: точки щетины по маске 'esk_beard' (нет атрибута = 0, у толпы ничего не меняется)"""
     at = _n(g, 'ShaderNodeAttribute', -1200, -1200, attribute_type='GEOMETRY', attribute_name='esk_beard')
@@ -605,6 +634,7 @@ def apply(sc=None, tex_dir=TEX_DIR, bevel=True):
         if ob.type == 'MESH' and ob.parent and ob.parent.type == 'ARMATURE' and \
                 any(s.material and s.material.name.startswith('Hero.body') for s in ob.material_slots):
             stats['beard_verts'] = beard_mask(ob, ob.parent)
+            stats['hidden_verts'] = hide_under_clothes(ob, ob.parent)
     nb = bevel_edges() if bevel else 0
     render_quality(sc)
     stats['bevel'] = nb
