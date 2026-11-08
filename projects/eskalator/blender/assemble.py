@@ -1,9 +1,10 @@
-"""Сборка «Эскалатора» на ПК: кадры планов -> клипы -> переходы-смазы -> титры как в образце -> голос + музыка.
-python assemble.py --voice <voice.wav> --words <words.json> --out <mp4> [--music pulse-tech] [--frames render/frames]
+"""Сборка «Эскалатора» на ПК: кадры планов -> клипы -> склейка встык -> титры как в образце -> голос + музыка.
+python assemble.py --voice <voice.wav> --words <words.json> --out <mp4> [--music <m4a>] [--frames render/frames]
 
 Титры (по разбору образца): 1–3 слова, без анимации, белый жирный гротеск (Montserrat ExtraBold), мягкая тёмная
 тень без обводки, по центру на ~73 % высоты. Крупные красные цифры сверху на статистике.
-Переход: смаз/наезд 0,3 с с центром на моменте смены фразы. Голос впереди, тихая подложка, мастер −14 LUFS."""
+Переходы как в образце: камера сама рвётся в поворот/наезд со смазом (снято в планах), здесь склейка встык.
+Музыка как в образце: тихий ровный пэд без ударных (ambient-air). Голос впереди, мастер −14 LUFS."""
 import argparse, json, os, re, subprocess, sys, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -14,10 +15,9 @@ ap.add_argument('--out', required=True)
 ap.add_argument('--frames', default=os.path.join(HERE, 'render', 'frames'))
 ap.add_argument('--work', default=os.path.join(HERE, 'render', 'asm'))
 ap.add_argument('--ffmpeg', default=r'D:\aipollon\KINEMA\skills\reel-studio\.runtime\bin\ffmpeg.exe')
-ap.add_argument('--music', default=r'D:\aipollon\KINEMA\skills\reel-studio\engine\public\music\pulse-tech.m4a')
+ap.add_argument('--music', default=r'D:\aipollon\KINEMA\skills\reel-studio\engine\public\music\ambient-air.m4a')
 ap.add_argument('--music-vol', type=float, default=0.12)
 ap.add_argument('--fps', type=int, default=30)
-ap.add_argument('--xf', type=float, default=0.3)
 ap.add_argument('--only-clips', action='store_true')
 ap.add_argument('--grain', type=float, default=2.5)   # лёгкое плёночное зерно: убирает «стерильность» CG и полосы в градиентах
 a = ap.parse_args()
@@ -51,42 +51,31 @@ GRADE = {
     'default': 'eq=contrast=1.04:saturation=1.06,colorbalance=rs=0.02:gs=0.0:bs=-0.02',
     'S19': 'colorchannelmixer=.393:.769:.189:0:.349:.686:.168:0:.272:.534:.131,eq=contrast=1.05,vignette=PI/4.5',
 }
-XF = a.xf
+# склейка встык по началу фразы: рывок камеры со смазом уже снят в самих планах (sets/esk_whip.py, те же номера кадров)
+G = [int(round(s['start'] * a.fps)) for s in S] + [int(round(END * a.fps))]
 clips = []
 for k, s in enumerate(S):
-    t0 = s['start'] - (XF / 2 if k else 0.0)
-    t1 = (S[k + 1]['start'] + XF / 2) if k + 1 < len(S) else END
-    L = t1 - t0
+    NF = G[k + 1] - G[k]
+    L = NF / a.fps
+    t0 = G[k] / a.fps
     src = os.path.join(a.frames, s['id'], '%04d.jpg')
     out = os.path.join(a.work, s['id'] + '.mp4')
     # JPEG-кадры полнодиапазонные (pc): переводим в стандартный tv/bt709, иначе часть плееров/соцсетей
     # показывает ролик выцветшим или с «задавленными» тенями
     vf = GRADE.get(s['id'], GRADE['default']) + (',scale=1080:1920:flags=lanczos:in_range=pc:out_range=tv'
                                                  ':out_color_matrix=bt709,setsar=1,fps=%d' % a.fps)
-    run([FF, '-y', '-v', 'error', '-framerate', str(a.fps), '-start_number', '1', '-i', src, '-t', '%.3f' % L,
-         '-vf', vf + ',tpad=stop_mode=clone:stop_duration=1', '-t', '%.3f' % L,
+    run([FF, '-y', '-v', 'error', '-framerate', str(a.fps), '-start_number', '1', '-i', src,
+         '-vf', vf + ',tpad=stop_mode=clone:stop_duration=1', '-frames:v', str(NF),
          '-c:v', 'libx264', '-crf', '14', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-r', str(a.fps), out])
     clips.append((out, t0, L))
 if a.only_clips:
     sys.exit(0)
 
-# ----------------------------------------------------------------------------- переходы (xfade цепочкой)
-TRANS = {'S02': 'zoomin', 'S12': 'zoomin', 'S16': 'smoothup', 'S17': 'smoothdown', 'S19': 'fadewhite', 'S21': 'hblur'}
-args = [FF, '-y', '-v', 'error']
-for (p, t0, L) in clips:
-    args += ['-i', p]
-fc = []
-prev = '[0:v]'
-for k in range(1, len(clips)):
-    off = S[k]['start'] - XF / 2
-    tr = TRANS.get(S[k]['id'], 'hblur')
-    lab = '[v%d]' % k
-    fc.append('%s[%d:v]xfade=transition=%s:duration=%.3f:offset=%.3f%s' % (prev, k, tr, XF, off, lab))
-    prev = lab
+# ----------------------------------------------------------------------------- склейка встык
+lst = os.path.join(a.work, 'clips.txt')
+open(lst, 'w', encoding='utf-8').write(''.join("file '%s'\n" % p.replace('\\', '/') for (p, t0, L) in clips))
 video = os.path.join(a.work, 'video.mp4')
-args += ['-filter_complex', ';'.join(fc), '-map', prev, '-c:v', 'libx264', '-crf', '14', '-preset', 'medium',
-         '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-r', str(a.fps), video]
-run(args)
+run([FF, '-y', '-v', 'error', '-f', 'concat', '-safe', '0', '-i', lst, '-c', 'copy', video])
 
 # ----------------------------------------------------------------------------- титры
 def ass_time(t):
