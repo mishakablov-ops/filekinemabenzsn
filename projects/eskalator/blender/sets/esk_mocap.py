@@ -31,20 +31,32 @@ MAP = {
 C = Matrix(((1, 0, 0), (0, 0, -1), (0, 1, 0)))
 CT = C.transposed()
 
-# клипы: id -> (вид, с какой секунды, сколько секунд)
+# клипы: имя -> (вид, с какой секунды, сколько секунд[, файл CMU, если имя не совпадает с файлом])
 CLIPS = {
     # ожидание/стоят
     '137_28': ('idle', 1.0, 12), '137_32': ('idle', 1.0, 12), '137_23': ('idle', 1.0, 12), '137_19': ('idle', 1.0, 12),
     '140_06': ('idle', 1.0, 12), '140_07': ('idle', 1.0, 6), '141_20': ('idle', 0.5, 4.5), '111_28': ('idle', 1.0, 10),
     '113_21': ('idle', 1.0, 8), '77_02': ('idle', 0.5, 5), '40_10': ('idle', 1.0, 12), '40_11': ('idle', 1.0, 12),
-    # разговор, жесты
+    # разговор, жесты (18_08 и 19_08 - два собеседника одной записи)
     '18_08': ('talk', 1.0, 12), '19_08': ('talk', 1.0, 12), '111_25': ('talk', 0.5, 6),
-    # телефон
+    # телефон (ответить, набрать)
     '79_36': ('phone', 0.5, 8), '80_25': ('phone', 0.5, 8), '79_37': ('phone', 0.5, 8), '80_26': ('phone', 0.5, 8),
-    # ходьба (с перемещением)
+    # ходьба (с перемещением). Короткие клипы CMU по 2-4 с; длинные «walk/wander» (15_xx) нарезаны на прямые
+    # отрезки по 5,5 с (разбор траектории таза: прямолинейность > 0,95), чтобы прохожий не замирал посреди плана
     '07_01': ('walk', 0.3, 6), '08_01': ('walk', 0.3, 6), '16_15': ('walk', 0.3, 6), '35_01': ('walk', 0.3, 6),
     '39_01': ('walk', 0.3, 6), '02_01': ('walk', 0.3, 6), '17_06': ('walk', 0.3, 6), '69_01': ('walk', 0.3, 6),
+    '15_01a': ('walk', 5.0, 5.5, '15_01'), '15_03a': ('walk', 5.0, 5.5, '15_03'), '15_03b': ('walk', 13.0, 5.5, '15_03'),
+    '15_09a': ('walk', 5.0, 5.5, '15_09'), '15_09b': ('walk', 12.0, 5.5, '15_09'), '15_14a': ('walk', 12.0, 5.5, '15_14'),
+    '15_14b': ('walk', 18.0, 5.5, '15_14'),
 }
+
+# группы костей для частичного проигрывания (play(skip=...) / play(only=...))
+ARM_L = ('clavicle.L', 'shoulder01.L', 'upperarm01.L', 'upperarm02.L', 'lowerarm01.L', 'lowerarm02.L', 'wrist.L')
+ARM_R = tuple(b[:-1] + 'R' for b in ARM_L)
+HEAD = ('neck01', 'neck02', 'neck03', 'head')
+LEGS = ('root', 'pelvis.L', 'pelvis.R', 'upperleg01.L', 'upperleg02.L', 'lowerleg01.L', 'lowerleg02.L', 'foot.L',
+        'upperleg01.R', 'upperleg02.R', 'lowerleg01.R', 'lowerleg02.R', 'foot.R')
+SPINE = ('spine05', 'spine04', 'spine03', 'spine02', 'spine01')
 
 
 # ----------------------------------------------------------------------------- BVH
@@ -337,6 +349,22 @@ def by_kind(kind):
     return [a for n, a in sorted(_ACTS.items()) if a.get('esk_kind') == kind]
 
 
+def root_track(rig, act, frames):
+    """смещение таза (пространство рига, x/y) на кадрах клипа: куда уйдёт прохожий"""
+    from esk_mech import iter_fcurves
+    fc = {}
+    for c in iter_fcurves(act):
+        if c.data_path == 'pose.bones["root"].location':
+            fc[c.array_index] = c
+    R = rig.data.bones['root'].matrix_local.to_3x3()
+    out = []
+    for f in frames:
+        v = Vector([fc[i].evaluate(f) if i in fc else 0.0 for i in range(3)])
+        w = R @ v
+        out.append((w.x, w.y))
+    return out
+
+
 def prep_rig(rig, act=None):
     names = set(MAP.values())
     if act is not None:
@@ -349,17 +377,19 @@ def prep_rig(rig, act=None):
             pb.rotation_mode = 'QUATERNION'
 
 
-def play(rig, act, offset=0, skip=()):
-    """проиграть клип на риге с кадра 1 - offset (NLA-полоска). skip: кости, которые не трогать (рука на поручне)."""
+def play(rig, act, offset=0, skip=(), only=None):
+    """проиграть клип на риге с кадра 1 - offset (NLA-полоска).
+    skip: кости, которые не трогать (рука на поручне); only: проигрывать только эти кости."""
     if act is None or rig is None:
         return None
-    if skip:
+    if skip or only:
         act = act.copy()
         for lay in act.layers:
             for st in lay.strips:
                 for cb in st.channelbags:
                     for fc in list(cb.fcurves):
-                        if any('"%s"' % b in fc.data_path for b in skip):
+                        bn = fc.data_path.split('"')[1] if '"' in fc.data_path else ''
+                        if bn in skip or (only is not None and bn not in only):
                             cb.fcurves.remove(fc)
     prep_rig(rig, act)
     ad = rig.animation_data_create()

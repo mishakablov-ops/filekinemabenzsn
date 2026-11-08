@@ -4,7 +4,10 @@
     import esk_hero; esk_hero.build_all(r"D:\\aipollon\\eskalator\\assets")
 Получается:
     hero.blend   коллекция HeroChar: риг 'Hero' + тело/одежда/волосы/очки (живой, с костями лица)
-    crowd.blend  коллекция Crowd: статичные люди P01..Pnn (один меш на человека, поза запечена)
+    crowd.blend  коллекция Crowd: статичные люди P01..Pnn (один меш на человека, поза запечена) - дальний фон
+    crowd_rig.blend  коллекция CrowdRig: те же люди с костями (живые, под мокап esk_mocap.py), телефон в руке
+Мимика ведущего (08.11.2026): add_face_keys() добавляет телу ведущего формы рта MPFB visemes01 и ARKit faceunits01
+(моргание, улыбка, брови), с переносом на брови/ресницы; анимирует их esk_face.py.
 В фоновых рендерах (build_shot.py) MPFB не нужен: всё берётся append из этих .blend.
 
 Правка mike 07.11.2026: «сделай аватара реалистичным, как на видео» — ведущий не чиби, а человек.
@@ -425,6 +428,119 @@ def _bake_static(rig, name, phone=False):
     return res
 
 
+def _phone_mat():
+    mp = bpy.data.materials.get('PhoneBlack') or bpy.data.materials.new('PhoneBlack')
+    mp.use_nodes = True
+    b = mp.node_tree.nodes['Principled BSDF']
+    b.inputs['Base Color'].default_value = (0.01, 0.01, 0.012, 1)
+    b.inputs['Roughness'].default_value = 0.25
+    return mp
+
+
+def phone_prop(rig, name):
+    """Телефон между ладонями в позе 'phone', привязан к кости wrist.R: едет за рукой при любом мокапе."""
+    import bmesh
+    from mathutils import Matrix
+    P = rig.pose.bones
+    if 'wrist.L' not in P or 'wrist.R' not in P:
+        return None
+    bpy.context.view_layer.update()
+    hl = rig.matrix_world @ P['wrist.L'].tail
+    hr = rig.matrix_world @ P['wrist.R'].tail
+    c = (hl + hr) / 2 + Vector((0, -0.02, 0.03))
+    me = bpy.data.meshes.new(name + '_phone')
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0)
+    for v in bm.verts:
+        v.co = Vector((v.co.x * 0.072, v.co.y * 0.008, v.co.z * 0.150))
+    bmesh.ops.bevel(bm, geom=bm.edges[:], offset=0.004, segments=2, affect='EDGES')
+    bmesh.ops.rotate(bm, verts=bm.verts, cent=(0, 0, 0), matrix=Matrix.Rotation(math.radians(-55), 3, 'X'))
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(_phone_mat())
+    ob = bpy.data.objects.new(name + '_phone', me)
+    rig.users_collection[0].objects.link(ob)
+    ob.matrix_world = Matrix.Translation(c) @ rig.matrix_world.to_3x3().to_4x4()
+    mw = ob.matrix_world.copy()
+    ob.parent = rig
+    ob.parent_type = 'BONE'
+    ob.parent_bone = 'wrist.R'
+    bpy.context.view_layer.update()
+    ob.matrix_world = mw
+    ob['esk_phone'] = 1
+    return ob
+
+
+def build_crowd_rigged(only=None):
+    """Люди толпы с костями (без запекания): риг Pnn + меши; поза по умолчанию 'stand', руки и телефон
+    поправляются в сцене (esk_shots.person). Телефон есть у всех, показывается только у роли 'phone'."""
+    out = []
+    for (nm, g, age, w, hgt, skin, hair, clothes, tints, ps, hrgb) in CROWD:
+        if only and nm not in only:
+            continue
+        ph = dict(gender=g, age=age, muscle=0.5, weight=w, proportions=0.6, height=hgt,
+                  race=dict(asian=0.9 if 'asian' in skin else 0.05, caucasian=0.05 if 'asian' in skin else 0.9, african=0.05))
+        h = make_human(nm, ph, skin, hair, clothes, eyes='low-poly', subdiv=0, hair_rgb=hrgb, cloth_tints=tints)
+        rig = h['rig']
+        rig.name = nm
+        pose(rig, 'phone')                              # руки с телефоном + расслабленные пальцы
+        aim(rig, 'neck01', (0, -0.18, 1.0))             # голова опущена к экрану
+        aim(rig, 'head', (0, -0.55, 1.0))
+        phone_prop(rig, nm)
+        keep = ('upperarm01.L', 'lowerarm01.L', 'upperarm01.R', 'lowerarm01.R', 'neck01', 'head')
+        rig['esk_phone_pose'] = {b: list(rig.pose.bones[b].rotation_quaternion) for b in keep}
+        for b in keep:                                  # дальше покой; позу и мокап ставит сцена (пальцы остаются)
+            rig.pose.bones[b].rotation_quaternion = (1, 0, 0, 0)
+        rig['esk_person'] = 1
+        out.append(rig)
+    return out
+
+
+def add_face_keys(rig):
+    """Формы лица ведущему (нужен GUI с MPFB и паки visemes01 + faceunits01 в данных MPFB)."""
+    from bl_ext.blender_org.mpfb.services.faceservice import FaceService
+    body = basemesh(rig)
+    FaceService.load_targets(body, load_microsoft_visemes=True, load_meta_visemes=False, load_arkit_faceunits=True)
+    FaceService.interpolate_targets(body)
+    keys = body.data.shape_keys.key_blocks
+    return len(keys)
+
+
+def basemesh(rig):
+    """Тело (basemesh MPFB) среди детей рига: меш с группой вершин 'body' или самый крупный."""
+    ms = [c for c in rig.children if c.type == 'MESH']
+    for c in ms:
+        try:
+            from bl_ext.blender_org.mpfb.services.objectservice import ObjectService
+            if ObjectService.get_object_type(c) == 'Basemesh':
+                return c
+        except Exception:
+            break
+    return max(ms, key=lambda c: len(c.data.vertices))
+
+
+def hero_face_file(path):
+    """Добавить мимику в готовый hero.blend (старый сохраняется как hero_noface.blend)."""
+    import shutil
+    bk = os.path.join(os.path.dirname(path), 'hero_noface.blend')
+    if not os.path.exists(bk):
+        shutil.copy(path, bk)
+    sc = _scene('HeroFace')
+    rig, col = load_hero(bk, sc)
+    HS, _ = _mpfb()
+    body = basemesh(rig)
+    for sub, nm, typ in (('teeth', 'teeth_base', 'Teeth'), ('tongue', 'tongue01', 'Tongue')):   # рот открывается - внутри зубы
+        if not any(nm in c.name for c in rig.children):
+            ob = HS.add_mhclo_asset(_asset(sub, nm), body, asset_type=typ, subdiv_levels=0, material_type='MAKESKIN')
+            for o in [ob] if ob else []:
+                for c in list(o.users_collection):
+                    c.objects.unlink(o)
+                col.objects.link(o)
+    n = add_face_keys(rig)
+    bpy.data.libraries.write(path, {col}, fake_user=True, compress=True)
+    return n
+
+
 def build_crowd(only=None):
     out = []
     for (nm, g, age, w, hgt, skin, hair, clothes, tints, ps, hrgb) in CROWD:
@@ -442,6 +558,19 @@ def _scene(name):
     sc = bpy.data.scenes.get(name) or bpy.data.scenes.new(name)
     bpy.context.window.scene = sc
     return sc
+
+
+def build_crowd_rig_file(out_dir, only=None):
+    _scene('CrowdRigBuild')
+    rigs = build_crowd_rigged(only)
+    cc = bpy.data.collections.get('CrowdRig') or bpy.data.collections.new('CrowdRig')
+    for r in rigs:
+        for o in [r] + list(r.children_recursive):
+            for c in list(o.users_collection):
+                c.objects.unlink(o)
+            cc.objects.link(o)
+    bpy.data.libraries.write(os.path.join(out_dir, 'crowd_rig.blend'), {cc}, fake_user=True, compress=True)
+    return [r.name for r in rigs]
 
 
 def build_all(out_dir, crowd=True):
@@ -493,3 +622,30 @@ def place_person(sc, src, loc, rot_z=0.0, col=None, scale=1.0):
     ob.scale = (scale,) * 3
     (col or sc.collection).objects.link(ob)
     return ob
+
+
+# ---------------------------------------------------------------- живая толпа (риги)
+def load_crowd_rigs(path):
+    """name -> риг-образец (в сцену не добавлен); копии ставит clone_person."""
+    with bpy.data.libraries.load(path, link=False) as (src, dst):
+        dst.collections = ['CrowdRig']
+    col = dst.collections[0]
+    return {o.name: o for o in col.objects if o.type == 'ARMATURE'}
+
+
+def clone_person(src, col, phone=False):
+    """Копия человека: свой риг (своя поза/анимация), меши общие с образцом."""
+    rig = src.copy()
+    rig.animation_data_clear()
+    col.objects.link(rig)
+    for ch in src.children:
+        if ch.get('esk_phone') and not phone:
+            continue
+        c = ch.copy()
+        c.parent = rig
+        c.animation_data_clear()
+        for m in c.modifiers:
+            if m.type == 'ARMATURE':
+                m.object = rig
+        col.objects.link(c)
+    return rig

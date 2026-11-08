@@ -1,10 +1,16 @@
 """Shot recipes for «Эскалатор». Each function builds the scene for one shot and animates the camera.
 Signature: fn(scene, dur_s, fps, shot_info) -> dict
 Ведущий и толпа берутся из D:\\aipollon\\eskalator\\assets (hero.blend, crowd.blend; см. esk_hero.py),
-путь можно переопределить переменной окружения ESK_ASSETS. Без этих файлов сцены строятся без людей."""
+путь можно переопределить переменной окружения ESK_ASSETS. Без этих файлов сцены строятся без людей.
+
+Живая толпа (08.11.2026, «добавить побольше жизни людям»): если есть crowd_rig.blend и mocap/mocap.blend,
+люди ставятся с костями и мокапом CMU (esk_mocap.py): ждут и переминаются, листают телефон, разговаривают
+парами, проходят по залу, едут на ступенях. Без этих файлов - прежние статичные фигуры из crowd.blend.
+Ведущий: мокап верха тела и мимика под голос (esk_face.py, assets/voice/words.json + voice.wav)."""
 import bpy, math, os, random
 from mathutils import Vector
 import esk_mech as E, esk_studio as S, esk_metro as MT, esk_hero as H, esk_places as PL
+import esk_mocap as MC, esk_face as FC
 
 ASSETS = os.environ.get('ESK_ASSETS', r'D:\aipollon\eskalator\assets')
 
@@ -47,6 +53,7 @@ def cam_move(sc, dur, fps, a, b, ta, tb, lens=(35, 35), name='Cam', step=1, dof=
 
 # ----------------------------------------------------------------------------- люди
 _CROWD = {}
+_RIGS = {}
 
 
 def crowd():
@@ -54,6 +61,77 @@ def crowd():
     if not _CROWD and os.path.exists(p):
         _CROWD.update(H.load_crowd(p))
     return list(_CROWD.values())
+
+
+def crowd_rigs():
+    p = os.path.join(ASSETS, 'crowd_rig.blend')
+    if not _RIGS and os.path.exists(p):
+        _RIGS.update(H.load_crowd_rigs(p))
+    return list(_RIGS.values())
+
+
+def acts():
+    return MC.load_actions(os.path.join(ASSETS, 'mocap', 'mocap.blend'))
+
+
+def voice():
+    d = os.path.join(ASSETS, 'voice')
+    return os.path.join(d, 'words.json'), os.path.join(d, 'voice.wav')
+
+
+def live():
+    return bool(crowd_rigs()) and bool(acts())
+
+
+def _people_col(sc):
+    col = bpy.data.collections.get('People')
+    if col is None:
+        col = bpy.data.collections.new('People')
+        sc.collection.children.link(col)
+    return col
+
+
+def _pick(kind, n, rng, need=0):
+    pool = [a for a in MC.by_kind(kind) if a['esk_frames'] >= need] or MC.by_kind(kind)
+    a = rng.choice(pool)
+    off = rng.randint(0, max(0, a['esk_frames'] - n - 2))
+    return a, off
+
+
+def person(sc, rng, role, loc, rot_z=0.0, parent=None, src=None, act=None, offset=None):
+    """живой человек. role: idle | phone | talk | walk | ride (стоит на ступени).
+    Возвращает риг (или статичный меш, если живых людей нет)."""
+    n = sc.frame_end
+    if not live():
+        ppl = crowd()
+        if not ppl:
+            return None
+        ob = H.place_person(sc, rng.choice(ppl), loc, rot_z)
+        if parent is not None:
+            ob.parent = parent
+            ob.location = loc
+        return ob
+    src = src or rng.choice(crowd_rigs())
+    rig = H.clone_person(src, _people_col(sc), phone=(role == 'phone'))
+    rig.parent = parent
+    rig.location = loc
+    rig.rotation_euler = (0, 0, rot_z)
+    if act is None:
+        kind = {'walk': 'walk', 'talk': 'talk'}.get(role, 'idle')
+        act, off = _pick(kind, n, rng, need=(n + 2 if role == 'walk' else 0))
+        offset = off if offset is None else offset
+    offset = offset or 0
+    if role == 'phone':
+        for b, q in dict(src.get('esk_phone_pose', {})).items():   # руки с телефоном у груди, голова опущена
+            pb = rig.pose.bones.get(b)
+            if pb:
+                pb.rotation_mode = 'QUATERNION'
+                pb.rotation_quaternion = tuple(q)
+        MC.play(rig, act, offset, skip=MC.ARM_L + MC.ARM_R + MC.HEAD)
+    else:
+        MC.play(rig, act, offset)
+    rig['esk_role'] = role
+    return rig
 
 
 def hero(sc, parent=None, loc=(0, 0, 0), rot_z=0.0, pose='stand'):
@@ -69,6 +147,26 @@ def hero(sc, parent=None, loc=(0, 0, 0), rot_z=0.0, pose='stand'):
     if pose:
         H.pose(rig, pose)
     return rig
+
+
+def hero_live(sc, rig, info, fps, kind='idle', clip=None, only=None, skip=(), talk=True, smile=0.0, seed=1):
+    """ведущий оживает: мокап (часть костей) + мимика под голос"""
+    if rig is None:
+        return {}
+    n = sc.frame_end
+    res = {}
+    if acts():
+        a = MC._ACTS.get(clip) if clip else None
+        rng = random.Random(seed)
+        if a is None:
+            a, off = _pick(kind, n, rng)
+        else:
+            off = rng.randint(0, max(0, a['esk_frames'] - n - 2))
+        MC.play(rig, a, off, skip=skip, only=only)
+        res['mocap'] = (a.name, off)
+    w, v = voice()
+    res['face'] = FC.animate(rig, info, n, fps, w, v, seed=seed, smile=smile, talk=talk)
+    return res
 
 
 def step_at(e, s0, x_target, v=0.0, t=0.0):
@@ -90,10 +188,11 @@ def tread(dx=0.0, dy=0.0):
     return (-E.TREAD_D / 2 + dx, dy, E.TREAD_Z)
 
 
-def fill_steps(sc, m, dur, rng, density=0.5, skip=(), margin=1.1):
-    """passengers on the moving steps: stand on the right, a few on the left; never ride into a comb"""
+def fill_steps(sc, m, dur, rng, density=0.5, skip=(), margin=1.1, live_near=None):
+    """passengers on the moving steps: stand on the right, a few on the left; never ride into a comb.
+    live_near=(x, r): живые (с мокапом) только ступени в r метрах от x, дальние - статичные (длинный туннель)"""
     ppl = crowd()
-    if not ppl:
+    if not ppl and not live():
         return 0
     k_n = 0
     for k, e in enumerate(m['escs']):
@@ -112,40 +211,120 @@ def fill_steps(sc, m, dur, rng, density=0.5, skip=(), margin=1.1):
                 continue
             if rng.random() > density:
                 continue
-            ob = H.place_person(sc, rng.choice(ppl), (0, 0, 0), 0)
-            ob.parent = st
             right = -0.22 if v > 0 else 0.22
             if rng.random() < 0.2:
                 right = -right
-            ob.location = tread(rng.uniform(-0.02, 0.02), right + rng.uniform(-0.05, 0.05))
-            ob.rotation_euler = (0, 0, (math.pi / 2 if v > 0 else -math.pi / 2) + rng.uniform(-0.3, 0.3))
+            loc = tread(rng.uniform(-0.02, 0.02), right + rng.uniform(-0.05, 0.05))
+            rz = (math.pi / 2 if v > 0 else -math.pi / 2) + rng.uniform(-0.3, 0.3)
+            if live() and (live_near is None or abs(p.x - live_near[0]) < live_near[1]):
+                person(sc, rng, 'phone' if rng.random() < 0.3 else 'ride', loc, rz, parent=st)
+            elif ppl:
+                ob = H.place_person(sc, rng.choice(ppl), (0, 0, 0), 0)
+                ob.parent = st
+                ob.location = loc
+                ob.rotation_euler = (0, 0, rz)
             k_n += 1
     return k_n
 
 
 def fill_hall(sc, m, rng, n=30, top=True, depth=11.0, avoid=()):
-    ppl = crowd()
-    if not ppl:
-        return 0
     P = m['path']
     W = m['width'] + 6
     lanes = [e.origin.y for e in m['escs']]
-    c = 0
-    tries = 0
-    while c < n and tries < n * 20:
-        tries += 1
-        if top:
-            x = rng.uniform(P.x1 + 0.8, P.x1 + depth); z = P.rise + E.TREAD_Z
-            near = x < P.x1 + 2.6
-        else:
-            x = rng.uniform(P.x0 - depth, P.x0 - 0.8); z = E.TREAD_Z
-            near = x > P.x0 - 2.6
-        y = rng.uniform(-W / 2 + 0.7, W / 2 - 0.7)
-        if near and min(abs(y - ly) for ly in lanes) < 0.85:
-            continue
+    if top:
+        xa, xb, z, xm = P.x1 + 0.8, P.x1 + depth, P.rise + E.TREAD_Z, P.x1
+    else:
+        xa, xb, z, xm = P.x0 - depth, P.x0 - 0.8, E.TREAD_Z, P.x0
+    ya, yb = -W / 2 + 0.7, W / 2 - 0.7
+
+    def free(x, y, r=0.0, taken=()):
+        if not (xa - 0.01 <= x <= xb + 0.01 and ya <= y <= yb):
+            return False
+        if abs(x - xm) < 2.6 and min(abs(y - ly) for ly in lanes) < 0.85:
+            return False
         if any((x - ax) ** 2 + (y - ay) ** 2 < ar * ar for (ax, ay, ar) in avoid):
+            return False
+        return all((x - tx) ** 2 + (y - ty) ** 2 >= (r + tr) ** 2 for (tx, ty, tr) in taken)
+
+    if not live():
+        ppl = crowd()
+        if not ppl:
+            return 0
+        c = tries = 0
+        while c < n and tries < n * 20:
+            tries += 1
+            x, y = rng.uniform(xa, xb), rng.uniform(ya, yb)
+            if not free(x, y):
+                continue
+            H.place_person(sc, rng.choice(ppl), (x, y, z), rng.uniform(0, 2 * math.pi))
+            c += 1
+        return c
+
+    nf = sc.frame_end
+    taken = []                                        # (x, y, радиус) стоящих
+    c = 0
+    # 1) пары разговаривают (18_08 и 19_08 - одна запись, поэтому смотрят друг на друга и жесты в такт)
+    pa, pb = MC._ACTS.get('mc_talk_18_08'), MC._ACTS.get('mc_talk_19_08')
+    for _ in range(max(0, n // 9)):
+        for _t in range(30):
+            x, y = rng.uniform(xa, xb), rng.uniform(ya, yb)
+            ang = rng.uniform(0, 2 * math.pi)
+            d = rng.uniform(1.0, 1.25)
+            x2, y2 = x + math.cos(ang) * d, y + math.sin(ang) * d
+            if free(x, y, 0.4, taken) and free(x2, y2, 0.4, taken):
+                break
+        else:
             continue
-        H.place_person(sc, rng.choice(ppl), (x, y, z), rng.uniform(0, 2 * math.pi))
+        off = rng.randint(0, 120)
+        if pa and pb:
+            person(sc, rng, 'talk', (x, y, z), math.atan2(x2 - x, -(y2 - y)), act=pa, offset=off)
+            person(sc, rng, 'talk', (x2, y2, z), math.atan2(x - x2, -(y - y2)), act=pb, offset=off)
+        else:
+            person(sc, rng, 'talk', (x, y, z), math.atan2(x2 - x, -(y2 - y)))
+            person(sc, rng, 'talk', (x2, y2, z), math.atan2(x - x2, -(y - y2)))
+        taken += [(x, y, 0.4), (x2, y2, 0.4)]
+        c += 2
+    # 2) стоят: ждут, переминаются, смотрят в телефон
+    n_walk = max(1, n // 4)
+    tries = 0
+    while c < n - n_walk and tries < n * 25:
+        tries += 1
+        x, y = rng.uniform(xa, xb), rng.uniform(ya, yb)
+        if not free(x, y, 0.35, taken):
+            continue
+        person(sc, rng, 'phone' if rng.random() < 0.35 else 'idle', (x, y, z), rng.uniform(0, 2 * math.pi))
+        taken.append((x, y, 0.35))
+        c += 1
+    # 3) идут: путь проверяется по кадрам, чтобы не пройти сквозь людей, эскалатор и друг друга
+    walkers = []
+    tries = 0
+    while len(walkers) < n_walk and tries < n_walk * 40:
+        tries += 1
+        a, off = _pick('walk', nf, rng, need=nf + 2)
+        r = rng.random()
+        if r < 0.35:                                  # сошёл с эскалатора и уходит / идёт к эскалатору
+            hd = 0.0 if top else math.pi
+            if rng.random() < 0.4:
+                hd += math.pi
+        elif r < 0.7:
+            hd = rng.choice([math.pi / 2, -math.pi / 2])  # поперёк зала
+        else:
+            hd = rng.uniform(0, 2 * math.pi)
+        hd += rng.uniform(-0.25, 0.25)
+        ux, uy = math.cos(hd), math.sin(hd)
+        rz = math.atan2(ux, -uy)                      # клип идёт в -Y рига
+        cz, sz = math.cos(rz), math.sin(rz)
+        x0, y0 = rng.uniform(xa, xb), rng.uniform(ya, yb)
+        tr = MC.root_track(crowd_rigs()[0], a, [1 + off + k for k in range(0, nf + 1, 6)])
+        bx, by = tr[0]
+        path = [(x0 + cz * (tx - bx) - sz * (ty - by), y0 + sz * (tx - bx) + cz * (ty - by)) for (tx, ty) in tr]
+        if not all(free(px, py, 0.35, taken) for (px, py) in path):
+            continue
+        if any(any((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 < 0.7 ** 2 for p, q in zip(path, w)) for w in walkers):
+            continue
+        # риг ставим так, чтобы на первом кадре плана человек был в (x0, y0)
+        person(sc, rng, 'walk', (x0 - (cz * bx - sz * by), y0 - (sz * bx + cz * by), z), rz, act=a, offset=off)
+        walkers.append(path)
         c += 1
     return c
 
@@ -154,12 +333,13 @@ def metro_light(strength=0.25):
     S.world('#FFE8C8', strength)
 
 
-def metro(sc, fps, rise=6.0, lanes=3, every=1, seed=1, density=0.55, hall_n=30, skip=(), lamp_every=3.2, speeds=None, avoid=()):
+def metro(sc, fps, rise=6.0, lanes=3, every=1, seed=1, density=0.55, hall_n=30, skip=(), lamp_every=3.2, speeds=None, avoid=(),
+          live_near=None):
     n = sc.frame_end
     m = MT.build(rise=rise, lanes=lanes, animate=(1, n, fps), every=every, lamp_every=lamp_every, speeds=speeds)
     rng = random.Random(seed)
     dur = n / fps
-    fill_steps(sc, m, dur, rng, density=density, skip=skip)
+    fill_steps(sc, m, dur, rng, density=density, skip=skip, live_near=live_near)
     if hall_n:
         fill_hall(sc, m, rng, n=hall_n, top=True, avoid=avoid)
         fill_hall(sc, m, rng, n=hall_n // 2, top=False, avoid=avoid)
@@ -314,6 +494,7 @@ def S14(sc, dur, fps, info):      # «поэтому он едет с той ж�
         hx = p.x - 0.02
         hand = Vector((hx, e.origin.y + E.STEP_W / 2 + 0.06 - 0.03, P.z_of(hx) + E.TREAD_Z + 0.92 + 0.06))
         H.reach(rig, 'L', hand, pole=(0, 0.3, -1))
+        hero_live(sc, rig, info, fps, kind='idle', only=MC.HEAD + MC.ARM_R, talk=False, seed=14)   # голова и свободная рука живые, левая на поручне
     cam_move(sc, dur, fps, (0.62, 0.20, 1.42), (0.52, 0.26, 1.34), (-0.05, 0.50, 1.15), (-0.08, 0.52, 1.12),
              lens=(32, 35), dof=2.4, parent=st, name='CamS14')
     return {}
@@ -329,13 +510,16 @@ def S15(sc, dur, fps, info):      # «В московском метро так�
     return {}
 
 
-def long_tunnel(sc, fps, seed=16, density=0.28, hall_n=20):
+def long_tunnel(sc, fps, seed=16, density=0.28, hall_n=20, live_near=None):
     # «Парк Победы»: подъём ~63 м, лента ~126 м; ключи раз в 10 кадров (на прямом подъёме это точно)
-    return metro(sc, fps, rise=63.0, lanes=3, every=10, seed=seed, density=density, hall_n=hall_n, lamp_every=4.0)
+    # живые (с мокапом) только пассажиры рядом с камерой: остальные 200+ - статичные фигуры вдали
+    return metro(sc, fps, rise=63.0, lanes=3, every=10, seed=seed, density=density, hall_n=hall_n, lamp_every=4.0,
+                 live_near=live_near)
 
 
 def S16(sc, dur, fps, info):      # «Самая длинная на Парке Победы: 126 метров» - туннель сверху вниз
-    m = long_tunnel(sc, fps)
+    P0 = E.Path(rise=63.0, land_lo=3.0, land_hi=3.0)
+    m = long_tunnel(sc, fps, live_near=(P0.x1 - 10.0, 14.0))
     P = m['path']
     zt = P.rise + E.TREAD_Z
     cam_move(sc, dur, fps, (P.x1 + 1.5, 0.0, zt + 2.6), (P.x1 - 3.0, 0.0, zt + 2.3), (P.x1 - 40, 0, zt - 21), (P.x1 - 45, 0, zt - 25),
@@ -356,7 +540,8 @@ def S17(sc, dur, fps, info):      # «а подъём на 63 метра. Это
 
 
 def S18(sc, dur, fps, info):      # «Едешь почти три минуты» - ведущий на бесконечном эскалаторе
-    m = long_tunnel(sc, fps, seed=18, density=0.3)
+    P0 = E.Path(rise=63.0, land_lo=3.0, land_hi=3.0)
+    m = long_tunnel(sc, fps, seed=18, density=0.3, live_near=(P0.x1 * 0.45, 12.0))
     e = m['escs'][0]
     P = e.path
     i, st = step_at(e, 0.0, P.x1 * 0.45)
@@ -371,6 +556,8 @@ def S18(sc, dur, fps, info):      # «Едешь почти три минуты�
         hx = p.x - 0.02
         hand = Vector((hx, e.origin.y + E.STEP_W / 2 + 0.06 - 0.03, P.z_of(hx) + E.TREAD_Z + 0.92 + 0.06))
         H.reach(rig, 'L', hand, pole=(0, 0.3, -1))
+        # говорит в камеру: голова и правая рука из мокапа «объясняет жестами», губы под голос, моргает
+        hero_live(sc, rig, info, fps, clip='mc_talk_18_08', only=MC.HEAD + MC.ARM_R, seed=18)
     # камера на ступенях выше и смотрит вниз на лицо, за спиной туннель уходит вниз
     cam_move(sc, dur, fps, (1.55, -0.30, 2.25), (1.35, -0.22, 2.15), (-0.15, 0.05, 1.80), (-0.15, 0.05, 1.78),
              lens=(40, 44), dof=2.8, parent=st, name='CamS18')
@@ -385,12 +572,10 @@ def S19(sc, dur, fps, info):      # «А «эскалатор» когда-то 
     d['esk'].animate(1, sc.frame_end, fps, speed=0.5)
     P = d['path']
     rng = random.Random(19)
-    ppl = crowd()
-    if ppl:
-        for k in range(10):
-            x = rng.uniform(-10, -2.5) if k % 2 else rng.uniform(P.x1 + 1, P.x1 + 8)
-            z = E.TREAD_Z if x < 0 else P.rise + E.TREAD_Z
-            H.place_person(sc, rng.choice(ppl), (x, rng.choice([-1, 1]) * rng.uniform(2.0, 5.5), z), rng.uniform(0, 6.28))
+    for k in range(10):
+        x = rng.uniform(-10, -2.5) if k % 2 else rng.uniform(P.x1 + 1, P.x1 + 8)
+        z = E.TREAD_Z if x < 0 else P.rise + E.TREAD_Z
+        person(sc, rng, 'idle', (x, rng.choice([-1, 1]) * rng.uniform(2.0, 5.5), z), rng.uniform(0, 6.28))
     S.world('#F1D9B0', 0.35)
     S.area('Win', (-6, -14, 9), (2, 0, 2), 9000, 10, col='#FFE3B5')
     cam_move(sc, dur, fps, (-6.5, -6.2, 1.5), (-5.2, -5.0, 2.0), (P.x1 * 0.5, 0.8, P.rise + 2.2), (P.x1 * 0.5, 1.0, P.rise + 3.0),
@@ -414,20 +599,16 @@ def S20B(sc, dur, fps, info):     # «так уже звали любую дви
         e.animate(1, sc.frame_end, fps, speed=0.6, s0=k * 0.1)
     P = d['path']
     rng = random.Random(20)
-    ppl = crowd()
-    if ppl:
-        for k, e in enumerate(d['escs']):
-            for i, st in enumerate(e.steps):
-                p, th = e.path.at(k * 0.1 + i * e.path.pitch)
-                if th == 0 and P.x0 + 1 < p.x < P.x1 - 1.6 and rng.random() < 0.3:
-                    ob = H.place_person(sc, rng.choice(ppl), (0, 0, 0), 0)
-                    ob.parent = st
-                    ob.location = tread(0, -0.2)
-                    ob.rotation_euler = (0, 0, math.pi / 2)
-        for lvl in range(3):
-            for k in range(14):
-                x = rng.uniform(P.x0 - 7, P.x1 + 7); y = rng.choice([-1, 1]) * rng.uniform(7.5, 11.5)
-                H.place_person(sc, rng.choice(ppl), (x, y, lvl * d['lvl'] + E.TREAD_Z), rng.uniform(0, 6.28))
+    for k, e in enumerate(d['escs']):
+        for i, st in enumerate(e.steps):
+            p, th = e.path.at(k * 0.1 + i * e.path.pitch)
+            if th == 0 and P.x0 + 1 < p.x < P.x1 - 1.6 and rng.random() < 0.3:
+                person(sc, rng, 'phone' if rng.random() < 0.3 else 'ride', tread(0, -0.2), math.pi / 2, parent=st)
+    for lvl in range(3):
+        for k in range(14):
+            x = rng.uniform(P.x0 - 7, P.x1 + 7); y = rng.choice([-1, 1]) * rng.uniform(7.5, 11.5)
+            r = rng.random()
+            person(sc, rng, 'phone' if r < 0.3 else 'idle', (x, y, lvl * d['lvl'] + E.TREAD_Z), rng.uniform(0, 6.28))
     S.world('#F4F2EE', 0.12)
     cx = (P.x0 + P.x1) / 2
     S.area('Sky', (cx, 0, 18), (cx, 0, 0), 4000, 14, col='#FFFFFF')
@@ -458,13 +639,17 @@ def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал
             u = ease(min(1.0, (f - 1) / t_turn))
             rig.rotation_euler = (0, 0, a0 + (a1 - a0) * u)
             rig.keyframe_insert('rotation_euler', frame=f)
-            k = ease(min(1.0, max(0.0, (f - t_turn * 0.6) / (0.5 * fps))))
-            for side, sx in (('L', 1), ('R', -1)):
-                for bn, dw in (('risorius03.', (sx * 0.003, 0.002, 0.0035)), ('levator05.', (0, 0, 0.0015))):
-                    pb = rig.pose.bones.get(bn + side)
-                    if pb:
-                        H.nudge(rig, bn + side, dw, k)
-                        pb.keyframe_insert('location', frame=f)
+        # верх тела жестикулирует (мокап «объясняет жестами»), ноги стоят; губы под голос, улыбка к концу
+        live = hero_live(sc, rig, info, fps, clip='mc_talk_18_08', skip=MC.LEGS, smile=0.45, seed=21)
+        if not (live.get('face') or {}).get('visemes'):            # старый hero.blend без мимики: улыбка костями
+            for f in range(1, n + 1):
+                k = ease(min(1.0, max(0.0, (f - t_turn * 0.6) / (0.5 * fps))))
+                for side, sx in (('L', 1), ('R', -1)):
+                    for bn, dw in (('risorius03.', (sx * 0.003, 0.002, 0.0035)), ('levator05.', (0, 0, 0.0015))):
+                        pb = rig.pose.bones.get(bn + side)
+                        if pb:
+                            H.nudge(rig, bn + side, dw, k)
+                            pb.keyframe_insert('location', frame=f)
     host_light(sc, (hx, hy, zt + 1.66), (cx, cy))
     L = math.hypot(cx - hx, cy - hy)
     eye = (hx + (cx - hx) / L * 0.14, hy + (cy - hy) / L * 0.14, zt + 1.685)   # глаза ~14 см перед осью рига

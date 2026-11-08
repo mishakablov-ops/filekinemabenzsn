@@ -15,10 +15,11 @@ bpy.context.scene.collection.children.link(col)
 rig = [o for o in col.objects if o.type == 'ARMATURE'][0]
 tpose = json.load(open(tp))
 acts = []
-for cid, (kind, t0, ln) in MC.CLIPS.items():
+for cid, v in MC.CLIPS.items():
+    kind, t0, ln = v[:3]
     if only and cid not in only:
         continue
-    p = os.path.join(cmu, cid + '.bvh')
+    p = os.path.join(cmu, (v[3] if len(v) > 3 else cid) + '.bvh')
     if not os.path.exists(p):
         print('MISSING', cid); continue
     a = MC.retarget(rig, p, tpose, kind=kind, t0=t0, length=ln, name='mc_%s_%s' % (kind, cid))
