@@ -352,6 +352,38 @@ def by_kind(kind):
     return [a for n, a in sorted(_ACTS.items()) if a.get('esk_kind') == kind]
 
 
+def soften(act, bones, k=0.6):
+    """копия клипа, где повороты костей bones идут вокруг позы покоя: среднее положение снято, размах * k.
+    Для ведущего: голова из записи «объясняет собеседнику» смотрела в сторону, а ведущий говорит в камеру."""
+    from esk_mech import iter_fcurves
+    a = act.copy()
+    groups = {}
+    for fc in iter_fcurves(a):
+        if fc.data_path.endswith('rotation_quaternion') and '"' in fc.data_path:
+            bn = fc.data_path.split('"')[1]
+            if bn in bones:
+                groups.setdefault(bn, {})[fc.array_index] = fc
+    ident = Quaternion()
+    for bn, fcs in groups.items():
+        if len(fcs) != 4:
+            continue
+        n = len(fcs[0].keyframe_points)
+        qs = [Quaternion([fcs[i].keyframe_points[j].co[1] for i in range(4)]) for j in range(n)]
+        acc = Quaternion((0, 0, 0, 0))
+        for q in qs:
+            if acc.dot(q) < 0:
+                q = -q
+            acc = Quaternion([acc[i] + q[i] for i in range(4)])
+        mean = acc.normalized()
+        for j, q in enumerate(qs):
+            r = ident.slerp(mean.inverted() @ q, k)
+            for i in range(4):
+                fcs[i].keyframe_points[j].co[1] = r[i]
+        for fc in fcs.values():
+            fc.update()
+    return a
+
+
 def root_track(rig, act, frames):
     """смещение таза (пространство рига, x/y) на кадрах клипа: куда уйдёт прохожий"""
     from esk_mech import iter_fcurves

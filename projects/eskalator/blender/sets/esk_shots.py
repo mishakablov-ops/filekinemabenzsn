@@ -175,8 +175,9 @@ def hero(sc, parent=None, loc=(0, 0, 0), rot_z=0.0, pose='stand'):
     return rig
 
 
-def hero_live(sc, rig, info, fps, kind='idle', clip=None, only=None, skip=(), talk=True, smile=0.0, seed=1):
-    """ведущий оживает: мокап (часть костей) + мимика под голос"""
+def hero_live(sc, rig, info, fps, kind='idle', clip=None, only=None, skip=(), talk=True, smile=0.0, seed=1, soft=None):
+    """ведущий оживает: мокап (часть костей) + мимика под голос.
+    soft=k: движения костей only идут вокруг позы покоя с размахом k (голова смотрит в камеру, а не на собеседника)"""
     if rig is None:
         return {}
     n = sc.frame_end
@@ -188,6 +189,8 @@ def hero_live(sc, rig, info, fps, kind='idle', clip=None, only=None, skip=(), ta
             a, off = _pick(kind, n, rng)
         else:
             off = rng.randint(0, max(0, a['esk_frames'] - n - 2))
+        if soft:
+            a = MC.soften(a, set(only or ()), soft)
         MC.play(rig, a, off, skip=skip, only=only)
         res['mocap'] = (a.name, off)
     w, v = voice()
@@ -520,7 +523,7 @@ def S14(sc, dur, fps, info):      # «поэтому он едет с той ж�
         hx = p.x - 0.02
         hand = Vector((hx, e.origin.y + E.STEP_W / 2 + 0.06 - 0.03, P.z_of(hx) + E.TREAD_Z + 0.92 + 0.06))
         H.reach(rig, 'L', hand, pole=(0, 0.3, -1))
-        hero_live(sc, rig, info, fps, kind='idle', only=MC.HEAD + MC.ARM_R, talk=False, seed=14)   # голова и свободная рука живые, левая на поручне
+        hero_live(sc, rig, info, fps, kind='idle', only=MC.HEAD, soft=0.8, talk=False, seed=14)   # голова живая, рука на поручне
     cam_move(sc, dur, fps, (0.62, 0.20, 1.42), (0.52, 0.26, 1.34), (-0.05, 0.50, 1.15), (-0.08, 0.52, 1.12),
              lens=(32, 35), dof=2.4, parent=st, name='CamS14')
     return {}
@@ -582,8 +585,8 @@ def S18(sc, dur, fps, info):      # «Едешь почти три минуты�
         hx = p.x - 0.02
         hand = Vector((hx, e.origin.y + E.STEP_W / 2 + 0.06 - 0.03, P.z_of(hx) + E.TREAD_Z + 0.92 + 0.06))
         H.reach(rig, 'L', hand, pole=(0, 0.3, -1))
-        # говорит в камеру: голова и правая рука из мокапа «объясняет жестами», губы под голос, моргает
-        hero_live(sc, rig, info, fps, clip='mc_talk_18_08', only=MC.HEAD + MC.ARM_R, seed=18)
+        # говорит в камеру: голова живая (мокап «объясняет жестами» вокруг взгляда в камеру), губы под голос, моргает
+        hero_live(sc, rig, info, fps, clip='mc_talk_18_08', only=MC.HEAD, soft=0.7, seed=18)
     # камера на ступенях выше и смотрит вниз на лицо, за спиной туннель уходит вниз
     cam_move(sc, dur, fps, (1.55, -0.30, 2.25), (1.35, -0.22, 2.15), (-0.15, 0.05, 1.80), (-0.15, 0.05, 1.78),
              lens=(40, 44), dof=2.8, parent=st, name='CamS18')
@@ -666,8 +669,8 @@ def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал
             rig.rotation_euler = (0, 0, a0 + (a1 - a0) * u)
             rig.keyframe_insert('rotation_euler', frame=f)
         # верх тела жестикулирует (мокап «объясняет жестами»), ноги стоят; губы под голос, улыбка к концу
-        # крупный план головы и груди: из мокапа только голова (корпус и плечи на крупном плане дают «вздутую» грудь)
-        live = hero_live(sc, rig, info, fps, clip='mc_talk_18_08', only=MC.HEAD, smile=0.3, seed=21)
+        # крупный план головы и груди: голова и корпус живые вокруг позы «смотрит в камеру», плечи и руки в покое
+        live = hero_live(sc, rig, info, fps, clip='mc_talk_18_08', only=MC.HEAD + MC.SPINE, soft=0.7, smile=0.3, seed=21)
         if not (live.get('face') or {}).get('visemes'):            # старый hero.blend без мимики: улыбка костями
             for f in range(1, n + 1):
                 k = ease(min(1.0, max(0.0, (f - t_turn * 0.6) / (0.5 * fps))))
