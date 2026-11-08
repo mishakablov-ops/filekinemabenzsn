@@ -20,14 +20,21 @@ S.world('#DDE3EA', 1.0)
 fl = bpy.data.meshes.new('floor'); import bmesh
 bm = bmesh.new(); bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=6); bm.to_mesh(fl); bm.free()
 fo = bpy.data.objects.new('floor', fl); sc.collection.objects.link(fo)
-cam = S.camera((1.2, -3.6, 1.2), (0, 0, 0.9), lens=35, name='Cam')
+cam = S.camera((1.2, -3.6, 1.2), (0, 0, 0.9), lens=70, name='Cam')
 sc.camera = cam
+side = act.get('esk_kind') == 'walk'      # походку смотрим сбоку, остальное спереди в три четверти
 sun = bpy.data.lights.new('sun', 'SUN'); sun.energy = 3
 so = bpy.data.objects.new('sun', sun); so.rotation_euler = (0.8, 0.2, 0.6); sc.collection.objects.link(so)
 os.makedirs(out, exist_ok=True)
 for t in times:
     f = 1 + int(round(t * 30))
     sc.frame_set(f)
+    hip = rig.matrix_world @ rig.pose.bones['root'].head
+    off = (3.2, 0.0, 0.15) if side else (0.9, -3.0, 0.15)
+    cam.constraints.clear()
+    cam.location = (hip.x + off[0], hip.y + off[1], hip.z + off[2])
+    d = hip - cam.location
+    cam.rotation_euler = d.to_track_quat('-Z', 'Y').to_euler()
     sc.render.filepath = os.path.join(out, '%s_%04d.jpg' % (act_name, f))
     sc.render.image_settings.file_format = 'JPEG'
     bpy.ops.render.render(write_still=True)
