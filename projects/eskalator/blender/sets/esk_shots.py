@@ -134,21 +134,25 @@ def person(sc, rng, role, loc, rot_z=0.0, parent=None, src=None, act=None, offse
     return rig
 
 
-def lod_people(sc, near=6.0):
-    """дальним живым людям - без сглаживания (subdivision): на расстоянии не видно, а считать в разы дольше"""
+def lod_people(sc, layer=None, near=6.0):
+    """дальним живым людям - без сглаживания (subdivision): на расстоянии не видно, а считать в разы дольше.
+    layer: слой коллекции People - на время расчёта камеры выключается (иначе каждый frame_set гоняет всю толпу)"""
     col = bpy.data.collections.get('People')
     if col is None or sc.camera is None:
         return 0
     n = sc.frame_end
+    sc.frame_set(1)
+    pos = [(o, o.matrix_world.translation.copy()) for o in col.objects if o.type == 'ARMATURE']
+    if layer is not None:
+        layer.exclude = True
     cams = []
     for f in sorted({1, max(1, n // 2), n}):
         sc.frame_set(f)
         cams.append(sc.camera.matrix_world.translation.copy())
+    if layer is not None:
+        layer.exclude = False
     k = 0
-    for o in col.objects:
-        if o.type != 'ARMATURE':
-            continue
-        p = o.matrix_world.translation
+    for o, p in pos:
         if min((p - c).length for c in cams) > near:
             for ch in o.children:
                 for md in ch.modifiers:
@@ -156,7 +160,6 @@ def lod_people(sc, near=6.0):
                         md.levels = 0
                         md.render_levels = 0
             k += 1
-    sc.frame_set(1)
     return k
 
 

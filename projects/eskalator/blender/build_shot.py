@@ -40,11 +40,18 @@ sc.frame_end = max(2, int(round(dur * fps)))
 info = getattr(SH, shot)(sc, dur, fps, shots.get(shot, {}))
 print('ESK_T scene %.1fs' % (time.time() - T0))
 S.render_setup(engine, pct=pct, samples=samples, fps=fps)
+# живые люди дорого пересчитывать на каждом frame_set: пока считаем камеру, их коллекция выключена
+people = sc.view_layers[0].layer_collection.children.get('People')
+if os.environ.get('ESK_LOD', '1') != '0':
+    print('ESK_LOD', SH.lod_people(sc, people))
+if people:
+    people.exclude = True
 if opt('--whip', '1') != '0' and os.path.exists(sj):   # переходы как в образце: рывок камеры со смазом (sets/esk_whip.py)
     import esk_whip as WH
     print('ESK_WHIP', WH.apply(sc, shot, json.load(open(sj, encoding='utf-8'))['shots'], fps))
-if os.environ.get('ESK_LOD', '1') != '0':
-    print('ESK_LOD', SH.lod_people(sc))
+if people:
+    people.exclude = False
+print('ESK_T cam %.1fs' % (time.time() - T0))
 if opt('--look', '1') != '0':      # «без пластика»: фото-текстуры, кожа с SSS, фаски (sets/esk_look.py)
     import esk_look as LK
     LK.apply(sc, opt('--tex', LK.TEX_DIR))
@@ -79,8 +86,12 @@ if stills:
 else:
     d = os.path.join(out, 'frames', shot)
     os.makedirs(d, exist_ok=True)
+    rg = opt('--range', None)                  # проверка: только кадры a,b
+    if rg:
+        sc.frame_start, sc.frame_end = [int(x) for x in rg.split(',')]
     sc.render.filepath = os.path.join(d, '####')
     sc.render.use_overwrite = False
     sc.render.use_placeholder = True
     bpy.ops.render.render(animation=True)
+    print('ESK_T anim %.1fs' % (time.time() - T0))
 print('SHOT_DONE', shot, sc.frame_end)
