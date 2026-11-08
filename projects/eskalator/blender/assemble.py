@@ -59,10 +59,13 @@ for k, s in enumerate(S):
     L = t1 - t0
     src = os.path.join(a.frames, s['id'], '%04d.jpg')
     out = os.path.join(a.work, s['id'] + '.mp4')
-    vf = GRADE.get(s['id'], GRADE['default']) + ',scale=1080:1920:flags=lanczos,setsar=1,fps=%d' % a.fps
+    # JPEG-кадры полнодиапазонные (pc): переводим в стандартный tv/bt709, иначе часть плееров/соцсетей
+    # показывает ролик выцветшим или с «задавленными» тенями
+    vf = GRADE.get(s['id'], GRADE['default']) + (',scale=1080:1920:flags=lanczos:in_range=pc:out_range=tv'
+                                                 ':out_color_matrix=bt709,setsar=1,fps=%d' % a.fps)
     run([FF, '-y', '-v', 'error', '-framerate', str(a.fps), '-start_number', '1', '-i', src, '-t', '%.3f' % L,
          '-vf', vf + ',tpad=stop_mode=clone:stop_duration=1', '-t', '%.3f' % L,
-         '-c:v', 'libx264', '-crf', '14', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', str(a.fps), out])
+         '-c:v', 'libx264', '-crf', '14', '-preset', 'medium', '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-r', str(a.fps), out])
     clips.append((out, t0, L))
 if a.only_clips:
     sys.exit(0)
@@ -82,7 +85,7 @@ for k in range(1, len(clips)):
     prev = lab
 video = os.path.join(a.work, 'video.mp4')
 args += ['-filter_complex', ';'.join(fc), '-map', prev, '-c:v', 'libx264', '-crf', '14', '-preset', 'medium',
-         '-pix_fmt', 'yuv420p', '-r', str(a.fps), video]
+         '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-r', str(a.fps), video]
 run(args)
 
 # ----------------------------------------------------------------------------- титры
@@ -146,5 +149,6 @@ assf = assp.replace('\\', '/').replace(':', '\\:')
 vf = ("noise=alls=%.1f:allf=t," % a.grain if a.grain > 0 else '') + "ass='%s':fontsdir='%s'" % (assf, fontsdir)
 run([FF, '-y', '-v', 'error', '-i', video, '-i', mix, '-vf', vf,
      '-map', '0:v', '-map', '1:a', '-c:v', 'libx264', '-crf', '16', '-preset', 'slow', '-pix_fmt', 'yuv420p',
+     '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv',
      '-r', str(a.fps), '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-movflags', '+faststart', '-t', '%.3f' % END, a.out])
 print('ASSEMBLED', a.out)
