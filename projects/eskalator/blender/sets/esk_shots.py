@@ -640,7 +640,8 @@ def S21(sc, dur, fps, info):      # «Оставь лайк, если узнал
             rig.rotation_euler = (0, 0, a0 + (a1 - a0) * u)
             rig.keyframe_insert('rotation_euler', frame=f)
         # верх тела жестикулирует (мокап «объясняет жестами»), ноги стоят; губы под голос, улыбка к концу
-        live = hero_live(sc, rig, info, fps, clip='mc_talk_18_08', skip=MC.LEGS, smile=0.45, seed=21)
+        # крупный план головы и груди: из мокапа только голова (корпус и плечи на крупном плане дают «вздутую» грудь)
+        live = hero_live(sc, rig, info, fps, clip='mc_talk_18_08', only=MC.HEAD, smile=0.3, seed=21)
         if not (live.get('face') or {}).get('visemes'):            # старый hero.blend без мимики: улыбка костями
             for f in range(1, n + 1):
                 k = ease(min(1.0, max(0.0, (f - t_turn * 0.6) / (0.5 * fps))))

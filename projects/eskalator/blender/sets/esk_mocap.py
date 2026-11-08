@@ -24,9 +24,12 @@ MAP = {
     'Neck': 'neck01', 'Neck1': 'neck02', 'Head': 'head',
     'LHipJoint': 'pelvis.L', 'LeftUpLeg': 'upperleg01.L', 'LeftLeg': 'lowerleg01.L', 'LeftFoot': 'foot.L',
     'RHipJoint': 'pelvis.R', 'RightUpLeg': 'upperleg01.R', 'RightLeg': 'lowerleg01.R', 'RightFoot': 'foot.R',
-    'LeftShoulder': 'clavicle.L', 'LeftArm': 'upperarm01.L', 'LeftForeArm': 'lowerarm01.L', 'LeftHand': 'wrist.L',
-    'RightShoulder': 'clavicle.R', 'RightArm': 'upperarm01.R', 'RightForeArm': 'lowerarm01.R', 'RightHand': 'wrist.R',
+    'LeftArm': 'upperarm01.L', 'LeftForeArm': 'lowerarm01.L', 'LeftHand': 'wrist.L',
+    'RightArm': 'upperarm01.R', 'RightForeArm': 'lowerarm01.R', 'RightHand': 'wrist.R',
 }
+# ключицы и плечи остаются в покое (A-поза MPFB): плечевой сустав CMU шумный и задирал плечи - на крупном плане
+# грудь «вздувалась» (проверка 08.11.2026). Руки всё равно ставятся по мировому направлению, так что жест тот же.
+REST = ('clavicle.L', 'clavicle.R', 'shoulder01.L', 'shoulder01.R')
 # BVH (Y вверх) -> Blender (Z вверх): x -> x, y -> z, z -> -y (как импорт BVH с forward=-Z, up=Y)
 C = Matrix(((1, 0, 0), (0, 0, -1), (0, 1, 0)))
 CT = C.transposed()
@@ -293,7 +296,7 @@ def retarget(rig, bvh_path, tpose, kind='idle', t0=1.0, length=8.0, fps=30, name
                     lkeys.append(bl)
                     M = Matrix.Translation(want - root_h) @ M
             else:
-                M = base @ basis_T[b.name]
+                M = base if b.name in REST else base @ basis_T[b.name]
             Pp[b.name] = M
     # Action (слои/слоты Blender 5)
     act = bpy.data.actions.new(name or ('mc_' + os.path.splitext(os.path.basename(bvh_path))[0]))
@@ -318,7 +321,7 @@ def retarget(rig, bvh_path, tpose, kind='idle', t0=1.0, length=8.0, fps=30, name
         for i in range(4):
             put('pose.bones["%s"].rotation_quaternion' % bn, i, [q[i] for q in qs])
     for bn in tpose['bone_rotations']:            # неотображённые кости, которые T-поза поворачивает: держать как в расчёте
-        if bn in inv or bn not in bones:
+        if bn in inv or bn not in bones or bn in REST:
             continue
         q = basis_T[bn].to_quaternion()
         for i in range(4):

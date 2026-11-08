@@ -223,6 +223,6 @@ def animate(rig, info, n, fps, words_path, wav_path, seed=1, smile=0.0, talk=Tru
     res['eyes'] = eye_darts(rig, n, fps, rng)
     if smile:
         t_on = int(0.45 * fps)
-        accent(rig, {'mouthSmileLeft': smile, 'mouthSmileRight': smile, 'cheekSquintLeft': smile * 0.4,
-                     'cheekSquintRight': smile * 0.4}, [(1, 0.15), (t_on, 0.3), (t_on + 12, 1.0), (n, 1.0)])
+        accent(rig, {'mouthSmileLeft': smile, 'mouthSmileRight': smile, 'cheekSquintLeft': smile * 0.2,
+                     'cheekSquintRight': smile * 0.2}, [(1, 0.15), (t_on, 0.3), (t_on + 12, 1.0), (n, 1.0)])
     return res
