@@ -8,6 +8,9 @@
 умножается на громкость голоса в этот момент (voice.wav), поэтому рот не шевелится в паузах, даже если
 тайминги слов где-то съехали. Моргание раз в 2-5 с (быстро закрыть, медленнее открыть), мелкие движения глаз,
 брови чуть вверх на ударных словах.
+
+Правка mike 08.11.2026 на v2 «персонажей очень дергает»: огибающая голоса сглажена сильнее (5 кадров), кривые рта
+дополнительно сглажены Гауссом (рот не «трепещет» от кадра к кадру), взгляд перескакивает реже и мягче.
 """
 import bpy, json, math, os, random, wave, array
 
@@ -68,9 +71,24 @@ def envelope(wav_path, t0, t1, fps):
         return None
     ref = sorted(out)[int(len(out) * 0.95)] or 1.0
     sm = []
-    for i in range(len(out)):                            # лёгкое сглаживание 3 кадра
-        sm.append(sum(out[max(0, i - 1):i + 2]) / len(out[max(0, i - 1):i + 2]))
+    for i in range(len(out)):                            # сглаживание 5 кадров
+        w = out[max(0, i - 2):i + 3]
+        sm.append(sum(w) / len(w))
     return [min(1.0, v / ref) for v in sm]
+
+
+def _gauss(xs, sig):
+    r = int(math.ceil(3 * sig))
+    w = [math.exp(-0.5 * (k / sig) ** 2) for k in range(-r, r + 1)]
+    n = len(xs)
+    out = []
+    for i in range(n):
+        s = ws = 0.0
+        for k in range(-r, r + 1):
+            if 0 <= i + k < n:
+                s += w[k + r] * xs[i + k]; ws += w[k + r]
+        out.append(s / ws)
+    return out
 
 
 def _segments(words, t0, t1):
@@ -131,7 +149,7 @@ def lipsync(rig, words, t_start, n, fps, wav=None, gain=1.0):
                 cur[vis][i] = amp
     used = 0
     for v in VIS:
-        vals = [min(1.0, x) for x in cur[v]]
+        vals = [min(1.0, x) for x in _gauss(cur[v], 0.6 if v == 'p_b_m_21' else 1.1)]   # смыкание губ на п/б/м резче
         if max(vals) < 0.02:
             continue
         _key_series(objs, v, frames, vals)
@@ -183,7 +201,7 @@ def brows_on_words(rig, words, t_start, n, fps, rng, k=0.35):
     accent(rig, {'browInnerUp': k, 'browOuterUpLeft': k * 0.6, 'browOuterUpRight': k * 0.6}, clean)
 
 
-def eye_darts(rig, n, fps, rng, amp=2.0):
+def eye_darts(rig, n, fps, rng, amp=1.3):
     """мелкие движения глаз (саккады): глаза никогда не застывают у живого человека"""
     from mathutils import Euler
     pbs = [rig.pose.bones.get(b) for b in ('eye.L', 'eye.R')]
@@ -199,11 +217,11 @@ def eye_darts(rig, n, fps, rng, amp=2.0):
             p.rotation_euler = Euler((math.radians(cur[0]), 0, math.radians(cur[1])))
             p.keyframe_insert('rotation_euler', frame=f)
         nxt = (rng.uniform(-amp, amp) * 0.6, rng.uniform(-amp, amp))
-        for p in pbs:                                   # перескок за 2 кадра
+        for p in pbs:                                   # перескок за 3 кадра
             p.rotation_euler = Euler((math.radians(nxt[0]), 0, math.radians(nxt[1])))
-            p.keyframe_insert('rotation_euler', frame=f + 2)
+            p.keyframe_insert('rotation_euler', frame=f + 3)
         cur = nxt
-        t += rng.uniform(0.5, 1.6)
+        t += rng.uniform(1.0, 2.8)
     return 1
 
 

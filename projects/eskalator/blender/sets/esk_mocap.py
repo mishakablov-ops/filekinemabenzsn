@@ -37,8 +37,9 @@ CT = C.transposed()
 # клипы: имя -> (вид, с какой секунды, сколько секунд[, файл CMU, если имя не совпадает с файлом])
 CLIPS = {
     # ожидание/стоят. Отсеяны на смотре 08.11.2026 (tools/test_clips.py): 137_32 «старик» сутулый, 140_06/140_07
-    # стойка с присядом, 137_23 «изящная дама» откинута назад с рукой в сторону - в толпе метро выглядят странно
-    '137_28': ('idle', 1.0, 12), '137_19': ('idle', 1.0, 12), '141_20': ('idle', 0.5, 4.5), '111_28': ('idle', 1.0, 10),
+    # стойка с присядом, 137_23 «изящная дама» откинута назад с рукой в сторону - в толпе метро выглядят странно;
+    # 141_20 - не ожидание: руки и ноги всё время в быстром движении (до 23° за 1/120 с), в толпе дёргался
+    '137_28': ('idle', 1.0, 12), '137_19': ('idle', 1.0, 12), '111_28': ('idle', 1.0, 10),
     '113_21': ('idle', 1.0, 8), '77_02': ('idle', 0.5, 5), '40_10': ('idle', 1.0, 12), '40_11': ('idle', 1.0, 12),
     # разговор, жесты (18_08 и 19_08 - два собеседника одной записи)
     '18_08': ('talk', 1.0, 12), '19_08': ('talk', 1.0, 12), '111_25': ('talk', 0.5, 6),
@@ -223,14 +224,81 @@ def _lowpass(vs, win):
     return out
 
 
+def _median(xs, r):
+    n = len(xs)
+    out = []
+    for i in range(n):
+        w = sorted(xs[max(0, i - r):min(n, i + r + 1)])
+        out.append(w[len(w) // 2])
+    return out
+
+
+def _gauss(xs, sig):
+    """сглаживание Гауссом (sig в отсчётах), края - укороченным окном"""
+    if sig <= 0:
+        return list(xs)
+    r = int(math.ceil(3 * sig))
+    w = [math.exp(-0.5 * (k / sig) ** 2) for k in range(-r, r + 1)]
+    n = len(xs)
+    out = []
+    for i in range(n):
+        s = ws = 0.0
+        for k in range(-r, r + 1):
+            j = i + k
+            if 0 <= j < n:
+                s += w[k + r] * xs[j]; ws += w[k + r]
+        out.append(s / ws)
+    return out
+
+
+def _clean_quats(qs, sig):
+    """шум маркеров CMU: медиана по 5 отсчётам (одиночные выбросы) + Гаусс, знак кватерниона непрерывный"""
+    qs = [q.copy() for q in qs]
+    for i in range(1, len(qs)):
+        if qs[i - 1].dot(qs[i]) < 0:
+            qs[i].negate()
+    comp = [_gauss(_median([q[c] for q in qs], 2), sig) for c in range(4)]
+    return [Quaternion((comp[0][i], comp[1][i], comp[2][i], comp[3][i])).normalized() for i in range(len(qs))]
+
+
+def _clean_vecs(vs, sig):
+    comp = [_gauss(_median([v[c] for v in vs], 2), sig) for c in range(3)]
+    return [Vector((comp[0][i], comp[1][i], comp[2][i])) for i in range(len(vs))]
+
+
+# сглаживание мокапа, секунды (Гаусс). Правка mike 08.11.2026 на v2: «персонажей очень дергает» - в записях CMU
+# дрожь маркеров ~0,3-0,8° за кадр (у головы на крупном плане это несколько пикселей) и выбросы до 27° (35_01 стопа).
+# Ходьба мягче (иначе стопы «плывут»), стоящие/говорящие сильнее; голова и кисти ещё чуть сильнее.
+SMOOTH = {'walk': 0.03, 'idle': 0.06, 'talk': 0.05, 'phone': 0.06}
+SMOOTH_EXTRA = {'Head': 1.4, 'Neck': 1.4, 'Neck1': 1.4, 'LeftHand': 1.3, 'RightHand': 1.3}
+
+
+def smooth_frames(frames, sig_s, src_fps):
+    """frames из bvh_frames на полной частоте BVH -> те же frames, сглаженные по каждому суставу и тазу"""
+    if not frames or sig_s <= 0:
+        return frames
+    names = list(frames[0][0].keys())
+    rot = {}
+    for nm in names:
+        sig = sig_s * src_fps * SMOOTH_EXTRA.get(nm, 1.0)
+        rot[nm] = _clean_quats([G[nm].to_quaternion() for G, _ in frames], sig)
+    hips = _clean_vecs([h for _, h in frames], sig_s * src_fps)
+    return [({nm: rot[nm][i].to_matrix() for nm in names}, hips[i]) for i in range(len(frames))]
+
+
 def retarget(rig, bvh_path, tpose, kind='idle', t0=1.0, length=8.0, fps=30, name=None):
     """вернуть Action для рига (кватернионы костей + смещение root относительно покоя)."""
     joints, nfr, ft, nch, vals = read_bvh(bvh_path)
     src_fps = 1.0 / ft
     t_end = min((nfr - 1) / src_fps, t0 + length)
     times = [t0 + k / fps for k in range(int((t_end - t0) * fps) + 1)]
-    idx = [min(nfr - 1, int(round(t * src_fps))) for t in times]
-    frames = bvh_frames(joints, nfr, nch, vals, idx)
+    # читаем на полной частоте BVH с запасом по краям, сглаживаем, потом берём кадры под fps
+    sig = SMOOTH.get(kind, 0.05)
+    pad = int(math.ceil(4 * sig * src_fps))
+    i0 = max(0, int(round(times[0] * src_fps)) - pad)
+    i1 = min(nfr - 1, int(round(times[-1] * src_fps)) + pad)
+    full = smooth_frames(bvh_frames(joints, nfr, nch, vals, list(range(i0, i1 + 1))), sig, src_fps)
+    frames = [full[min(i1, int(round(t * src_fps))) - i0] for t in times]
     rest_dirs = bvh_rest_dirs(joints)
     P_T, basis_T = _tpose_pose(rig, tpose)
     bones = rig.data.bones
