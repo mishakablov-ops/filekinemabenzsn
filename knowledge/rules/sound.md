@@ -23,6 +23,11 @@ For that reel, the supplied `ssstik.io_1792530637838.mp3` was extended from 37.2
 
 Reference mix: prepared bed −16 LUFS; music volume `0.22`, speech duck multiplier `0.40`, attack 80 ms, release 350 ms, fade-in 0.18 s and fade-out 1.25 s. The final approved MP4 measured −14.66 LUFS / −1.39 dBTP, with narration 9.5–18.5 dB above the music by section RMS. These values describe this accepted mix, not a universal preset: adjust to the actual voice and track. Preserve approved visuals and source narration when only replacing music.
 
+### 3D explainers like the reference — 2026-11-08
+
+mike on `eskalator-v1`: «поменяй музыку на менее бузящую, похожую как на образце». Under a calm 3D explainer
+(sample IMG_1924) use a steady ambient pad with no drums (`ambient-air`), low under the voice, not a busy beat.
+
 ### Included beds
 
 | id | bpm | dur | use |
