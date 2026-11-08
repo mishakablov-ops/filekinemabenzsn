@@ -8,9 +8,15 @@
 ## Что где
 - `script.md` — сценарий в разметке титров и источники фактов.
 - `blender/shots.json` — тайминги 22 планов под голос; `blender/sets/*.py` — сцены (студия-разрез, метро, туннель
-  Парка Победы, разрез с домом, универмаг 1950, ТЦ), ведущий (`esk_hero.py`), проход реализма (`esk_look.py`).
+  Парка Победы, разрез с домом, универмаг 1950, ТЦ), ведущий (`esk_hero.py`), проход реализма (`esk_look.py`),
+  переходы рывком камеры (`esk_whip.py`), мокап CMU на риг MakeHuman (`esk_mocap.py`), мимика ведущего (`esk_face.py`).
+- `blender/tools/` — сборка мокапа (`build_mocap.py`), проверка клипов на ведущем (`test_mocap.py`, `test_clips.py`).
+- На ПК в `D:\aipollon\eskalator\assets`: `hero.blend` (с формами лица, зубами и языком; без них — `hero_noface.blend`),
+  `crowd.blend` (статичные), `crowd_rig.blend` (10 человек с костями и телефоном), `mocap/mocap.blend` (30 клипов),
+  `voice/` (копия голоса и слов для губ ведущего).
 - `blender/build_shot.py` — один план (кадры JPG); `blender/pc_run.py` — очередь рендера на ПК;
-  `blender/assemble.py` — сборка: грейд, переходы xfade, титры ASS, цифры статистики, музыка под голос, зерно.
+  `blender/assemble.py` — сборка: склейка встык (переходы делает сама камера в планах), титры ASS, цифры
+  статистики, спокойная музыка-подложка под голос.
 - Голос и слова лежат в KINEMA: `engine/public/projects/eskalator/{voice.wav,words.json}`.
 - Текстуры Poly Haven CC0 на ПК: `D:\aipollon\eskalator\assets\tex` (скачиваются `esk_look.fetch_all()`).
 
