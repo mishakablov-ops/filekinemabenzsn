@@ -5,7 +5,8 @@ blender -b --python build_shot.py -- <SHOT> [--dur 3.0] [--pct 100] [--samples 6
 Frames -> <out>/<SHOT>/####.jpg (resumable), stills -> <out>/stills/<SHOT>_<t>.jpg
 Shot durations come from shots.json next to this file (written from the voice timings) unless --dur is given.
 """
-import bpy, sys, os, json, math, importlib
+import bpy, sys, os, json, math, importlib, time
+T0 = time.time()
 from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -37,13 +38,17 @@ sc.render.fps = fps
 sc.frame_start = 1
 sc.frame_end = max(2, int(round(dur * fps)))
 info = getattr(SH, shot)(sc, dur, fps, shots.get(shot, {}))
+print('ESK_T scene %.1fs' % (time.time() - T0))
 S.render_setup(engine, pct=pct, samples=samples, fps=fps)
 if opt('--whip', '1') != '0' and os.path.exists(sj):   # переходы как в образце: рывок камеры со смазом (sets/esk_whip.py)
     import esk_whip as WH
     print('ESK_WHIP', WH.apply(sc, shot, json.load(open(sj, encoding='utf-8'))['shots'], fps))
+if os.environ.get('ESK_LOD', '1') != '0':
+    print('ESK_LOD', SH.lod_people(sc))
 if opt('--look', '1') != '0':      # «без пластика»: фото-текстуры, кожа с SSS, фаски (sets/esk_look.py)
     import esk_look as LK
     LK.apply(sc, opt('--tex', LK.TEX_DIR))
+    print('ESK_T look %.1fs' % (time.time() - T0))
 if engine == 'CYCLES':
     prefs = bpy.context.preferences.addons['cycles'].preferences
     for dt in ('OPTIX', 'CUDA'):
@@ -70,6 +75,7 @@ if stills:
         sc.frame_set(f)
         sc.render.filepath = os.path.join(out, 'stills', f'{shot}_{t:.1f}.jpg')
         bpy.ops.render.render(write_still=True)
+        print('ESK_T still %.1f %.1fs' % (t, time.time() - T0))
 else:
     d = os.path.join(out, 'frames', shot)
     os.makedirs(d, exist_ok=True)

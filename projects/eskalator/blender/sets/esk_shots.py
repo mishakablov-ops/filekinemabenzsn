@@ -134,6 +134,32 @@ def person(sc, rng, role, loc, rot_z=0.0, parent=None, src=None, act=None, offse
     return rig
 
 
+def lod_people(sc, near=6.0):
+    """дальним живым людям - без сглаживания (subdivision): на расстоянии не видно, а считать в разы дольше"""
+    col = bpy.data.collections.get('People')
+    if col is None or sc.camera is None:
+        return 0
+    n = sc.frame_end
+    cams = []
+    for f in sorted({1, max(1, n // 2), n}):
+        sc.frame_set(f)
+        cams.append(sc.camera.matrix_world.translation.copy())
+    k = 0
+    for o in col.objects:
+        if o.type != 'ARMATURE':
+            continue
+        p = o.matrix_world.translation
+        if min((p - c).length for c in cams) > near:
+            for ch in o.children:
+                for md in ch.modifiers:
+                    if md.type == 'SUBSURF':
+                        md.levels = 0
+                        md.render_levels = 0
+            k += 1
+    sc.frame_set(1)
+    return k
+
+
 def hero(sc, parent=None, loc=(0, 0, 0), rot_z=0.0, pose='stand'):
     p = os.path.join(ASSETS, 'hero.blend')
     if not os.path.exists(p):
