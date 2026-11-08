@@ -378,6 +378,12 @@ def _people(m, base):
             pb.inputs['Coat Weight'].default_value = 1.0
             pb.inputs['Coat Roughness'].default_value = 0.03
         return 'eyes'
+    if 'teeth' in low or 'tongue' in low:            # рот (08.11.2026, мимика): влажные зубы и язык, без «ткани»
+        for pb in pbs:
+            pb.inputs['Roughness'].default_value = 0.22 if 'teeth' in low else 0.35
+            pb.inputs['Specular IOR Level'].default_value = 0.5
+            pb.inputs['Alpha'].default_value = 1.0
+        return 'mouth'
     if any(k in low for k in ('short0', 'bob0', 'ponytail', 'long0', 'hair', 'braid', 'afro')):
         for pb in pbs:   # матовые, с разнотоном: блестящая «каска» — главный признак пластиковых волос
             pb.inputs['Roughness'].default_value = 0.62
@@ -563,7 +569,7 @@ def bevel_edges(width=0.004, max_polys=4000):
         if not (6 <= len(me.polygons) <= max_polys):
             continue
         names = [s.material.name for s in ob.material_slots if s.material]
-        if any(re.match(r'^(P\d\dr|Hero)\.', x) for x in names):
+        if any(re.match(r'^(P\d\dr?|Hero)\.', x) for x in names):
             continue
         md = ob.modifiers.new('EskBevel', 'BEVEL')
         md.width = width
@@ -629,7 +635,7 @@ def apply(sc=None, tex_dir=TEX_DIR, bevel=True):
             _lens(m)
             stats['lens'] = 1
             continue
-        if re.match(r'^(P\d\dr|Hero)\.', base):
+        if re.match(r'^(P\d\dr?|Hero)\.', base):
             cls = _people(m, base)
             stats[cls] = stats.get(cls, 0) + 1
             continue

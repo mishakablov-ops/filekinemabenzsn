@@ -537,6 +537,17 @@ def hero_face_file(path):
                     c.objects.unlink(o)
                 col.objects.link(o)
     n = add_face_keys(rig)
+    # в открытом файле уже может быть HeroChar: тогда загруженное получило суффикс .001 - вернуть имена
+    import re
+    if col.name != 'HeroChar':
+        oc = bpy.data.collections.get('HeroChar')
+        if oc:
+            for o in list(oc.objects):
+                o.name = o.name + '_old'
+            oc.name = 'HeroChar_old'
+        col.name = 'HeroChar'
+        for o in list(col.objects):
+            o.name = re.sub(r'\.\d{3}$', '', o.name)
     bpy.data.libraries.write(path, {col}, fake_user=True, compress=True)
     return n
 
