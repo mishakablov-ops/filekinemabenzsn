@@ -1,0 +1,221 @@
+diff --git a/pixcine/engine/public/locations/tt_bath.json b/pixcine/engine/public/locations/tt_bath.json
+new file mode 100644
+index 0000000..e7a00bf
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_bath.json
+@@ -0,0 +1 @@
++{"id": "tt_bath", "interior": true, "tod": "interior_day", "props": [{"t": "room", "p": [0, 0], "w": 3.4, "d": 3.0, "h": 2.6, "wall": "tiles", "wallOpts": {"color": "#b8d0d8"}, "floor": "floor_tiles", "floorOpts": {"a": "#d8dcdc", "b": "#a8b0b4"}, "ceiling": false}, {"t": "sink", "p": [0.0, -1.2]}, {"t": "block", "p": [0.0, -1.47], "y": 1.15, "size": [0.8, 0.7, 0.04], "tex": "metal", "color": "#c8dce8"}, {"t": "block", "p": [1.2, -1.2], "size": [0.6, 0.9, 0.5], "tex": "white", "color": "#e8ecec"}, {"t": "lightPt", "p": [0, -0.6], "y": 2.4, "i": 3.5, "d": 7, "color": "#f4f8ff"}], "fog": 0.01, "hemi": ["#d0dce4", "#3a4044", 0.8]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_cafe.json b/pixcine/engine/public/locations/tt_cafe.json
+new file mode 100644
+index 0000000..39d5a33
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_cafe.json
+@@ -0,0 +1 @@
++{"id": "tt_cafe", "interior": true, "tod": "interior_day", "props": [{"t": "room", "p": [0, 0], "w": 6.0, "d": 4.6, "h": 3.0, "wall": "tiles", "wallOpts": {"color": "#d8cfc0"}, "floor": "floor_tiles", "floorOpts": {"a": "#6a5040", "b": "#4a3a30"}, "ceiling": false}, {"t": "counter", "p": [0.8, -1.4], "w": 3.0, "color": "#5a3a26"}, {"t": "coffeeMachine", "p": [1.6, -1.55], "y": 1.06}, {"t": "menuBoard", "p": [-1.4, -2.25], "y": 2.0, "w": 1.7, "h": 1.05, "items": [["ЛАТТЕ", "250"], ["ПРОТЕИН", "300"], ["СЫРЫЕ ЯЙЦА", "90"]], "hl": 0, "title": "МЕНЮ"}, {"t": "table", "p": [-1.8, 1.0]}, {"t": "stool", "p": [-1.8, 1.7]}, {"t": "bush", "p": [2.6, 1.6], "s": 0.7}, {"t": "windowModern", "p": [-2.98, 0.2], "y": 1.6, "r": 90, "w": 1.6, "h": 1.2, "morning": true}, {"t": "bulb", "p": [-0.6, 0.0], "y": 3.0, "len": 0.7, "i": 4, "d": 7}, {"t": "bulb", "p": [1.4, -0.6], "y": 3.0, "len": 0.7, "i": 4, "d": 7}], "fog": 0.012, "hemi": ["#d8c8b0", "#4a3828", 0.75]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_coach.json b/pixcine/engine/public/locations/tt_coach.json
+new file mode 100644
+index 0000000..310b5d9
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_coach.json
+@@ -0,0 +1 @@
++{"id": "tt_coach", "interior": true, "tod": "interior", "props": [{"t": "room", "p": [0, 0], "w": 5.0, "d": 4.0, "h": 3.0, "wall": "plaster", "wallOpts": {"color": "#2a2a30"}, "floor": "parquet", "floorOpts": {}, "ceiling": false}, {"t": "screenBoard", "p": [0.0, -1.96], "y": 1.9, "w": 2.4, "h": 1.0, "title": "МАРАФОН «БРАТ»", "rows": ["ДЕНЬ 1: ХОЛОДНЫЙ ДУШ", "ДЕНЬ 2: БОРОДА", "ДЕНЬ 3: ЭТО БАЗА"], "hl": 2}, {"t": "sandbags", "p": [-1.8, -1.4]}, {"t": "shelf", "p": [2.2, -0.6], "r": -90, "s": 0.8}, {"t": "bulb", "p": [0, 0.2], "y": 3.0, "len": 0.5, "i": 5, "d": 8}, {"t": "lightPt", "p": [1.2, 1.0], "y": 2.0, "i": 2.2, "d": 6, "color": "#ff9a4a"}], "fog": 0.025, "hemi": ["#8a7a6a", "#120e0c", 0.45]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_elev.json b/pixcine/engine/public/locations/tt_elev.json
+new file mode 100644
+index 0000000..8a2c6cb
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_elev.json
+@@ -0,0 +1 @@
++{"id": "tt_elev", "interior": true, "tod": "interior", "props": [{"t": "elevator", "p": [0, 0], "allAt": 999, "i": 3.5}], "fog": 0.01, "hemi": ["#b8bcc4", "#3a3a40", 0.6]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_kitchen.json b/pixcine/engine/public/locations/tt_kitchen.json
+new file mode 100644
+index 0000000..8dfb172
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_kitchen.json
+@@ -0,0 +1 @@
++{"id": "tt_kitchen", "interior": true, "tod": "interior_day", "props": [{"t": "room", "p": [0, 0], "w": 4.2, "d": 3.6, "h": 2.7, "wall": "tiles", "wallOpts": {"color": "#c8d4c0"}, "floor": "lino", "floorOpts": {"color": "#6a5a4a"}, "ceiling": false}, {"t": "sink", "p": [-0.2, -1.45]}, {"t": "block", "p": [1.4, -1.4], "size": [0.75, 1.95, 0.7], "tex": "white", "color": "#e8ecec"}, {"t": "table", "p": [0.6, 0.2]}, {"t": "stool", "p": [1.2, 0.6]}, {"t": "windowModern", "p": [-1.6, -1.78], "y": 1.6, "w": 0.9, "h": 0.9, "morning": true}, {"t": "bulb", "p": [0, 0], "y": 2.7, "len": 0.4, "i": 4, "d": 7}], "fog": 0.012, "hemi": ["#d8d0c0", "#3a3028", 0.75]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_room.json b/pixcine/engine/public/locations/tt_room.json
+new file mode 100644
+index 0000000..96bb0b2
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_room.json
+@@ -0,0 +1 @@
++{"id": "tt_room", "interior": true, "tod": "interior_day", "props": [{"t": "room", "p": [0, 0], "w": 4.4, "d": 4.6, "h": 2.7, "wall": "wallpaper", "wallOpts": {"color": "#2a3042"}, "floor": "parquet", "floorOpts": {}, "ceiling": false}, {"t": "bed", "modern": true, "p": [-1.2, -1.0], "sheet": "#2a3a5a"}, {"t": "nightstand", "p": [-0.3, -1.85], "lamp": true}, {"t": "desk", "p": [1.25, -1.9], "on": true}, {"t": "windowModern", "p": [0.55, -2.28], "y": 1.55, "w": 1.3, "h": 1.1, "morning": true}, {"t": "poster", "p": [-2.17, 0.6], "y": 1.6, "r": 90, "v": 0}, {"t": "poster", "p": [2.17, -0.4], "y": 1.55, "r": -90, "v": 1}, {"t": "shelf", "p": [1.9, 1.2], "r": -90, "s": 0.8}, {"t": "carpet", "p": [0.2, 0.2], "w": 1.8, "len": 2.2, "color": "#3a3448"}, {"t": "crate", "p": [1.7, 0.2]}, {"t": "shaft", "p": [0.55, -1.9], "top": 2.1, "w": 1.1, "h": 3, "tilt": -28, "color": "#ffe0b0", "opacity": 0.14}], "lights": [{"type": "spot", "p": [0.55, 2.2, -2.0], "target": [-0.2, 0.5, -0.4], "i": 7, "d": 9, "angle": 50, "color": "#ffe0b0", "shadow": true}, {"type": "point", "p": [1.0, 2.3, 1.5], "i": 1.2, "d": 7, "color": "#ffd8b0"}], "particles": [{"kind": "dust", "n": 120, "box": [-0.6, 0.4, -2.1, 1.4, 2.4, -0.2]}], "fog": 0.015, "hemi": ["#c8c0b8", "#3a2a20", 0.6]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_room_night.json b/pixcine/engine/public/locations/tt_room_night.json
+new file mode 100644
+index 0000000..2927595
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_room_night.json
+@@ -0,0 +1 @@
++{"id": "tt_room_night", "interior": true, "tod": "interior", "props": [{"t": "room", "p": [0, 0], "w": 4.4, "d": 4.6, "h": 2.7, "wall": "wallpaper", "wallOpts": {"color": "#2a3042"}, "floor": "parquet", "floorOpts": {}, "ceiling": false}, {"t": "bed", "modern": true, "p": [-1.2, -1.0], "sheet": "#2a3a5a"}, {"t": "nightstand", "p": [-0.3, -1.85], "lamp": true}, {"t": "desk", "p": [1.25, -1.9], "on": true}, {"t": "windowModern", "p": [0.55, -2.28], "y": 1.55, "w": 1.3, "h": 1.1, "morning": false}, {"t": "poster", "p": [-2.17, 0.6], "y": 1.6, "r": 90, "v": 0}, {"t": "poster", "p": [2.17, -0.4], "y": 1.55, "r": -90, "v": 1}, {"t": "shelf", "p": [1.9, 1.2], "r": -90, "s": 0.8}, {"t": "carpet", "p": [0.2, 0.2], "w": 1.8, "len": 2.2, "color": "#3a3448"}, {"t": "crate", "p": [1.7, 0.2]}], "lights": [{"type": "point", "p": [-0.3, 0.9, -1.8], "i": 2.2, "d": 4, "color": "#ffb870"}, {"type": "point", "p": [0.6, 1.8, -2.0], "i": 1.2, "d": 6, "color": "#6a88ff"}], "particles": [{"kind": "dust", "n": 120, "box": [-0.6, 0.4, -2.1, 1.4, 2.4, -0.2]}], "fog": 0.02, "hemi": ["#4a5a8a", "#0a0a12", 0.35]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_street.json b/pixcine/engine/public/locations/tt_street.json
+new file mode 100644
+index 0000000..9ff0c6d
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_street.json
+@@ -0,0 +1 @@
++{"id": "tt_street", "tod": "day", "fog": 0.012, "ground": {"tex": "paving", "size": [200, 200]}, "props": [{"t": "road", "p": [0, 0], "w": 7, "len": 90, "zebraZ": 0}, {"t": "trafficLight", "p": [-4.1, 1.9], "state": "green"}, {"t": "streetLamp", "p": [4.4, -8], "r": 180}, {"t": "streetLamp", "p": [-4.4, -16]}, {"t": "streetLamp", "p": [4.4, 8], "r": 180}, {"t": "building", "p": [-12, -18], "r": 90, "w": 11, "d": 9, "floors": 7, "seed": 0, "day": true, "color": "#8a7e72"}, {"t": "building", "p": [-12, -5], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 1, "day": true, "color": "#7a8a8e"}, {"t": "building", "p": [-12, 8], "r": 90, "w": 11, "d": 9, "floors": 6, "seed": 2, "day": true, "color": "#9a7a62"}, {"t": "building", "p": [-12, 21], "r": 90, "w": 11, "d": 9, "floors": 7, "seed": 3, "day": true, "color": "#7e7a8a"}, {"t": "building", "p": [12, -20], "r": -90, "w": 11, "d": 9, "floors": 6, "seed": 4, "day": true, "color": "#9a8a72"}, {"t": "building", "p": [12, -7], "r": -90, "w": 11, "d": 9, "floors": 8, "seed": 5, "day": true, "color": "#7a7e86"}, {"t": "building", "p": [12, 6], "r": -90, "w": 11, "d": 9, "floors": 5, "seed": 6, "day": true, "color": "#8a6e60"}, {"t": "building", "p": [12, 19], "r": -90, "w": 11, "d": 9, "floors": 6, "seed": 7, "day": true, "color": "#888070"}, {"t": "bush", "p": [-5.5, -2]}, {"t": "bush", "p": [5.6, 3]}, {"t": "bench", "p": [-6.2, 5], "r": 90}], "particles": [{"kind": "motes", "n": 80, "box": [-6, 0.3, -6, 6, 4, 6]}]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt_yard.json b/pixcine/engine/public/locations/tt_yard.json
+new file mode 100644
+index 0000000..2e55d80
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt_yard.json
+@@ -0,0 +1 @@
++{"id": "tt_yard", "tod": "night", "fog": 0.018, "ground": {"tex": "asphalt", "size": [300, 300]}, "props": [{"t": "road", "p": [0, 0], "w": 8, "len": 160}, {"t": "streetLamp", "p": [4.6, -6], "r": 180}, {"t": "streetLamp", "p": [-4.6, -14], "r": 0}, {"t": "streetLamp", "p": [4.6, -22], "r": 180}, {"t": "streetLamp", "p": [-4.6, 6], "r": 0}, {"t": "streetLamp", "p": [4.6, 14], "r": 180}, {"t": "building", "p": [-13, -8], "r": 90, "w": 12, "d": 10, "floors": 9, "seed": 20, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [-13, 7], "r": 90, "w": 12, "d": 10, "floors": 6, "seed": 21, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [-13, 22], "r": 90, "w": 12, "d": 10, "floors": 8, "seed": 22, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, -10], "r": -90, "w": 12, "d": 10, "floors": 7, "seed": 23, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, 6], "r": -90, "w": 12, "d": 10, "floors": 10, "seed": 24, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, 20], "r": -90, "w": 12, "d": 10, "floors": 6, "seed": 25, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [-13, -48], "r": 90, "w": 12, "d": 10, "floors": 12, "seed": 26, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, -50], "r": -90, "w": 12, "d": 10, "floors": 9, "seed": 27, "lit": 0.45, "color": "#5a5660"}], "particles": [{"kind": "motes", "n": 60, "box": [-6, 0.3, -6, 6, 4, 6]}]}
+\ No newline at end of file
+diff --git a/pixcine/engine/src/Film.tsx b/pixcine/engine/src/Film.tsx
+index ce9a50c..28c447a 100644
+--- a/pixcine/engine/src/Film.tsx
++++ b/pixcine/engine/src/Film.tsx
+@@ -415,6 +415,46 @@ const OVERLAYS: Record<string, OV> = {
+       </AbsoluteFill>
+     );
+   },
++  /** «every N seconds» HUD (testosteron short, 09.11.2026): running timer + segmented level bar + multiplier.
++   *  c.levels = [{t, n, mult}] (n = filled segments of c.max), c.start = the timer's zero */
++  meter: ({ c, t, w, h }) => {
++    const k = w / 1080, a = life(c, t, 0.25, 0.3);
++    const lv = (c.levels as any[]).filter((l) => t >= l.t);
++    const cur = lv.length ? lv[lv.length - 1] : { n: 0, mult: "×1", t: -9 };
++    const prev = lv.length > 1 ? lv[lv.length - 2].n : 0;
++    const up = clamp((t - cur.t) / 0.35);
++    const fill = lerp(prev, cur.n, ease.out(up));
++    const pop = t - cur.t < 0.6 ? lerp(1.45, 1, ease.out(clamp((t - cur.t) / 0.4))) : 1;
++    const max = c.max ?? 9;
++    const secs = Math.max(0, Math.floor(t - (c.start ?? 0)));
++    const clock = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
++    const segCol = (i: number) => (i < 3 ? "#5ad05a" : i < 6 ? "#ffd23a" : "#ff4a2a");
++    const flash = t - cur.t < 0.25 && cur.t > 0;
++    return (
++      <div style={{ position: "absolute", left: 40 * k, right: 40 * k, top: (c.y ?? 0.03) * h, display: "flex", gap: 22 * k, alignItems: "stretch", fontFamily: FONT, opacity: a }}>
++        <div style={{ ...pbox(k, "#0d0c10", "#f2efe6"), padding: `${10 * k}px ${18 * k}px`, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minWidth: 190 * k }}>
++          <div style={{ fontSize: 26 * k, color: "#b8b2a4" }}>ВРЕМЯ</div>
++          <div style={{ fontSize: 66 * k, lineHeight: 1, color: "#f2efe6" }}>{clock}</div>
++        </div>
++        <div style={{ flex: 1, ...pbox(k, flash ? "#3a2a0a" : "#0d0c10", flash ? "#ffd23a" : "#f2efe6"), padding: `${10 * k}px ${18 * k}px` }}>
++          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
++            <div style={{ fontSize: 30 * k, color: "#f2efe6" }}>{c.title ?? "ТЕСТОСТЕРОН"}</div>
++            <div style={{ fontSize: 54 * k, lineHeight: 1, color: "#ffd23a", textShadow: outline(Math.round(4 * k)), transform: `scale(${pop})`, transformOrigin: "100% 60%" }}>{cur.mult}</div>
++          </div>
++          <div style={{ display: "flex", gap: 6 * k, marginTop: 10 * k }}>
++            {Array.from({ length: max }, (_, i) => {
++              const f = clamp(fill - i);
++              return (
++                <div key={i} style={{ flex: 1, height: 34 * k, background: "#24222a", boxShadow: `inset 0 0 0 ${3 * k}px #000`, position: "relative" }}>
++                  <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${f * 100}%`, background: segCol(i), boxShadow: `inset 0 ${-6 * k}px 0 rgba(0,0,0,0.25)` }} />
++                </div>
++              );
++            })}
++          </div>
++        </div>
++      </div>
++    );
++  },
+   /** full-frame flat colour (black / white flash) */
+   black: ({ c, t }) => <AbsoluteFill style={{ background: c.color ?? "#000", opacity: life(c, t, c.fi ?? 0.2, c.fo ?? 0.2) }} />,
+   /** pixel phone with app header and chat/notification messages */
+diff --git a/pixcine/engine/tools/stills.mjs b/pixcine/engine/tools/stills.mjs
+index 3958501..01fa64a 100644
+--- a/pixcine/engine/tools/stills.mjs
++++ b/pixcine/engine/tools/stills.mjs
+@@ -29,9 +29,9 @@ const onBrowserLog = (log) => {
+   if (tx.startsWith("QA ")) { try { qaLog.push(JSON.parse(tx.slice(3))); } catch {} }
+   else if (log.type === "error" || tx.includes("rror")) errors.push(tx.slice(0, 300));
+ };
+-const browser = await openBrowser("chrome", { chromiumOptions: { gl: "angle" } });
++const browser = await openBrowser("chrome", { browserExecutable: process.env.PIX_CHROME || null, chromiumOptions: { gl: process.env.PIX_GL || "angle" } });
+ try {
+-  const composition = await selectComposition({ serveUrl, id: "Episode", inputProps, puppeteerInstance: browser, chromiumOptions: { gl: "angle" } });
++  const composition = await selectComposition({ serveUrl, id: "Episode", inputProps, puppeteerInstance: browser, chromiumOptions: { gl: process.env.PIX_GL || "angle" } });
+   const { fps, durationInFrames } = composition;
+   let secs = [];
+   if (args.seconds) secs = args.seconds.split(",").map(Number);
+@@ -42,7 +42,7 @@ try {
+   const t0 = Date.now();
+   for (const frame of frames) {
+     const file = path.join(out, `f${String(frame).padStart(6, "0")}.png`);
+-    await renderStill({ composition, serveUrl, output: file, frame, inputProps, scale, puppeteerInstance: browser, chromiumOptions: { gl: "angle" }, overwrite: true, onBrowserLog, timeoutInMilliseconds: 120000 });
++    await renderStill({ composition, serveUrl, output: file, frame, inputProps, scale, puppeteerInstance: browser, chromiumOptions: { gl: process.env.PIX_GL || "angle" }, overwrite: true, onBrowserLog, timeoutInMilliseconds: 120000 });
+     files.push([file, frame / fps]);
+     process.stdout.write(`frame ${frame} (${(frame / fps).toFixed(2)}s)\n`);
+   }
+diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
+index 3ddad95..0321454 100644
+--- a/pixcine/projects/shorts/cast_src.py
++++ b/pixcine/projects/shorts/cast_src.py
+@@ -71,6 +71,23 @@ for k, v in NPC.items():
+     if k in KIND_TOO:
+         chars.append({"id": k, **v})
+ 
++# «Каждые 10 секунд больше тестостерона» (09.11.2026): the hero levels up every 10 s, a parody mentor, mom, barista
++T_EYES = {"eye_color": "#6ae0ff", "eye_glint": "#ffffff"}  # «глаза светятся»
++chars += [
++    {"id": "geroy_t4", "name": "Герой", **HERO, "build": "big", "skin": "#eed0b8", "beard": "stubble", "beard_color": "#1a1614"},
++    {"id": "geroy_t6", "name": "Герой", **HERO, "build": "big", "skin": "#eaccb2", "beard": "full", "beard_color": "#141012"},
++    {"id": "geroy_t6p", "name": "Герой", **HERO, "build": "big", "skin": "#eaccb2", "beard": "full", "beard_color": "#141012", "hat": {"kind": "pigeons"}},
++    {"id": "geroy_t8", "name": "Гигачад", **HERO, "build": "big", "skin": "#e8c8ac", "beard": "full", "beard_color": "#141012", **T_EYES},
++    {"id": "geroy_t8h", "name": "Гигачад", **HERO, "build": "big", "skin": "#e8c8ac", "beard": "full", "beard_color": "#141012", "hat": {"kind": "beanie", "color": "#c83a3a"}},
++    # parody mentor (a nod to the coach meme; no real likeness): bald fade, huge black beard, black tee
++    {"id": "arsen", "name": "Наставник", "build": "big", "skin": "#e0b494", "hair": {"style": "crop", "color": "#141012"}, "brow": "#141012", "brows_always": True,
++     "beard": "full", "beard_color": "#141012", "top": {"type": "tshirt", "color": "#141418"}, "bottom": {"type": "jeans", "color": "#22222a"}, "shoes": "#141418"},
++    {"id": "mama", "name": "Мама", "build": "normal", "skin": "#f2d0b4", "hair": {"style": "tied", "color": "#5a3422"},
++     "top": {"type": "shirt", "color": "#b85a7a", "belt": "#5a2a3a"}, "apron": "#e8e2d8", "bottom": {"type": "jeans", "color": "#3a3a48"}, "shoes": "#5a3a2a"},
++    {"id": "barista", "name": "Бариста", **NPC["barista"]},
++    {"id": "kassir", "name": "Кассир", **NPC["kassir"]},
++]
++
+ for c in chars:
+     for key in [x for x, y in c.items() if y is None]:
+         del c[key]
+diff --git a/pixcine/scripts/pixchar.py b/pixcine/scripts/pixchar.py
+index 1ef462d..5486ccd 100644
+--- a/pixcine/scripts/pixchar.py
++++ b/pixcine/scripts/pixchar.py
+@@ -481,6 +481,25 @@ def draw_hat(cv, view, hat, spec, x0, y0, x1, y1):
+             cv.rect(x0, y0 - 4, x1, y0 - 3, tone(hcol, 1.15))
+             if k == "monk_hood" and view == "F":
+                 cv.rect(x0 + 1, y0, x1 - 1, y0 + 2, tone(hcol, 0.5))  # shadowed brow
++    elif k == "beanie":  # knit winter hat with a pom-pom (testosteron short, 09.11.2026)
++        m = col or "#c83a3a"
++        cv.rect(x0 - 1, y0 - 4, x1 + 1, y0 + 2, m)
++        cv.rect(x0 - 1, y0, x1 + 1, y0 + 2, tone(m, 0.75))
++        for x in range(x0, x1 + 1, 2):
++            cv.px(x, y0 + 1, tone(m, 0.6))
++        cv.rect(x0 + 1, y0 - 4, x1 - 1, y0 - 3, tone(m, 1.2))
++        px = (x0 + x1) // 2 if view == "F" else x0 + 3
++        cv.rect(px - 1, y0 - 7, px + 2, y0 - 4, "#f2efe6")
++    elif k == "pigeons":  # two pigeons nesting on the head (testosteron short)
++        for bx in ((x0, x1 - 5) if view != "B" else (x0 + 1, x1 - 6)):
++            by = y0 - 7
++            cv.rect(bx, by + 2, bx + 5, by + 5, "#8a8e98")
++            cv.rect(bx + 1, by + 4, bx + 4, by + 5, "#6a6e78")
++            cv.rect(bx + 3, by, bx + 5, by + 2, "#5e6474")
++            cv.px(bx + 3, by + 2, "#4a9a7a"); cv.px(bx + 4, by + 2, "#7a5a9a")
++            cv.px(bx + 4, by, "#0c0b10")
++            cv.px(bx + 5, by + 1, "#e0a040")
++            cv.px(bx, by + 3, "#4a4e58")
+     elif k == "circlet":
+         g = col or "#c9c0a0"
+         cv.rect(x0 - 1, y0 + 1, x1 + 1, y0 + 2, g)
+@@ -988,6 +1007,14 @@ def draw_items() -> dict[str, tuple[Cv, tuple[float, float]]]:
+     cv = Cv(8, 3)
+     cv.rect(0, 0, 8, 3, "#c8a070"); cv.rect(1, 0, 7, 2, "#e0a040"); cv.px(2, 0, "#c03a2a"); cv.px(5, 1, "#c03a2a"); cv.px(4, 0, "#c8a070")
+     items["pizza"] = (cv, (4, 1.5))
++    # pickle jar (testosteron short)
++    cv = Cv(5, 6)
++    cv.rect(0, 1, 5, 6, "#b8d8d0"); cv.rect(0, 0, 5, 1, "#c8a040"); cv.rect(1, 2, 2, 5, "#4a8a3a"); cv.rect(3, 3, 4, 5, "#5a9a40"); cv.px(4, 2, "#e8f4f0")
++    items["jar"] = (cv, (2.5, 3))
++    # safety razor
++    cv = Cv(4, 7)
++    cv.rect(0, 0, 4, 2, "#c8ccd4"); cv.rect(0, 1, 4, 2, "#8a8e98"); cv.rect(1, 2, 3, 7, "#3a5a8a")
++    items["razor"] = (cv, (2, 4))
+     # takeaway coffee cup
+     cv = Cv(3, 4)
+     cv.rect(0, 0, 3, 4, "#f0ece4"); cv.rect(0, 0, 3, 1, "#3a2a20"); cv.rect(0, 2, 3, 3, "#8a5a3a")

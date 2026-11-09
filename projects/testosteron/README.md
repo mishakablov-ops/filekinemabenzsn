@@ -16,7 +16,7 @@
 
 Файлы движка (overlay `meter`, шапка `beanie`, голуби `pigeons`, предметы `jar`/`razor`, каст, локации `tt_*`, музыка
 `t_trap.flac` = `trap-hype.m4a` из KINEMA) — коммит `6b4459e` в ветке `claude/testosteron-pixel` движка.
-Копии `build_testo.py` и `voice_grid.py` лежат в `engine/`.
+Копии `build_testo.py`, `voice_grid.py` и патч движка `pixcine-engine.patch` (git apply в корне движка; потом `python cast_src.py` и `pixchar.py`) лежат в `engine/`.
 
 ## Журнал версий
 - 09.11 — сценарий v1, 28 планов, пробные кадры на черновых таймингах (`project-files/testosteron/probnye-kadry-v1.jpg`).
