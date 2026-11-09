@@ -45,7 +45,7 @@ CAFE = {"id": "tt_cafe", "interior": True, "tod": "interior_day",
 KITCHEN = {"id": "tt_kitchen", "interior": True, "tod": "interior_day",
            "props": [{"t": "room", "p": [0, 0], "w": 4.2, "d": 3.6, "h": 2.7, "wall": "tiles", "wallOpts": {"color": "#c8d4c0"}, "floor": "lino", "floorOpts": {"color": "#6a5a4a"}, "ceiling": False},
                      {"t": "sink", "p": [-0.2, -1.45]}, {"t": "block", "p": [1.4, -1.4], "size": [0.75, 1.95, 0.7], "tex": "white", "color": "#e8ecec"},
-                     {"t": "table", "p": [0.6, 0.2]}, {"t": "stool", "p": [1.2, 0.6]},
+                     {"t": "table", "p": [-1.35, 0.7]}, {"t": "stool", "p": [-1.35, 1.3]},
                      {"t": "windowModern", "p": [-1.6, -1.78], "y": 1.6, "w": 0.9, "h": 0.9, "morning": True},
                      {"t": "bulb", "p": [0, 0], "y": 2.7, "len": 0.4, "i": 4, "d": 7}],
            "fog": 0.012, "hemi": ["#d8d0c0", "#3a3028", 0.75]}
@@ -114,7 +114,7 @@ cut.card("meter", 0.25, END_STORY, levels=[{"t": round(t, 3), "n": n, "mult": m}
 def level_up(k):
     t = S[k]
     cut.card("black", t - 0.02, t + 0.16, color="#ffffff", fi=0.02, fo=0.12)
-    cut.sfx(t, "usr-bass-drop-low-tail" if k % 2 else "usr-cinema-boom-low-tail-184", -4)
+    cut.sfx(t, "usr-bass-drop-low-tail" if k % 2 else "usr-cinema-boom-low-tail-184", -7, dur=3.0)
 
 
 for k in range(2, 10):
@@ -125,13 +125,21 @@ s = cut.shot("tt_room", cs(1))
 h = actor(s, "hero", "geroy", (-0.2, 0.2), face=10, act="idle", eyes="normal")
 h.act(A("тестостерона") - s.t0, "fist"); h.expr(A("тестостерона") - s.t0, "angry", "grit")
 cam(s, [(0, [0.6, 1.7, 3.4], [-0.2, 1.1, 0.0], 48), (-1, [0.3, 1.55, 2.4], [-0.2, 1.2, 0.1], 42)], focus="hero", ap=6, zoom=False)
-cut.sfx(A("тестостерона"), "usr-cinema-boom-low-tail-184", -5)
+cut.sfx(A("тестостерона"), "usr-cinema-boom-low-tail-184", -6, dur=3.0)
 
 s = cut.shot("tt_room", S[2] - 0.02)
 h = actor(s, "hero", "geroy", (-0.2, 0.2), face=0, act="arms_crossed", eyes="normal", mouth="smile")
 cu(s, -0.2, 0.2)
 cut.card("label", cs(1) + 0.05, S[2] - 0.1, text="ЭКСПЕРИМЕНТ", sub="1:30 · 9 УРОВНЕЙ", x=0.06, y=0.15)
-cut.sfx(cs(1) + 0.1, "usr-clock-steady-bright-late", -14)
+cut.sfx(cs(1) + 0.1, "usr-clock-steady-bright-late", -14, dur=round(C[1]["end"] + 0.4 - cs(1), 3))
+# the 5.6–10 s gap after the hook: fast ticking, 3-2-1 countdown, riser into the first level-up
+t_gap = round(C[1]["end"] + 0.3, 3)
+cut.sfx(t_gap, "usr-clock-fast-bright-late-072", -10, dur=round(S[2] - t_gap, 3))
+for i, t in enumerate((S[2] - 3.0, S[2] - 2.0, S[2] - 1.0)):
+    cut.card("stat", round(t, 3), round(t + 0.85, 3), text=str(3 - i), label="ДО ПЕРВОЙ ДОЗЫ", y=0.6, size=300,
+             color="#ffd34a" if i < 2 else "#ff5a3c")
+    cut.sfx(round(t, 3), "usr-digital-beeps-bright-tail-074", -12, dur=0.18)
+cut.sfx(S[2] - 2.0, "riser-medium", -8)
 
 # ---- 2. 0:10 — voice drops an octave
 s = cut.shot("tt_room", cs(3))
@@ -224,7 +232,7 @@ cut.sfx(A("Боится"), "usr-voice-bruh", -10)
 s = cut.shot("tt_coach", cs(16))
 a_ = actor(s, "arsen", "arsen", (0.0, -0.6), face=0, act="phone", eyes="angry", mouth="closed")
 a_.hold(0, B="phone")
-cam(s, [(0, [0.5, 1.7, 2.6], [0.0, 1.35, -0.6], 44), (-1, [0.35, 1.65, 2.2], [0.0, 1.38, -0.6], 40)], focus="arsen", ap=6, zoom=False)
+cam(s, [(0, [0.5, 1.5, 3.2], [0.0, 1.2, -0.6], 46), (-1, [0.35, 1.48, 2.8], [0.0, 1.22, -0.6], 43)], focus="arsen", ap=6, zoom=False)
 cut.card("label", cs(15) + 0.4, cs(16), text="НАСТАВНИК", sub="ПАРОДИЯ", x=0.06, y=0.26, border="#ff4a2a")
 cut.sfx(cs(15) + 0.4, "usr-suspense-sting", -12)
 
@@ -237,7 +245,7 @@ t_me = A("отвечаешь") + 0.3
 cut.card("bubble", tp + 0.1, S[7] - 0.05, who="АРСЕН М. ✓", whoColor="#ff6a4a", text="Брат, учить тебя больше нечему.", y=0.15, side="left")
 cut.card("bubble", t_me, S[7] - 0.05, who="ТЫ", whoColor="#7ad0ff", text="Это база.", y=0.27, side="right", bg="#d8f0ff")
 cut.sfx(tp + 0.15, "usr-notify-ding-mid-snap", -8)
-cut.sfx(A("отвечаешь") + 0.3, "usr-cinema-boom-low-tail-184", -6)
+cut.sfx(A("отвечаешь") + 0.3, "usr-cinema-boom-low-tail-184", -7, dur=3.0)
 
 # ---- 7. 1:00 — the beard, two pigeons paying rent, the shadow
 s = cut.shot("tt_street", cs(19), tod="day")
@@ -270,9 +278,8 @@ cut.sfx(t_sneeze, "usr-cartoon-splat-mid-snap", -8)
 cut.sfx(A("сигнализации") - 0.2, "siren-far", -10, dur=2.5)
 
 s = cut.shot("tt_room_night", cs(24))
-h = actor(s, "hero", "geroy_t8", (-1.2, -0.45), face=15, act="sit", eyes="angry")
-h.act(0, "sit", seat=0.62)
-cam(s, [(0, [-0.2, 1.55, 2.9], [-1.15, 1.0, -0.45], 50), (-1, [-0.35, 1.5, 2.5], [-1.15, 1.0, -0.45], 47)], focus="hero", ap=6, zoom=False)
+h = actor(s, "hero", "geroy_t8", (-0.2, 0.2), face=0, act="arms_crossed", eyes="angry")
+med(s, -0.2, 0.2, fov=40)
 cut.card("notif", A("Будильник") - 0.05, cs(24), app="БУДИЛЬНИК 07:00", text="Выключен. Простите, пожалуйста.", icon="#c83a3a", glyph="⏰", y=0.16)
 cut.sfx(A("Будильник"), "usr-digital-beeps-bright-late", -14, dur=0.6)
 
@@ -281,7 +288,7 @@ h = actor(s, "hero", "geroy_t8", (-0.2, 0.2), face=0, act="arms_crossed", eyes="
 cu(s, -0.2, 0.2, y=1.5, d=1.05, fov=28)
 cut.card("stat", A("гигачад") - 0.05, S[9] - 0.1, text="ГИГАЧАД", label="УРОВЕНЬ 8 ИЗ 8", y=0.17, size=130)
 cut.sfx(A("Глаза"), "reveal-glow", -8)
-cut.sfx(A("гигачад"), "usr-cinema-boom-low-tail-184", -3)
+cut.sfx(A("гигачад"), "usr-cinema-boom-low-tail-184", -5, dur=3.0)
 
 # ---- 9. 1:20 — mom calls; testosterone drops to the heels; the beanie
 s = cut.shot("tt_room", cs(26))
@@ -304,10 +311,12 @@ cut.sfx(t_heels - 0.2, "usr-slide-whistle-bright-swell", -6)
 
 s = cut.shot("tt_room", END_STORY)
 h0 = actor(s, "hero0", "geroy_t8", (-0.2, 0.2), face=90, act="idle", eyes="normal", mouth="closed")
-h1 = actor(s, "hero", "geroy_t8h", (-0.2, 0.2), face=0, act="idle", eyes="normal", mouth="closed")
+h1 = actor(s, "hero", "geroy_t8h", (2.9, 0.3), face=-90, act="idle", eyes="normal", mouth="closed")
 t_hat = A("шапку", after=S[9] + 4.0)
-h0.walk(0.1, (1.6, 0.4), dur=1.2); h0.show(t_hat - s.t0, False)
-h1.show(0, False); h1.show(t_hat - s.t0, True)
+# walks off to the right in silence, comes back in the red beanie right on «шапку»
+h0.walk(0.1, (2.9, 0.3), dur=1.1); h0.show(1.25, False)
+h1.show(0, False); h1.show(t_hat - s.t0 - 0.55, True)
+h1.walk(t_hat - s.t0 - 0.5, (-0.2, 0.2), dur=1.0); h1.face(t_hat - s.t0 + 0.55, 0)
 med(s, -0.2, 0.2, fov=44, side=0.6, focus=None, ap=2)
 cut.sfx(t_hat, "usr-voice-bruh", -8)
 
@@ -325,10 +334,17 @@ ep.sfx(t_hl, "pk-notify-notification-sfx-1", -6)
 # ----------------------------------------------------------------- sound
 ep.voice(0, copy_voice(KID, "testo"), gain=0)
 w.subs(ep, 0.3)
-ep.music(0, S[5] - 0.3, "shorts/t_trap", gain=-22, fi=0.3, fo=0.4)
-ep.music(S[5] + 2.5, S[7], "shorts/t_trap", gain=-15, fi=0.2, fo=0.6, offset=8.0)   # «фонк» kicks in louder
-ep.music(S[7], S[9] + 1.0, "shorts/t_trap", gain=-21, fi=0.4, fo=0.4, offset=20.0)
-ep.music(S[9] + 1.0, END, "shorts/z_comedy", gain=-22, fi=0.6, fo=1.2)
+# a caption leaves 0.8 s after its last word, so the music gaps between sections show the picture, not stale text
+for sub, c in zip(ep.subs[-len(C):], C):
+    sub["t1"] = round(min(sub["t1"], c["end"] + 0.8), 3)
+# t_trap: quiet intro 0–13 s, drop at 13.0, body to 51 s. Splices sit under the level-up booms (S[k]).
+DROP = 13.0
+ep.music(0, S[3], "shorts/t_trap", gain=-10, fi=0.05, fo=0.05, offset=DROP)                  # the beat from the 1st frame
+ep.music(S[3], S[5], "shorts/t_trap", gain=-10, fi=0.05, fo=0.3, offset=29.0)
+t_phonk = A("фонк", after=S[5])
+ep.music(S[5], S[7], "shorts/t_trap", gain=-9, fi=0.05, fo=0.05, offset=round(DROP - (t_phonk - S[5]), 3))  # thin intro, drop on «фонк»
+ep.music(S[7], S[9] + 1.0, "shorts/t_trap", gain=-10, fi=0.05, fo=0.4, offset=30.0)
+ep.music(S[9] + 1.0, END, "shorts/z_comedy", gain=-5, fi=0.4, fo=1.2)
 ep.amb(cs(3), S[3], "shorts/cafe", gain=-28)
 ep.amb(cs(11), S[6] - 2.0, "shorts/street_day", gain=-28)
 ep.amb(S[7], S[8], "shorts/street_day", gain=-28)
