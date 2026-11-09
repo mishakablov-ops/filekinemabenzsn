@@ -15,6 +15,7 @@ MP4 в git не храним (сотни МБ, лимит GitHub 100 МБ на �
 | `kosmos-dlya-vseh.mp4`, `kosmos-dlya-vseh-v2.mp4` | kosmos-dlya-vseh | Блендер | 24.10.2026 | выдан |
 | `posledniy-chelovek.mp4` | posledniy-chelovek | Гибрид | 26.10.2026 | выдан, ждём отзыв |
 | `posledniy-chelovek-blender.mp4` | posledniy-chelovek-blender | Блендер, быстрый режим, реалистичные цвета | 26.10.2026 | выдан, ждём отзыв |
+| `testosteron-v1.mp4` | testosteron | Пиксель PIXCINE, голос «Эскалатора» (MiniMax ×1.35), 1:32, 30 fps, 14 Мбит/с | 09.11.2026 | выдан; ПК: `aipollon claude\testosteron\`, ждёт отзыва |
 | `posledniy-chelovek-blender-v2.mp4` | posledniy-chelovek-blender | Блендер, полный режим (все 19 сцен анимированы), реалистичные цвета | 26.10.2026 | одобрен; на будущее — город реалистичнее |
 | `sposobnosti-1-v4-story.mp4`, `sposobnosti-2-v4-story.mp4` | sposobnosti | Блендер · **Классика**, полный режим, живой герой по фото, музыка ambient-air + dark-cinematic | 28.10.2026 | **версия пользователя, эталон «Классики»**: «Это все для дизайна классика» |
 | `sposobnosti-1-v4.mp4`, `sposobnosti-2-v4.mp4` | sposobnosti | Блендер, полный режим, новые места, 62,25 с и 59,22 с | 28.10.2026 | выдан; пользователь заменил музыку → v4-story; файлов на ПК уже нет |
