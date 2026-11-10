@@ -23,6 +23,10 @@
   `narration/testosteron2/` (сначала `python tighten_voice.py testosteron2 --max-gap 0.9`), `scripts/mix.py shorts testo2`,
   `tools/render.mjs --project shorts --ep testo2`. Доработки движка — коммит `c05c1ff` ветки `claude/testosteron-pixel`
   (локально, не запушен); полный текстовый патч ветки — `engine/pixcine-engine.patch`.
+- **Выдача (10.11):** рендер 1080×1920, 30 fps, 89,8 с (33 плана, 86 мин в облаке), −14,0 LUFS, пик −0,6 dBFS;
+  копия для загрузки 14 Мбит/с — `D:\aipollon\output\testosteron-v2.mp4` (MD5 0ec2aff5a184f64ccc593b6b0ae12638 сверен на ПК).
+  Перенос: tar-куски по 23 МиБ в `shorts\_v2parts\`, сборка через Remote Control. Удалить куски и v1 с флешки защита ПК
+  не дала (безвозвратное удаление), ждут mike.
 
 ## Как собрать v1 (для истории)
 1. `pixcine/projects/shorts/narration/testosteron/script.md` = `script.md` отсюда.
