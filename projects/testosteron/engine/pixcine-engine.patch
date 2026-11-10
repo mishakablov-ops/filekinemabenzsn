@@ -1,3 +1,51 @@
+diff --git a/pixcine/engine/public/locations/tt2_black.json b/pixcine/engine/public/locations/tt2_black.json
+new file mode 100644
+index 0000000..ffeca10
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt2_black.json
+@@ -0,0 +1 @@
++{"id": "tt2_black", "tod": "night", "fog": 0.016, "ground": {"tex": "paving", "size": [240, 240]}, "props": [{"t": "road", "p": [0, 0], "w": 8, "len": 160, "zebraZ": 0}, {"t": "building", "p": [-12, -50], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 0, "color": "#8a7e72", "lit": 0.5, "offAt": 32.978}, {"t": "building", "p": [-12, -38], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 1, "color": "#7a8a8e", "lit": 0.5, "offAt": 32.498}, {"t": "building", "p": [-12, -26], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 2, "color": "#9a7a62", "lit": 0.5, "offAt": 32.018}, {"t": "building", "p": [-12, -14], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 3, "color": "#7e7a8a", "lit": 0.5, "offAt": 31.538}, {"t": "building", "p": [-12, -2], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 4, "color": "#9a8a72", "lit": 0.5, "offAt": 31.058}, {"t": "building", "p": [-12, 10], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 5, "color": "#7a7e86", "lit": 0.5, "offAt": 31.378}, {"t": "building", "p": [-12, 22], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 6, "color": "#8a6e60", "lit": 0.5, "offAt": 31.858}, {"t": "building", "p": [-12, 34], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 7, "color": "#888070", "lit": 0.5, "offAt": 32.338}, {"t": "building", "p": [-12, 46], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 8, "color": "#6e7a72", "lit": 0.5, "offAt": 32.818}, {"t": "building", "p": [12, -50], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 10, "color": "#9a8a72", "lit": 0.5, "offAt": 32.978}, {"t": "building", "p": [12, -38], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 11, "color": "#7a7e86", "lit": 0.5, "offAt": 32.498}, {"t": "building", "p": [12, -26], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 12, "color": "#8a6e60", "lit": 0.5, "offAt": 32.018}, {"t": "building", "p": [12, -14], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 13, "color": "#888070", "lit": 0.5, "offAt": 31.538}, {"t": "building", "p": [12, -2], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 14, "color": "#6e7a72", "lit": 0.5, "offAt": 31.058}, {"t": "building", "p": [12, 10], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 15, "color": "#8a7e72", "lit": 0.5, "offAt": 31.378}, {"t": "building", "p": [12, 22], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 16, "color": "#7a8a8e", "lit": 0.5, "offAt": 31.858}, {"t": "building", "p": [12, 34], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 17, "color": "#9a7a62", "lit": 0.5, "offAt": 32.338}, {"t": "building", "p": [12, 46], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 18, "color": "#7e7a8a", "lit": 0.5, "offAt": 32.818}, {"t": "shopSign", "p": [-7.42, -26], "y": 3.3, "r": 90, "w": 4.1000000000000005, "h": 0.8, "text": "АПТЕКА", "bg": "#2a8a4a", "glow": 1.1, "offAt": 31.858}, {"t": "shopSign", "p": [-7.42, -14], "y": 3.3, "r": 90, "w": 5.2, "h": 0.8, "text": "ПРОДУКТЫ 24", "bg": "#2a4a8a", "glow": 1.1, "offAt": 31.498}, {"t": "shopSign", "p": [-7.42, -2], "y": 3.3, "r": 90, "w": 4.1000000000000005, "h": 0.8, "text": "ШАУРМА", "bg": "#c84a2a", "glow": 1.1, "offAt": 31.138}, {"t": "shopSign", "p": [-7.42, 10], "y": 3.3, "r": 90, "w": 3.55, "h": 0.8, "text": "ЦВЕТЫ", "bg": "#8a3a6a", "glow": 1.1, "offAt": 31.378}, {"t": "shopSign", "p": [-7.42, 22], "y": 3.3, "r": 90, "w": 5.2, "h": 0.8, "text": "РЕМОНТ ОБУВИ", "bg": "#5a4a3a", "glow": 1.1, "offAt": 31.738}, {"t": "shopSign", "p": [7.42, -26], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "ФИТНЕС «БЫК»", "bg": "#c83a3a", "glow": 1.1, "offAt": 31.858}, {"t": "shopSign", "p": [7.42, -14], "y": 3.3, "r": -90, "w": 4.65, "h": 0.8, "text": "ЛОМБАРД", "bg": "#8a7a2a", "glow": 1.1, "offAt": 31.498}, {"t": "shopSign", "p": [7.42, -4], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "КАФЕ «БАЗА»", "bg": "#3a2a1a", "glow": 1.1, "offAt": 31.198}, {"t": "shopSign", "p": [7.42, 10], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "БАРБЕРШОП", "bg": "#1a1a1e", "glow": 1.1, "offAt": 31.378}, {"t": "shopSign", "p": [7.42, 22], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "САЛОН СВЯЗИ", "bg": "#3a6aa8", "glow": 1.1, "offAt": 31.738}, {"t": "streetLamp", "p": [-4.5, -42], "r": 0, "on": true, "offAt": 33.378}, {"t": "streetLamp", "p": [4.5, -30], "r": 180, "on": true, "offAt": 32.778}, {"t": "streetLamp", "p": [-4.5, -18], "r": 0, "on": true, "offAt": 32.178}, {"t": "streetLamp", "p": [4.5, -6], "r": 180, "on": true, "offAt": 31.578}, {"t": "streetLamp", "p": [-4.5, 6], "r": 0, "on": true, "offAt": 30.438, "anim": [{"t": 0, "r": [0, 0, 0]}, {"t": 30.378, "r": [0, 0, 0]}, {"t": 30.538, "r": [0, 0, -13], "e": "out"}]}, {"t": "streetLamp", "p": [4.5, 18], "r": 180, "on": true, "offAt": 31.578}, {"t": "streetLamp", "p": [-4.5, 30], "r": 0, "on": true, "offAt": 32.178}, {"t": "streetLamp", "p": [4.5, 42], "r": 180, "on": true, "offAt": 32.778}, {"t": "tree", "p": [-6.3, -25.5], "s": 0.75}, {"t": "tree", "p": [-6.3, -13.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 10.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 22.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 34.5], "s": 0.75}, {"t": "tree", "p": [6.3, -22.5], "s": 0.75}, {"t": "tree", "p": [6.3, -10.5], "s": 0.75}, {"t": "tree", "p": [6.3, 13.5], "s": 0.75}, {"t": "tree", "p": [6.3, 25.5], "s": 0.75}, {"t": "tree", "p": [6.3, 37.5], "s": 0.75}, {"t": "car", "p": [-3.2, -32], "r": 0, "color": "#3a6ab8"}, {"t": "car", "p": [-3.2, -22], "r": 0, "color": "#d8d8d8"}, {"t": "car", "p": [-3.2, 14], "r": 0, "color": "#2a2a30"}, {"t": "car", "p": [-3.2, 26], "r": 0, "color": "#8a2a2a"}, {"t": "car", "p": [3.2, -28], "r": 180, "color": "#e0b020"}, {"t": "car", "p": [3.2, -9], "r": 180, "color": "#4a8a5a"}, {"t": "car", "p": [3.2, 16], "r": 180, "color": "#c8c8c0"}, {"t": "car", "p": [3.2, 30], "r": 180, "color": "#5a3a7a"}, {"t": "block", "p": [6.4, -19], "y": 2.45, "size": [1.3, 0.08, 3.2], "tex": "metal", "color": "#4a5a6a", "solid": false}, {"t": "block", "p": [6.95, -19], "size": [0.06, 2.45, 3.2], "color": "#6a8aa0", "solid": false}, {"t": "bench", "p": [6.5, -19], "r": -90, "w": 2.2}, {"t": "shopSign", "p": [5.75, -19], "y": 2.75, "r": -90, "w": 1.6, "h": 0.4, "text": "ОСТАНОВКА", "bg": "#2a5aa8", "glow": 1.0}, {"t": "block", "p": [-6.0, 16], "size": [1.6, 2.4, 1.6], "tex": "metal", "color": "#5a7a5a"}, {"t": "shopSign", "p": [-5.18, 16], "y": 2.0, "r": 90, "w": 1.4, "h": 0.5, "text": "ПЕЧАТЬ", "bg": "#2a6a3a", "glow": 0.9}, {"t": "bench", "p": [-6.6, 9], "r": 90}, {"t": "block", "p": [-6.9, 3.2], "size": [0.5, 0.8, 0.5], "color": "#2a4a3a"}, {"t": "block", "p": [6.9, 4.5], "size": [0.5, 0.8, 0.5], "color": "#2a4a3a"}, {"t": "bush", "p": [-6.8, -8], "s": 0.8}, {"t": "bush", "p": [6.8, 7], "s": 0.8}, {"t": "crows", "p": [-5.2, 12], "n": 5, "spread": 2.2, "color": "#7a808c"}, {"t": "crows", "p": [5.4, -12], "n": 4, "spread": 2.0, "color": "#7a808c"}, {"t": "building", "p": [0, -72], "w": 40, "d": 10, "floors": 12, "seed": 40, "lit": 0.5, "color": "#7a7680"}, {"t": "building", "p": [0, 72], "r": 180, "w": 40, "d": 10, "floors": 9, "seed": 41, "lit": 0.5, "color": "#867a6e"}], "particles": [{"kind": "motes", "n": 90, "box": [-7, 0.3, -10, 7, 5, 10]}]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt2_day.json b/pixcine/engine/public/locations/tt2_day.json
+new file mode 100644
+index 0000000..ee3cf92
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt2_day.json
+@@ -0,0 +1 @@
++{"id": "tt2_day", "tod": "day", "fog": 0.01, "ground": {"tex": "paving", "size": [240, 240]}, "props": [{"t": "road", "p": [0, 0], "w": 8, "len": 160, "zebraZ": 0}, {"t": "building", "p": [-12, -50], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 0, "color": "#8a7e72", "day": true}, {"t": "building", "p": [-12, -38], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 1, "color": "#7a8a8e", "day": true}, {"t": "building", "p": [-12, -26], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 2, "color": "#9a7a62", "day": true}, {"t": "building", "p": [-12, -14], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 3, "color": "#7e7a8a", "day": true}, {"t": "building", "p": [-12, -2], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 4, "color": "#9a8a72", "day": true}, {"t": "building", "p": [-12, 10], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 5, "color": "#7a7e86", "day": true}, {"t": "building", "p": [-12, 22], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 6, "color": "#8a6e60", "day": true}, {"t": "building", "p": [-12, 34], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 7, "color": "#888070", "day": true}, {"t": "building", "p": [-12, 46], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 8, "color": "#6e7a72", "day": true}, {"t": "building", "p": [12, -50], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 10, "color": "#9a8a72", "day": true}, {"t": "building", "p": [12, -38], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 11, "color": "#7a7e86", "day": true}, {"t": "building", "p": [12, -26], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 12, "color": "#8a6e60", "day": true}, {"t": "building", "p": [12, -14], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 13, "color": "#888070", "day": true}, {"t": "building", "p": [12, -2], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 14, "color": "#6e7a72", "day": true}, {"t": "building", "p": [12, 10], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 15, "color": "#8a7e72", "day": true}, {"t": "building", "p": [12, 22], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 16, "color": "#7a8a8e", "day": true}, {"t": "building", "p": [12, 34], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 17, "color": "#9a7a62", "day": true}, {"t": "building", "p": [12, 46], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 18, "color": "#7e7a8a", "day": true}, {"t": "shopSign", "p": [-7.42, -26], "y": 3.3, "r": 90, "w": 4.1000000000000005, "h": 0.8, "text": "АПТЕКА", "bg": "#2a8a4a", "glow": 0.2}, {"t": "shopSign", "p": [-7.42, -14], "y": 3.3, "r": 90, "w": 5.2, "h": 0.8, "text": "ПРОДУКТЫ 24", "bg": "#2a4a8a", "glow": 0.2}, {"t": "shopSign", "p": [-7.42, -2], "y": 3.3, "r": 90, "w": 4.1000000000000005, "h": 0.8, "text": "ШАУРМА", "bg": "#c84a2a", "glow": 0.2}, {"t": "shopSign", "p": [-7.42, 10], "y": 3.3, "r": 90, "w": 3.55, "h": 0.8, "text": "ЦВЕТЫ", "bg": "#8a3a6a", "glow": 0.2}, {"t": "shopSign", "p": [-7.42, 22], "y": 3.3, "r": 90, "w": 5.2, "h": 0.8, "text": "РЕМОНТ ОБУВИ", "bg": "#5a4a3a", "glow": 0.2}, {"t": "shopSign", "p": [7.42, -26], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "ФИТНЕС «БЫК»", "bg": "#c83a3a", "glow": 0.2}, {"t": "shopSign", "p": [7.42, -14], "y": 3.3, "r": -90, "w": 4.65, "h": 0.8, "text": "ЛОМБАРД", "bg": "#8a7a2a", "glow": 0.2}, {"t": "shopSign", "p": [7.42, -4], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "КАФЕ «БАЗА»", "bg": "#3a2a1a", "glow": 0.2}, {"t": "shopSign", "p": [7.42, 10], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "БАРБЕРШОП", "bg": "#1a1a1e", "glow": 0.2}, {"t": "shopSign", "p": [7.42, 22], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "САЛОН СВЯЗИ", "bg": "#3a6aa8", "glow": 0.2}, {"t": "streetLamp", "p": [-4.5, -42], "r": 0, "on": false}, {"t": "streetLamp", "p": [4.5, -30], "r": 180, "on": false}, {"t": "streetLamp", "p": [-4.5, -18], "r": 0, "on": false}, {"t": "streetLamp", "p": [4.5, -6], "r": 180, "on": false}, {"t": "streetLamp", "p": [-4.5, 6], "r": 0, "on": false}, {"t": "streetLamp", "p": [4.5, 18], "r": 180, "on": false}, {"t": "streetLamp", "p": [-4.5, 30], "r": 0, "on": false}, {"t": "streetLamp", "p": [4.5, 42], "r": 180, "on": false}, {"t": "tree", "p": [-6.3, -25.5], "s": 0.75}, {"t": "tree", "p": [-6.3, -13.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 10.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 22.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 34.5], "s": 0.75}, {"t": "tree", "p": [6.3, -22.5], "s": 0.75}, {"t": "tree", "p": [6.3, -10.5], "s": 0.75}, {"t": "tree", "p": [6.3, 13.5], "s": 0.75}, {"t": "tree", "p": [6.3, 25.5], "s": 0.75}, {"t": "tree", "p": [6.3, 37.5], "s": 0.75}, {"t": "car", "p": [-3.2, -32], "r": 0, "color": "#3a6ab8"}, {"t": "car", "p": [-3.2, -22], "r": 0, "color": "#d8d8d8"}, {"t": "car", "p": [-3.2, 14], "r": 0, "color": "#2a2a30"}, {"t": "car", "p": [-3.2, 26], "r": 0, "color": "#8a2a2a"}, {"t": "car", "p": [3.2, -28], "r": 180, "color": "#e0b020"}, {"t": "car", "p": [3.2, -9], "r": 180, "color": "#4a8a5a"}, {"t": "car", "p": [3.2, 16], "r": 180, "color": "#c8c8c0"}, {"t": "car", "p": [3.2, 30], "r": 180, "color": "#5a3a7a"}, {"t": "block", "p": [6.4, -19], "y": 2.45, "size": [1.3, 0.08, 3.2], "tex": "metal", "color": "#4a5a6a", "solid": false}, {"t": "block", "p": [6.95, -19], "size": [0.06, 2.45, 3.2], "color": "#6a8aa0", "solid": false}, {"t": "bench", "p": [6.5, -19], "r": -90, "w": 2.2}, {"t": "shopSign", "p": [5.75, -19], "y": 2.75, "r": -90, "w": 1.6, "h": 0.4, "text": "ОСТАНОВКА", "bg": "#2a5aa8", "glow": 0.2}, {"t": "block", "p": [-6.0, 16], "size": [1.6, 2.4, 1.6], "tex": "metal", "color": "#5a7a5a"}, {"t": "shopSign", "p": [-5.18, 16], "y": 2.0, "r": 90, "w": 1.4, "h": 0.5, "text": "ПЕЧАТЬ", "bg": "#2a6a3a", "glow": 0.2}, {"t": "bench", "p": [-6.6, 9], "r": 90}, {"t": "block", "p": [-6.9, 3.2], "size": [0.5, 0.8, 0.5], "color": "#2a4a3a"}, {"t": "block", "p": [6.9, 4.5], "size": [0.5, 0.8, 0.5], "color": "#2a4a3a"}, {"t": "bush", "p": [-6.8, -8], "s": 0.8}, {"t": "bush", "p": [6.8, 7], "s": 0.8}, {"t": "crows", "p": [-5.2, 12], "n": 5, "spread": 2.2, "color": "#7a808c"}, {"t": "crows", "p": [5.4, -12], "n": 4, "spread": 2.0, "color": "#7a808c"}, {"t": "building", "p": [0, -72], "w": 40, "d": 10, "floors": 12, "seed": 40, "day": true, "color": "#7a7680"}, {"t": "building", "p": [0, 72], "r": 180, "w": 40, "d": 10, "floors": 9, "seed": 41, "day": true, "color": "#867a6e"}], "particles": [{"kind": "motes", "n": 90, "box": [-7, 0.3, -10, 7, 5, 10]}]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt2_night.json b/pixcine/engine/public/locations/tt2_night.json
+new file mode 100644
+index 0000000..1252549
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt2_night.json
+@@ -0,0 +1 @@
++{"id": "tt2_night", "tod": "night", "fog": 0.016, "ground": {"tex": "paving", "size": [240, 240]}, "props": [{"t": "road", "p": [0, 0], "w": 8, "len": 160, "zebraZ": 0}, {"t": "building", "p": [-12, -50], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 0, "color": "#8a7e72", "lit": 0.5}, {"t": "building", "p": [-12, -38], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 1, "color": "#7a8a8e", "lit": 0.5}, {"t": "building", "p": [-12, -26], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 2, "color": "#9a7a62", "lit": 0.5}, {"t": "building", "p": [-12, -14], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 3, "color": "#7e7a8a", "lit": 0.5}, {"t": "building", "p": [-12, -2], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 4, "color": "#9a8a72", "lit": 0.5}, {"t": "building", "p": [-12, 10], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 5, "color": "#7a7e86", "lit": 0.5}, {"t": "building", "p": [-12, 22], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 6, "color": "#8a6e60", "lit": 0.5}, {"t": "building", "p": [-12, 34], "r": 90, "w": 11, "d": 9, "floors": 8, "seed": 7, "color": "#888070", "lit": 0.5}, {"t": "building", "p": [-12, 46], "r": 90, "w": 11, "d": 9, "floors": 5, "seed": 8, "color": "#6e7a72", "lit": 0.5}, {"t": "building", "p": [12, -50], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 10, "color": "#9a8a72", "lit": 0.5}, {"t": "building", "p": [12, -38], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 11, "color": "#7a7e86", "lit": 0.5}, {"t": "building", "p": [12, -26], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 12, "color": "#8a6e60", "lit": 0.5}, {"t": "building", "p": [12, -14], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 13, "color": "#888070", "lit": 0.5}, {"t": "building", "p": [12, -2], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 14, "color": "#6e7a72", "lit": 0.5}, {"t": "building", "p": [12, 10], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 15, "color": "#8a7e72", "lit": 0.5}, {"t": "building", "p": [12, 22], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 16, "color": "#7a8a8e", "lit": 0.5}, {"t": "building", "p": [12, 34], "r": -90, "w": 11, "d": 9, "floors": 10, "seed": 17, "color": "#9a7a62", "lit": 0.5}, {"t": "building", "p": [12, 46], "r": -90, "w": 11, "d": 9, "floors": 7, "seed": 18, "color": "#7e7a8a", "lit": 0.5}, {"t": "shopSign", "p": [-7.42, -26], "y": 3.3, "r": 90, "w": 4.1000000000000005, "h": 0.8, "text": "АПТЕКА", "bg": "#2a8a4a", "glow": 1.1}, {"t": "shopSign", "p": [-7.42, -14], "y": 3.3, "r": 90, "w": 5.2, "h": 0.8, "text": "ПРОДУКТЫ 24", "bg": "#2a4a8a", "glow": 1.1}, {"t": "shopSign", "p": [-7.42, -2], "y": 3.3, "r": 90, "w": 4.1000000000000005, "h": 0.8, "text": "ШАУРМА", "bg": "#c84a2a", "glow": 1.1}, {"t": "shopSign", "p": [-7.42, 10], "y": 3.3, "r": 90, "w": 3.55, "h": 0.8, "text": "ЦВЕТЫ", "bg": "#8a3a6a", "glow": 1.1}, {"t": "shopSign", "p": [-7.42, 22], "y": 3.3, "r": 90, "w": 5.2, "h": 0.8, "text": "РЕМОНТ ОБУВИ", "bg": "#5a4a3a", "glow": 1.1}, {"t": "shopSign", "p": [7.42, -26], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "ФИТНЕС «БЫК»", "bg": "#c83a3a", "glow": 1.1}, {"t": "shopSign", "p": [7.42, -14], "y": 3.3, "r": -90, "w": 4.65, "h": 0.8, "text": "ЛОМБАРД", "bg": "#8a7a2a", "glow": 1.1}, {"t": "shopSign", "p": [7.42, -4], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "КАФЕ «БАЗА»", "bg": "#3a2a1a", "glow": 1.1}, {"t": "shopSign", "p": [7.42, 10], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "БАРБЕРШОП", "bg": "#1a1a1e", "glow": 1.1}, {"t": "shopSign", "p": [7.42, 22], "y": 3.3, "r": -90, "w": 5.2, "h": 0.8, "text": "САЛОН СВЯЗИ", "bg": "#3a6aa8", "glow": 1.1}, {"t": "streetLamp", "p": [-4.5, -42], "r": 0, "on": true}, {"t": "streetLamp", "p": [4.5, -30], "r": 180, "on": true}, {"t": "streetLamp", "p": [-4.5, -18], "r": 0, "on": true}, {"t": "streetLamp", "p": [4.5, -6], "r": 180, "on": true}, {"t": "streetLamp", "p": [-4.5, 6], "r": 0, "on": true}, {"t": "streetLamp", "p": [4.5, 18], "r": 180, "on": true}, {"t": "streetLamp", "p": [-4.5, 30], "r": 0, "on": true}, {"t": "streetLamp", "p": [4.5, 42], "r": 180, "on": true}, {"t": "tree", "p": [-6.3, -25.5], "s": 0.75}, {"t": "tree", "p": [-6.3, -13.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 10.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 22.5], "s": 0.75}, {"t": "tree", "p": [-6.3, 34.5], "s": 0.75}, {"t": "tree", "p": [6.3, -22.5], "s": 0.75}, {"t": "tree", "p": [6.3, -10.5], "s": 0.75}, {"t": "tree", "p": [6.3, 13.5], "s": 0.75}, {"t": "tree", "p": [6.3, 25.5], "s": 0.75}, {"t": "tree", "p": [6.3, 37.5], "s": 0.75}, {"t": "car", "p": [-3.2, -32], "r": 0, "color": "#3a6ab8"}, {"t": "car", "p": [-3.2, -22], "r": 0, "color": "#d8d8d8"}, {"t": "car", "p": [-3.2, 14], "r": 0, "color": "#2a2a30"}, {"t": "car", "p": [-3.2, 26], "r": 0, "color": "#8a2a2a"}, {"t": "car", "p": [3.2, -28], "r": 180, "color": "#e0b020"}, {"t": "car", "p": [3.2, -9], "r": 180, "color": "#4a8a5a"}, {"t": "car", "p": [3.2, 16], "r": 180, "color": "#c8c8c0"}, {"t": "car", "p": [3.2, 30], "r": 180, "color": "#5a3a7a"}, {"t": "block", "p": [6.4, -19], "y": 2.45, "size": [1.3, 0.08, 3.2], "tex": "metal", "color": "#4a5a6a", "solid": false}, {"t": "block", "p": [6.95, -19], "size": [0.06, 2.45, 3.2], "color": "#6a8aa0", "solid": false}, {"t": "bench", "p": [6.5, -19], "r": -90, "w": 2.2}, {"t": "shopSign", "p": [5.75, -19], "y": 2.75, "r": -90, "w": 1.6, "h": 0.4, "text": "ОСТАНОВКА", "bg": "#2a5aa8", "glow": 1.0}, {"t": "block", "p": [-6.0, 16], "size": [1.6, 2.4, 1.6], "tex": "metal", "color": "#5a7a5a"}, {"t": "shopSign", "p": [-5.18, 16], "y": 2.0, "r": 90, "w": 1.4, "h": 0.5, "text": "ПЕЧАТЬ", "bg": "#2a6a3a", "glow": 0.9}, {"t": "bench", "p": [-6.6, 9], "r": 90}, {"t": "block", "p": [-6.9, 3.2], "size": [0.5, 0.8, 0.5], "color": "#2a4a3a"}, {"t": "block", "p": [6.9, 4.5], "size": [0.5, 0.8, 0.5], "color": "#2a4a3a"}, {"t": "bush", "p": [-6.8, -8], "s": 0.8}, {"t": "bush", "p": [6.8, 7], "s": 0.8}, {"t": "crows", "p": [-5.2, 12], "n": 5, "spread": 2.2, "color": "#7a808c"}, {"t": "crows", "p": [5.4, -12], "n": 4, "spread": 2.0, "color": "#7a808c"}, {"t": "building", "p": [0, -72], "w": 40, "d": 10, "floors": 12, "seed": 40, "lit": 0.5, "color": "#7a7680"}, {"t": "building", "p": [0, 72], "r": 180, "w": 40, "d": 10, "floors": 9, "seed": 41, "lit": 0.5, "color": "#867a6e"}], "particles": [{"kind": "motes", "n": 90, "box": [-7, 0.3, -10, 7, 5, 10]}]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt2_podezd.json b/pixcine/engine/public/locations/tt2_podezd.json
+new file mode 100644
+index 0000000..9ff312f
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt2_podezd.json
+@@ -0,0 +1 @@
++{"id": "tt2_podezd", "interior": true, "tod": "interior", "props": [{"t": "room", "p": [0, 0], "w": 3.0, "d": 3.2, "h": 2.8, "wall": "plaster", "wallOpts": {"color": "#4a6a5e"}, "floor": "floor_tiles", "floorOpts": {"a": "#6a5a4a", "b": "#4a3e34"}, "ceiling": false}, {"t": "block", "p": [-0.9, -1.55], "y": 1.0, "size": [1.1, 0.7, 0.1], "tex": "metal", "color": "#5a6a7a"}, {"t": "poster", "p": [0.8, -1.58], "y": 1.5, "v": 2}, {"t": "poster", "p": [1.25, -1.58], "y": 1.45, "v": 0, "w": 0.4, "h": 0.55}, {"t": "bulb", "p": [0, -0.6], "y": 2.8, "len": 0.4, "i": 1.6, "d": 5, "flicker": 0.3}], "fog": 0.03, "hemi": ["#3a4a44", "#0a0806", 0.3]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt2_yard_day.json b/pixcine/engine/public/locations/tt2_yard_day.json
+new file mode 100644
+index 0000000..308c258
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt2_yard_day.json
+@@ -0,0 +1 @@
++{"id": "tt2_yard_day", "tod": "day", "fog": 0.012, "ground": {"tex": "asphalt", "size": [200, 200]}, "props": [{"t": "building", "p": [0, -12], "w": 30, "d": 10, "floors": 5, "seed": 51, "color": "#9a8a7a", "day": true}, {"t": "building", "p": [-15, 6], "r": 90, "w": 26, "d": 10, "floors": 5, "seed": 52, "color": "#8a8a80", "day": true}, {"t": "building", "p": [15, 6], "r": -90, "w": 26, "d": 10, "floors": 9, "seed": 53, "color": "#7a7e8a", "day": true}, {"t": "shopSign", "p": [0, -6.93], "y": 2.55, "w": 1.0, "h": 0.32, "text": "ПОД. 3", "bg": "#2a3a5a", "glow": 0.2}, {"t": "road", "p": [0, 8], "w": 5, "len": 40, "sidewalk": 1.5}, {"t": "block", "p": [-4.0, -3.5], "size": [2.2, 0.3, 2.2], "tex": "wood", "color": "#8a6a3a"}, {"t": "block", "p": [-6.2, -3.0], "y": 0.0, "size": [0.08, 2.2, 0.08], "color": "#c83a2a", "solid": false}, {"t": "block", "p": [-6.2, -1.2], "size": [0.08, 2.2, 0.08], "color": "#c83a2a", "solid": false}, {"t": "block", "p": [-6.2, -2.1], "y": 2.2, "size": [0.1, 0.1, 1.9], "color": "#c83a2a", "solid": false}, {"t": "block", "p": [-6.2, -2.1], "y": 0.45, "size": [0.5, 0.06, 0.3], "tex": "wood", "solid": false}, {"t": "bench", "p": [-3.6, 1.6], "r": 0}, {"t": "tree", "p": [-8.0, -5.0], "s": 0.9}, {"t": "tree", "p": [7.5, -4.5], "s": 0.85}, {"t": "tree", "p": [-8.5, 4.0], "s": 0.8}, {"t": "tree", "p": [8.2, 3.5], "s": 0.9}, {"t": "bush", "p": [5.0, -6.0], "s": 0.8}, {"t": "bush", "p": [-2.5, -6.0], "s": 0.8}, {"t": "streetLamp", "p": [-5.0, 3.5], "on": false}, {"t": "streetLamp", "p": [6.0, -2.0], "r": 180, "on": false}, {"t": "block", "p": [8.6, -6.2], "size": [1.2, 1.3, 0.8], "tex": "metal", "color": "#3a5a3a"}, {"t": "block", "p": [7.2, -6.2], "size": [1.2, 1.3, 0.8], "tex": "metal", "color": "#3a5a3a"}, {"t": "crows", "p": [2.0, 2.8], "n": 6, "spread": 2.4, "color": "#7a808c"}, {"t": "clutter", "p": [-3.4, -3.3]}], "particles": [{"kind": "motes", "n": 60, "box": [-6, 0.3, -6, 6, 4, 6]}]}
+\ No newline at end of file
+diff --git a/pixcine/engine/public/locations/tt2_yard_night.json b/pixcine/engine/public/locations/tt2_yard_night.json
+new file mode 100644
+index 0000000..d7726dc
+--- /dev/null
++++ b/pixcine/engine/public/locations/tt2_yard_night.json
+@@ -0,0 +1 @@
++{"id": "tt2_yard_night", "tod": "night", "fog": 0.02, "ground": {"tex": "asphalt", "size": [200, 200]}, "props": [{"t": "building", "p": [0, -12], "w": 30, "d": 10, "floors": 5, "seed": 51, "color": "#9a8a7a", "lit": 0.55}, {"t": "building", "p": [-15, 6], "r": 90, "w": 26, "d": 10, "floors": 5, "seed": 52, "color": "#8a8a80", "lit": 0.5}, {"t": "building", "p": [15, 6], "r": -90, "w": 26, "d": 10, "floors": 9, "seed": 53, "color": "#7a7e8a", "lit": 0.5}, {"t": "shopSign", "p": [0, -6.93], "y": 2.55, "w": 1.0, "h": 0.32, "text": "ПОД. 3", "bg": "#2a3a5a", "glow": 0.9}, {"t": "road", "p": [0, 8], "w": 5, "len": 40, "sidewalk": 1.5}, {"t": "block", "p": [-4.0, -3.5], "size": [2.2, 0.3, 2.2], "tex": "wood", "color": "#8a6a3a"}, {"t": "block", "p": [-6.2, -3.0], "y": 0.0, "size": [0.08, 2.2, 0.08], "color": "#c83a2a", "solid": false}, {"t": "block", "p": [-6.2, -1.2], "size": [0.08, 2.2, 0.08], "color": "#c83a2a", "solid": false}, {"t": "block", "p": [-6.2, -2.1], "y": 2.2, "size": [0.1, 0.1, 1.9], "color": "#c83a2a", "solid": false}, {"t": "block", "p": [-6.2, -2.1], "y": 0.45, "size": [0.5, 0.06, 0.3], "tex": "wood", "solid": false}, {"t": "bench", "p": [-3.6, 1.6], "r": 0}, {"t": "tree", "p": [-8.0, -5.0], "s": 0.9}, {"t": "tree", "p": [7.5, -4.5], "s": 0.85}, {"t": "tree", "p": [-8.5, 4.0], "s": 0.8}, {"t": "tree", "p": [8.2, 3.5], "s": 0.9}, {"t": "bush", "p": [5.0, -6.0], "s": 0.8}, {"t": "bush", "p": [-2.5, -6.0], "s": 0.8}, {"t": "streetLamp", "p": [-5.0, 3.5], "on": true}, {"t": "streetLamp", "p": [6.0, -2.0], "r": 180, "on": true}, {"t": "block", "p": [8.6, -6.2], "size": [1.2, 1.3, 0.8], "tex": "metal", "color": "#3a5a3a"}, {"t": "block", "p": [7.2, -6.2], "size": [1.2, 1.3, 0.8], "tex": "metal", "color": "#3a5a3a"}, {"t": "crows", "p": [2.0, 2.8], "n": 6, "spread": 2.4, "color": "#7a808c"}, {"t": "clutter", "p": [-3.4, -3.3]}], "particles": [{"kind": "motes", "n": 60, "box": [-6, 0.3, -6, 6, 4, 6]}]}
+\ No newline at end of file
 diff --git a/pixcine/engine/public/locations/tt_bath.json b/pixcine/engine/public/locations/tt_bath.json
 new file mode 100644
 index 0000000..e7a00bf
@@ -71,10 +119,10 @@ index 0000000..2e55d80
 +{"id": "tt_yard", "tod": "night", "fog": 0.018, "ground": {"tex": "asphalt", "size": [300, 300]}, "props": [{"t": "road", "p": [0, 0], "w": 8, "len": 160}, {"t": "streetLamp", "p": [4.6, -6], "r": 180}, {"t": "streetLamp", "p": [-4.6, -14], "r": 0}, {"t": "streetLamp", "p": [4.6, -22], "r": 180}, {"t": "streetLamp", "p": [-4.6, 6], "r": 0}, {"t": "streetLamp", "p": [4.6, 14], "r": 180}, {"t": "building", "p": [-13, -8], "r": 90, "w": 12, "d": 10, "floors": 9, "seed": 20, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [-13, 7], "r": 90, "w": 12, "d": 10, "floors": 6, "seed": 21, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [-13, 22], "r": 90, "w": 12, "d": 10, "floors": 8, "seed": 22, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, -10], "r": -90, "w": 12, "d": 10, "floors": 7, "seed": 23, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, 6], "r": -90, "w": 12, "d": 10, "floors": 10, "seed": 24, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, 20], "r": -90, "w": 12, "d": 10, "floors": 6, "seed": 25, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [-13, -48], "r": 90, "w": 12, "d": 10, "floors": 12, "seed": 26, "lit": 0.45, "color": "#5a5660"}, {"t": "building", "p": [13, -50], "r": -90, "w": 12, "d": 10, "floors": 9, "seed": 27, "lit": 0.45, "color": "#5a5660"}], "particles": [{"kind": "motes", "n": 60, "box": [-6, 0.3, -6, 6, 4, 6]}]}
 \ No newline at end of file
 diff --git a/pixcine/engine/src/Film.tsx b/pixcine/engine/src/Film.tsx
-index ce9a50c..28c447a 100644
+index ce9a50c..22bbefc 100644
 --- a/pixcine/engine/src/Film.tsx
 +++ b/pixcine/engine/src/Film.tsx
-@@ -415,6 +415,46 @@ const OVERLAYS: Record<string, OV> = {
+@@ -415,6 +415,54 @@ const OVERLAYS: Record<string, OV> = {
        </AbsoluteFill>
      );
    },
@@ -89,7 +137,15 @@ index ce9a50c..28c447a 100644
 +    const fill = lerp(prev, cur.n, ease.out(up));
 +    const pop = t - cur.t < 0.6 ? lerp(1.45, 1, ease.out(clamp((t - cur.t) / 0.4))) : 1;
 +    const max = c.max ?? 9;
-+    const secs = Math.max(0, Math.floor(t - (c.start ?? 0)));
++    // clockKeys [[t, seconds], …]: the shown clock is interpolated between keys (lets a tightened voice still read 0:10, 0:20 …
++    // on every level-up, and lets the clock spin back on a rewind); after the last key it runs in real time
++    const ck = c.clockKeys as [number, number][] | undefined;
++    let sf = t - (c.start ?? 0);
++    if (ck?.length) {
++      sf = t <= ck[0][0] ? ck[0][1] : ck[ck.length - 1][1] + (t - ck[ck.length - 1][0]);
++      for (let i = 0; i < ck.length - 1; i++) if (t >= ck[i][0] && t < ck[i + 1][0]) { sf = lerp(ck[i][1], ck[i + 1][1], (t - ck[i][0]) / Math.max(1e-6, ck[i + 1][0] - ck[i][0])); break; }
++    }
++    const secs = Math.max(0, Math.floor(sf + 1e-6));
 +    const clock = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
 +    const segCol = (i: number) => (i < 3 ? "#5ad05a" : i < 6 ? "#ffd23a" : "#ff4a2a");
 +    const flash = t - cur.t < 0.25 && cur.t > 0;
@@ -121,6 +177,168 @@ index ce9a50c..28c447a 100644
    /** full-frame flat colour (black / white flash) */
    black: ({ c, t }) => <AbsoluteFill style={{ background: c.color ?? "#000", opacity: life(c, t, c.fi ?? 0.2, c.fo ?? 0.2) }} />,
    /** pixel phone with app header and chat/notification messages */
+diff --git a/pixcine/engine/src/gl/anim.ts b/pixcine/engine/src/gl/anim.ts
+index 2248086..72355f3 100644
+--- a/pixcine/engine/src/gl/anim.ts
++++ b/pixcine/engine/src/gl/anim.ts
+@@ -243,10 +243,20 @@ export const ACTS: Record<string, ActFn> = {
+   lie: (c) => ({ ...breathe(c, 0.6), uA: -4, uB: 4, lA: 0, lB: 0 }),
+   pushup: (c) => { // side view: body tilted almost flat, arms push it up and down (arg.dir = facing side)
+     const dir = c.arg?.dir ?? -1;
+-    const b = 0.5 - 0.5 * Math.cos(c.t * Math.PI * 2 * 0.85);
++    const b = 0.5 - 0.5 * Math.cos(c.t * Math.PI * 2 * (c.arg?.hz ?? 0.85));
+     const R = dir * (70 + 10 * b);
+     return { rootRot: R, rootY: 0.6 - 0.5 * b, rootX: dir * -3.5, uA: -R * 0.95 - dir * 8 * b, lA: dir * 30 * b, uB: -R * 0.95 - dir * 8 * b, lB: dir * 30 * b, head: -dir * 14 };
+   },
++  salute: (c) => { // military salute: near hand to the brow
++    const k = ramp(c.ta, 0.25);
++    if (front(c.view)) return { ...breathe(c, 0.3), uB: lerp(2, 118, k), lB: -150 * k, head: -2 * k };
++    return { ...breathe(c, 0.3), uB: 112 * k, lB: 128 * k, head: 2 * k, torso: -2 * k };
++  },
++  stop: (c) => { // braced, near arm straight out, palm forward (stops a car)
++    const k = ease.expoOut(clamp(c.ta / 0.18));
++    if (front(c.view)) return { ...breathe(c, 0.3), uB: 72 * k, lB: 12 * k, uA: -10 * k, legSquash: 1 - 0.04 * k };
++    return { ...breathe(c, 0.3), uB: 86 * k, lB: -8 * k, torso: -7 * k, rootX: -0.8 * k, uA: -25 * k, legSquash: 1 - 0.05 * k };
++  },
+   shield: (c) => { // hand over the eyes against bright light
+     const k = ramp(c.ta, 0.25);
+     if (front(c.view)) return { ...breathe(c, 0.4), uB: -16 * k, lB: -172 * k, head: 4 * k };
+diff --git a/pixcine/engine/src/gl/props.ts b/pixcine/engine/src/gl/props.ts
+index 30b3807..57dfb04 100644
+--- a/pixcine/engine/src/gl/props.ts
++++ b/pixcine/engine/src/gl/props.ts
+@@ -1063,8 +1063,9 @@ export function crows(o: any): Prop {
+   // small pixel crows pecking on the ground
+   const g = new THREE.Group();
+   const n = o.n ?? 5;
+-  const frames = [0, 1].map((f) => canvasTex("crow" + f, 8, 7, (c) => {
+-    c.fillStyle = "#121014";
++  // o.color: body colour (grey #7a808c = pigeons)
++  const frames = [0, 1].map((f) => canvasTex("crow" + f + (o.color ?? ""), 8, 7, (c) => {
++    c.fillStyle = o.color ?? "#121014";
+     c.fillRect(1, 2, 5, 3); c.fillRect(f ? 5 : 4, f ? 3 : 0, 3, 3); c.fillRect(0, 2, 1, 1);
+     c.fillRect(2, 5, 1, 2); c.fillRect(4, 5, 1, 2);
+     c.fillStyle = "#c8a040"; c.fillRect(f ? 7 : 7, f ? 5 : 1, 1, 1);
+diff --git a/pixcine/engine/src/gl/props_modern.ts b/pixcine/engine/src/gl/props_modern.ts
+index 7d7583a..b5705ea 100644
+--- a/pixcine/engine/src/gl/props_modern.ts
++++ b/pixcine/engine/src/gl/props_modern.ts
+@@ -435,10 +435,20 @@ function car(o: any): Prop {
+     body.add(at(box(0.32, 0.12, 0.05, emis("#ff2a1a", o.lights ? 1.8 : 0.5)), sx * 0.6, 0.65, -2.01));
+   }
+   if (o.taxi) body.add(at(box(0.5, 0.18, 0.28, emis("#ffd23a", 1.6)), 0, 1.5, -0.2));
++  // hazard lights / alarm: orange corner lamps blinking at 2 Hz from hazardAt (absolute seconds) until hazardOff
++  const hz = emis("#ffa020", 0.05);
++  for (const sx of [-1, 1]) for (const sz of [-1, 1]) body.add(at(box(0.2, 0.1, 0.06, hz), sx * 0.82, 0.66, sz * 2.02));
++  const hzL = o.hazardAt !== undefined ? pointL("#ffa020", 0, 7) : null;
++  if (hzL) { hzL.position.set(0, 1.2, 0); body.add(hzL); }
+   if (o.lights) { const L = new THREE.SpotLight("#fff2c8", 14, 18, 0.5, 0.6, 1.4); L.position.set(0, 0.7, 2.1); L.target.position.set(0, 0, 9); body.add(L, L.target); }
+   g.add(body);
+   const mv = o.move;
+   const set = (t: number) => {
++    if (o.hazardAt !== undefined) {
++      const on = t >= o.hazardAt && !(o.hazardOff !== undefined && t >= o.hazardOff) && Math.floor((t - o.hazardAt) * 4) % 2 === 0;
++      hz.emissiveIntensity = on ? 3 : 0.05;
++      if (hzL) hzL.intensity = on ? (o.hazardI ?? 4) : 0;
++    }
+     if (!mv) return;
+     const k = clamp01((t - mv.t0) / mv.dur);
+     const kk = mv.ease === false ? k : sm(k);
+@@ -601,6 +611,28 @@ function officeChair(o: any): Prop {
+   return { obj: g, foot: { r: 0.32 } };
+ }
+ 
++/** shop sign on a facade (front = +z): text centred on a coloured board; glow = emissive strength (night), offAt = blackout */
++function shopSign(o: any): Prop {
++  const w = o.w ?? 3.0, h = o.h ?? 0.7, txt: string = o.text ?? "ПРОДУКТЫ";
++  const ch = 14, cw = Math.max(28, Math.round((w / h) * ch));
++  const tex = canvasTex(`shop|${txt}|${o.bg}|${o.fg}|${cw}`, cw, ch, (c, W, H) => {
++    c.fillStyle = o.bg ?? "#1a3a6a"; c.fillRect(0, 0, W, H);
++    c.fillStyle = o.edge ?? "rgba(255,255,255,0.18)"; c.fillRect(0, 0, W, 1); c.fillRect(0, H - 1, W, 1);
++    c.font = "bold 10px monospace"; c.textBaseline = "middle"; c.textAlign = "center";
++    c.fillStyle = "rgba(0,0,0,0.45)"; c.fillText(txt, W / 2 + 1, H / 2 + 2);
++    c.fillStyle = o.fg ?? "#ffffff"; c.fillText(txt, W / 2, H / 2 + 1);
++  });
++  const g = new THREE.Group();
++  g.add(at(box(w + 0.1, h + 0.1, 0.12, flat("#1a1a1e")), 0, 0, -0.06));
++  const m = new THREE.MeshStandardMaterial({ map: tex, emissive: "#fff", emissiveMap: tex, emissiveIntensity: o.glow ?? 0.25, roughness: 0.8 });
++  const f = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m);
++  f.position.z = 0.005;
++  g.add(f);
++  const set = (t: number) => { m.emissiveIntensity = o.offAt !== undefined && t >= o.offAt ? 0.02 : (o.glow ?? 0.25); };
++  set(0);
++  return { obj: g, update: set };
++}
++
+ /** generic coloured box (walls, tables, blocks): size [w,h,d], tex kind + colour */
+ function block(o: any): Prop {
+   const [w, h, d] = o.size ?? [1, 1, 1];
+@@ -618,7 +650,15 @@ function lightPt(o: any): Prop {
+   const g = new THREE.Group();
+   const L = pointL(o.color ?? "#ffd8a0", o.i ?? 3, o.d ?? 8);
+   g.add(L);
+-  const set = (t: number) => { L.intensity = (o.offAt !== undefined && t >= o.offAt) || (o.onAt !== undefined && t < o.onAt) ? 0 : (o.i ?? 3); };
++  // glow: visible emissive cube of that size (indicator lamps), switched with the light
++  const gm = o.glow ? emis(o.color ?? "#ffd8a0", 2.6) : null;
++  if (gm) g.add(new THREE.Mesh(new THREE.BoxGeometry(o.glow, o.glow * 0.6, o.glow), gm));
++  // blink: on/off at `blink` Hz (hazard lights, car alarms)
++  const set = (t: number) => {
++    const off = (o.offAt !== undefined && t >= o.offAt) || (o.onAt !== undefined && t < o.onAt) || (o.blink && Math.floor((t - (o.onAt ?? 0)) * o.blink * 2) % 2 === 1);
++    L.intensity = off ? 0 : (o.i ?? 3);
++    if (gm) gm.emissiveIntensity = off ? 0.05 : 2.6;
++  };
+   set(0);
+   return { obj: g, update: set };
+ }
+@@ -641,5 +681,5 @@ function bunkerEntrance(o: any): Prop {
+ 
+ export const MODERN: Record<string, (o: any) => Prop> = {
+   steelDoor, ledTimer, tallyWall, metalShelf, mattress, bulb, laptop, sandbags, lantern, tent, spike, crt, screenBoard, counter, coffeeMachine,
+-  menuBoard, building, road, car, trafficLight, streetLamp, elevator, sink, powerPlant, aptDoor, porthole, officeChair, block, lightPt, bunkerEntrance,
++  menuBoard, building, road, car, trafficLight, streetLamp, shopSign, elevator, sink, powerPlant, aptDoor, porthole, officeChair, block, lightPt, bunkerEntrance,
+ };
+diff --git a/pixcine/engine/src/gl/world.ts b/pixcine/engine/src/gl/world.ts
+index 04e7eb8..53b6a45 100644
+--- a/pixcine/engine/src/gl/world.ts
++++ b/pixcine/engine/src/gl/world.ts
+@@ -3,7 +3,7 @@
+ import * as THREE from "three";
+ import { at, DynLight, mat, PROPS, Prop } from "./props";
+ import { pixTex } from "./pixtex";
+-import { hash, hexToRgb, noise1 } from "./util";
++import { hash, hexToRgb, noise1, sampleKeys } from "./util";
+ 
+ export type LocJSON = {
+   id: string;
+@@ -230,10 +230,27 @@ export class World {
+     if (pd.s && !["tree", "rock", "bush", "crate"].includes(pd.t)) pr.obj.scale.setScalar(pd.s);
+     if (pd.rx) pr.obj.rotation.x = pd.rx * Math.PI / 180;
+     if (pd.rz) pr.obj.rotation.z = pd.rz * Math.PI / 180;
++    // generic keyframed motion for any prop: anim [{t, p:[x,y,z], r:[rx,ry,rz] deg, s, e}], plus showAt / hideAt
++    if (pd.anim || pd.showAt !== undefined || pd.hideAt !== undefined) {
++      const base = pr.update, o = pr.obj, D = Math.PI / 180;
++      const ks: any[] = (pd.anim ?? []).map((k: any) => ({ ...k, p: k.p ?? [x, y, z], r: k.r ?? [pd.rx ?? 0, pd.r ?? 0, pd.rz ?? 0], s: k.s ?? pd.s ?? 1 }));
++      pr.update = (t: number) => {
++        base?.(t);
++        if (ks.length) {
++          const { a, b, k } = sampleKeys<any>(ks, t);
++          const L = (u: number[], v: number[], i: number) => u[i] + (v[i] - u[i]) * k;
++          o.position.set(L(a.p, b.p, 0), L(a.p, b.p, 1), L(a.p, b.p, 2));
++          o.rotation.set(L(a.r, b.r, 0) * D, L(a.r, b.r, 1) * D, L(a.r, b.r, 2) * D);
++          o.scale.setScalar(a.s + (b.s - a.s) * k);
++        }
++        o.visible = !(pd.showAt !== undefined && t < pd.showAt) && !(pd.hideAt !== undefined && t >= pd.hideAt);
++      };
++      pr.update(0);
++    }
+     this.scene.add(pr.obj);
+     this.props.push(pr);
+     if (pr.lights) this.lights.push(...pr.lights);
+-    if (pr.foot) this.foot.push({ x, z, ...pr.foot, ry: pd.r ?? 0, kind: pd.t });
++    if (pr.foot && !pd.anim) this.foot.push({ x, z, ...pr.foot, ry: pd.r ?? 0, kind: pd.t });
+     if (pr.anchors && pd.id) {
+       pr.obj.updateMatrixWorld(true);
+       for (const [k, v] of Object.entries(pr.anchors)) this.anchors[`${pd.id}.${k}`] = new THREE.Vector3(...v).applyMatrix4(pr.obj.matrixWorld);
 diff --git a/pixcine/engine/tools/render.mjs b/pixcine/engine/tools/render.mjs
 index 44580ed..e76dd96 100644
 --- a/pixcine/engine/tools/render.mjs
@@ -172,10 +390,10 @@ index 3958501..01fa64a 100644
      process.stdout.write(`frame ${frame} (${(frame / fps).toFixed(2)}s)\n`);
    }
 diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
-index 3ddad95..0321454 100644
+index 3ddad95..5cee394 100644
 --- a/pixcine/projects/shorts/cast_src.py
 +++ b/pixcine/projects/shorts/cast_src.py
-@@ -71,6 +71,23 @@ for k, v in NPC.items():
+@@ -71,6 +71,34 @@ for k, v in NPC.items():
      if k in KIND_TOO:
          chars.append({"id": k, **v})
  
@@ -194,13 +412,24 @@ index 3ddad95..0321454 100644
 +     "top": {"type": "shirt", "color": "#b85a7a", "belt": "#5a2a3a"}, "apron": "#e8e2d8", "bottom": {"type": "jeans", "color": "#3a3a48"}, "shoes": "#5a3a2a"},
 +    {"id": "barista", "name": "Бариста", **NPC["barista"]},
 +    {"id": "kassir", "name": "Кассир", **NPC["kassir"]},
++    # v2 (10.11.2026): street action — the skinny start, grannies on the bench, a policeman
++    {"id": "geroy_d", "name": "Дрыщ", **HERO, "build": "slim", "skin": "#f0dccc"},
++    {"id": "babka1", "name": "Бабушка", "build": "old", "skin": "#f0c8a8", "hair": {"style": "tied", "color": "#c8c4bc"}, "brow": "#a8a49c",
++     "hat": {"kind": "headscarf", "color": "#b83a4a"}, "top": {"type": "dress", "color": "#5a4a7a"}, "shoes": "#2a2a2e"},
++    {"id": "babka2", "name": "Бабушка", "build": "old", "skin": "#e8bc9c", "hair": {"style": "tied", "color": "#d8d4cc"}, "brow": "#b8b4ac",
++     "hat": {"kind": "headscarf", "color": "#3a6a9a"}, "top": {"type": "dress", "color": "#7a5a3a"}, "shoes": "#3a2a22"},
++    {"id": "police", "name": "Полицейский", "build": "normal", "skin": "#eab896", "hair": {"style": "short", "color": "#2a2018"},
++     "hat": {"kind": "cap", "color": "#1e2a44"}, "top": {"type": "jacket", "color": "#26344e", "tee": "#d8dce4", "sleeve": "#26344e"},
++     "bottom": {"type": "jeans", "color": "#1e2a40"}, "shoes": "#141418"},
++    {"id": "geroy_br", "name": "Герой", **HERO, "brows_thick": True},
++    {"id": "geroy_t8p", "name": "Гигачад", **HERO, "build": "big", "skin": "#e8c8ac", "beard": "full", "beard_color": "#141012", **T_EYES, "hat": {"kind": "pigeons"}},
 +]
 +
  for c in chars:
      for key in [x for x, y in c.items() if y is None]:
          del c[key]
 diff --git a/pixcine/scripts/pixchar.py b/pixcine/scripts/pixchar.py
-index 1ef462d..5486ccd 100644
+index 1ef462d..9223428 100644
 --- a/pixcine/scripts/pixchar.py
 +++ b/pixcine/scripts/pixchar.py
 @@ -481,6 +481,25 @@ def draw_hat(cv, view, hat, spec, x0, y0, x1, y1):
@@ -229,7 +458,21 @@ index 1ef462d..5486ccd 100644
      elif k == "circlet":
          g = col or "#c9c0a0"
          cv.rect(x0 - 1, y0 + 1, x1 + 1, y0 + 2, g)
-@@ -988,6 +1007,14 @@ def draw_items() -> dict[str, tuple[Cv, tuple[float, float]]]:
+@@ -546,9 +565,12 @@ def draw_eyes(spec, view, kind) -> Cv:
+     glint = spec.get("eye_glint")
+     for i, ex in enumerate(eyes):
+         ww = w if not (view == "Q" and i == 0) else 2
++        thick = spec.get("brows_thick")  # «брови стали гуще»: a 2-px, wider unibrow-ish block
+         if always:
+             by = ey - (2 if kind == "wide" else 1) - 1
+-            cv.rect(ex - (1 if view == "F" and i == 0 else 0), by, ex + ww + (1 if view == "F" and i == 1 else 0), by + 1, brow)
++            cv.rect(ex - (1 if view == "F" and i == 0 else 0), by - (1 if thick else 0), ex + ww + (1 if view == "F" and i == 1 else 0) + (1 if thick and view == "F" and i == 0 else 0), by + 1, brow)
++        if thick and kind == "angry":
++            cv.rect(ex - (1 if view == "F" and i == 0 else 0), ey - 2, ex + ww + (1 if view == "F" else 0), ey - 1, brow)
+         if kind == "normal":
+             cv.rect(ex, ey, ex + ww, ey + 3, ec)
+             if glint:
+@@ -988,6 +1010,14 @@ def draw_items() -> dict[str, tuple[Cv, tuple[float, float]]]:
      cv = Cv(8, 3)
      cv.rect(0, 0, 8, 3, "#c8a070"); cv.rect(1, 0, 7, 2, "#e0a040"); cv.px(2, 0, "#c03a2a"); cv.px(5, 1, "#c03a2a"); cv.px(4, 0, "#c8a070")
      items["pizza"] = (cv, (4, 1.5))
