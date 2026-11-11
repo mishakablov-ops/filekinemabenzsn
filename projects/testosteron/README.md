@@ -27,6 +27,7 @@
   копия для загрузки 14 Мбит/с — `D:\aipollon\output\testosteron-v2.mp4` (MD5 0ec2aff5a184f64ccc593b6b0ae12638 сверен на ПК).
   Перенос: tar-куски по 23 МиБ в `shorts\_v2parts\`, сборка через Remote Control, куски потом удалены. v1 удалён с флешки
   11.11 по слову mike «удали безвозвратно».
+- **Отзыв (11.11):** «в в2 все четко, мне нравится» — v2 одобрен.
 
 ## Как собрать v1 (для истории)
 1. `pixcine/projects/shorts/narration/testosteron/script.md` = `script.md` отсюда.
