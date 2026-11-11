@@ -1,6 +1,7 @@
 """«Каждые 10 секунд у тебя становится больше тестостерона» v2 — vertical PIXCINE short (1080×1920), 10.11.2026.
 mike on v1: timing problems, no background music (keep the sounds), the script was raw — more action, everything on
-the street «как в примере», a bit of 3D, a strong TikTok hook. So:
+the street «как в примере» (a wish for this video, not a mandatory rule; street sets stay in use: mike 11.11.2026),
+a bit of 3D, a strong TikTok hook. So:
 - hook = teaser of the finale (1:20 gigachad stops a speeding car with his palm at night), a phone call from
   «???», then a rewind to the skinny start; the «кроме одного человека» promise pays off at 1:20 (mom, the hat);
 - every block is a street gag with real props in motion (cars, a bench with grannies, a lamp post and a blackout,
