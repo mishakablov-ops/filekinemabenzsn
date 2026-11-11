@@ -1,0 +1,82 @@
+diff --git a/pixcine/engine/src/Film.tsx b/pixcine/engine/src/Film.tsx
+index 22bbefc..f441252 100644
+--- a/pixcine/engine/src/Film.tsx
++++ b/pixcine/engine/src/Film.tsx
+@@ -467,4 +467,38 @@ const OVERLAYS: Record<string, OV> = {
+   black: ({ c, t }) => <AbsoluteFill style={{ background: c.color ?? "#000", opacity: life(c, t, c.fi ?? 0.2, c.fo ?? 0.2) }} />,
+   /** pixel phone with app header and chat/notification messages */
+   phone: ({ c, t, w, h }) => <PhoneUI c={{ ...c, center: true }} t={t} h={Math.min(h, w * 1.2)} a={1} />,
++  /** short-video feed on a pixel phone: full-screen clips swipe up at c.swipes (seconds from t0); clip = {title, color, sub?, likes?} */
++  feed: ({ c, t, w, h }) => {
++    const k = Math.min(h, w * 1.2) / 1440;
++    const lt = t - c.t0;
++    const rise = ease.out(clamp(lt / 0.35)) * (1 - ease.in(clamp((t - (c.t1 - 0.3)) / 0.3)));
++    const W = 560 * k, H = 1040 * k;
++    const clips: any[] = c.clips ?? [];
++    let pos = 0;
++    for (const s of (c.swipes ?? []) as number[]) pos += ease.inOut(clamp((lt - s) / 0.22));
++    const y0 = c.y ?? 0.42;
++    return (
++      <AbsoluteFill style={{ fontFamily: FONT }}>
++        <div style={{ position: "absolute", left: w / 2 - W / 2, top: h * y0 - H / 2 + (1 - rise) * h, width: W, height: H, background: "#121318",
++          borderRadius: 46 * k, padding: 18 * k, boxShadow: `0 0 ${120 * k}px rgba(255,60,120,0.35), inset 0 0 0 ${6 * k}px #2a2c34`,
++          transform: `rotate(${noise1(t * 0.5, 9) * 1.5}deg)` }}>
++          <div style={{ width: "100%", height: "100%", borderRadius: 28 * k, overflow: "hidden", position: "relative", background: "#000" }}>
++            {clips.map((cl, i) => {
++              const top = (i - pos) * (H - 36 * k);
++              if (top > H || top < -H) return null;
++              return (
++                <div key={i} style={{ position: "absolute", left: 0, right: 0, top, height: H - 36 * k, background: cl.color ?? "#2a2a3a",
++                  display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff", textAlign: "center" }}>
++                  <div style={{ fontSize: (cl.size ?? 64) * k, lineHeight: 1.1, padding: `0 ${24 * k}px`, textShadow: `${4 * k}px ${4 * k}px 0 #000` }}>{cl.title}</div>
++                  {cl.sub ? <div style={{ fontSize: 30 * k, marginTop: 18 * k, color: "#ffe86a", textShadow: `${3 * k}px ${3 * k}px 0 #000` }}>{cl.sub}</div> : null}
++                  <div style={{ position: "absolute", right: 18 * k, bottom: 120 * k, fontSize: 26 * k, textAlign: "center", lineHeight: 1.3 }}>❤<br />{cl.likes ?? "1.2M"}</div>
++                  <div style={{ position: "absolute", left: 22 * k, bottom: 40 * k, fontSize: 24 * k, opacity: 0.9 }}>@{cl.author ?? "user"}</div>
++                </div>
++              );
++            })}
++          </div>
++        </div>
++      </AbsoluteFill>
++    );
++  },
+ };
+diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
+index 5cee394..b02227d 100644
+--- a/pixcine/projects/shorts/cast_src.py
++++ b/pixcine/projects/shorts/cast_src.py
+@@ -99,6 +99,21 @@ chars += [
+     {"id": "geroy_t8p", "name": "Гигачад", **HERO, "build": "big", "skin": "#e8c8ac", "beard": "full", "beard_color": "#141012", **T_EYES, "hat": {"kind": "pigeons"}},
+ ]
+ 
++# «Как жить, если ты тупой» (11.11.2026): Витёк = geroy; teacher whose beard turns grey; shop guard; a deskmate
++chars += [
++    {"id": "vitek_w", "name": "Витёк", **HERO, "hat": {"kind": "beanie", "color": "#3a6ab8"}},
++    {"id": "uchitel", "name": "Учитель", "build": "normal", "skin": "#eec4a4", "hair": {"style": "short", "color": "#3a2a1e"}, "brow": "#3a2a1e",
++     "beard": "full", "beard_color": "#3a2a1e", "glasses": True, "glasses_color": "#2a2a30",
++     "top": {"type": "shirt", "color": "#7a8a6a", "belt": "#3a2a1a"}, "bottom": {"color": "#4a4a52"}, "shoes": "#2a2018"},
++    {"id": "uchitel_s", "name": "Учитель", "build": "old", "skin": "#e8c0a4", "hair": {"style": "short", "color": "#e8e8ec"}, "brow": "#e0e0e4",
++     "beard": "full", "beard_color": "#f0f0f4", "glasses": True, "glasses_color": "#2a2a30",
++     "top": {"type": "shirt", "color": "#7a8a6a", "belt": "#3a2a1a"}, "bottom": {"color": "#4a4a52"}, "shoes": "#2a2018"},
++    {"id": "ohrannik", "name": "Охранник", "build": "big", "skin": "#e0aa88", "hair": {"style": "bald", "color": "#2a2018"}, "beard": "stubble",
++     "top": {"type": "tshirt", "color": "#141418"}, "bottom": {"type": "cargo", "color": "#22222a"}, "shoes": "#141418", "boots": True},
++    {"id": "odnokl", "name": "Сосед по парте", "build": "slim", "skin": "#f4d0b0", "hair": {"style": "messy", "color": "#c8902a"},
++     "top": {"type": "hoodie", "color": "#5a8a3a", "strings": "#e8e8e0"}, "bottom": {"type": "jeans", "color": "#3a4a6a"}, "shoes": "#e0dcd8"},
++]
++
+ for c in chars:
+     for key in [x for x, y in c.items() if y is None]:
+         del c[key]
+diff --git a/pixcine/projects/shorts/voice_grid.py b/pixcine/projects/shorts/voice_grid.py
+index 5694e87..37ca4ad 100644
+--- a/pixcine/projects/shorts/voice_grid.py
++++ b/pixcine/projects/shorts/voice_grid.py
+@@ -149,7 +149,7 @@ def main():
+         model = WhisperModel("small", compute_type="int8")
+ 
+     words, cards, rows = [], [], []
+-    track = np.zeros(int(SR * (len(secs) * a.grid + 15)), dtype=np.float32)
++    track = np.zeros(int(SR * (len(secs) * max(a.grid, 12.0) + 15)), dtype=np.float32)
+     end_prev = 0.0
+     for k, s in enumerate(secs):
+         lines = s["lines"]
