@@ -5,6 +5,7 @@ MP4 в git не храним (сотни МБ, лимит GitHub 100 МБ на �
 
 | файл | проект | стиль | дата | отзыв пользователя |
 |---|---|---|---|---|
+| `kak-zhit-tupoy-v1.mp4` | kak-zhit-tupoy | Пиксель PIXCINE, 76 с, голос MiniMax ×1.35, мат, без музыки | 11.11.2026 | выдан, ждёт отзыва; на ПК `D:\aipollon\output\` (MD5 7be66b5f…cf82) |
 | `quiet-evenings-40s-v5.mp4` | quiet-evenings | Reel Studio 3D | 21.10.2026 | **одобрен**, ориентир по детализации и музыке |
 | `quiet-evenings-40s.mp4` … `-v4.mp4` | quiet-evenings | — | 21.10.2026 | промежуточные |
 | `mir-bez-granic-v2.mp4` | mir-bez-granic | Блендер · Классика | 22.10.2026 | **одобрен**: «красавчик, запомни все правки» |
