@@ -32,7 +32,12 @@ Before reviewing a reel, read the user's saved presentation requirements in [sty
 4. **Avatar:** compare with the supplied original. Check the complete circular crop, centring and actual source dimensions; no displaced black crescent or distorted image. Do not regenerate the user's artwork.
 5. **Terminal:** inspect the first line, typing, result and scrolling. The header remains separate, all required rows fit, and the result appears after the command finishes typing. An outer block overlap check alone is insufficient.
 6. **Final MP4:** reproduce each user-reported moment in the encoded deliverable and inspect the relevant region at a readable size. Keep the corrected scenes' targeted regression checks alongside the ordinary QA gate.
-7. **Music:** check the finished mix at the opening, achievements, quieter final speech and ending. The music follows the story, words remain clear, phrase extensions have smooth joins, and the ending fades naturally. Use the user-approved v5 music treatment documented in [sound.md](sound.md) as a reference when appropriate.
+7. **Pixel shorts realism (mike, 13.11.2026: «не допускай нереалистичности и лагов»):** walking speeds 1.2–1.5 m/s
+   (running ≤ ~2 m/s) checked on the spec paths; no stains or props hanging in the air; the camera on the side the doll
+   faces, not its back, and not blocked by front-row people or the crowd's phones; particles ≥ ~4 m from the lens;
+   `lightPt` blinking only as Hz + absolute `onAt`/`offAt`; deliverable at ~10 Mbit/s with `+faststart`.
+   Before a re-render delete the old `engine/out/<project>_<ep>/chunk_*.mp4`, or `render.mjs` silently reuses them.
+8. **Music:** check the finished mix at the opening, achievements, quieter final speech and ending. The music follows the story, words remain clear, phrase extensions have smooth joins, and the ending fades naturally. Use the user-approved v5 music treatment documented in [sound.md](sound.md) as a reference when appropriate.
 
 ## Fix recipes
 | symptom | fix |

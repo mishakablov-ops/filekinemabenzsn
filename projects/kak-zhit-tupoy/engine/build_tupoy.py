@@ -49,7 +49,7 @@ def winter(id, tod="dusk"):
           {"t": "bench", "p": [6.6, -4], "r": -90}, {"t": "crows", "p": [5.4, 8], "n": 4, "spread": 2.0, "color": "#7a808c"},
           {"t": "building", "p": [0, -72], "w": 40, "d": 10, "floors": 12, "seed": 80, "lit": 0.5, "color": "#7a7680"}]
     save_loc({"id": id, "tod": tod, "fog": 0.02, "ground": {"tex": "concrete", "opts": {"color": "#dfe6ee", "lines": False}, "size": [240, 240]},
-              "props": P, "particles": [{"kind": "snow", "n": 420, "box": [-8, 0.2, -16, 8, 7, -1.5]}]})
+              "props": P})
 
 
 winter("tp_winter")
@@ -62,7 +62,8 @@ save_loc({"id": "tp_bath", "interior": True, "tod": "interior_day",
                     {"t": "block", "p": [-1.35, -0.6], "size": [0.6, 0.45, 1.5], "tex": "white", "color": "#f0f2f2"},                    # bath tub
                     {"t": "block", "p": [0.32, -1.32], "y": 0.86, "size": [0.08, 0.06, 0.18], "color": "#141414"},                     # shoe polish tube
                     {"t": "block", "p": [0.18, -1.3], "y": 0.86, "size": [0.05, 0.14, 0.05], "color": "#e84a4a"},                      # cup
-                    {"t": "aptDoor", "p": [1.0, 1.48], "r": 180, "num": "", "color": "#e8e2d4"},
+                    {"t": "aptDoor", "p": [1.68, 0.7], "r": -90, "num": "", "color": "#e8e2d4"},
+                    {"t": "block", "p": [-1.65, 0.6], "y": 1.2, "size": [0.04, 0.5, 0.35], "color": "#c84a5a", "solid": False},     # towel
                     {"t": "lightPt", "p": [0, -0.6], "y": 2.4, "i": 3.5, "d": 7, "color": "#f4f8ff"}],
           "fog": 0.01, "hemi": ["#d0dce4", "#3a4044", 0.8]})
 MICRO = (1.2, -1.45)
@@ -94,14 +95,13 @@ save_loc({"id": "tp_school", "interior": True, "tod": "interior_day",
           "fog": 0.01, "hemi": ["#d8d0b8", "#3a3428", 0.8]})
 DOOR = (0.0, -4.5)                      # shop entrance (glass door) in the facade at z=-5
 save_loc({"id": "tp_shop", "tod": "day",
-          "props": [{"t": "building", "p": [0, -10], "w": 14, "d": 10, "floors": 4, "seed": 90, "color": "#8a8a7e", "day": True},
+          "props": [{"t": "building", "p": [0, -10], "w": 14, "d": 10, "floors": 4, "seed": 90, "color": "#8a8a7e", "day": True, "door": False},  # own door covered our glass
                     {"t": "shopSign", "p": [0, -4.93], "y": 3.1, "w": 4.6, "h": 0.9, "text": "ПРОДУКТЫ", "bg": "#2a6a3a", "glow": 0.6},
-                    {"t": "block", "p": [0, -4.98], "size": [1.5, 2.3, 0.06], "tex": "metal", "color": "#4a5a6a", "solid": False},             # door frame
-                    {"t": "block", "p": [0, -4.94], "y": 0.1, "size": [1.3, 2.05, 0.03], "color": "#a8d4ec", "solid": False},               # glass
-                    {"t": "shopSign", "p": [0, -4.9], "y": 1.45, "w": 0.95, "h": 0.32, "text": "ОТ СЕБЯ", "bg": "#c83a2a", "glow": 0.5},
-                    {"t": "block", "p": [0.5, -4.88], "y": 0.95, "size": [0.06, 0.4, 0.06], "tex": "metal", "color": "#d8d8d8", "solid": False},  # handle
-                    {"t": "block", "p": [-2.6, -4.96], "y": 0.6, "size": [2.6, 1.8, 0.04], "color": "#a8d4ec", "solid": False},               # shop windows
-                    {"t": "block", "p": [2.6, -4.96], "y": 0.6, "size": [2.6, 1.8, 0.04], "color": "#a8d4ec", "solid": False},
+                    {"t": "block", "p": [-2.6, -4.94], "y": 0.6, "size": [2.6, 1.8, 0.04], "emissive": "#8ab4cc", "ei": 0.7, "solid": False},   # shop windows (lit glass)
+                    {"t": "block", "p": [2.6, -4.94], "y": 0.6, "size": [2.6, 1.8, 0.04], "emissive": "#8ab4cc", "ei": 0.7, "solid": False},
+                    *[{"t": "block", "p": [x, -4.9], "y": y, "size": [0.5, 0.36, 0.02], "color": c, "solid": False}                       # goods behind the glass
+                      for x, y, c in [(-3.4, 0.75, "#c84a2a"), (-2.7, 0.75, "#e0b020"), (-2.0, 0.75, "#3a8a4a"), (-3.1, 1.25, "#e8e2d4"), (-2.3, 1.25, "#3a6ab8"),
+                                      (2.0, 0.75, "#e8e2d4"), (2.7, 0.75, "#c84a2a"), (3.4, 0.75, "#8a5a3a"), (2.4, 1.25, "#e0b020"), (3.2, 1.25, "#3a8a4a")]],
                     {"t": "shopSign", "p": [-2.6, -4.9], "y": 1.6, "w": 2.0, "h": 0.5, "text": "АКЦИЯ -50%", "bg": "#e0b020", "glow": 0.4},
                     {"t": "road", "p": [0, 6], "r": 90, "w": 7, "len": 80, "color": "#4a4a52"},
                     {"t": "streetLamp", "p": [-4.0, -3.0], "on": False}, {"t": "bench", "p": [3.8, -3.6]},
@@ -110,11 +110,42 @@ save_loc({"id": "tp_shop", "tod": "day",
                     {"t": "car", "p": [-2.4, 4.6], "r": 90, "color": "#3a6ab8"}, {"t": "car", "p": [4.0, 7.6], "r": -90, "color": "#d8d8d8"},
                     {"t": "crows", "p": [3.6, -3.0], "n": 3, "spread": 1.0, "color": "#7a808c"}],
           "fog": 0.012, "ground": {"tex": "concrete", "opts": {"color": "#dfe6ee", "lines": False}, "size": [160, 160]},
-          "particles": [{"kind": "snow", "n": 260, "box": [-6, 0.2, -6, 6, 6, 2]}]})
+          "particles": []})
+
+
+
+def shop_door(s, rattle=None):
+    """glass door «ОТ СЕБЯ» as shot props, so it can rattle (absolute t0, t1) while Витёк pulls a push door"""
+    parts = [{"t": "block", "p": [0, -4.98], "size": [1.5, 2.3, 0.06], "tex": "metal", "color": "#4a5a6a", "solid": False},
+             {"t": "block", "p": [0, -4.92], "y": 0.1, "size": [1.3, 2.05, 0.03], "emissive": "#a4cce2", "ei": 0.8, "solid": False},
+             {"t": "shopSign", "p": [0, -4.88], "y": 1.45, "w": 0.95, "h": 0.32, "text": "ОТ СЕБЯ", "bg": "#c83a2a", "glow": 0.5},
+             {"t": "block", "p": [0.5, -4.86], "y": 0.95, "size": [0.06, 0.4, 0.06], "tex": "metal", "color": "#d8d8d8", "solid": False}]
+    if rattle:
+        t0, t1 = rattle
+        for o in parts:
+            x, z = o["p"]
+            y = o.get("y", 0.0)
+            keys, t, k = [{"t": round(t0, 3), "p": [x, y, z]}], t0 + 0.06, 0
+            while t < t1:
+                keys.append({"t": round(t, 3), "p": [x, y, round(z + (0.04 if k % 2 == 0 else 0.0), 3)]})
+                t += 0.07 + 0.025 * (k % 3)
+                k += 1
+            o["anim"] = keys + [{"t": round(t1 + 0.06, 3), "p": [x, y, z]}]
+    extra(s, *parts)
+
 
 # ----------------------------------------------------------------- episode
 ep = Ep("shorts", "tupoy", fps=30, w=W, h=H)
 cut = Cut(ep, w)
+# snow only well away from the lens (near flakes turn into big squares): cameras looking -z / looking +z
+SNOW_FWD = {"kind": "snow", "n": 520, "box": [-9, 0.2, -34, 9, 8, -1.0]}
+SNOW_BACK = {"kind": "snow", "n": 520, "box": [-9, 0.2, 2.5, 9, 8, 34]}
+
+
+def wshot(t_end, back=False, box=None):
+    """winter street shot; box = custom snow volume [x0,y0,z0,x1,y1,z1] that keeps ≥ 2 m clear in front of the lens"""
+    snow = {"kind": "snow", "n": 520, "box": box} if box else (SNOW_BACK if back else SNOW_FWD)
+    return cut.shot("tp_winter", t_end, tod="dusk", particles=[snow])
 
 
 def actor(s, id, char, at, face=0, act="idle", eyes=None, mouth=None, **arg):
@@ -128,13 +159,14 @@ def actor(s, id, char, at, face=0, act="idle", eyes=None, mouth=None, **arg):
 MIN_D = 3.4
 
 
-def ks(s, keys, focus=None, ap=None, hh=None):
+def ks(s, keys, focus=None, ap=None, hh=None, md=None):
     """explicit camera keys in GLOBAL time: [(t, pos, look, fov[, ease]), …]; t = -1 → end of shot (no portrait zoom)"""
     out = []
     for i, (t, p, l, f, *rest) in enumerate(keys):
         d = math.dist(p, l)
-        if d < MIN_D:                       # pixel dolls are big: a «close-up» needs ≥ 2.6 m (lesson of testosteron v2)
-            p = [l[j] + (p[j] - l[j]) * MIN_D / max(d, 0.05) for j in range(3)]
+        lim = MIN_D if md is None else md
+        if d < lim:                         # pixel dolls are big: a «close-up» needs ≥ 2.6 m (lesson of testosteron v2)
+            p = [l[j] + (p[j] - l[j]) * lim / max(d, 0.05) for j in range(3)]
             f = max(f, 42)
         out.append(K(round(max(0.0, t - s.t0) if t != -1 else s.dur, 3), p, l, f, None if i == 0 else (rest[0] if rest else "inOut")))
     s.cam(out, focus=focus, aperture=ap, **({"handheld": hh} if hh is not None else {}))
@@ -164,6 +196,31 @@ def hit(s, t, v=0.06, d=0.4):
     s.fxk(t - s.t0, "shake", d=d, v=v)
 
 
+def yolk(t=None, seed=3):
+    """yolk after the microwave blast: thin splats on the back wall, the worktop, the floor and the right wall"""
+    def rnd(i, k):
+        h = math.sin(seed * 12.9898 + i * 78.233 + k * 37.719) * 43758.5453
+        return h - math.floor(h)
+    out = []
+    for i in range(46):
+        a, b, c = rnd(i, 1), rnd(i, 2), rnd(i, 3)
+        sz = 0.08 + 0.2 * c
+        if i < 18:      # back wall, above the worktop
+            x, y, z, size = -2.0 + 4.0 * a, 1.0 + 1.5 * b, -1.785, [sz, sz * 0.8, 0.02]
+        elif i < 28:    # worktop top
+            x, y, z, size = -0.6 + 2.4 * a, 0.905, -1.72 + 0.5 * b, [sz, 0.012, sz * 0.8]
+        elif i < 40:    # floor
+            x, y, z, size = -1.2 + 3.2 * a, 0.006, -1.0 + 2.2 * b, [sz * 1.3, 0.012, sz]
+        else:           # right wall
+            x, y, z, size = 2.185, 0.6 + 1.6 * a, -1.5 + 2.0 * b, [0.02, sz * 0.8, sz]
+        o = {"t": "block", "p": [round(x, 3), round(z, 3)], "y": round(y, 3), "size": [round(v, 3) for v in size],
+             "color": "#f2c418" if i % 4 else "#f8f0d8", "solid": False}
+        if t is not None:
+            o["showAt"] = round(t, 3)
+        out.append(o)
+    return out
+
+
 def splats(origin, n, spread, seed=1, t=None, color="#f2c418", y=(0.3, 2.2), size=0.22):
     """flat yellow yolk splats stuck on walls / floor (appear at t)"""
     out = []
@@ -188,28 +245,29 @@ CROWD = [(-5.6, 2.6, "p1", 150), (-3.0, 2.8, "p3", -150), (-2.6, 1.0, "p4", -110
 
 def stuck(s, char=VW, eyes="wide", mouth="o"):
     """Витёк frozen to the pole: facing the pole (-x), tongue block between his mouth and the lamp post"""
-    v = actor(s, "hero", char, TONGUE_AT, face=-90, act="struggle", eyes=eyes, mouth=mouth)
+    v = actor(s, "hero", char, TONGUE_AT, face=-90, act="stuck", eyes=eyes, mouth=mouth)
     extra(s, TONGUE, FROST)
     return v
 
 
-def crowd(s, n=6, film=True, flashes=None):
-    for i, (x, z, ch, f) in enumerate(CROWD[:n]):
+def crowd(s, n=6, film=True, flashes=None, skip=()):
+    who = [c for i, c in enumerate(CROWD[:n]) if i not in skip]
+    for i, (x, z, ch, f) in enumerate(who):
         a = actor(s, f"c{i}", ch, (x, z), face=f, act="phone_up" if film else "idle")
         if film:
             a.hold(0, B="phone")
-    if flashes:
+    if flashes:     # phone camera flashes: one short pop each (lightPt takes absolute onAt/offAt; a dict «blink» never switched off in v1)
         for k, t in enumerate(flashes):
-            extra(s, {"t": "lightPt", "p": [CROWD[k % n][0], CROWD[k % n][1]], "y": 1.6, "i": 6, "d": 4, "color": "#ffffff",
-                      "blink": {"t0": round(t - s.t0, 3), "on": 0.06, "off": 9.0}})
+            extra(s, {"t": "lightPt", "p": [who[k % len(who)][0], who[k % len(who)][1]], "y": 1.6, "i": 4, "d": 3.5, "color": "#ffffff",
+                      "onAt": round(t, 3), "offAt": round(t + 0.07, 3)})
 
 
 # ======================================================== 1. HOOK — teaser: tongue frozen to the lamp post, everybody films
 T_TUP = A("тупой")
-s = cut.shot("tp_winter", round(A("Спокойно") - 0.05, 3), tod="dusk")
+s = wshot(round(A("Спокойно") - 0.05, 3))
 stuck(s)
 crowd(s, 6, flashes=[0.4, 0.9, 1.3])
-ks(s, [(0.0, [-3.0, 1.7, 5.4], [-4.2, 1.45, 0.0], 44), (T_TUP, [-4.0, 1.55, 3.6], [-4.2, 1.5, 0.0], 42), (-1, [-4.05, 1.55, 3.4], [-4.2, 1.5, 0.0], 42)],
+ks(s, [(0.0, [-5.4, 1.7, 5.2], [-4.2, 1.45, 0.0], 44), (T_TUP, [-4.75, 1.55, 3.6], [-4.2, 1.5, 0.0], 42), (-1, [-4.7, 1.55, 3.4], [-4.2, 1.5, 0.0], 42)],
    focus="hero", ap=6)
 hit(s, T_TUP, 0.05)
 cut.sfx(0.0, "usr-whoosh-roar-low-swell-322", -6)
@@ -218,7 +276,7 @@ for t in (0.4, 0.9, 1.3):
     cut.sfx(t, "usr-photo-shutter-bright-snap-001", -10)
 
 T_NAS = A("Нас")
-s = cut.shot("tp_winter", round(T_NAS - 0.05, 3), tod="dusk")
+s = wshot(round(T_NAS - 0.05, 3))
 stuck(s)
 crowd(s, 6, flashes=[s.t0 + 0.3, s.t0 + 0.8, s.t0 + 1.2, s.t0 + 1.6])
 orbit(s, (-4.2, 0.4), 5.2, 1.4, 40, -20, 1.2, 50, focus="hero", ap=3, h1=2.2)
@@ -227,13 +285,13 @@ for t in (0.3, 0.8, 1.2, 1.6):
 cut.sfx(A("один"), "usr-crowd-gasp-mid-swell-172", -14)
 
 # «Нас дохуя»: crane up — every lamp post down the street has its own idiot on it
-s = cut.shot("tp_winter", round(C[1]["start"] - 0.05, 3), tod="dusk")
+s = wshot(round(C[1]["start"] - 0.05, 3))
 stuck(s)
 for i, z in enumerate([-12, -24, -36]):
-    actor(s, f"d{i}", ["p1", "p3", "p5"][i], (-3.98, z), face=-90, act="struggle", eyes="wide", mouth="o")
+    actor(s, f"d{i}", ["p1", "p3", "p5"][i], (-3.98, z), face=-90, act="stuck", eyes="wide", mouth="o")
     extra(s, {**TONGUE, "p": [-4.3, z]})
 for i, z in enumerate([6, -6, -18]):
-    actor(s, f"e{i}", ["p4", "p2", "sosed"][i], (3.98, z), face=90, act="struggle", eyes="wide", mouth="o")
+    actor(s, f"e{i}", ["p4", "p2", "sosed"][i], (3.98, z), face=90, act="stuck", eyes="wide", mouth="o")
     extra(s, {**TONGUE, "p": [4.3, z]})
 ks(s, [(s.t0, [-1.0, 1.4, 4.0], [-4.0, 1.4, -4.0], 50), (-1, [0.0, 6.5, 9.5], [0.0, 1.0, -16.0], 54)], focus=None, ap=1)
 cut.card("stat", T_NAS - 0.05, s.t1 - 0.03, text="ДОХУЯ", label="НАС", y=0.17, size=160)
@@ -242,26 +300,26 @@ cut.sfx(T_NAS, "usr-whoosh-build-hit-mid-late-086", -8)
 # «Вот Витёк» — freeze on him
 T_VOT = C[1]["start"]
 T_LIZ = A("лизнул")
-s = cut.shot("tp_winter", round(T_LIZ - 0.08, 3), tod="dusk")
+s = wshot(round(T_LIZ - 0.08, 3))
 stuck(s, eyes="wide", mouth="o")
-ks(s, [(s.t0, [-3.6, 1.6, 3.4], [-4.1, 1.5, 0.0], 42), (-1, [-3.7, 1.58, 3.2], [-4.1, 1.5, 0.0], 42)], focus="hero", ap=12)
+ks(s, [(s.t0, [-4.75, 1.6, 3.4], [-4.1, 1.5, 0.0], 42), (-1, [-4.7, 1.58, 3.2], [-4.1, 1.5, 0.0], 42)], focus="hero", ap=12)
 cut.card("label", T_VOT - 0.03, s.t1 - 0.03, text="ВИТЁК", sub="IQ: ПРИМЕРНО 12", x=0.06, y=0.15, border="#ffd84a")
 cut.sfx(T_VOT, "usr-record-scratch" if False else "usr-whoosh-whip-mid-snap-135", -8)
 cut.sfx(T_VOT + 0.05, "usr-voice-bruh-mid-swell-097", -12)
 
 T_M20 = A("минус")
-s = cut.shot("tp_winter", round(A("И", after=T_M20) - 0.08, 3), tod="dusk")
+s = wshot(round(A("И", after=T_M20) - 0.08, 3))
 stuck(s)
 crowd(s, 4)
-ks(s, [(s.t0, [-4.1, 3.6, 2.8], [-4.2, 1.2, 0.0], 44), (-1, [-4.0, 2.6, 2.4], [-4.2, 1.3, 0.0], 40)], focus="hero", ap=4)
+ks(s, [(s.t0, [-4.6, 3.6, 2.8], [-4.2, 1.2, 0.0], 44), (-1, [-4.55, 2.6, 2.4], [-4.2, 1.3, 0.0], 40)], focus="hero", ap=4)
 cut.card("stat", T_M20 - 0.05, s.t1 - 0.03, text="−20°", label="ЛИЗНУЛ СТОЛБ", y=0.17, size=170, color="#7ad0ff")
 cut.sfx(T_M20, "usr-whoosh-light-bright-swell-200", -10)
 
 # «И это не самое тупое за сегодня» — slow push in, then the rewind to the morning
-s = cut.shot("tp_winter", S[2], tod="dusk")
+s = wshot(S[2])
 stuck(s, eyes="sad", mouth="o")
 crowd(s, 6)
-ks(s, [(s.t0, [-2.6, 1.3, 5.2], [-4.2, 1.45, 0.0], 46), (-1, [-3.6, 1.45, 3.6], [-4.2, 1.5, 0.0], 42)], focus="hero", ap=6)
+ks(s, [(s.t0, [-4.95, 1.35, 5.4], [-4.2, 1.45, 0.0], 46), (-1, [-4.75, 1.45, 3.6], [-4.2, 1.5, 0.0], 42)], focus="hero", ap=6)
 cut.sfx(A("тупое", after=T_M20), "usr-suspense-sting", -12)
 T_RW = S[2]
 flash(T_RW, 0.16)
@@ -273,6 +331,7 @@ T_KREM = A("кремом")
 s = cut.shot("tp_bath", round(C[3]["start"] - 0.05, 3))
 s.fxk(0.0, "zoomblur", d=0.35, v=0.5)
 v = actor(s, "hero", V, (0.0, -0.55), face=0, act="idle", eyes="closed", mouth="closed")
+v.hold(0, B="chalk")
 v.act(A("чистит") - s.t0, "hammer")
 v.expr(A("чистит") - s.t0, "normal", "grit")
 ks(s, [(s.t0, [1.2, 1.8, 3.6], [0.0, 1.4, -0.55], 46), (-1, [0.6, 1.65, 3.0], [0.0, 1.45, -0.55], 42)], focus="hero", ap=6)
@@ -284,7 +343,7 @@ cut.sfx(T_KREM, "usr-voice-bruh-mid-swell-178", -12)
 T_BL = A("блестят")
 s = cut.shot("tp_bath", round(C[4]["start"] - 0.05, 3))
 v = actor(s, "hero", V, (0.0, -0.55), face=20, act="idle", eyes="happy", mouth="smile")
-extra(s, {"t": "lightPt", "p": [0.1, -0.1], "y": 1.5, "i": 3, "d": 1.6, "color": "#ffffff", "blink": {"t0": round(T_BL - s.t0, 3), "on": 0.2, "off": 0.35}})
+extra(s, {"t": "lightPt", "p": [0.1, -0.05], "y": 1.45, "i": 0.9, "d": 0.7, "color": "#ffffff", "onAt": round(T_BL, 3), "blink": 1.4})
 ks(s, [(s.t0, [0.15, 1.62, 1.1], [0.0, 1.55, -0.55], 30), (-1, [0.1, 1.6, 0.85], [0.0, 1.56, -0.55], 26)], focus="hero", ap=14)
 cut.sfx(T_BL, "usr-notify-ding-bright-snap-105", -8)
 cut.card("stat", A("ботинками") - 0.05, s.t1 - 0.03, text="АРОМАТ", label="СТАРЫЙ БОТИНОК", y=0.17, size=130, color="#c89a5a")
@@ -294,10 +353,10 @@ T_DEB = A("дебил")
 T_CH = A("Частично")
 s = cut.shot("tp_bath", round(T_CH - 0.1, 3))
 v = actor(s, "hero", V, (-0.5, -0.55), face=30, act="idle", eyes="normal", mouth="smile")
-m = actor(s, "mama", "mama", (0.8, 0.5), face=-30, act="idle", eyes="angry", mouth="closed")
+m = actor(s, "mama", "mama", (1.0, 0.7), face=-60, act="idle", eyes="angry", mouth="closed")
 m.act(T_DEB - s.t0 - 0.2, "shout"); m.expr(T_DEB - s.t0 - 0.2, "angry", "shout")
 m.talk(A("Ты", after=C[4]["start"]) - s.t0, A("блядь", end=True) - s.t0)
-ks(s, [(s.t0, [-0.2, 1.7, 4.2], [0.3, 1.45, 0.0], 48), (-1, [0.0, 1.65, 3.8], [0.5, 1.5, 0.2], 46)], focus="mama", ap=4)
+ks(s, [(s.t0, [0.25, 1.7, 5.2], [0.25, 1.4, 0.1], 50), (-1, [0.3, 1.65, 4.8], [0.3, 1.42, 0.1], 48)], focus="mama", ap=4)
 cut.card("bubble", T_DEB - 0.25, s.t1 - 0.03, who="МАМА", whoColor="#ff8ad0", text="Ты дебил, блядь?", y=0.15, side="right")
 cut.sfx(T_DEB, "usr-boxing-bell-mid-snap-076", -12)
 
@@ -320,13 +379,14 @@ ks(s, [(s.t0, [0.9, 1.6, 3.2], [0.85, 1.2, -1.1], 46), (-1, [1.0, 1.4, 2.4], [1.
 cut.sfx(T_EGG, "usr-click-pop-bright-snap-215", -10)
 cut.sfx(T_EGG + 0.2, "terminal-hum", -14, dur=1.0)
 
-YOLK_K = splats((0.2, -0.4), 26, (4.0, 2.6), seed=3) + splats((0.2, -1.75), 14, (4.2, 0.1), seed=5, y=(0.9, 2.4))
+YOLK_K = yolk()
 s = cut.shot("tp_kitchen", round(A("кот", after=T_BAH) - 0.08, 3))
 v = actor(s, "hero", V, (0.45, -0.8), face=90, act="idle", eyes="happy", mouth="smile")
-v.act(0.04, "fall")
-v.expr(0.04, "wide", "o")
-extra(s, *splats((0.2, -0.4), 26, (4.0, 2.6), seed=3, t=T_BAH), *splats((0.2, -1.75), 14, (4.2, 0.1), seed=5, y=(0.9, 2.4), t=T_BAH),
-      {"t": "lightPt", "p": [MICRO[0], MICRO[1] + 0.4], "y": 1.1, "i": 9, "d": 5, "color": "#ffd060", "blink": {"t0": 0.0, "on": 0.14, "off": 99}})
+v.walk(T_BAH - s.t0 + 0.02, (-0.15, -0.35), dur=0.3, e="out")
+v.act(T_BAH - s.t0 + 0.02, "scared")
+v.expr(T_BAH - s.t0 + 0.02, "wide", "o")
+extra(s, *yolk(t=T_BAH),
+      {"t": "lightPt", "p": [MICRO[0], MICRO[1] + 0.4], "y": 1.1, "i": 9, "d": 5, "color": "#ffd060", "onAt": round(T_BAH, 3), "offAt": round(T_BAH + 0.14, 3)})
 ks(s, [(s.t0, [-1.2, 1.9, 1.6], [0.6, 1.0, -0.8], 56), (-1, [-1.0, 1.8, 1.5], [0.4, 1.0, -0.8], 54)], focus=None, ap=1)
 hit(s, T_BAH, 0.12, 0.6)
 flash(T_BAH, 0.12, "#fff2a0")
@@ -344,13 +404,13 @@ CAT = [{"t": "block", "p": [-1.3, 0.75], "y": 0.78, "size": [0.42, 0.2, 0.2], "c
        {"t": "block", "p": [-1.55, 0.75], "y": 0.9, "size": [0.05, 0.28, 0.05], "color": "#e8b018", "solid": False}]
 s = cut.shot("tp_kitchen", round(A("мама", after=T_BAH) - 0.08, 3))
 extra(s, *YOLK_K, *CAT)
-ks(s, [(s.t0, [-0.2, 1.05, 1.0], [-1.15, 0.92, 0.75], 34), (-1, [-0.35, 1.0, 0.95], [-1.15, 0.92, 0.75], 30)], focus=None, ap=10)
+ks(s, [(s.t0, [0.2, 1.15, 1.25], [-1.15, 0.92, 0.75], 38), (-1, [0.0, 1.1, 1.15], [-1.15, 0.92, 0.75], 34)], focus=None, ap=10, md=1.2)
 cut.card("label", A("кот", after=T_BAH) - 0.05, s.t1 - 0.03, text="КОТ: В ЖЕЛТКЕ", x=0.06, y=0.15, border="#f2c418")
 cut.sfx(A("кот", after=T_BAH), "usr-cartoon-bloop-low-swell-284", -8)
 
 s = cut.shot("tp_kitchen", round(C[7]["start"] - 0.05, 3))
-extra(s, *YOLK_K, *CAT, *splats((-0.3, 0.6), 7, (0.5, 0.2), seed=9, y=(1.2, 1.85), size=0.16))
-m = actor(s, "mama", "mama", (-0.3, 0.55), face=20, act="facepalm", eyes="angry", mouth="grit")
+extra(s, *YOLK_K, *CAT)
+m = actor(s, "mama", "mama_y", (-0.3, 0.55), face=20, act="facepalm", eyes="angry", mouth="grit")
 ks(s, [(s.t0, [0.2, 1.6, 2.4], [-0.3, 1.45, 0.55], 34), (-1, [0.1, 1.6, 2.1], [-0.3, 1.5, 0.55], 32)], focus="mama", ap=10)
 cut.card("label", A("мама", after=T_BAH) - 0.05, s.t1 - 0.03, text="МАМА: В ЖЕЛТКЕ", x=0.06, y=0.15, border="#f2c418")
 cut.sfx(A("мама", after=T_BAH), "usr-voice-bruh-mid-swell-226", -10)
@@ -370,8 +430,9 @@ s = cut.shot("tp_school", round(C[9]["start"] - 0.05, 3))
 s.fxk(0.0, "zoomblur", d=0.3, v=0.5)
 v = actor(s, "hero", V, (VDESK[0], VDESK[1] + 0.5), face=180, act="sit", eyes="normal", mouth="smile", seat=0.46)
 for i, (x, z) in enumerate([d for d in DESKS if d != VDESK]):
-    actor(s, f"k{i}", ["odnokl", "p2", "p4", "p6", "p1"][i], (x, z + 0.5), face=180, act="sit", seat=0.46)
-ks(s, [(s.t0, [2.4, 3.6, 4.6], [0.0, 0.9, 0.6], 54), (-1, [1.2, 2.8, 4.4], [0.0, 1.0, 1.4], 48)], focus="hero", ap=3)
+    if (x, z) != (VDESK[0], 0.2):           # nobody sits right in front of the legend (and nobody blocks him from the board)
+        actor(s, f"k{i}", ["odnokl", "p2", "p4", "p6", "p1"][i], (x, z + 0.5), face=180, act="sit", seat=0.46)
+ks(s, [(s.t0, [1.5, 2.9, -2.6], [0.0, 1.0, 2.1], 46), (-1, [0.85, 2.55, -2.3], [0.0, 1.05, 2.1], 40)], focus="hero", ap=3)
 cut.card("label", A("легенда") - 0.05, s.t1 - 0.03, text="ЛЕГЕНДА", sub="5 КЛАСС, 3-Й ГОД", x=0.06, y=0.15, border="#ffd84a")
 cut.sfx(C[8]["start"], "usr-boxing-bell-mid-tail-109", -14)
 cut.sfx(A("легенда"), "usr-brass-swell-mid-tail-146", -10)
@@ -412,45 +473,50 @@ cut.sfx(A("семь", after=T_40), "usr-error-alert-mid-snap-078", -12)
 
 s = cut.shot("tp_school", S[5])
 u = actor(s, "teacher", "uchitel_s", (1.0, -2.3), face=90, act="idle", eyes="sad", mouth="closed")
-u.walk(0.1, (3.1, -1.8), dur=round(s.dur - 0.2, 3))
+u.walk(0.1, (2.6, -1.92), dur=round(s.dur - 0.1, 3))
 ks(s, [(s.t0, [-1.5, 1.8, 2.8], [1.8, 1.2, -2.0], 50), (-1, [-1.2, 1.8, 2.6], [2.4, 1.2, -1.9], 48)], focus="teacher", ap=3)
 cut.card("label", T_PEN - 0.05, s.t1 - 0.03, text="УШЁЛ НА ПЕНСИЮ", sub="МОЛЧА", x=0.06, y=0.15)
-cut.sfx(T_PEN, "door-creak", -10)
+cut.sfx(round(S[5] - 0.2, 3), "door-creak", -14)
 
 # ======================================================== 5. Shop — «От себя»
 T_MAG = A("магазин")
 T_TYAN = A("тянет")
-s = cut.shot("tp_shop", round(T_TYAN - 0.08, 3), tod="day")
+s = cut.shot("tp_shop", round(T_TYAN - 0.08, 3), tod="day", particles=[{"kind": "snow", "n": 160, "box": [-7, 0.2, -4.8, 7, 6, -2.6]}])
 s.fxk(0.0, "zoomblur", d=0.3, v=0.5)
-v = actor(s, "hero", VW, (1.6, 2.4), face=-150, act="idle", eyes="normal", mouth="smile")
-v.walk(0.05, (0.45, -3.85), dur=round(T_TYAN - s.t0 - 0.35, 3))
-ks(s, [(s.t0, [3.6, 1.7, 3.4], [0.6, 1.2, -3.4], 48), (A("двери") - 0.1, [1.6, 1.6, -1.0], [0.0, 1.5, -4.9], 38), (-1, [1.0, 1.55, -2.1], [0.0, 1.45, -4.9], 34)],
-   focus=None, ap=4)
+shop_door(s)
+v = actor(s, "hero", VW, (1.0, -0.9), face=-170, act="idle", eyes="normal", mouth="smile")
+v.walk(0.05, (0.45, -4.38), dur=round(T_TYAN - s.t0 - 0.45, 3))          # ~1.4 m/s, a normal walk (v1 ran 6 m in 2 s)
+v.face(round(T_TYAN - s.t0 - 0.4, 3), 180)
+ks(s, [(s.t0, [4.4, 1.7, 1.4], [0.6, 1.25, -2.6], 44), (A("двери") - 0.1, [3.0, 1.65, -0.9], [0.3, 1.35, -4.6], 40), (-1, [2.6, 1.6, -1.3], [0.3, 1.35, -4.7], 40)],
+   focus="hero", ap=4)
 cut.card("label", A("двери") - 0.05, s.t1 - 0.03, text="«ОТ СЕБЯ»", sub="ДВЕРЬ, ЗАПОМНИ", x=0.06, y=0.15, border="#c83a2a")
 cut.sfx(T_MAG, "usr-whoosh-whip-mid-snap-149", -10)
 
 T_10 = A("Десять", after=T_TYAN)
-s = cut.shot("tp_shop", round(C[13]["start"] - 0.05, 3), tod="day")
-v = actor(s, "hero", VW, (0.45, -3.85), face=180, act="struggle", eyes="angry", mouth="grit")
-ks(s, [(s.t0, [2.4, 1.6, -0.4], [0.3, 1.3, -4.4], 46), (-1, [2.1, 1.55, -0.6], [0.3, 1.3, -4.4], 44)], focus="hero", ap=6, hh=1.0)
+s = cut.shot("tp_shop", round(C[13]["start"] - 0.05, 3), tod="day", particles=[{"kind": "snow", "n": 120, "box": [-7, 0.2, -4.8, -0.2, 6, -2.0]}])
+shop_door(s, rattle=(T_TYAN, s.t1))
+v = actor(s, "hero", VW, (0.45, -4.38), face=180, act="pull", eyes="angry", mouth="grit")
+ks(s, [(s.t0, [3.9, 1.45, -4.1], [0.4, 1.2, -4.6], 46), (-1, [3.75, 1.4, -4.2], [0.4, 1.2, -4.6], 44)], focus="hero", ap=6, hh=0.35)
 cut.card("stat", T_10 - 0.05, s.t1 - 0.03, **{"from": 0, "to": 10, "rollAt": T_TYAN, "rollDur": round(T_10 - T_TYAN + 0.4, 3)}, label="МИНУТ ТЯНЕТ", y=0.17, size=170)
 for k in range(4):
     cut.sfx(T_TYAN + k * 0.42, "usr-thud-low-low-snap-095", -12)
 
 T_OHR = A("Охранник")
 T_NET = A("Нет", after=T_OHR)
-s = cut.shot("tp_shop", round(T_NET - 0.08, 3), tod="day")
-v = actor(s, "hero", VW, (0.45, -3.85), face=180, act="struggle", eyes="angry", mouth="grit")
-g = actor(s, "guard", "ohrannik", (-1.1, -4.3), face=40, act="arms_crossed", eyes="angry", mouth="closed")
+s = cut.shot("tp_shop", round(T_NET - 0.08, 3), tod="day", particles=[{"kind": "snow", "n": 90, "box": [-7, 0.2, -4.9, 7, 6, -4.5]}])
+shop_door(s, rattle=(s.t0, s.t1))
+v = actor(s, "hero", VW, (0.45, -4.38), face=180, act="pull", eyes="angry", mouth="grit")
+g = actor(s, "guard", "ohrannik", (-1.25, -4.2), face=60, act="arms_crossed", eyes="angry", mouth="closed")
 g.talk(A("Ты", after=T_OHR) - s.t0, A("ебанутый", end=True) - s.t0)
-ks(s, [(s.t0, [0.2, 1.6, -0.6], [-0.4, 1.5, -4.1], 44), (-1, [0.0, 1.6, -0.9], [-0.5, 1.55, -4.1], 42)], focus="guard", ap=6)
+ks(s, [(s.t0, [0.9, 1.6, -0.9], [-0.5, 1.5, -4.2], 44), (-1, [0.7, 1.6, -1.1], [-0.55, 1.55, -4.2], 42)], focus="guard", ap=6)
 cut.card("bubble", T_OHR - 0.05, s.t1 - 0.03, who="ОХРАННИК", whoColor="#9a9aa8", text="Ты чё, ебанутый?", y=0.15, side="right")
 cut.sfx(T_OHR, "door-heavy-close", -12, dur=0.6)
 
-s = cut.shot("tp_shop", S[6], tod="day")
-v = actor(s, "hero", VW, (0.45, -3.85), face=20, act="idle", eyes="normal", mouth="smile")
+s = cut.shot("tp_shop", S[6], tod="day", particles=[{"kind": "snow", "n": 90, "box": [-7, 0.2, -4.9, 7, 6, -4.6]}])
+shop_door(s)
+v = actor(s, "hero", VW, (0.45, -4.38), face=20, act="idle", eyes="normal", mouth="smile")
 v.talk(T_NET - s.t0, A("Витёк", after=T_NET, end=True) - s.t0)
-ks(s, [(s.t0, [0.8, 1.62, -0.6], [0.45, 1.55, -3.85], 42), (-1, [0.7, 1.6, -0.8], [0.45, 1.56, -3.85], 42)], focus="hero", ap=12)
+ks(s, [(s.t0, [0.8, 1.62, -0.9], [0.45, 1.55, -4.38], 42), (-1, [0.7, 1.6, -1.1], [0.45, 1.56, -4.38], 42)], focus="hero", ap=12)
 cut.card("bubble", T_NET - 0.05, s.t1 - 0.03, who="ВИТЁК", whoColor="#ffd84a", text="Нет, я Витёк.", y=0.15, side="left")
 cut.sfx(A("Витёк", after=T_NET) + 0.4, "usr-voice-bruh-mid-swell-098", -10)
 
@@ -458,24 +524,42 @@ cut.sfx(A("Витёк", after=T_NET) + 0.4, "usr-voice-bruh-mid-swell-098", -10)
 T_ST1 = A("Столб", after=S[6])
 T_LUZ = A("Лужа")
 T_ST2 = A("Второй")
-PUDDLE = {"t": "block", "p": [-3.9, -6.2], "size": [1.2, 0.02, 1.0], "color": "#5a7a9a", "solid": False}
-s = cut.shot("tp_winter", round(T_ST1 - 0.08, 3), tod="dusk")
+# real walking pace (~1.4 m/s): v1 slid 5–6 m between words. Lamp post (-4.5, 0) → puddle → road-sign post → down.
+X_W, Z_BUMP = -4.55, 0.3
+PUDDLE = {"t": "block", "p": [-5.15, 0.1], "size": [1.0, 0.02, 0.8], "color": "#5a7a9a", "solid": False}
+SIGNPOST = [{"t": "block", "p": [-5.3, -1.12], "size": [0.08, 2.5, 0.08], "tex": "metal", "color": "#6a6e74", "solid": False},
+            {"t": "block", "p": [-5.3, -1.1], "y": 2.1, "size": [0.62, 0.62, 0.04], "color": "#2a5ab8", "solid": False},
+            {"t": "block", "p": [-5.3, -1.07], "y": 2.22, "size": [0.36, 0.36, 0.01], "color": "#e8eef6", "solid": False}]
+s = wshot(round(T_ST1 - 0.08, 3), box=[-14, 0.2, -12, -3.2, 8, 14])
 s.fxk(0.0, "zoomblur", d=0.3, v=0.5)
-v = actor(s, "hero", VW, (-4.0, 6.0), face=180, act="phone_up", eyes="normal", mouth="smile")
+extra(s, PUDDLE, *SIGNPOST)
+v = actor(s, "hero", VW, (X_W, 2.6), face=180, act="phone_up", eyes="normal", mouth="smile")
 v.hold(0, B="phone")
-v.walk(0.0, (-4.1, 1.0), dur=s.dur + 0.4)
-ks(s, [(s.t0, [-1.6, 1.6, -0.6], [-4.0, 1.4, 5.5], 44), (-1, [-1.8, 1.6, -1.6], [-4.0, 1.4, 2.0], 44)], focus="hero", ap=4)
+v.walk(0.0, (X_W, Z_BUMP), dur=round(T_ST1 - s.t0, 3))
+z1 = Z_BUMP + (2.6 - Z_BUMP) * 0.08 / (T_ST1 - s.t0)
+ks(s, [(s.t0, [-1.0, 1.55, 2.9], [X_W, 1.35, 2.2], 44, "linear"), (-1, [-1.0, 1.55, z1 + 0.3], [X_W, 1.35, z1 - 0.4], 44, "linear")], focus="hero", ap=6)
 
-s = cut.shot("tp_winter", round(C[16]["start"] - 0.05, 3), tod="dusk")
-extra(s, PUDDLE)
-v = actor(s, "hero", VW, (-4.05, 0.55), face=180, act="phone_up", eyes="normal", mouth="smile")
+s = wshot(round(C[16]["start"] - 0.05, 3), box=[-12, 0.2, -2.2, 6, 8, 30])
+extra(s, PUDDLE, *SIGNPOST)
+v = actor(s, "hero", VW, (X_W, round(z1, 3)), face=180, act="phone_up", eyes="normal", mouth="smile")
 v.hold(0, B="phone")
+v.walk(0.0, (X_W, Z_BUMP), dur=round(T_ST1 - s.t0, 3))
 v.act(T_ST1 - s.t0, "jolt"); v.expr(T_ST1 - s.t0, "wide", "o")
-v.walk(T_ST1 - s.t0 + 0.25, (-3.9, -5.9), dur=round(T_LUZ - T_ST1 - 0.25, 3))
-v.act(T_LUZ - s.t0, "jolt")
-v.walk(T_LUZ - s.t0 + 0.2, (-4.05, -11.45), dur=round(T_ST2 - T_LUZ - 0.2, 3))
-v.act(T_ST2 - s.t0, "fall")
-ks(s, [(s.t0, [-0.8, 1.9, 1.8], [-4.0, 1.2, -0.6], 50), (T_LUZ, [-0.6, 2.0, -3.6], [-4.0, 1.0, -6.4], 50), (-1, [-0.8, 2.2, -8.8], [-4.0, 1.0, -11.6], 50)],
+v.walk(T_ST1 - s.t0 + 0.02, (-4.62, 0.72), dur=0.26, e="out")                      # bounced off the lamp post
+v.act(T_ST1 - s.t0 + 0.35, "phone_up"); v.expr(T_ST1 - s.t0 + 0.35, "normal", "smile")   # …and back to the phone
+v.walk(T_ST1 - s.t0 + 0.32, (-5.1, 0.12), dur=round(T_LUZ - T_ST1 - 0.32, 3))
+v.act(T_LUZ - s.t0, "jolt"); v.expr(T_LUZ - s.t0, "wide", "o")
+v.act(T_LUZ - s.t0 + 0.25, "phone_up"); v.expr(T_LUZ - s.t0 + 0.25, "normal", "smile")
+v.walk(T_LUZ - s.t0 + 0.12, (-5.28, -0.8), dur=round(T_ST2 - T_LUZ - 0.12, 3))
+v.act(T_ST2 - s.t0, "fall"); v.expr(T_ST2 - s.t0, "wide", "o")
+extra(s, *[{"t": "block", "p": [round(-5.15 + dx, 3), round(0.1 + dz, 3)], "y": 0.02, "size": [0.06, 0.06, 0.06], "color": "#8ab0d0", "solid": False,
+            "showAt": round(T_LUZ, 3), "hideAt": round(T_LUZ + 0.45, 3),
+            "anim": [{"t": round(T_LUZ, 3), "p": [round(-5.15 + dx * 0.3, 3), 0.05, round(0.1 + dz * 0.3, 3)]},
+                     {"t": round(T_LUZ + 0.2, 3), "p": [round(-5.15 + dx, 3), 0.45, round(0.1 + dz, 3)], "e": "out"},
+                     {"t": round(T_LUZ + 0.42, 3), "p": [round(-5.15 + dx * 1.3, 3), 0.02, round(0.1 + dz * 1.3, 3)], "e": "in"}]}
+            for dx, dz in [(-0.5, 0.2), (0.45, 0.25), (-0.3, -0.4), (0.35, -0.35), (0.0, 0.5), (-0.55, -0.1)]])
+extra(s, {"t": "lightPt", "p": [-3.9, -2.2], "y": 2.4, "i": 3.0, "d": 6, "color": "#ffd8a8"})
+ks(s, [(s.t0, [-2.5, 1.8, -5.4], [-4.9, 1.0, -0.1], 46), (T_LUZ, [-2.8, 1.7, -4.8], [-5.0, 0.95, -0.3], 44), (-1, [-4.7, 3.0, -4.3], [-6.35, 0.3, -1.25], 54)],   # high angle: a lying doll is 1.8 m wide on screen
    focus="hero", ap=3)
 for t, name in [(T_ST1, "usr-thud-low-low-snap-305"), (T_LUZ, "usr-cartoon-splat-mid-snap-063"), (T_ST2, "usr-metal-crash-low-swell-310")]:
     hit(s, t, 0.06, 0.3)
@@ -483,10 +567,11 @@ for t, name in [(T_ST1, "usr-thud-low-low-snap-305"), (T_LUZ, "usr-cartoon-splat
     cut.card("stat", t - 0.03, t + 0.55, text={T_ST1: "БОНК", T_LUZ: "ПЛЮХ", T_ST2: "БОНК ×2"}[t], label="", y=0.2, size=120, color="#ff5a3c")
 
 T_PRO = A("пролистал")
-s = cut.shot("tp_winter", S[7], tod="dusk")
-v = actor(s, "hero", VW, (-4.05, -12.4), face=0, act="sit_ground", eyes="normal", mouth="smile")
+s = wshot(S[7], box=[-14, 0.2, -0.4, 6, 8, 30])
+extra(s, PUDDLE, *SIGNPOST)
+v = actor(s, "hero", VW, (-5.3, -0.55), face=135, act="sit_ground", eyes="normal", mouth="smile")
 v.act(0.1, "phone_up"); v.hold(0.1, B="phone")
-ks(s, [(s.t0, [-3.8, 1.3, -10.6], [-4.05, 0.9, -12.4], 40), (-1, [-3.85, 1.25, -11.0], [-4.05, 0.9, -12.4], 36)], focus="hero", ap=8)
+ks(s, [(s.t0, [-3.0, 1.3, -2.8], [-5.3, 0.85, -0.55], 42), (-1, [-3.1, 1.25, -2.7], [-5.3, 0.85, -0.55], 40)], focus="hero", ap=8)
 sw0 = round(A("Видео") - 0.25 - s.t0, 3)
 cut.card("feed", s.t0 + 0.05, S[7] - 0.03, y=0.42, swipes=[0.25, round(T_PRO - s.t0 - 0.1, 3)],
          clips=[{"title": "КОТ ТАНЦУЕТ", "color": "#8a3a6a", "likes": "4.1M", "author": "kotik"},
@@ -498,17 +583,17 @@ cut.card("label", A("девять") - 0.05, S[7] - 0.03, text="9 СЕКУНД", 
 
 # ======================================================== 7. That very pole
 T_SAM = A("столб", after=S[7])
-s = cut.shot("tp_winter", round(C[18]["start"] - 0.05, 3), tod="dusk")
-extra(s, {"t": "lightPt", "p": [-4.3, 0.3], "y": 1.6, "i": 4, "d": 2.5, "color": "#d8f0ff", "blink": {"t0": 0.0, "on": 0.3, "off": 0.3}})
+s = wshot(round(C[18]["start"] - 0.05, 3))
+extra(s, {"t": "lightPt", "p": [-4.3, 0.3], "y": 1.6, "i": 3, "d": 2.5, "color": "#d8f0ff", "onAt": round(s.t0, 3), "blink": 1.6})
 ks(s, [(s.t0, [-3.0, 0.4, 2.2], [-4.5, 2.2, 0.0], 50), (-1, [-3.6, 1.0, 1.0], [-4.5, 1.7, 0.0], 40)], focus=None, ap=6)
 cut.sfx(s.t0, "reveal-glow", -6)
 cut.sfx(T_SAM, "usr-suspense-sting", -9)
 cut.card("label", T_SAM - 0.05, s.t1 - 0.03, text="ТОТ САМЫЙ СТОЛБ", sub="−20°", x=0.06, y=0.15, border="#7ad0ff")
 
 T_SL = A("сладкий")
-s = cut.shot("tp_winter", round(C[19]["start"] - 0.05, 3), tod="dusk")
+s = wshot(round(C[19]["start"] - 0.05, 3))
 v = actor(s, "hero", VW, (-3.7, 0.3), face=-30, act="think", eyes="happy", mouth="smile")
-extra(s, {"t": "lightPt", "p": [-4.3, 0.3], "y": 1.6, "i": 4, "d": 2.5, "color": "#d8f0ff", "blink": {"t0": 0.0, "on": 0.3, "off": 0.3}})
+extra(s, {"t": "lightPt", "p": [-4.3, 0.3], "y": 1.6, "i": 3, "d": 2.5, "color": "#d8f0ff", "onAt": round(s.t0, 3), "blink": 1.6})
 ks(s, [(s.t0, [-3.3, 1.62, 3.8], [-3.9, 1.55, 0.3], 42), (-1, [-3.4, 1.6, 3.6], [-3.95, 1.55, 0.3], 42)], focus="hero", ap=12)
 cut.sfx(A("Блестит"), "usr-notify-ding-bright-snap-105", -8)
 cut.card("bubble", A("А", after=A("думает", after=S[7])) - 0.05, s.t1 - 0.03, who="ВИТЁК", whoColor="#ffd84a", text="А вдруг он сладкий?", y=0.15, side="left")
@@ -516,26 +601,30 @@ cut.card("bubble", A("А", after=A("думает", after=S[7])) - 0.05, s.t1 - 0
 T_NE = C[19]["start"]
 T_MCS = A("МЧС")
 T_MLN = A("миллион")
-s = cut.shot("tp_winter", round(T_MCS + 0.35, 3), tod="dusk")
+s = wshot(round(T_MCS + 0.35, 3))
 stuck(s, eyes="wide", mouth="o")
-ks(s, [(s.t0, [-3.9, 1.6, 3.4], [-4.15, 1.5, 0.0], 42), (-1, [-3.95, 1.58, 3.2], [-4.15, 1.5, 0.0], 40)], focus="hero", ap=12)
+ks(s, [(s.t0, [-4.8, 1.6, 3.4], [-4.15, 1.5, 0.0], 42), (-1, [-4.75, 1.58, 3.2], [-4.15, 1.5, 0.0], 40)], focus="hero", ap=12)
 hit(s, T_NE + 0.05, 0.08, 0.5)
 flash(T_NE + 0.05, 0.1, "#bfe8ff")
 cut.sfx(T_NE + 0.05, "usr-glass-shatter-bright-snap-151", -9)
 cut.sfx(T_NE + 0.1, "hit-cinematic", -8)
 cut.card("stat", T_NE - 0.03, s.t1 - 0.02, text="НЕ СЛАДКИЙ", label="", y=0.17, size=130, color="#7ad0ff")
 
-s = cut.shot("tp_winter", S[8], tod="dusk")
+s = wshot(S[8])
 stuck(s)
-crowd(s, 6, flashes=[T_MCS + 0.6, T_MCS + 1.0, T_MCS + 1.3, T_MLN, T_MLN + 0.3])
-r1 = actor(s, "r1", "resc1", (-1.6, 2.8), face=-120, act="idle", eyes="normal", mouth="closed")
-r1.walk(0.05, (-3.4, 0.9), dur=1.3)
-r2 = actor(s, "r2", "resc2", (-0.8, 1.6), face=-110, act="idle", eyes="angry", mouth="closed")
-r2.walk(0.15, (-3.3, -0.6), dur=1.3)
-extra(s, {"t": "car", "p": [-1.6, 4.5], "r": 0, "color": "#d0602a", "lights": True, "hazardAt": 0.0},
-      {"t": "lightPt", "p": [-1.6, 4.5], "y": 2.0, "i": 5, "d": 8, "color": "#3a6aff", "blink": {"t0": 0.0, "on": 0.2, "off": 0.2}},
-      {"t": "lightPt", "p": [-1.2, 4.5], "y": 2.0, "i": 5, "d": 8, "color": "#ff3a3a", "blink": {"t0": 0.2, "on": 0.2, "off": 0.2}})
-orbit(s, (-3.6, 0.6), 6.0, 2.2, 35, -15, 1.2, 52, focus="hero", ap=2, h1=3.2)
+crowd(s, 6, flashes=[T_MCS + 0.6, T_MCS + 1.0, T_MCS + 1.3, T_MLN, T_MLN + 0.3], skip={1, 2, 4})
+for i, (ch, at, f) in enumerate([("babka1", (-6.7, -0.5), 80), ("police", (-2.0, -1.25), -52)]):
+    actor(s, f"x{i}", ch, at, face=f, act="phone_up").hold(0, B="phone")
+r1 = actor(s, "r1", "resc1", (-1.0, -4.2), face=-50, act="idle", eyes="normal", mouth="closed")
+r1.run(0.05, (-4.6, -0.9), dur=2.8)
+r1.face(2.9, 35)
+r2 = actor(s, "r2", "resc2", (-1.6, -3.9), face=-30, act="idle", eyes="angry", mouth="closed")
+r2.run(0.3, (-3.3, -0.65), dur=2.5)
+r2.face(2.85, -46)
+extra(s, {"t": "car", "p": [-1.5, -5.6], "r": 0, "color": "#d0602a", "lights": True, "hazardAt": 0.0},
+      {"t": "lightPt", "p": [-1.7, -5.6], "y": 2.1, "i": 5, "d": 8, "color": "#3a6aff", "onAt": round(s.t0, 3), "blink": 2.5},
+      {"t": "lightPt", "p": [-1.3, -5.6], "y": 2.1, "i": 5, "d": 8, "color": "#ff3a3a", "onAt": round(s.t0 + 0.2, 3), "blink": 2.5})
+orbit(s, (-3.8, 0.2), 5.4, 2.4, 55, -12, 1.2, 50, focus="hero", ap=2, h1=2.0)
 cut.sfx(T_MCS - 0.1, "siren-far", -10, dur=2.4)
 for t in (0.6, 1.0, 1.3):
     cut.sfx(T_MCS + t, "usr-photo-shutter-bright-snap-163", -12)
@@ -545,10 +634,10 @@ cut.sfx(T_MLN, "usr-cash-register-bright-snap-216", -8)
 # ======================================================== 8. So how to live — «да заебись»
 T_ZAE = A("заебись")
 s = cut.shot("tp_kitchen", round(C[21]["start"] - 0.05, 3))
-extra(s, *YOLK_K, {"t": "block", "p": [0.3, 0.42], "y": 1.5, "size": [0.12, 0.06, 0.02], "color": "#f0e8d8", "solid": False})   # plaster on the mouth
+extra(s, *YOLK_K)
 v = actor(s, "hero", V, (0.3, 0.3), face=10, act="idle", eyes="normal", mouth="closed")
 v.act(T_ZAE - s.t0 - 0.1, "fist"); v.expr(T_ZAE - s.t0 - 0.1, "happy", "closed")
-m = actor(s, "mama", "mama", (-1.3, 0.9), face=30, act="phone_up", eyes="normal", mouth="smile")
+m = actor(s, "mama", "mama_y", (-1.45, -0.55), face=63, act="phone_up", eyes="normal", mouth="smile")
 m.hold(0, B="phone")
 ks(s, [(s.t0, [1.2, 1.6, 2.4], [-0.2, 1.4, 0.4], 44), (-1, [0.9, 1.6, 2.0], [-0.1, 1.45, 0.4], 40)], focus="hero", ap=4)
 cut.card("stat", T_ZAE - 0.05, s.t1 - 0.03, text="ДА ЗАЕБИСЬ", label="КАК ЖИТЬ?", y=0.17, size=120, color="#5ad05a")
@@ -557,32 +646,33 @@ cut.sfx(A("Так", after=S[8]), "pk-notify-notification-sfx-1", -8)
 cut.sfx(T_ZAE, "usr-cinema-boom-low-tail-024", -7, dur=1.4)
 
 T_XOL = A("холодно")
-s = cut.shot("tp_winter", round(C[22]["start"] - 0.05, 3), tod="dusk")
-v = actor(s, "hero", VW, (-3.7, 0.3), face=-80, act="idle", eyes="happy", mouth="smile")
-v.walk(A("бывает", after=A("Тупым", occ=2, after=S[8])) - s.t0, TONGUE_AT, dur=0.5)
-v.act(T_XOL - s.t0 - 0.1, "struggle"); v.expr(T_XOL - s.t0 - 0.1, "wide", "o")
+s = wshot(round(C[22]["start"] - 0.05, 3))
+v = actor(s, "hero", VW, (-3.5, 0.35), face=-80, act="idle", eyes="happy", mouth="smile")
+v.walk(A("бывает", after=A("Тупым", occ=2, after=S[8])) - s.t0, TONGUE_AT, dur=0.6)
+v.face(A("бывает", after=A("Тупым", occ=2, after=S[8])) - s.t0 + 0.6, -90)
+v.act(T_XOL - s.t0 - 0.1, "stuck"); v.expr(T_XOL - s.t0 - 0.1, "wide", "o")
 extra(s, {**TONGUE, "showAt": round(T_XOL - 0.1, 3)}, FROST)
-crowd(s, 4, flashes=[T_XOL + 0.2, T_XOL + 0.5])
-ks(s, [(s.t0, [-2.4, 1.5, 4.6], [-4.0, 1.45, 0.1], 46), (-1, [-3.5, 1.5, 3.6], [-4.1, 1.5, 0.0], 42)], focus="hero", ap=4)
+crowd(s, 6, flashes=[T_XOL + 0.2, T_XOL + 0.5], skip={0, 1, 2, 4})
+ks(s, [(s.t0, [-5.6, 1.6, 4.4], [-4.0, 1.45, 0.1], 46), (-1, [-5.3, 1.55, 3.4], [-4.1, 1.5, 0.0], 42)], focus="hero", ap=4)
 cut.card("label", A("стыдно") - 0.05, T_XOL - 0.15, text="СТЫДНО: 0%", x=0.06, y=0.15)
 cut.card("label", T_XOL - 0.05, s.t1 - 0.03, text="ОПЯТЬ ЛИЗНУЛ", sub="ВТОРОЙ РАЗ", x=0.06, y=0.15, border="#ff4a2a")
 cut.sfx(T_XOL, "usr-glass-shatter-bright-snap-372", -10)
 cut.sfx(T_XOL + 0.15, "usr-crowd-aww-mid-swell-156", -12)
 
 T_TY = A("ты", after=A("конца"))
-s = cut.shot("tp_winter", END_STORY, tod="dusk")
+s = wshot(END_STORY)
 stuck(s, eyes="normal", mouth="o")
-ks(s, [(s.t0, [-2.8, 1.55, 4.4], [-4.1, 1.5, 0.0], 44), (T_TY, [-3.9, 1.5, 3.4], [-4.1, 1.5, 0.0], 42), (-1, [-3.95, 1.5, 3.3], [-4.1, 1.5, 0.0], 42)],
+ks(s, [(s.t0, [-6.4, 1.6, 4.0], [-4.1, 1.5, 0.0], 44), (T_TY, [-5.6, 1.55, 3.3], [-4.1, 1.5, 0.0], 42), (-1, [-5.55, 1.55, 3.2], [-4.1, 1.5, 0.0], 42)],
    focus="hero", ap=6)
 cut.card("label", T_TY - 0.05, END_STORY - 0.02, text="ТЫ", sub="НЕМНОЖКО ВИТЁК", x=0.06, y=0.15, border="#ffd84a")
 cut.sfx(T_TY, "usr-whoosh-whip-mid-snap-169", -9)
 
 # ======================================================== 9. CTA — same voice, profile, «шапку профиля»
 t0 = ep.t
-s = ep.shot("tp_winter", round(END - t0, 3), tod="dusk")
+s = ep.shot("tp_winter", round(END - t0, 3), tod="dusk", particles=[SNOW_FWD])
 stuck(s, eyes="happy", mouth="smile")
 s.actors["hero"].act(0.0, "wave") if hasattr(s, "actors") and isinstance(getattr(s, "actors"), dict) else None
-cam(s, [(0, [-3.4, 1.5, 4.2], [-4.1, 1.4, 0.0], 44), (-1, [-3.2, 1.5, 4.6], [-4.1, 1.4, 0.0], 46)], focus="hero", ap=6, zoom=False)
+cam(s, [(0, [-5.6, 1.5, 3.6], [-4.1, 1.4, 0.0], 44), (-1, [-5.9, 1.5, 4.0], [-4.1, 1.4, 0.0], 46)], focus="hero", ap=6, zoom=False)
 t_hl = A("шапку", after=S[9])
 cut.card("black", t0, END, color="rgba(0,0,0,0.55)", fi=0.25, fo=0.01)
 cut.card("profile", t0, END, hlAt=t_hl)

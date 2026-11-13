@@ -41,11 +41,35 @@ index 22bbefc..f441252 100644
 +    );
 +  },
  };
+diff --git a/pixcine/engine/src/gl/anim.ts b/pixcine/engine/src/gl/anim.ts
+index 72355f3..43896d2 100644
+--- a/pixcine/engine/src/gl/anim.ts
++++ b/pixcine/engine/src/gl/anim.ts
+@@ -182,6 +182,19 @@ export const ACTS: Record<string, ActFn> = {
+     if (front(c.view)) return { ...b, rootRot: 5 * j(1), rootX: 0.8 * j(2), uA: -25 + 15 * j(3), lA: -30 + 20 * j(4), uB: 25 + 15 * j(5), lB: 30 + 20 * j(6), head: 6 * j(7) };
+     return { ...b, torso: 10 + 8 * j(1), rootX: -1 + j(2), uA: -40 + 20 * j(3), uB: -45 + 20 * j(5), lB: 20 * j(6), head: 8 * j(7), tB: 18 + 10 * j(8), sB: -10, tA: -12 };
+   },
++  stuck: (c) => { // tongue frozen to a pole: head and body stay put, arms flail, feet shuffle (tupoy, 13.11.2026)
++    const j = (s: number) => noise1(c.t * 5, c.seed + s);
++    const b = breathe(c, 0.25);
++    if (front(c.view)) return { ...b, uA: -70 + 40 * j(1), lA: -40 + 30 * j(2), uB: 70 + 40 * j(3), lB: 40 + 30 * j(4) };
++    return { ...b, uA: -55 + 45 * j(1), lA: 35 * j(2), uB: 45 + 45 * j(3), lB: 35 * j(4), tA: 8 * j(5), tB: -8 * j(6) };
++  },
++  pull: (c) => { // pulls a «push» door by the handle: both hands forward, leans back and jerks (tupoy, 13.11.2026)
++    const k = 0.5 + 0.5 * Math.sin(c.t * (c.arg?.hz ?? 2.6) * Math.PI * 2);
++    const j = (s: number) => noise1(c.t * 4, c.seed + s);
++    const b = breathe(c, 0.2);
++    if (front(c.view)) return { ...b, uA: -12 + 4 * j(1), lA: -24, uB: 12 + 4 * j(2), lB: 24, rootY: -0.3 * k, head: 3 * j(3) };
++    return { ...b, torso: -9 - 7 * k, rootX: -0.7 * k, uA: 72 + 8 * k, lA: 8, uB: 76 + 8 * k, lB: 8, head: -3 * k + 2 * j(4) };
++  },
+   dragged: (c) => {
+     const b = breathe(c, 0.2);
+     if (front(c.view)) return { ...b, rootRot: 4 * noise1(c.t * 3, c.seed), uA: -40, uB: 40, lA: -20, lB: 20, head: -10, liftA: 0, liftB: 0 };
 diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
-index 5cee394..b02227d 100644
+index 5cee394..d348ed2 100644
 --- a/pixcine/projects/shorts/cast_src.py
 +++ b/pixcine/projects/shorts/cast_src.py
-@@ -99,6 +99,21 @@ chars += [
+@@ -99,6 +99,24 @@ chars += [
      {"id": "geroy_t8p", "name": "Гигачад", **HERO, "build": "big", "skin": "#e8c8ac", "beard": "full", "beard_color": "#141012", **T_EYES, "hat": {"kind": "pigeons"}},
  ]
  
@@ -62,6 +86,9 @@ index 5cee394..b02227d 100644
 +     "top": {"type": "tshirt", "color": "#141418"}, "bottom": {"type": "cargo", "color": "#22222a"}, "shoes": "#141418", "boots": True},
 +    {"id": "odnokl", "name": "Сосед по парте", "build": "slim", "skin": "#f4d0b0", "hair": {"style": "messy", "color": "#c8902a"},
 +     "top": {"type": "hoodie", "color": "#5a8a3a", "strings": "#e8e8e0"}, "bottom": {"type": "jeans", "color": "#3a4a6a"}, "shoes": "#e0dcd8"},
++    # v2 (13.11.2026): mama after the microwave blast — yolk in her hair and all over the apron (instead of floating splat cubes)
++    {"id": "mama_y", "name": "Мама", "build": "normal", "skin": "#f2d0b4", "hair": {"style": "tied", "color": "#c89a1a"},
++     "top": {"type": "shirt", "color": "#b85a7a", "belt": "#5a2a3a"}, "apron": "#f2c418", "bottom": {"type": "jeans", "color": "#3a3a48"}, "shoes": "#5a3a2a"},
 +]
 +
  for c in chars:
