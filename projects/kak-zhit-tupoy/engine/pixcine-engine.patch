@@ -65,6 +65,74 @@ index 72355f3..43896d2 100644
    dragged: (c) => {
      const b = breathe(c, 0.2);
      if (front(c.view)) return { ...b, rootRot: 4 * noise1(c.t * 3, c.seed), uA: -40, uB: 40, lA: -20, lB: 20, head: -10, liftA: 0, liftB: 0 };
+diff --git a/pixcine/engine/src/gl/puppet.ts b/pixcine/engine/src/gl/puppet.ts
+index 10e861c..ea43514 100644
+--- a/pixcine/engine/src/gl/puppet.ts
++++ b/pixcine/engine/src/gl/puppet.ts
+@@ -268,6 +268,51 @@ export class Puppet {
+     });
+   }
+ 
++  /** tongue stuck out of the mouth to a point (tupoy, 14.11.2026): spec {to:[x,z] or [x,y,z], at:{F,Q,S,B:[dx,dy] px from the head
++   *  pivot}, w, h, color, showAt, hideAt}. Starts in the mouth of the current view, ends at `to` (at mouth height when y is not
++   *  given); a dark lip box hides the root. Absolute times. */
++  tongue: THREE.Group | null = null;
++  setTongue(spec: any, time: number, cam: THREE.Vector3) {
++    const off = !spec || (spec.showAt !== undefined && time < spec.showAt) || (spec.hideAt !== undefined && time >= spec.hideAt);
++    const lipM = this.group.getObjectByName("lip");
++    if (off) { if (this.tongue) this.tongue.visible = false; if (lipM) lipM.visible = false; return; }
++    if (!this.tongue) {
++      const col = spec.color ?? "#e8607a";
++      const g = new THREE.Group();
++      const body = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.3, roughness: 0.55 }));
++      body.name = "body";
++      const lip = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: "#2a0e12", roughness: 0.9 }));
++      lip.name = "lip";
++      g.add(body);
++      this.group.add(g, lip);
++      this.tongue = g;
++    }
++    const rig = this.rigs[this.view]!;
++    const head = rig.nodes.head;
++    if (!head) { this.tongue.visible = false; this.group.getObjectByName("lip")!.visible = false; return; }
++    this.group.updateMatrixWorld(true);
++    const at = spec.at?.[this.view] ?? spec.at?.F ?? [0, 2];
++    const S = head.localToWorld(new THREE.Vector3(at[0] * this.PX, at[1] * this.PX, 0));
++    const toCam = new THREE.Vector3(cam.x - S.x, 0, cam.z - S.z).normalize();
++    S.addScaledVector(toCam, this.view === "B" ? -0.06 : 0.03);    // in front of the face sprite (behind it for a back view)
++    const to = spec.to ?? [S.x, S.z];
++    const E = to.length > 2 ? new THREE.Vector3(to[0], to[1], to[2]) : new THREE.Vector3(to[0], S.y, to[1]);
++    const len = Math.max(0.02, S.distanceTo(E));
++    const w = spec.w ?? 0.07, h = spec.h ?? 0.045;
++    const g = this.tongue;
++    g.visible = true;
++    g.position.copy(this.group.worldToLocal(S.clone()));
++    g.lookAt(E);
++    const body = g.getObjectByName("body")!, lip = this.group.getObjectByName("lip")!;
++    body.scale.set(w, h, len);
++    body.position.set(0, 0, len / 2);
++    // the side view has no drawn mouth: a small dark mouth slot on the face plane around the root
++    lip.visible = this.view === "S";
++    lip.position.copy(this.group.worldToLocal(S.clone().addScaledVector(toCam, -0.012)));
++    lip.lookAt(new THREE.Vector3(cam.x, lip.getWorldPosition(new THREE.Vector3()).y, cam.z));
++    lip.scale.set(w * 1.3, h * 2.6, 0.004);
++  }
++
+   /** world position of a hand (for phone light) */
+   handWorld(s: "A" | "B", out = new THREE.Vector3()) {
+     const rig = this.rigs[this.view]!;
+diff --git a/pixcine/engine/src/gl/stage.ts b/pixcine/engine/src/gl/stage.ts
+index 11901a0..840b959 100644
+--- a/pixcine/engine/src/gl/stage.ts
++++ b/pixcine/engine/src/gl/stage.ts
+@@ -369,6 +369,7 @@ export class Stage {
+       const hk = this.stepKey(a.hold, t);
+       pp.hold(hk?.A ?? null, hk?.B ?? null);
+       pp.apply(pose, ex.eyes, ex.mouth);
++      pp.setTongue(a.tongue ?? null, time, this.cam.position);
+       pp.setGlow(a.glow ?? 0.1);
+       pp.update(time);
+       pp.blob.visible = lie < 0.5 && P.y < 0.05;
 diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
 index 5cee394..d348ed2 100644
 --- a/pixcine/projects/shorts/cast_src.py

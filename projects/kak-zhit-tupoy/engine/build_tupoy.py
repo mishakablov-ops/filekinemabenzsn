@@ -238,15 +238,23 @@ def splats(origin, n, spread, seed=1, t=None, color="#f2c418", y=(0.3, 2.2), siz
     return out
 
 
-TONGUE = {"t": "block", "p": [-4.3, 0.0], "y": 1.5, "size": [0.36, 0.035, 0.07], "color": "#e86a7a", "solid": False}
+# the tongue starts IN THE MOUTH of whatever view the puppet shows (px from the head pivot, measured on the vitek_w sprites:
+# F/Q mouth «o» centre, S = front edge of the face) and ends in the pole. mike 14.11: «язык не во рту, а впереди башки».
+MOUTH_AT = {"F": [0.0, 2.3], "Q": [2.5, 2.3], "S": [5.4, 2.3], "B": [0.0, 2.3]}
+
+
+def tongue(a, pole, **kw):
+    x = pole[0] + (-0.045 if pole[0] < a.d["path"][0]["p"][0] else 0.045)   # tip rests inside the 12 cm post, never pokes out the far side
+    a.d["tongue"] = {"to": [round(x, 3), pole[1]], "at": MOUTH_AT, "w": 0.07, "h": 0.045, "color": "#e8607a", **kw}
+    return a
 FROST = {"t": "lightPt", "p": [-4.4, 0.6], "y": 1.6, "i": 0.7, "d": 2.5, "color": "#a8d8ff"}
 CROWD = [(-5.6, 2.6, "p1", 150), (-3.0, 2.8, "p3", -150), (-2.6, 1.0, "p4", -110), (-5.8, -1.8, "p2", 30), (-2.8, -1.6, "p5", -40), (-6.0, 1.0, "p6", 100)]
 
 
 def stuck(s, char=VW, eyes="wide", mouth="o"):
     """Витёк frozen to the pole: facing the pole (-x), tongue block between his mouth and the lamp post"""
-    v = actor(s, "hero", char, TONGUE_AT, face=-90, act="stuck", eyes=eyes, mouth=mouth)
-    extra(s, TONGUE, FROST)
+    v = tongue(actor(s, "hero", char, TONGUE_AT, face=-90, act="stuck", eyes=eyes, mouth=mouth), POLE)
+    extra(s, FROST)
     return v
 
 
@@ -288,11 +296,9 @@ cut.sfx(A("один"), "usr-crowd-gasp-mid-swell-172", -14)
 s = wshot(round(C[1]["start"] - 0.05, 3))
 stuck(s)
 for i, z in enumerate([-12, -24, -36]):
-    actor(s, f"d{i}", ["p1", "p3", "p5"][i], (-3.98, z), face=-90, act="stuck", eyes="wide", mouth="o")
-    extra(s, {**TONGUE, "p": [-4.3, z]})
+    tongue(actor(s, f"d{i}", ["p1", "p3", "p5"][i], (-3.98, z), face=-90, act="stuck", eyes="wide", mouth="o"), (-4.5, z))
 for i, z in enumerate([6, -6, -18]):
-    actor(s, f"e{i}", ["p4", "p2", "sosed"][i], (3.98, z), face=90, act="stuck", eyes="wide", mouth="o")
-    extra(s, {**TONGUE, "p": [4.3, z]})
+    tongue(actor(s, f"e{i}", ["p4", "p2", "sosed"][i], (3.98, z), face=90, act="stuck", eyes="wide", mouth="o"), (4.5, z))
 ks(s, [(s.t0, [-1.0, 1.4, 4.0], [-4.0, 1.4, -4.0], 50), (-1, [0.0, 6.5, 9.5], [0.0, 1.0, -16.0], 54)], focus=None, ap=1)
 cut.card("stat", T_NAS - 0.05, s.t1 - 0.03, text="ДОХУЯ", label="НАС", y=0.17, size=160)
 cut.sfx(T_NAS, "usr-whoosh-build-hit-mid-late-086", -8)
@@ -651,7 +657,8 @@ v = actor(s, "hero", VW, (-3.5, 0.35), face=-80, act="idle", eyes="happy", mouth
 v.walk(A("бывает", after=A("Тупым", occ=2, after=S[8])) - s.t0, TONGUE_AT, dur=0.6)
 v.face(A("бывает", after=A("Тупым", occ=2, after=S[8])) - s.t0 + 0.6, -90)
 v.act(T_XOL - s.t0 - 0.1, "stuck"); v.expr(T_XOL - s.t0 - 0.1, "wide", "o")
-extra(s, {**TONGUE, "showAt": round(T_XOL - 0.1, 3)}, FROST)
+tongue(v, POLE, showAt=round(T_XOL - 0.1, 3))
+extra(s, FROST)
 crowd(s, 6, flashes=[T_XOL + 0.2, T_XOL + 0.5], skip={0, 1, 2, 4})
 ks(s, [(s.t0, [-5.6, 1.6, 4.4], [-4.0, 1.45, 0.1], 46), (-1, [-5.3, 1.55, 3.4], [-4.1, 1.5, 0.0], 42)], focus="hero", ap=4)
 cut.card("label", A("стыдно") - 0.05, T_XOL - 0.15, text="СТЫДНО: 0%", x=0.06, y=0.15)

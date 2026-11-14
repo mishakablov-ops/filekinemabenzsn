@@ -5,13 +5,13 @@
 - **Задача mike (11.11.2026):** «как жить если ты тупой, сделай резче», юмор, не познавательный («нам конкуренты не нужны»),
   места: дом, магазин, школа, улица. К v1 сценария: «тик ток не основная тема», «сделай смешное епта, можешь маты». На v2: «делай грязь».
 - **Статус:** v1 выдан 11.11.2026. 13.11 mike: «пересмотри и сделай качественнее, не допускай нереалистичности и лагов».
-  v2 выдан 13.11.2026 (`kak-zhit-tupoy-v2.mp4`), ждёт отзыва.
+  v2 выдан 13.11.2026 (`kak-zhit-tupoy-v2.mp4`). 14.11 mike: «в первых кадрах у тебя язык не во рту а впереди башки» → v3.
 
 ## Сборка
 - Сценарий голоса `script.md` → `pixcine/projects/shorts/narration/tupoy/script.md`; тайминги `voice/words.json`, `voice/sections.json`
   (сам голос в git не кладём; на ПК `D:\aipollon\KINEMA\pixcine\projects\shorts\narration\tupoy\`).
 - Каст и движок: `engine/pixcine-engine.patch` (новые куклы vitek_w, uchitel, uchitel_s, ohrannik, odnokl; оверлей `feed` — лента
-  коротких видео на пиксельном телефоне; voice_grid: буфер дорожки при малой сетке). Затем `python cast_src.py` и `pixchar.py`.
+  коротких видео на пиксельном телефоне; voice_grid: буфер дорожки при малой сетке; язык изо рта `tongue` в puppet.ts/stage.ts). Затем `python cast_src.py` и `pixchar.py`.
 - Раскадровка `engine/build_tupoy.py` (36 планов: зимняя улица со столбом, ванная, кухня, класс, вход в магазин «ОТ СЕБЯ»).
   `python build_tupoy.py`, `scripts/mix.py shorts tupoy`, `tools/render.mjs --project shorts --ep tupoy`.
 - Урок: куклы крупные, крупный план = камера ≥3,4 м от лица и угол ≥42° (в `ks()` это `MIN_D`), иначе лицо во весь кадр.

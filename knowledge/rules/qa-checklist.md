@@ -37,6 +37,8 @@ Before reviewing a reel, read the user's saved presentation requirements in [sty
    faces, not its back, and not blocked by front-row people or the crowd's phones; particles ≥ ~4 m from the lens;
    `lightPt` blinking only as Hz + absolute `onAt`/`offAt`; deliverable at ~10 Mbit/s with `+faststart`.
    Before a re-render delete the old `engine/out/<project>_<ep>/chunk_*.mp4`, or `render.mjs` silently reuses them.
+   Anything that comes out of a doll (tongue, smoke, spit) starts at its mouth in every view (mike, 14.11.2026: «язык не во рту
+   а впереди башки»): use the actor `tongue` field, never a loose world block; check it at full resolution.
 8. **Music:** check the finished mix at the opening, achievements, quieter final speech and ending. The music follows the story, words remain clear, phrase extensions have smooth joins, and the ending fades naturally. Use the user-approved v5 music treatment documented in [sound.md](sound.md) as a reference when appropriate.
 
 ## Fix recipes
