@@ -16,7 +16,7 @@ SEC = {int(r["id"]): r for r in json.loads((narration(KID) / "sections.json").re
 S = {k: v["start"] for k, v in SEC.items()}
 A = w.at
 END_STORY = round(S[9] - 0.05, 3)
-END = round(w.duration + 0.9, 3)
+END = round(w.duration + 2.5, 3)        # 15.11 mike: like/subscribe ask after the voice CTA → 2.4 s of ending after the last word
 V = "geroy"            # Витёк
 VW = "vitek_w"         # Витёк in a winter beanie
 
@@ -558,11 +558,12 @@ v.act(T_LUZ - s.t0, "jolt"); v.expr(T_LUZ - s.t0, "wide", "o")
 v.act(T_LUZ - s.t0 + 0.25, "phone_up"); v.expr(T_LUZ - s.t0 + 0.25, "normal", "smile")
 v.walk(T_LUZ - s.t0 + 0.12, (-5.28, -0.8), dur=round(T_ST2 - T_LUZ - 0.12, 3))
 v.act(T_ST2 - s.t0, "fall"); v.expr(T_ST2 - s.t0, "wide", "o")
-extra(s, *[{"t": "block", "p": [round(-5.15 + dx, 3), round(0.1 + dz, 3)], "y": 0.02, "size": [0.06, 0.06, 0.06], "color": "#8ab0d0", "solid": False,
+SW_Y = 0.16                               # sidewalk top: the engine stands actors and loose props on it, keyframed props need it by hand
+extra(s, *[{"t": "block", "p": [round(-5.15 + dx, 3), round(0.1 + dz, 3)], "y": SW_Y + 0.02, "size": [0.06, 0.06, 0.06], "color": "#8ab0d0", "solid": False,
             "showAt": round(T_LUZ, 3), "hideAt": round(T_LUZ + 0.45, 3),
-            "anim": [{"t": round(T_LUZ, 3), "p": [round(-5.15 + dx * 0.3, 3), 0.05, round(0.1 + dz * 0.3, 3)]},
-                     {"t": round(T_LUZ + 0.2, 3), "p": [round(-5.15 + dx, 3), 0.45, round(0.1 + dz, 3)], "e": "out"},
-                     {"t": round(T_LUZ + 0.42, 3), "p": [round(-5.15 + dx * 1.3, 3), 0.02, round(0.1 + dz * 1.3, 3)], "e": "in"}]}
+            "anim": [{"t": round(T_LUZ, 3), "p": [round(-5.15 + dx * 0.3, 3), SW_Y + 0.05, round(0.1 + dz * 0.3, 3)]},
+                     {"t": round(T_LUZ + 0.2, 3), "p": [round(-5.15 + dx, 3), SW_Y + 0.45, round(0.1 + dz, 3)], "e": "out"},
+                     {"t": round(T_LUZ + 0.42, 3), "p": [round(-5.15 + dx * 1.3, 3), SW_Y + 0.02, round(0.1 + dz * 1.3, 3)], "e": "in"}]}
             for dx, dz in [(-0.5, 0.2), (0.45, 0.25), (-0.3, -0.4), (0.35, -0.35), (0.0, 0.5), (-0.55, -0.1)]])
 extra(s, {"t": "lightPt", "p": [-3.9, -2.2], "y": 2.4, "i": 3.0, "d": 6, "color": "#ffd8a8"})
 ks(s, [(s.t0, [-2.5, 1.8, -5.4], [-4.9, 1.0, -0.1], 46), (T_LUZ, [-2.8, 1.7, -4.8], [-5.0, 0.95, -0.3], 44), (-1, [-4.7, 3.0, -4.3], [-6.35, 0.3, -1.25], 54)],   # high angle: a lying doll is 1.8 m wide on screen
@@ -682,14 +683,26 @@ s.actors["hero"].act(0.0, "wave") if hasattr(s, "actors") and isinstance(getattr
 cam(s, [(0, [-5.6, 1.5, 3.6], [-4.1, 1.4, 0.0], 44), (-1, [-5.9, 1.5, 4.0], [-4.1, 1.4, 0.0], 46)], focus="hero", ap=6, zoom=False)
 t_hl = A("шапку", after=S[9])
 cut.card("black", t0, END, color="rgba(0,0,0,0.55)", fi=0.25, fo=0.01)
-cut.card("profile", t0, END, hlAt=t_hl)
+cut.card("profile", t0, END, hlAt=t_hl, theme="frost")
 ep.sfx(t_hl, "pk-notify-notification-sfx-1", -6)
+# 15.11 mike: «в конце пиши чтобы поддержали лайком и подпиской… под тему, чтобы под каждый ролик было не одно и то же».
+# Topic of this one: frozen tongue → the like heart and the subscribe button are iced over and crack open.
+T_SUP = round(SEC[9]["end"] + 0.05, 3)
+T_LIKE, T_SUB = round(T_SUP + 0.45, 3), round(T_SUP + 1.35, 3)
+cut.card("support", T_SUP - 0.1, END, theme="frost", title="ПОДДЕРЖИ ЛАЙКОМ И ПОДПИСКОЙ",
+         likeCap="ВИТЬКУ НА МАЗЬ\nДЛЯ ЯЗЫКА", subCap="ПОКА ЯЗЫК\nНЕ ПРИМЁРЗ", likeAt=T_LIKE, subAt=T_SUB, y=0.625)
+ep.sfx(T_LIKE, "usr-glass-shatter-bright-snap-372", -14)
+ep.sfx(T_LIKE + 0.02, "usr-suction-pop-mid-snap-087", -9)
+ep.sfx(T_SUB - 0.03, "usr-mouse-double-bright-snap-069", -8)
+ep.sfx(T_SUB, "usr-glass-shatter-bright-snap-372", -11)
+ep.sfx(T_SUB + 0.12, "usr-notify-ding-mid-swell-102", -10)
 
 # ----------------------------------------------------------------- sound: voice + ambience + SFX, NO music
 ep.voice(0, copy_voice(KID, "tupoy"), gain=0)
 w.subs(ep, 0.3)
 for sub, c in zip(ep.subs[-len(C):], C):
     sub["t1"] = round(min(sub["t1"], c["end"] + 0.8), 3)
+ep.subs[-1]["t1"] = round(min(ep.subs[-1]["t1"], T_SUP - 0.12), 3)    # the like/subscribe block takes the caption place
 ep.amb(0.0, S[2], "city-hum", gain=-34, fi=0.05, fo=0.2)
 ep.amb(0.0, S[2], "shorts/city_dark", gain=-28, fi=0.05, fo=0.2)
 ep.amb(S[2], S[5], "room-tone", gain=-32, fi=0.1, fo=0.2)

@@ -1,8 +1,118 @@
 diff --git a/pixcine/engine/src/Film.tsx b/pixcine/engine/src/Film.tsx
-index 22bbefc..f441252 100644
+index 22bbefc..ccfe149 100644
 --- a/pixcine/engine/src/Film.tsx
 +++ b/pixcine/engine/src/Film.tsx
-@@ -467,4 +467,38 @@ const OVERLAYS: Record<string, OV> = {
+@@ -273,6 +273,38 @@ const rolled = (c: any, t: number) => {
+   const v = lerp(c.from, c.to, ease.out(clamp((t - st) / d)));
+   return `${c.prefix ?? ""}${fmtNum(v)}${c.suffix ?? ""}`;
+ };
++/** chunky pixel bitmap from rows of chars; pal maps a char to a colour, "." is empty */
++const PixArt: React.FC<{ rows: string[]; px: number; pal: Record<string, string>; style?: React.CSSProperties }> = ({ rows, px, pal, style }) => (
++  <div style={{ position: "relative", width: rows[0].length * px, height: rows.length * px, ...style }}>
++    {rows.flatMap((r, y) => [...r].map((ch, x) => (pal[ch] ? <div key={`${x}_${y}`} style={{ position: "absolute", left: x * px, top: y * px, width: px + 0.5, height: px + 0.5, background: pal[ch] }} /> : null)))}
++  </div>
++);
++const ICICLES = [0, 1, 2].map((r) => Array.from({ length: 60 }, (_, i) => (r === 0 || hashStr(`ic${i}`) < [1, 0.55, 0.22][r] ? "X" : ".")).join(""))
++  .map((row, r, all) => (r === 0 ? row : [...row].map((ch, i) => (ch === "X" && all[r - 1][i] === "X" ? "X" : ".")).join("")));
++const HEART = ["..XX...XX..", ".XHHX.XXXX.", "XHHXXXXXXXX", "XHXXXXXXXXX", "XXXXXXXXXXX", ".XXXXXXXXX.", "..XXXXXXX..", "...XXXXX...", "....XXX....", ".....X....."];
++const CURSOR = ["X.....", "XX....", "XWX...", "XWWX..", "XWWWX.", "XWWWWX", "XWWXXX", "XX.WX.", "X..XWX", "....XX"];
++/** per-video ending themes for the like / subscribe card (mike, 15.11.2026: «под каждый ролик не одно и то же в конце»).
++ *  Each theme dresses the heart, the button and the burst; add a new one for a new topic instead of reusing the last. */
++const SUPPORT_THEMES: Record<string, { cold: string; coldHi: string; frost: string; burst: string[]; frame: string }> = {
++  frost: { cold: "#8fd0ff", coldHi: "#e8f8ff", frost: "rgba(214,240,255,0.88)", burst: ["#e8f8ff", "#8fd0ff", "#ffffff"], frame: "#bfe6ff" },
++  fire: { cold: "#ff9a2a", coldHi: "#ffe08a", frost: "rgba(255,140,40,0.55)", burst: ["#ffd23a", "#ff6a1a", "#ff2a1a"], frame: "#ff9a2a" },
++  slime: { cold: "#7ad04a", coldHi: "#d8ff9a", frost: "rgba(120,210,70,0.6)", burst: ["#b8ff6a", "#5ab02a", "#e8ffc8"], frame: "#7ad04a" },
++};
++/** shards flying out of a point (ice, sparks, slime): deterministic per seed */
++const Burst: React.FC<{ t: number; at: number; k: number; cols: string[]; seed: number; n?: number }> = ({ t, at, k, cols, seed, n = 14 }) => {
++  const u = t - at;
++  if (u < 0 || u > 0.7) return null;
++  return (
++    <>
++      {Array.from({ length: n }, (_, i) => {
++        const a = hashStr(`${seed}_${i}`) * Math.PI * 2, sp = (180 + hashStr(`${seed}_s${i}`) * 260) * k, sz = (8 + (i % 3) * 5) * k;
++        const x = Math.cos(a) * sp * u, y = Math.sin(a) * sp * u + 520 * k * u * u;
++        return <div key={i} style={{ position: "absolute", left: x - sz / 2, top: y - sz / 2, width: sz, height: sz, background: cols[i % cols.length], opacity: 1 - u / 0.7, boxShadow: `0 0 0 ${2 * k}px rgba(0,0,0,0.35)` }} />;
++      })}
++    </>
++  );
++};
++
+ const OVERLAYS: Record<string, OV> = {
+   /** giant number / word slammed in the middle of the frame */
+   stat: ({ c, t, w, h }) => {
+@@ -407,6 +439,12 @@ const OVERLAYS: Record<string, OV> = {
+             </div>
+           </div>
+         </div>
++        {c.theme === "frost" ? (
++          <div style={{ position: "absolute", left: (w - PW) / 2 - 14 * k, top: 0.075 * h + (1 - rise) * h * 0.7 - 30 * k, transform: `rotate(${(1 - rise) * 4}deg)`, transformOrigin: `${PW / 2}px ${PH / 2 + 30 * k}px` }}>
++            <PixArt rows={["..XXXXXXX.....XXXXXXXXXX....XXXXXXXX...", ".XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"]} px={(PW + 28 * k) / 40} pal={{ X: "#f4fbff" }} />
++            <PixArt rows={ICICLES} px={(PW + 28 * k) / ICICLES[0].length} pal={{ X: "#d8f0ff" }} style={{ position: "absolute", left: 0, top: PH + 34 * k }} />
++          </div>
++        ) : null}
+         {hl > 0 ? (
+           <div style={{ position: "absolute", left: 0, right: 0, top: 0.018 * h, textAlign: "center", fontSize: 54 * k, color: "#ffd23a", textShadow: outline(Math.round(5 * k)), opacity: hl }}>
+             ↓ ШАПКА ПРОФИЛЯ ↓
+@@ -415,6 +453,57 @@ const OVERLAYS: Record<string, OV> = {
+       </AbsoluteFill>
+     );
+   },
++  /** like + subscribe ask under the profile header (mike, 15.11.2026: «в конце пиши чтобы поддержали лайком и подпиской»).
++   *  c.title, c.likeCap / c.subCap (topic jokes), c.likeAt / c.subAt (absolute s), c.theme = key of SUPPORT_THEMES, c.y (top, 0..1) */
++  support: ({ c, t, w, h }) => {
++    const k = w / 1080, a = life(c, t, 0.25, 0.01);
++    const th = SUPPORT_THEMES[c.theme ?? "frost"] ?? SUPPORT_THEMES.frost;
++    const rise = ease.out(clamp((t - c.t0) / 0.35));
++    const liked = t >= c.likeAt, subbed = t >= c.subAt;
++    const pop = liked ? lerp(1.5, 1, ease.out(clamp((t - c.likeAt) / 0.3))) : 1 + 0.04 * Math.sin(t * 9);
++    const press = subbed ? lerp(0.86, 1, ease.out(clamp((t - c.subAt) / 0.25))) : 1;
++    // cursor glides to the button and clicks at subAt
++    const cu = clamp((t - (c.subAt - 0.55)) / 0.5);
++    const shake = !subbed && t > c.subAt - 0.9 ? Math.sin(t * 60) * 3 * k : 0;
++    const PX = 12 * k;
++    const heartPal = liked ? { X: "#ff2a55", H: "#ffb0c0" } : { X: th.cold, H: th.coldHi };
++    const BW = 540 * k, BH = 130 * k;
++    return (
++      <div style={{ position: "absolute", left: 0, right: 0, top: (c.y ?? 0.625) * h + (1 - rise) * 200 * k, display: "flex", flexDirection: "column", alignItems: "center", fontFamily: FONT, opacity: a }}>
++        <div style={{ fontSize: 60 * k, color: "#ffd23a", textShadow: outline(Math.round(6 * k)), textAlign: "center", maxWidth: "94%", lineHeight: 1.1 }}>{c.title ?? "ПОДДЕРЖИ ЛАЙКОМ И ПОДПИСКОЙ"}</div>
++        <div style={{ display: "flex", gap: 40 * k, alignItems: "flex-start", marginTop: 22 * k }}>
++          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 330 * k }}>
++            <div style={{ position: "relative", width: 11 * PX, height: BH, display: "flex", alignItems: "center", justifyContent: "center" }}>
++              <PixArt rows={HEART} px={PX} pal={heartPal} style={{ transform: `scale(${pop})`, filter: `drop-shadow(${5 * k}px ${5 * k}px 0 rgba(0,0,0,0.6))` }} />
++              {!liked ? <PixArt rows={["X.X..X.X.X", "X.X..X...X", "..X......X"]} px={PX * 0.6} pal={{ X: th.coldHi }} style={{ position: "absolute", left: 1.5 * PX, top: BH / 2 + 4.6 * PX }} /> : null}
++              <div style={{ position: "absolute", left: "50%", top: "50%" }}><Burst t={t} at={c.likeAt} k={k} cols={th.burst} seed={11} /></div>
++              {liked && t - c.likeAt < 0.9 ? <div style={{ position: "absolute", left: "70%", top: -40 * k * (t - c.likeAt) / 0.9, fontSize: 44 * k, color: "#ff5a7a", textShadow: outline(Math.round(4 * k)), opacity: 1 - (t - c.likeAt) / 0.9 }}>+1</div> : null}
++            </div>
++            <div style={{ fontSize: 36 * k, color: "#f2efe6", textShadow: outline(Math.round(4 * k)), textAlign: "center", marginTop: 12 * k, lineHeight: 1.15, whiteSpace: "pre-line" }}>{c.likeCap ?? "ЛАЙК"}</div>
++          </div>
++          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: BW }}>
++            <div style={{ position: "relative", width: BW, height: BH, transform: `translateX(${shake}px) scale(${press})` }}>
++              <div style={{ position: "absolute", inset: 0, ...pbox(k, subbed ? "#3a3a44" : "#e8203a", subbed ? "#8a8a96" : "#f2efe6"), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 50 * k, color: "#ffffff", textShadow: outline(Math.round(3 * k)) }}>
++                {subbed ? "ВЫ ПОДПИСАНЫ" : "ПОДПИСАТЬСЯ"}
++              </div>
++              {!subbed ? (
++                <>
++                  <div style={{ position: "absolute", inset: 0, background: `repeating-linear-gradient(135deg, ${th.frost} 0 ${10 * k}px, transparent ${10 * k}px ${26 * k}px)`, opacity: 0.55 }} />
++                  <PixArt rows={["XXXXXXXXXXXXXXXXXXXXXXXX", ".XX.XXX..X.XX..XXX.X.XX.", "..X..X....X.X...X...X.X."]} px={BW / 24} pal={{ X: th.coldHi }} style={{ position: "absolute", left: 0, top: BH - (BW / 24) * 0.6 }} />
++                </>
++              ) : null}
++              <div style={{ position: "absolute", left: "50%", top: "50%" }}><Burst t={t} at={c.subAt} k={k} cols={th.burst} seed={23} n={18} /></div>
++              {t > c.subAt - 0.55 && t < c.subAt + 0.6 ? (
++                <PixArt rows={CURSOR} px={10 * k} pal={{ X: "#000000", W: "#ffffff" }}
++                  style={{ position: "absolute", left: lerp(BW + 120 * k, BW * 0.62, ease.inOut(cu)), top: lerp(BH + 90 * k, BH * 0.55, ease.inOut(cu)) + (subbed && t - c.subAt < 0.12 ? 6 * k : 0) }} />
++              ) : null}
++            </div>
++            <div style={{ fontSize: 36 * k, color: "#f2efe6", textShadow: outline(Math.round(4 * k)), textAlign: "center", marginTop: 12 * k + (BW / 24) * 2.4, lineHeight: 1.15, whiteSpace: "pre-line" }}>{c.subCap ?? ""}</div>
++          </div>
++        </div>
++      </div>
++    );
++  },
+   /** «every N seconds» HUD (testosteron short, 09.11.2026): running timer + segmented level bar + multiplier.
+    *  c.levels = [{t, n, mult}] (n = filled segments of c.max), c.start = the timer's zero */
+   meter: ({ c, t, w, h }) => {
+@@ -467,4 +556,38 @@ const OVERLAYS: Record<string, OV> = {
    black: ({ c, t }) => <AbsoluteFill style={{ background: c.color ?? "#000", opacity: life(c, t, c.fi ?? 0.2, c.fo ?? 0.2) }} />,
    /** pixel phone with app header and chat/notification messages */
    phone: ({ c, t, w, h }) => <PhoneUI c={{ ...c, center: true }} t={t} h={Math.min(h, w * 1.2)} a={1} />,
@@ -65,6 +175,38 @@ index 72355f3..43896d2 100644
    dragged: (c) => {
      const b = breathe(c, 0.2);
      if (front(c.view)) return { ...b, rootRot: 4 * noise1(c.t * 3, c.seed), uA: -40, uB: 40, lA: -20, lB: 20, head: -10, liftA: 0, liftB: 0 };
+diff --git a/pixcine/engine/src/gl/props.ts b/pixcine/engine/src/gl/props.ts
+index 57dfb04..66dd087 100644
+--- a/pixcine/engine/src/gl/props.ts
++++ b/pixcine/engine/src/gl/props.ts
+@@ -11,6 +11,8 @@ export type Prop = {
+   lights?: DynLight[];
+   update?: (t: number) => void;
+   anchors?: Record<string, [number, number, number]>;
++  /** walkable tops above the base ground (local x/z centre, size, top height): actors and loose props stand on them */
++  floors?: { x: number; z: number; w: number; d: number; y: number }[];
+ };
+ 
+ const matCache = new Map<string, THREE.Material>();
+diff --git a/pixcine/engine/src/gl/props_modern.ts b/pixcine/engine/src/gl/props_modern.ts
+index b5705ea..e44e497 100644
+--- a/pixcine/engine/src/gl/props_modern.ts
++++ b/pixcine/engine/src/gl/props_modern.ts
+@@ -408,11 +408,13 @@ function road(o: any): Prop {
+     st.rotation.x = -Math.PI / 2; st.position.set(x + 0.2, 0.016, o.zebraZ);
+     g.add(st);
+   }
++  const floors: NonNullable<Prop["floors"]> = [];
+   for (const s of [-1, 1]) {
+     g.add(at(box(sw, 0.16, len, mat("paving")), s * (w / 2 + sw / 2), 0.08, 0));
+     g.add(at(box(0.15, 0.18, len, mat("concrete", { color: "#9a968e", lines: false })), s * (w / 2 + 0.07), 0.09, 0));
++    floors.push({ x: s * (w / 2 + sw / 2), z: 0, w: sw, d: len, y: 0.16 }, { x: s * (w / 2 + 0.07), z: 0, w: 0.15, d: len, y: 0.18 });
+   }
+-  return { obj: g };
++  return { obj: g, floors };
+ }
+ 
+ /** boxy pixel car (front = +z); move {from:[x,z], to:[x,z], t0, dur} drives it */
 diff --git a/pixcine/engine/src/gl/puppet.ts b/pixcine/engine/src/gl/puppet.ts
 index 10e861c..ea43514 100644
 --- a/pixcine/engine/src/gl/puppet.ts
@@ -122,17 +264,110 @@ index 10e861c..ea43514 100644
    handWorld(s: "A" | "B", out = new THREE.Vector3()) {
      const rig = this.rigs[this.view]!;
 diff --git a/pixcine/engine/src/gl/stage.ts b/pixcine/engine/src/gl/stage.ts
-index 11901a0..840b959 100644
+index 11901a0..527178d 100644
 --- a/pixcine/engine/src/gl/stage.ts
 +++ b/pixcine/engine/src/gl/stage.ts
-@@ -369,6 +369,7 @@ export class Stage {
+@@ -14,6 +14,8 @@ export type CamKey = { t: number; pos: PosRef; look: PosRef; fov?: number; roll?
+ export type CamSpec = { keep?: string[]; keys: CamKey[]; handheld?: number; focus?: string | V3; aperture?: number; focusRange?: number; near?: number; fill?: number; fillColor?: string };
+ export type ActorSpec = {
+   id: string; char: string; glow?: number; run?: boolean; stride?: number;
++  /** tongue from the mouth to a point: {to:[x,z]|[x,y,z], at:{F,Q,S,B:[px,py]}, w, h, color, showAt, hideAt} */
++  tongue?: any;
+   path: { t: number; p: [number, number] | string; y?: number; e?: string }[];
+   face?: { t: number; f: number | string | [number, number]; d?: number }[];
+   acts?: { t: number; a: string; arg?: any; blend?: number }[];
+@@ -121,7 +123,14 @@ export class Stage {
+     return [p[0], 0, p[1]];
+   }
+ 
++  /** actor position; with no explicit y in the path the feet stand on the walkable top (sidewalk, curb) under them */
+   private pathAt(w: World, a: ActorSpec, t: number) {
++    const P = this.pathRaw(w, a, t);
++    const g = a.path.some((k) => k.y !== undefined) ? 0 : w.groundAt(P.x, P.z, 0.12);
++    return { ...P, y: P.y + g, g };
++  }
++
++  private pathRaw(w: World, a: ActorSpec, t: number) {
+     const keys = a.path.map((k) => { const r = this.resolveP(w, k.p); return { t: k.t, e: k.e ?? (a.path.length > 2 ? "linear" : "sine"), x: r[0], y: k.y ?? r[1], z: r[2] }; });
+     if (t <= keys[0].t || keys.length === 1) return { x: keys[0].x, y: keys[0].y, z: keys[0].z, dist: 0, dir: null as null | number, seg: 0 };
+     let dist = 0, lastDir: number | null = null;
+@@ -369,9 +378,10 @@ export class Stage {
        const hk = this.stepKey(a.hold, t);
        pp.hold(hk?.A ?? null, hk?.B ?? null);
        pp.apply(pose, ex.eyes, ex.mouth);
 +      pp.setTongue(a.tongue ?? null, time, this.cam.position);
        pp.setGlow(a.glow ?? 0.1);
        pp.update(time);
-       pp.blob.visible = lie < 0.5 && P.y < 0.05;
+-      pp.blob.visible = lie < 0.5 && P.y < 0.05;
++      pp.blob.visible = lie < 0.5 && P.y - P.g < 0.05;
+       // phone glow lights the face
+       if (hk?.B === "phone" || hk?.A === "phone") {
+         pp.group.updateMatrixWorld(true);
+@@ -402,7 +412,7 @@ export class Stage {
+   }
+ 
+   // ------------------------------------------------------------- QA
+-  private qaActor(w: World, a: ActorSpec, pp: Puppet, P: { x: number; y: number; z: number }, isFocus: boolean) {
++  private qaActor(w: World, a: ActorSpec, pp: Puppet, P: { x: number; y: number; z: number; g?: number }, isFocus: boolean) {
+     const out: any[] = [];
+     const feet = new THREE.Vector3(P.x, P.y, P.z).project(this.cam);
+     const head = new THREE.Vector3(P.x, P.y + pp.heightM - 0.3, P.z).project(this.cam);
+@@ -410,7 +420,7 @@ export class Stage {
+     if (isFocus && !inFrame(head) && !(a.lie && a.lie.length)) out.push({ kind: "focus_head_offscreen", actor: a.id });
+     const camD = this.cam.position.distanceTo(new THREE.Vector3(P.x, P.y + 1, P.z));
+     if (camD < 0.35 && !(a.lie && a.lie.length)) out.push({ kind: "camera_in_actor", actor: a.id, d: +camD.toFixed(2) });
+-    if (P.y < 0.05) for (const f of w.foot) {
++    if (P.y - (P.g ?? 0) < 0.05) for (const f of w.foot) {
+       if (["carpet", "hill", "mountain", "room", "scaffold"].includes(f.kind)) continue;
+       const dx = P.x - f.x, dz = P.z - f.z;
+       if (f.r !== undefined) { if (Math.hypot(dx, dz) < f.r * 0.85) out.push({ kind: "actor_in_prop", actor: a.id, prop: f.kind }); }
+diff --git a/pixcine/engine/src/gl/world.ts b/pixcine/engine/src/gl/world.ts
+index 53b6a45..f1fcf40 100644
+--- a/pixcine/engine/src/gl/world.ts
++++ b/pixcine/engine/src/gl/world.ts
+@@ -103,6 +103,8 @@ export class World {
+   lights: DynLight[] = [];
+   anchors: Record<string, THREE.Vector3> = {};
+   foot: { x: number; z: number; r?: number; w?: number; d?: number; ry: number; kind: string }[] = [];
++  /** walkable tops (sidewalks, curbs…) in world space; see groundAt */
++  floors: { x: number; z: number; w: number; d: number; y: number; ry: number }[] = [];
+   sky?: THREE.Mesh;
+   skyU?: Record<string, THREE.IUniform>;
+   sun: THREE.DirectionalLight;
+@@ -220,13 +222,32 @@ export class World {
+     }
+   }
+ 
++  static NO_LIFT = new Set(["road", "building", "room", "lightPt", "terrain", "hill", "mountain"]);
++
++  /** height of the walkable top at (x, z): the highest floor within r of the point (feet overlap a curb → stand on it), else 0 */
++  groundAt(x: number, z: number, r = 0): number {
++    let g = 0;
++    for (const f of this.floors) {
++      const dx = x - f.x, dz = z - f.z, c = Math.cos(f.ry), s = Math.sin(f.ry);
++      const lx = dx * c - dz * s, lz = dx * s + dz * c;
++      if (Math.abs(lx) <= f.w / 2 + r && Math.abs(lz) <= f.d / 2 + r && f.y > g) g = f.y;
++    }
++    return g;
++  }
++
+   addProp(pd: any) {
+     const fn = PROPS[pd.t];
+     if (!fn) { console.warn("unknown prop", pd.t); return; }
+     const pr = fn(pd);
+     const [x, z] = pd.p ?? [0, 0];
+-    const y = pd.y ?? 0;
++    // a prop without its own height stands on whatever walkable top is under it (a puddle or bench on the sidewalk,
++    // not sunk 16 cm into it). Props listed before the road are not lifted.
++    const y = pd.y ?? (pd.anim || World.NO_LIFT.has(pd.t) ? 0 : this.groundAt(x, z));
+     at(pr.obj, x, y, z, ((pd.r ?? 0) * Math.PI) / 180);
++    if (pr.floors) {
++      const ry = ((pd.r ?? 0) * Math.PI) / 180, c = Math.cos(ry), s = Math.sin(ry);
++      for (const f of pr.floors) this.floors.push({ x: x + f.x * c + f.z * s, z: z - f.x * s + f.z * c, w: f.w, d: f.d, y: y + f.y, ry });
++    }
+     if (pd.s && !["tree", "rock", "bush", "crate"].includes(pd.t)) pr.obj.scale.setScalar(pd.s);
+     if (pd.rx) pr.obj.rotation.x = pd.rx * Math.PI / 180;
+     if (pd.rz) pr.obj.rotation.z = pd.rz * Math.PI / 180;
 diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
 index 5cee394..d348ed2 100644
 --- a/pixcine/projects/shorts/cast_src.py
