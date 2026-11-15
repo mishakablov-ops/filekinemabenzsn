@@ -39,6 +39,9 @@ Before reviewing a reel, read the user's saved presentation requirements in [sty
    Before a re-render delete the old `engine/out/<project>_<ep>/chunk_*.mp4`, or `render.mjs` silently reuses them.
    Anything that comes out of a doll (tongue, smoke, spit) starts at its mouth in every view (mike, 14.11.2026: «язык не во рту
    а впереди башки»): use the actor `tongue` field, never a loose world block; check it at full resolution.
+   Nothing sinks into the ground (mike, 15.11.2026): dolls, puddles, things on the floor stand on the sidewalk or curb top,
+   not inside it. Check falls, sitting on the ground and lying props close up from the side.
+   The ending says «ПОДДЕРЖИ ЛАЙКОМ И ПОДПИСКОЙ» and is dressed for the topic, different from the previous video (15.11.2026).
 8. **Music:** check the finished mix at the opening, achievements, quieter final speech and ending. The music follows the story, words remain clear, phrase extensions have smooth joins, and the ending fades naturally. Use the user-approved v5 music treatment documented in [sound.md](sound.md) as a reference when appropriate.
 
 ## Fix recipes
