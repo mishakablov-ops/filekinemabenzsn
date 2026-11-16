@@ -1,0 +1,91 @@
+diff --git a/pixcine/engine/src/Film.tsx b/pixcine/engine/src/Film.tsx
+index ccfe149..db4b38a 100644
+--- a/pixcine/engine/src/Film.tsx
++++ b/pixcine/engine/src/Film.tsx
+@@ -289,7 +289,13 @@ const SUPPORT_THEMES: Record<string, { cold: string; coldHi: string; frost: stri
+   frost: { cold: "#8fd0ff", coldHi: "#e8f8ff", frost: "rgba(214,240,255,0.88)", burst: ["#e8f8ff", "#8fd0ff", "#ffffff"], frame: "#bfe6ff" },
+   fire: { cold: "#ff9a2a", coldHi: "#ffe08a", frost: "rgba(255,140,40,0.55)", burst: ["#ffd23a", "#ff6a1a", "#ff2a1a"], frame: "#ff9a2a" },
+   slime: { cold: "#7ad04a", coldHi: "#d8ff9a", frost: "rgba(120,210,70,0.6)", burst: ["#b8ff6a", "#5ab02a", "#e8ffc8"], frame: "#7ad04a" },
++  // «Как познакомиться с девушкой» (16.11.2026): a broken grey-pink heart that heals on the like, a valentine subscribe button
++  love: { cold: "#c8a0b0", coldHi: "#ffe0ea", frost: "rgba(255,150,190,0.55)", burst: ["#ff2a55", "#ff8ab0", "#ffffff"], frame: "#ff8ab0" },
+ };
++/** small pixel hearts (love theme): a row for the subscribe button and the floating ones around the profile phone */
++const MINI_HEART = ["XX.XX", "XXXXX", ".XXX.", "..X.."];
++const heartRow = (n: number) => MINI_HEART.map((r) => Array.from({ length: n }, () => r + ".").join(""));
++const HEART_CRACK = ["...........", "...........", ".....X.....", "......X....", ".....X.....", "....X......", ".....X.....", "......X....", "...........", "..........."];
+ /** shards flying out of a point (ice, sparks, slime): deterministic per seed */
+ const Burst: React.FC<{ t: number; at: number; k: number; cols: string[]; seed: number; n?: number }> = ({ t, at, k, cols, seed, n = 14 }) => {
+   const u = t - at;
+@@ -445,6 +451,14 @@ const OVERLAYS: Record<string, OV> = {
+             <PixArt rows={ICICLES} px={(PW + 28 * k) / ICICLES[0].length} pal={{ X: "#d8f0ff" }} style={{ position: "absolute", left: 0, top: PH + 34 * k }} />
+           </div>
+         ) : null}
++        {c.theme === "love" ? Array.from({ length: 9 }, (_, i) => {
++          // pixel hearts rising past the phone edges, each on its own loop
++          const per = 2.2 + (hashStr(`lh${i}`) % 1000) / 1000 * 1.4, u = ((t - c.t0 + (hashStr(`lo${i}`) % 1000) / 1000 * per) % per) / per;
++          const left = i % 2 ? (w + PW) / 2 + (10 + (hashStr(`lx${i}`) % 1000) / 1000 * 90) * k : (w - PW) / 2 - (70 + (hashStr(`lx${i}`) % 1000) / 1000 * 90) * k;
++          const top = 0.075 * h + (1 - rise) * h * 0.7 + PH * (0.95 - 0.95 * u);
++          return <PixArt key={i} rows={MINI_HEART} px={(9 + (i % 3) * 3) * k} pal={{ X: ["#ff2a55", "#ff8ab0", "#ffd0de"][i % 3] }}
++            style={{ position: "absolute", left: left + Math.sin(u * 6.28 + i) * 14 * k, top, opacity: rise * Math.sin(Math.PI * u) }} />;
++        }) : null}
+         {hl > 0 ? (
+           <div style={{ position: "absolute", left: 0, right: 0, top: 0.018 * h, textAlign: "center", fontSize: 54 * k, color: "#ffd23a", textShadow: outline(Math.round(5 * k)), opacity: hl }}>
+             ↓ ШАПКА ПРОФИЛЯ ↓
+@@ -475,7 +489,8 @@ const OVERLAYS: Record<string, OV> = {
+           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 330 * k }}>
+             <div style={{ position: "relative", width: 11 * PX, height: BH, display: "flex", alignItems: "center", justifyContent: "center" }}>
+               <PixArt rows={HEART} px={PX} pal={heartPal} style={{ transform: `scale(${pop})`, filter: `drop-shadow(${5 * k}px ${5 * k}px 0 rgba(0,0,0,0.6))` }} />
+-              {!liked ? <PixArt rows={["X.X..X.X.X", "X.X..X...X", "..X......X"]} px={PX * 0.6} pal={{ X: th.coldHi }} style={{ position: "absolute", left: 1.5 * PX, top: BH / 2 + 4.6 * PX }} /> : null}
++              {!liked && c.theme === "love" ? <PixArt rows={HEART_CRACK} px={PX} pal={{ X: "#3a1a26" }} style={{ position: "absolute", left: 0, top: (BH - 10 * PX) / 2 }} /> : null}
++              {!liked && c.theme !== "love" ? <PixArt rows={["X.X..X.X.X", "X.X..X...X", "..X......X"]} px={PX * 0.6} pal={{ X: th.coldHi }} style={{ position: "absolute", left: 1.5 * PX, top: BH / 2 + 4.6 * PX }} /> : null}
+               <div style={{ position: "absolute", left: "50%", top: "50%" }}><Burst t={t} at={c.likeAt} k={k} cols={th.burst} seed={11} /></div>
+               {liked && t - c.likeAt < 0.9 ? <div style={{ position: "absolute", left: "70%", top: -40 * k * (t - c.likeAt) / 0.9, fontSize: 44 * k, color: "#ff5a7a", textShadow: outline(Math.round(4 * k)), opacity: 1 - (t - c.likeAt) / 0.9 }}>+1</div> : null}
+             </div>
+@@ -489,7 +504,9 @@ const OVERLAYS: Record<string, OV> = {
+               {!subbed ? (
+                 <>
+                   <div style={{ position: "absolute", inset: 0, background: `repeating-linear-gradient(135deg, ${th.frost} 0 ${10 * k}px, transparent ${10 * k}px ${26 * k}px)`, opacity: 0.55 }} />
+-                  <PixArt rows={["XXXXXXXXXXXXXXXXXXXXXXXX", ".XX.XXX..X.XX..XXX.X.XX.", "..X..X....X.X...X...X.X."]} px={BW / 24} pal={{ X: th.coldHi }} style={{ position: "absolute", left: 0, top: BH - (BW / 24) * 0.6 }} />
++                  {c.theme === "love"
++                    ? <PixArt rows={heartRow(8)} px={BW / 48} pal={{ X: "#ffd0de" }} style={{ position: "absolute", left: BW / 96, top: BH - (BW / 48) * 1.2 }} />
++                    : <PixArt rows={["XXXXXXXXXXXXXXXXXXXXXXXX", ".XX.XXX..X.XX..XXX.X.XX.", "..X..X....X.X...X...X.X."]} px={BW / 24} pal={{ X: th.coldHi }} style={{ position: "absolute", left: 0, top: BH - (BW / 24) * 0.6 }} />}
+                 </>
+               ) : null}
+               <div style={{ position: "absolute", left: "50%", top: "50%" }}><Burst t={t} at={c.subAt} k={k} cols={th.burst} seed={23} n={18} /></div>
+diff --git a/pixcine/projects/shorts/cast_src.py b/pixcine/projects/shorts/cast_src.py
+index d348ed2..d317c01 100644
+--- a/pixcine/projects/shorts/cast_src.py
++++ b/pixcine/projects/shorts/cast_src.py
+@@ -117,6 +117,13 @@ chars += [
+      "top": {"type": "shirt", "color": "#b85a7a", "belt": "#5a2a3a"}, "apron": "#f2c418", "bottom": {"type": "jeans", "color": "#3a3a48"}, "shoes": "#5a3a2a"},
+ ]
+ 
++# «Как познакомиться с девушкой» (16.11.2026): Витёк = geroy; Витёк in dark glasses («загадочность»); Лиза
++chars += [
++    {"id": "vitek_g", "name": "Витёк", **HERO, "glasses": True, "glasses_color": "#08080a"},
++    {"id": "liza", "name": "Лиза", "build": "slim", "skin": "#f4d4bc", "hair": {"style": "long", "color": "#6a321e"}, "brow": "#4a2414",
++     "top": {"type": "jacket", "color": "#d8607e", "tee": "#f4f0e6", "sleeve": "#d8607e"}, "bottom": {"type": "jeans", "color": "#3a4a72"}, "shoes": "#f0ece4"},
++]
++
+ for c in chars:
+     for key in [x for x, y in c.items() if y is None]:
+         del c[key]
+diff --git a/pixcine/scripts/pixchar.py b/pixcine/scripts/pixchar.py
+index 9223428..ddb6670 100644
+--- a/pixcine/scripts/pixchar.py
++++ b/pixcine/scripts/pixchar.py
+@@ -1030,6 +1030,14 @@ def draw_items() -> dict[str, tuple[Cv, tuple[float, float]]]:
+     cv = Cv(1, 3)
+     cv.rect(0, 0, 1, 3, "#f4f2ea")
+     items["chalk"] = (cv, (0.5, 0.5))
++    # bouquet (16.11.2026, «как познакомиться»): flower heads on top, green stems in paper, grip in the middle
++    cv = Cv(7, 12)
++    cv.rect(2, 5, 5, 12, "#3a8a3a"); cv.px(3, 6, "#5ab04a"); cv.px(2, 8, "#2a6a2a")
++    cv.rect(1, 6, 6, 10, "#f0e6d0"); cv.rect(1, 6, 2, 10, "#d8ccb0"); cv.rect(3, 7, 4, 8, "#d84a6a")   # paper + ribbon
++    for x, y, c in [(1, 1, "#e8304a"), (3, 0, "#ffd23a"), (5, 1, "#e8304a"), (2, 3, "#ff8ab0"), (4, 3, "#e8304a"), (0, 3, "#ffd23a"), (6, 3, "#ff8ab0")]:
++        cv.rect(x, y, x + 1, y + 2, c)
++    cv.px(3, 1, "#fff2a0"); cv.px(1, 2, "#a81a30"); cv.px(5, 2, "#a81a30")
++    items["flowers"] = (cv, (3.5, 8))
+     # book
+     cv = Cv(5, 6)
+     cv.rect(0, 0, 5, 6, "#5a1e1e"); cv.rect(1, 1, 5, 5, "#e8dcc0"); cv.rect(0, 0, 1, 6, "#3a1010")

@@ -21,8 +21,16 @@
 виде валентинки. Шутки: лайк — «ВИТЬКУ НА ЦВЕТЫ НЕ С КЛУМБЫ», подписка — «ЭТО ТОЖЕ ПОДКАТ, НО РАБОЧИЙ». Голос мягко: «переходи в профиль».
 
 ## Сборка
-- Сценарий `script.md` → `pixcine/projects/shorts/narration/znakomstva/script.md`; тайминги `voice/words.json`, `voice/sections.json`.
-- Раскадровка `engine/build_znakomstva.py`, каст/движок — `engine/` (патч, если правили движок).
+- Сценарий `script.md` → `pixcine/projects/shorts/narration/znakomstva/script.md`; тайминги `voice/words.json`, `voice/sections.json`
+  (голос на ПК: `D:\aipollon\znakomstva\voice\voice.wav`, 62,7 с, MD5 9b76c44e0198819e8ecfd346175c4621; в git не кладём).
+- Движок: `engine/pixcine-engine.patch` — новые куклы `liza` (Лиза) и `vitek_g` (Витёк в тёмных очках), предмет `flowers`
+  (букет) в `pixchar.py`, тема концовки `love` в `Film.tsx` (`SUPPORT_THEMES`, трещина на сердце, сердечки на кнопке
+  и вокруг профиля). Затем `python cast_src.py` и `pixchar.py` (вернуть из git PNG старых кукол, если перерисовались).
+- Раскадровка `engine/build_znakomstva.py` (эпизод `znak`, 31 план; локации zn_day/zn_night — улица, zn_cafe, zn_room,
+  zn_hall — площадь у мэрии с клумбой, zn_park / zn_park_n). `scripts/mix.py shorts znak`, `tools/render.mjs --project shorts --ep znak`.
+- Уроки: сидящей кукле нельзя давать `act("phone_up")` — она встаёт (держать телефон через `hold`); слова с общим началом
+  («Сто» / «стоит») искать в `A()` только с `after=`; камера на улице не дальше тротуара (x ≤ 7), иначе внутри дома.
 
 ## Журнал версий
-- script-v1 16.11 — отправлен mike, параллельно озвучка.
+- script-v1 16.11 — отправлен mike, параллельно озвучка на ПК (62,7 с).
+- v1 16.11 — кадры всех планов проверены (лица к камере, никто не стоит в лавке, камера не в стенах), рендер в облаке.
