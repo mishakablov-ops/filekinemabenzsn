@@ -4,7 +4,7 @@ Kind humour: we laugh at Витёк (the channel's hero of «Как жить, е
 Витёк tries five «methods from the guides» on Лиза: Wi-Fi pick-up line (cafe), mystery in dark glasses (night street),
 push-ups at the bus stop, texting «Ты ела?», flowers from the city-hall flowerbed (date with a policeman). Then on a park
 bench Лиза recognises him as the guy who licked the lamp post, and they talk for two hours. Rule: just say «привет».
-Hook-teaser = the policeman moment, ◀◀ rewind. Ending: soft «переходи в профиль» + support card theme «love»."""
+Hook-teaser v2 (17.11) = «нашёл девушку, потому что лизнул столб» on the winter pole, ◀◀ rewind. Ending: soft «переходи в профиль» + support card theme «love»."""
 import json
 import math
 
@@ -247,51 +247,78 @@ def blink_lights(s, x, z, y=1.5):
           {"t": "lightPt", "p": [x + 0.3, z], "y": y, "i": 4, "d": 7, "color": "#ff3a3a", "onAt": round(s.t0 + 0.2, 3), "blink": 2.5})
 
 
-# ======================================================== 1. HOOK — teaser: the «date» at the city hall (with a policeman)
-city_hall("zn_hall", pick=(PICK_X[0], PICK_X[1], -10.0))     # bed already picked in the teaser and after
+# ======================================================== 1. HOOK (v2, 17.11 mike «добавь сильный хук»): paradox in the first second —
+# «Этот парень нашёл девушку, потому что лизнул столб»: the winter pole from «тупой», Лиза filming in the crowd, then ◀◀ rewind.
+city_hall("zn_hall", pick=(PICK_X[0], PICK_X[1], -10.0))     # bed already picked (after the flowers scene)
 city_hall("zn_hall_pick", pick=(PICK_X[0], PICK_X[1], round(A("Нарвал") + 0.2, 3)))
-KNEEL = (0.4, -1.4)                                          # Витёк kneels here, facing +z
+KNEEL = (0.4, -1.4)                                          # Витёк kneels here (flowers scene), facing +z
 COP = (0.4, -0.2)
-T_DEV = A("девушкой")
-s = cut.shot("zn_hall", round(A("Витёк") - 0.05, 3))
-v = actor(s, "hero", V, KNEEL, face=0, act="kneel", eyes="happy", mouth="smile")
-v.hold(0, B="flowers")
-p = actor(s, "cop", "police", COP, face=180, act="arms_crossed", eyes="angry", mouth="closed")
-actor(s, "liza", L, (2.6, 0.6), face=-120, act="idle", eyes="wide", mouth="o")
-actor(s, "x1", "p1", (-3.4, 1.2), face=60, act="phone_up").hold(0, B="phone")
-actor(s, "x2", "babka2", (-4.2, -0.2), face=80, act="idle", eyes="wide", mouth="o")
-blink_lights(s, -6.0, 2.6)
-ks(s, [(0.0, [5.2, 1.5, -2.2], [0.6, 1.0, -0.6], 50), (T_DEV, [4.2, 1.35, -1.9], [0.5, 1.0, -0.7], 46), (-1, [4.0, 1.3, -1.8], [0.5, 1.0, -0.7], 44)],
-   focus="hero", ap=4)
+VW = "vitek_w"                           # Витёк in the winter beanie (as in «тупой»)
+POLE = (-4.5, 0.0)
+TONGUE_AT = (-3.98, 0.0)
+MOUTH_AT = {"F": [0.0, 2.3], "Q": [2.5, 2.3], "S": [5.4, 2.3], "B": [0.0, 2.3]}
+FROST = {"t": "lightPt", "p": [-4.4, 0.6], "y": 1.6, "i": 0.7, "d": 2.5, "color": "#a8d8ff"}
+CROWD = [(-5.6, 2.6, "p1", 150), (-2.4, -0.4, "p4", -100), (-5.8, -1.8, "p2", 30), (-2.8, -1.6, "p5", -40), (-6.0, 1.0, "p6", 100)]
+LIZA_W = (-2.2, 1.6)                     # Лиза films him from the front-right, facing the pole
+
+
+def wshot(t_end):
+    return cut.shot("tp_winter", t_end, tod="dusk", particles=[{"kind": "snow", "n": 520, "box": [-9, 0.2, -34, 9, 8, -1.0]}])
+
+
+def stuck(s, eyes="wide", mouth="o"):
+    v = actor(s, "hero", VW, TONGUE_AT, face=-90, act="stuck", eyes=eyes, mouth=mouth)
+    v.d["tongue"] = {"to": [round(POLE[0] + 0.045, 3), POLE[1]], "at": MOUTH_AT, "w": 0.07, "h": 0.045, "color": "#e8607a"}
+    extra(s, FROST)
+    return v
+
+
+def crowd(s, flashes=()):
+    for i, (x, z, ch, f) in enumerate(CROWD):
+        actor(s, f"c{i}", ch, (x, z), face=f, act="phone_up").hold(0, B="phone")
+    actor(s, "liza", L, LIZA_W, face=-110, act="phone_up", eyes="wide", mouth="o").hold(0, B="phone")
+    for k, t in enumerate(flashes):
+        x, z = (CROWD + [(*LIZA_W, "", 0)])[k % (len(CROWD) + 1)][:2]
+        extra(s, {"t": "lightPt", "p": [x, z], "y": 1.6, "i": 4, "d": 3.5, "color": "#ffffff", "onAt": round(t, 3), "offAt": round(t + 0.07, 3)})
+        cut.sfx(t, "usr-photo-shutter-bright-snap-001", -11)
+
+
+T_DEV = A("девушку")
+T_LIZ = A("лизнул")
+T_STB = A("столб")
+T_NO = A("Но")
+# a) «Этот парень нашёл девушку,» — he is frozen to the pole, everybody films, Лиза too
+s = wshot(round(T_LIZ - 0.06, 3))
+stuck(s)
+crowd(s, flashes=[0.35, 0.8, T_DEV + 0.15])
+ks(s, [(0.0, [-0.8, 1.8, 6.4], [-3.9, 1.35, 0.6], 46), (T_DEV, [-1.9, 1.6, 4.9], [-3.9, 1.4, 0.8], 44), (-1, [-2.0, 1.6, 4.7], [-3.9, 1.4, 0.8], 43)],
+   focus="hero", ap=6)
+cut.card("label", 0.05, s.t1 - 0.03, text="ЭТОТ ПАРЕНЬ", sub="НАШЁЛ ДЕВУШКУ", x=0.06, y=0.15, border="#ff8ab0")
 hit(s, T_DEV, 0.05)
-cut.sfx(0.0, "usr-whoosh-roar-low-swell-322", -7)
+cut.sfx(0.0, "usr-whoosh-roar-low-swell-322", -6)
 cut.sfx(T_DEV, "hit-cinematic", -8)
-cut.sfx(0.2, "siren-far", -16, dur=1.6)
-
-# rewind → Витёк's room: forty guides on the phone
-T_VIT = A("Витёк")
-T_RW = T_VIT
-T_SEY = A("Сейчас")
-s = cut.shot("zn_room", round(T_SEY - 0.05, 3))
-v = actor(s, "hero", V, (-1.2, -0.6), face=20, act="sit", eyes="normal", mouth="closed", seat=0.5)
-v.hold(0, B="phone")
-ks(s, [(s.t0, [0.6, 1.5, 2.4], [-1.1, 1.35, -0.6], 48), (-1, [0.2, 1.4, 1.9], [-1.15, 1.4, -0.6], 44)], focus="hero", ap=6)
-flash(T_RW, 0.16)
-cut.card("label", T_RW, T_RW + 1.1, text="◀◀ ПЕРЕМОТКА", sub="УТРО", x=0.06, y=0.15, border="#ff4a2a")
-cut.sfx(T_RW - 0.12, "usr-tape-rewind-mid-swell-049", -6, dur=0.9)
-T_40 = A("сорок", after=T_VIT)
-cut.card("stat", T_40 - 0.05, s.t1 - 0.03, **{"from": 0, "to": 40, "rollAt": T_40, "rollDur": 0.8}, label="ГАЙДОВ «КАК ПОКОРИТЬ»", y=0.3, size=150)
-cut.sfx(T_40, "usr-whoosh-light-mid-snap-382", -9)
-
+# b) «потому что лизнул столб.» — close on the tongue, −20°
+s = wshot(round(T_NO - 0.06, 3))
+stuck(s)
+ks(s, [(s.t0, [-4.6, 2.6, 2.8], [-4.2, 1.45, 0.0], 44), (-1, [-4.55, 2.1, 2.4], [-4.2, 1.5, 0.0], 40)], focus="hero", ap=4)
+cut.card("stat", T_LIZ - 0.05, s.t1 - 0.03, text="ЛИЗНУЛ СТОЛБ", label="ПОТОМУ ЧТО", y=0.17, size=120, color="#7ad0ff")
+hit(s, T_STB, 0.06)
+cut.sfx(T_LIZ, "usr-whoosh-light-bright-swell-200", -9)
+cut.sfx(T_STB, "usr-voice-bruh-mid-swell-097", -11)
+# c) ◀◀ rewind → Витёк's room: «Но сначала — пять способов, как не надо.»
+T_RW = round(T_NO - 0.06, 3)
+T_5 = A("пять")
 T_NADO = A("надо")
 s = cut.shot("zn_room", S[2])
-v = actor(s, "hero", V, (-0.2, 0.3), face=10, act="idle", eyes="happy", mouth="smile")
-v.act(T_SEY - s.t0 + 0.2, "fist"); v.expr(T_SEY - s.t0 + 0.2, "happy", "smile")
-ks(s, [(s.t0, [0.4, 0.7, 2.6], [-0.2, 1.3, 0.3], 52), (-1, [0.3, 0.65, 2.3], [-0.2, 1.35, 0.3], 48)], focus="hero", ap=6)       # low angle: «the master»
-cut.card("label", T_SEY, s.t1 - 0.03, text="ВИТЁК", sub="ТОТ САМЫЙ, СО СТОЛБА", x=0.06, y=0.15, border="#7ad0ff")
-cut.card("stat", T_NADO - 0.3, s.t1 - 0.03, text="КАК НЕ НАДО", label="", y=0.3, size=110, color="#ff5a3c")
-cut.sfx(T_SEY + 0.2, "usr-whoosh-whip-mid-snap-135", -9)
-cut.sfx(T_NADO, "usr-voice-bruh-mid-swell-097", -12)
+v = actor(s, "hero", V, (-0.2, -0.6), face=10, act="idle", eyes="happy", mouth="smile")
+v.hold(0, B="phone")
+v.act(T_NADO - s.t0 - 0.1, "fist"); v.expr(T_NADO - s.t0 - 0.1, "happy", "smile")
+ks(s, [(s.t0, [1.0, 1.6, 2.05], [-0.2, 1.25, -0.6], 52), (-1, [0.75, 1.55, 1.85], [-0.2, 1.3, -0.6], 48)], focus="hero", ap=6, md=2.2)
+flash(T_RW + 0.02, 0.16)
+cut.card("label", T_RW + 0.02, T_5 - 0.05, text="◀◀ ПЕРЕМОТКА", sub="КАК ВСЁ НАЧАЛОСЬ", x=0.06, y=0.15, border="#ff4a2a")
+cut.card("stat", T_5 - 0.05, s.t1 - 0.03, text="КАК НЕ НАДО", label="5 СПОСОБОВ", y=0.2, size=110, color="#ff5a3c")
+cut.sfx(T_RW - 0.1, "usr-tape-rewind-mid-swell-049", -6, dur=0.9)
+cut.sfx(T_5, "usr-whoosh-whip-mid-snap-135", -9)
 
 # ======================================================== 2. Method 1: the pick-up line (cafe «Вай-фай»)
 LZ_SEAT = (T1[0], T1[1] + 0.6)          # Лиза sits facing -z towards the window-side table
@@ -552,7 +579,7 @@ hit(s, T_POL, 0.05, 0.3)
 LZ_B = (BENCH[0], BENCH[1] - 0.45)
 VK_B = (BENCH[0], BENCH[1] + 0.45)
 T_LZ7 = A("Лиза", after=S[7])
-T_LIZN = A("лизнул")
+T_LIZN = A("лизнул", after=S[7])
 T_NU = C[11]["start"]
 T_DVA = A("проболтали")
 T_BEZ = A("Без", after=T_DVA)
@@ -665,7 +692,8 @@ w.subs(ep, 0.3)
 for sub, c in zip(ep.subs[-len(C):], C):
     sub["t1"] = round(min(sub["t1"], c["end"] + 0.8), 3)
 ep.subs[-1]["t1"] = round(min(ep.subs[-1]["t1"], T_SUP - 0.12), 3)    # the like/subscribe block takes the caption place
-ep.amb(0.0, T_RW, "shorts/street_day", gain=-28, fi=0.05, fo=0.2)
+ep.amb(0.0, T_RW, "shorts/city_dark", gain=-28, fi=0.05, fo=0.2)
+ep.amb(0.0, T_RW, "city-hum", gain=-34, fi=0.05, fo=0.2)
 ep.amb(T_RW, S[2], "room-tone", gain=-32, fi=0.1, fo=0.2)
 ep.amb(S[2], S[3], "room-tone", gain=-30, fi=0.1, fo=0.2)
 ep.amb(S[3], S[4] + 0.0 if False else S[4], "city-hum", gain=-32, fi=0.2, fo=0.2)
