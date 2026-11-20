@@ -1,0 +1,299 @@
+{
+ "fps": 30,
+ "ends": {
+  "4": 74.64
+ },
+ "shots": [
+  {
+   "id": "d00",
+   "set": "akad",
+   "variant": "haul",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.72,
+   "start": 0.0,
+   "anchor": 0.0,
+   "events": {}
+  },
+  {
+   "id": "d00b",
+   "set": "akad",
+   "variant": "lesson",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.61,
+   "start": 3.47,
+   "anchor": "@И это",
+   "events": {}
+  },
+  {
+   "id": "d01",
+   "set": "akad",
+   "variant": "dawn",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.59,
+   "start": 5.83,
+   "anchor": "@Пять утра",
+   "events": {}
+  },
+  {
+   "id": "d02",
+   "set": "akad",
+   "variant": "heaps",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.83,
+   "start": 8.17,
+   "anchor": "@30",
+   "events": {}
+  },
+  {
+   "id": "d03",
+   "set": "akad",
+   "variant": "junk",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.61,
+   "start": 10.75,
+   "anchor": "@Холодильники",
+   "events": {}
+  },
+  {
+   "id": "d04",
+   "set": "akad",
+   "variant": "circle6",
+   "kind": "clip",
+   "part": "4",
+   "dur": 5.11,
+   "start": 13.11,
+   "anchor": "@Мой круг",
+   "events": {
+    "ring": 0.37
+   }
+  },
+  {
+   "id": "d05",
+   "set": "akad",
+   "variant": "order",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.59,
+   "start": 17.97,
+   "anchor": "@Эммет сказал",
+   "events": {
+    "point": 1.21
+   }
+  },
+  {
+   "id": "d05b",
+   "set": "akad",
+   "variant": "palm",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.91,
+   "start": 20.31,
+   "anchor": "@И сожми",
+   "events": {}
+  },
+  {
+   "id": "d06",
+   "set": "akad",
+   "variant": "cantmove",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.93,
+   "start": 22.97,
+   "anchor": "@Первую",
+   "events": {}
+  },
+  {
+   "id": "d07",
+   "set": "akad",
+   "variant": "jog",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.31,
+   "start": 25.65,
+   "anchor": "@Си-Джей бегал",
+   "events": {}
+  },
+  {
+   "id": "d07b",
+   "set": "akad",
+   "variant": "mock",
+   "kind": "clip",
+   "part": "4",
+   "dur": 1.57,
+   "start": 27.71,
+   "anchor": "@Ноль",
+   "events": {}
+  },
+  {
+   "id": "d08",
+   "set": "akad",
+   "variant": "fizzle",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.35,
+   "start": 29.03,
+   "anchor": "@Круг не",
+   "events": {
+    "out": 2.11
+   }
+  },
+  {
+   "id": "d09",
+   "set": "akad",
+   "variant": "asleep",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.07,
+   "start": 32.13,
+   "anchor": "@На 10",
+   "events": {}
+  },
+  {
+   "id": "d10",
+   "set": "akad",
+   "variant": "silent",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.35,
+   "start": 34.95,
+   "anchor": "@Эммет ничего",
+   "events": {}
+  },
+  {
+   "id": "d11",
+   "set": "akad",
+   "variant": "together",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.97,
+   "start": 37.05,
+   "anchor": "@Он встал",
+   "events": {}
+  },
+  {
+   "id": "d12",
+   "set": "akad",
+   "variant": "days",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.71,
+   "start": 40.77,
+   "anchor": "@Каждый день",
+   "events": {}
+  },
+  {
+   "id": "d13",
+   "set": "akad",
+   "variant": "empty",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.63,
+   "start": 44.23,
+   "anchor": "@Через месяц",
+   "events": {}
+  },
+  {
+   "id": "d14",
+   "set": "akad",
+   "variant": "palmring",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.71,
+   "start": 46.61,
+   "anchor": "@А круг",
+   "events": {
+    "shrink": 1.11
+   }
+  },
+  {
+   "id": "d15",
+   "set": "akad",
+   "variant": "denise",
+   "kind": "clip",
+   "part": "4",
+   "dur": 2.45,
+   "start": 50.07,
+   "anchor": "@Дениз",
+   "events": {}
+  },
+  {
+   "id": "d16",
+   "set": "akad",
+   "variant": "sleep10",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.82,
+   "start": 52.27,
+   "anchor": "@Останавливала",
+   "events": {
+    "stop": 0.07
+   }
+  },
+  {
+   "id": "d17",
+   "set": "akad",
+   "variant": "alone",
+   "kind": "clip",
+   "part": "4",
+   "dur": 4.68,
+   "start": 55.84,
+   "anchor": "@Эммет сказал#2",
+   "events": {}
+  },
+  {
+   "id": "d18",
+   "set": "akad",
+   "variant": "rule2",
+   "kind": "clip",
+   "part": "4",
+   "dur": 4.33,
+   "start": 60.27,
+   "anchor": "@Правило",
+   "events": {
+    "rule": 0.07
+   }
+  },
+  {
+   "id": "d19",
+   "set": "akad",
+   "variant": "glove",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.25,
+   "start": 64.35,
+   "anchor": "@Вечером",
+   "events": {
+    "throw": 1.47
+   }
+  },
+  {
+   "id": "d19b",
+   "set": "akad",
+   "variant": "duel",
+   "kind": "clip",
+   "part": "4",
+   "dur": 3.41,
+   "start": 67.35,
+   "anchor": "@Завтра",
+   "events": {
+    "me": 2.09
+   }
+  },
+  {
+   "id": "d20",
+   "set": "akad",
+   "variant": "rest4",
+   "kind": "clip",
+   "part": "4",
+   "dur": 4.38,
+   "start": 70.51,
+   "anchor": "@Следующая",
+   "events": {}
+  }
+ ]
+}
