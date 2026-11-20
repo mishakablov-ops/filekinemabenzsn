@@ -6,6 +6,8 @@
 
 ## Карта
 
+С чего начинать и где искать любой ответ — [`knowledge/MAP.md`](knowledge/MAP.md).
+
 | папка | что лежит | кто меняет |
 |---|---|---|
 | `kinema/` | движок KINEMA (Remotion + three.js + Python). **В git не хранится**: свежая сборка — в репозитории [`Wpresser/Algorithm-for-aipollon`](https://github.com/Wpresser/Algorithm-for-aipollon); перед работой `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema` и скопировать поверх `kinema-extra/` | обновляется в репозитории движка |
