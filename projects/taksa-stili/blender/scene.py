@@ -471,7 +471,43 @@ if STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly'):
 S.render.image_settings.file_format = 'PNG'
 if STYLE == 'gzhel': S.view_settings.exposure = -1.3
 S.render.filepath = OUT
-if F0 == F1:
+if STYLE == 'ids':
+    # Проходы для неона/контуров: ID материала (R = номер) и глубина (16 бит), без сглаживания.
+    import json, os
+    keys = sorted(MATS.keys())
+    IDX = {k: i + 1 for i, k in enumerate(keys)}
+    hide = set(os.environ.get('IDS_HIDE', '').split(',')) - {''}
+    if 'tufts' in hide:
+        TUFTS.hide_render = True
+    def ids_mode(mode):
+        for key, m in MATS.items():
+            nt = m.node_tree; nt.nodes.clear()
+            out = nt.nodes.new('ShaderNodeOutputMaterial'); em = nt.nodes.new('ShaderNodeEmission')
+            if mode == 'id':
+                em.inputs['Color'].default_value = (IDX[key] / 255.0, 0, 0, 1)
+            else:
+                cd = nt.nodes.new('ShaderNodeCameraData'); mth = nt.nodes.new('ShaderNodeMath')
+                mth.operation = 'DIVIDE'; mth.inputs[1].default_value = 100.0
+                nt.links.new(cd.outputs['View Distance'], mth.inputs[0]); nt.links.new(mth.outputs[0], em.inputs['Color'])
+            nt.links.new(em.outputs[0], out.inputs[0])
+    wn.clear(); wo = wn.new('ShaderNodeOutputWorld'); bgw = wn.new('ShaderNodeBackground')
+    W.node_tree.links.new(bgw.outputs[0], wo.inputs[0])
+    S.cycles.samples = 1; S.cycles.use_denoising = False; S.cycles.filter_width = 0.01
+    S.cycles.max_bounces = 0
+    S.view_settings.view_transform = 'Raw'; S.view_settings.look = 'None'; S.view_settings.exposure = 0
+    S.render.dither_intensity = 0
+    os.makedirs(OUT, exist_ok=True)
+    json.dump(IDX, open(os.path.join(OUT, 'ids.json'), 'w'), ensure_ascii=False)
+    step = int(ARGS[5]) if len(ARGS) > 5 else 1
+    for f in range(F0, F1 + 1, step):
+        S.frame_set(f)
+        ids_mode('id'); bgw.inputs['Color'].default_value = (0, 0, 0, 1)
+        S.render.image_settings.color_mode = 'RGB'; S.render.image_settings.color_depth = '8'
+        S.render.filepath = os.path.join(OUT, 'id_%04d.png' % f); bpy.ops.render.render(write_still=True)
+        ids_mode('depth'); bgw.inputs['Color'].default_value = (1, 1, 1, 1)
+        S.render.image_settings.color_mode = 'BW'; S.render.image_settings.color_depth = '16'
+        S.render.filepath = os.path.join(OUT, 'z_%04d.png' % f); bpy.ops.render.render(write_still=True)
+elif F0 == F1:
     S.frame_set(F0)
     bpy.ops.render.render(write_still=True)
 else:
