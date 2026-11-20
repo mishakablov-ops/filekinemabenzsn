@@ -130,7 +130,7 @@ tube = np.maximum(tube, fillm); core = np.maximum(core, 0.3 * np.clip(ndi.gaussi
 E = C * tube[..., None] * 1.1 + (C * 0.35 + 0.9) * core[..., None] * 1.2
 
 
-if VAR == 'ink':
+if VAR in ('ink', 'halftone'):
     # плоский мультик с ровным чернильным контуром: заливка цветами сцены + трубки тёмной краской
     import ast, re
     src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scene.py'), encoding='utf-8').read()
@@ -142,6 +142,34 @@ if VAR == 'ink':
     lin[0] = (0.98, 0.93, 0.85)
     srgb = np.where(lin <= 0.0031308, lin * 12.92, 1.055 * np.power(lin, 1 / 2.4) - 0.055)
     img = srgb[lab]
+    if VAR == 'halftone':
+        from PIL import ImageDraw
+        paper = np.array([0.98, 0.95, 0.88], np.float32)
+        img = img * 0.82 + paper * 0.18
+        sh = np.asarray(Image.open(os.environ['NEON_SHADE']).convert('L').resize((W, H), Image.BILINEAR)).astype(np.float32) / 255
+        ref = np.percentile(sh[lab > 0], 92) if (lab > 0).any() else 1.0
+        dark = np.clip((0.74 - sh / max(ref, 1e-3)) * 2.0, 0, 1) ** 0.8
+        dark[lab == IDX.get('cloud', -1)] = 0
+        dark[lab == 0] = 0
+        cell = 15 * K
+        def screen(val, ang, scale):
+            lay = Image.new('L', (W * 2, H * 2), 0); d = ImageDraw.Draw(lay)
+            th = np.radians(ang); c, s_ = np.cos(th), np.sin(th)
+            Rr = int(max(W, H) * 0.75 / cell) + 2
+            for u in range(-Rr, Rr):
+                for v in range(-Rr, Rr):
+                    x = W / 2 + (u * c - v * s_) * cell; y = H / 2 + (u * s_ + v * c) * cell
+                    if 0 <= x < W and 0 <= y < H:
+                        r = cell * scale * np.sqrt(val[int(y), int(x)])
+                        if r > 0.6:
+                            d.ellipse([2 * (x - r), 2 * (y - r), 2 * (x + r), 2 * (y + r)], fill=255)
+            return np.asarray(lay.resize((W, H), Image.LANCZOS)).astype(np.float32)[..., None] / 255
+        m = screen(dark, 45, 0.55)
+        img = img * (1 - m * 0.88) + np.array([0.10, 0.06, 0.07], np.float32) * m * 0.88
+        skyv = np.where(lab == 0, 0.22, 0.0).astype(np.float32)
+        m2 = screen(skyv, 15, 0.5)
+        img = img * (1 - m2) + np.array([0.95, 0.55, 0.68], np.float32) * m2
+        img = img * (1 + np.random.default_rng(F).normal(0, 0.025, (H, W)))[..., None]
     a_ink = np.clip(R * 0.75 + 0.5 - dist, 0, 1)
     ink = np.array([0.12, 0.06, 0.04], np.float32)
     img = img * (1 - a_ink[..., None]) + ink * a_ink[..., None]

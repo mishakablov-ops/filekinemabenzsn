@@ -118,9 +118,32 @@ def setup_materials(style, pal):
             else:
                 nt.links.new(ramp.outputs[0], b.inputs['Base Color'])
             nt.links.new(b.outputs[0], out.inputs[0])
+        elif style == 'shade':
+            b = nt.nodes.new('ShaderNodeBsdfDiffuse')
+            b.inputs['Color'].default_value = (0.8, 0.8, 0.8, 1)
+            nt.links.new(b.outputs[0], out.inputs[0])
         else:  # soft3d, lowpoly
             b = nt.nodes.new('ShaderNodeBsdfPrincipled')
             b.inputs['Base Color'].default_value = (*col, 1)
+            if style == 'soft3d' and key in ('body', 'belly', 'ear', 'grass', 'hill1', 'hill2', 'bush', 'bush2', 'leaf'):
+                # не пластик: лёгкая неравномерность цвета и мелкий рельеф (шерсть / трава)
+                tc = nt.nodes.new('ShaderNodeTexCoord')
+                nz = nt.nodes.new('ShaderNodeTexNoise'); nz.inputs['Scale'].default_value = 6 if key in ('body', 'belly', 'ear') else 3
+                nz.inputs['Detail'].default_value = 6
+                mx = nt.nodes.new('ShaderNodeMix'); mx.data_type = 'RGBA'; mx.blend_type = 'MULTIPLY'
+                mx.inputs['Factor'].default_value = 0.35
+                mx.inputs[6].default_value = (*col, 1)
+                nt.links.new(tc.outputs['Object'], nz.inputs['Vector'])
+                nt.links.new(nz.outputs['Color'], mx.inputs[7])
+                ad = nt.nodes.new('ShaderNodeMix'); ad.data_type = 'RGBA'; ad.blend_type = 'MIX'
+                ad.inputs['Factor'].default_value = 0.6; ad.inputs[6].default_value = (*col, 1)
+                nt.links.new(mx.outputs[2], ad.inputs[7])
+                nt.links.new(ad.outputs[2], b.inputs['Base Color'])
+                fur = nt.nodes.new('ShaderNodeTexNoise'); fur.inputs['Scale'].default_value = 180 if key in ('body', 'belly', 'ear') else 60
+                fur.inputs['Detail'].default_value = 3
+                bm = nt.nodes.new('ShaderNodeBump'); bm.inputs['Strength'].default_value = 0.18; bm.inputs['Distance'].default_value = 0.01
+                nt.links.new(tc.outputs['Object'], fur.inputs['Vector']); nt.links.new(fur.outputs['Fac'], bm.inputs['Height'])
+                nt.links.new(bm.outputs[0], b.inputs['Normal'])
             b.inputs['Roughness'].default_value = 0.08 if key in ('nose', 'eyew', 'pupil') else 0.6
             if style == 'lowpoly':
                 gm = nt.nodes.new('ShaderNodeNewGeometry')
@@ -360,6 +383,25 @@ cam.keyframe_insert('location', frame=1)
 cam.location = (0.55, -2.45, 0.6); cam.keyframe_insert('location', frame=720)
 for fc in getattr(cam.animation_data.action, 'fcurves', []):
     for kp in fc.keyframe_points: kp.interpolation = 'LINEAR'
+if STYLE in ('soft3d', 'clay'):
+    fo = empty('Focus', (0.7, -0.25, 0.75))
+    cam_d.dof.use_dof = True; cam_d.dof.focus_object = fo
+    cam_d.dof.aperture_fstop = 1.4 if STYLE == 'soft3d' else 0.9
+if STYLE == 'clay':
+    # стоп-моушн: каждый снятый кадр собака и свет чуть «дышат» (как руки аниматора)
+    rnd = random.Random(11)
+    for f in range(1, 721, 2):
+        dog.location = (rnd.uniform(-0.004, 0.004), rnd.uniform(-0.004, 0.004), 0)
+        dog.rotation_euler = (0, 0, rnd.uniform(-0.006, 0.006))
+        dog.keyframe_insert('location', frame=f); dog.keyframe_insert('rotation_euler', frame=f)
+    for o in (dog,):
+        ad = o.animation_data
+        if ad and ad.action:
+            for fc in getattr(ad.action, 'fcurves', []):
+                for kp in fc.keyframe_points: kp.interpolation = 'CONSTANT'
+import os as _os
+if 'tufts' in _os.environ.get('IDS_HIDE', ''):
+    TUFTS.hide_render = True
 
 W = bpy.data.worlds.new('W'); S.world = W; W.use_nodes = True
 wn = W.node_tree.nodes; wn.clear()
@@ -420,7 +462,7 @@ if STYLE == 'gzhel':
     PAL.update(sky=(1.5, 1.65, 2.0), sky2=(2.2, 2.2, 2.4))
 
 setup_materials(STYLE, PAL)
-if STYLE in ('soft3d', 'lowpoly', 'clay', 'gzhel', 'comic', 'toon'):
+if STYLE in ('soft3d', 'lowpoly', 'clay', 'gzhel', 'comic', 'toon', 'shade'):
     light_rig(STYLE, PAL)
 else:
     bg.inputs['Color'].default_value = (*PAL['sky'], 1)
@@ -459,8 +501,8 @@ if STYLE in LINES and USE_FREESTYLE:
 # ---------------- рендер ----------------
 S.render.engine = 'CYCLES'
 S.cycles.device = 'CPU'
-S.cycles.samples = 28 if STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly') else 12
-S.cycles.use_denoising = STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'comic', 'toon')
+S.cycles.samples = int(_os.environ.get('SAMPLES', 28)) if STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'shade') else 12
+S.cycles.use_denoising = STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'comic', 'toon', 'shade')
 S.cycles.max_bounces = 4
 S.render.resolution_x = RESX; S.render.resolution_y = int(RESX * 16 / 9)
 S.render.film_transparent = False
@@ -470,6 +512,7 @@ if STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly'):
     S.view_settings.look = 'Medium High Contrast'
 S.render.image_settings.file_format = 'PNG'
 if STYLE == 'gzhel': S.view_settings.exposure = -1.3
+if STYLE == 'shade': S.view_settings.exposure = -2.2; S.view_settings.look = 'None'
 S.render.filepath = OUT
 if STYLE == 'ids':
     # Проходы для неона/контуров: ID материала (R = номер) и глубина (16 бит), без сглаживания.
