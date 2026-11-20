@@ -2,7 +2,8 @@
 
 Это рабочая база проекта aipollon. Отвечать пользователю по-русски.
 
-1. В начале любой задачи прочитай `README.md` (карта папок) и `knowledge/aipollon-knowledge.md`.
+1. В начале любой задачи прочитай `knowledge/MAP.md` (карта знаний: что где искать и что действует сейчас), дальше —
+   только нужные разделы по ней (`README.md` — карта папок, `knowledge/aipollon-knowledge.md` — выжимка правил).
    Движка `kinema/` в git нет: если папки нет, `git clone https://github.com/Wpresser/Algorithm-for-aipollon kinema`
    и `cp -r kinema-extra/skills kinema/` (аватарка и обложки канала).
    При расхождении главнее: свежие пожелания пользователя → `knowledge/rules/*` → `styles/<стиль>/README.md` →
