@@ -130,6 +130,178 @@ tube = np.maximum(tube, fillm); core = np.maximum(core, 0.3 * np.clip(ndi.gaussi
 E = C * tube[..., None] * 1.1 + (C * 0.35 + 0.9) * core[..., None] * 1.2
 
 
+if VAR == 'anime':
+    # Аниме: персонаж — заливка с жёсткой тенью (2 тона, холодная тень) и тонкий контур; фон — живописный, без линий,
+    # с воздушной дымкой; глубокое небо; глаза с радужкой и бликами; румянец; искорки.
+    from PIL import ImageDraw
+    ANI = dict(body=(0.84, 0.50, 0.26), ear=(0.58, 0.29, 0.14), nose=(0.16, 0.10, 0.11), eyew=(1.0, 1.0, 1.0),
+               pupil=(0.10, 0.06, 0.06), collar=(0.22, 0.48, 0.96), tag=(1.0, 0.82, 0.28), tagtxt=(0.50, 0.28, 0.06),
+               mouth=(0.40, 0.14, 0.12), grass=(0.47, 0.80, 0.33), hill1=(0.44, 0.76, 0.38), hill2=(0.58, 0.85, 0.45),
+               bush=(0.95, 0.60, 0.78), bush2=(0.30, 0.62, 0.34), leaf=(0.36, 0.70, 0.34), trunk=(0.52, 0.35, 0.24),
+               cloud=(1.0, 1.0, 1.0), roof=(0.88, 0.38, 0.32), wall=(0.99, 0.94, 0.84), wood=(0.74, 0.54, 0.35),
+               petal=(1.0, 0.87, 0.28), petal2=(1.0, 0.64, 0.74), fcore=(1.0, 0.62, 0.22), stem=(0.32, 0.64, 0.27),
+               butterfly=(1.0, 0.76, 0.22))
+    CEL = {'body', 'ear', 'nose', 'collar', 'tag', 'mouth', 'butterfly', 'petal', 'petal2', 'fcore', 'stem', 'cloud'}
+    col = np.zeros((256, 3), np.float32); cel = np.zeros(256, bool)
+    for k, i in IDX.items():
+        col[i] = ANI.get(k, (1, 0, 1)); cel[i] = k in CEL
+    LB = {k: lab == i for k, i in IDX.items()}
+    sky = lab == 0
+    base = col[lab]
+    sh = np.asarray(Image.open(os.environ['NEON_SHADE']).convert('L').resize((W, H), Image.BILINEAR)).astype(np.float32) / 255
+    ref = np.percentile(sh[~sky], 92) if (~sky).any() else 1.0
+    L = ndi.gaussian_filter(sh / max(ref, 1e-3), 0.8 * K)
+    # граница света и тени — из прохода «только солнце» (NEON_KEY), иначе из мягкого
+    if os.environ.get('NEON_KEY'):
+        kk = np.asarray(Image.open(os.environ['NEON_KEY']).convert('L').resize((W, H), Image.BILINEAR)).astype(np.float32) / 255
+        kk = ndi.gaussian_filter(kk / max(np.percentile(kk[~sky], 95), 1e-3), 0.7 * K)
+        lit = np.clip((kk - 0.28) / 0.06 + 0.5, 0, 1)
+    else:
+        lit = np.clip((L - 0.52) / 0.05 + 0.5, 0, 1)
+    # персонаж и мелочи: 2 тона (холодная тень), блик по кромке — третий тон
+    SHT = np.array([0.64, 0.58, 0.88], np.float32)
+    cel_img = base * (SHT + (1 - SHT) * lit[..., None])
+    bm = LB.get('body', np.zeros_like(sky))
+    t_hi = np.percentile(L[bm], 94) if bm.any() else 9.0
+    hi = np.clip((L - t_hi) / 0.02 + 0.5, 0, 1) * bm * lit
+    cel_img = cel_img + (np.array([1.0, 0.92, 0.78], np.float32) - cel_img) * (0.35 * hi)[..., None]
+    # фон: мягкая живописная светотень + тёплый свет / холодная тень
+    soft = np.clip(L, 0.15, 1.25)
+    paint = base * (0.55 + 0.45 * soft)[..., None] * (1 + 0.06 * (soft - 0.8))[..., None]
+    paint = paint + (np.array([0.35, 0.40, 0.75], np.float32) - paint) * (0.18 * np.clip(0.6 - soft, 0, 1) / 0.45)[..., None]
+    rng_p = np.random.default_rng(3)
+    tex = ndi.gaussian_filter(rng_p.normal(0, 1, (H // 4, W // 4)), 2.0)
+    tex = ndi.zoom(tex, (H / tex.shape[0], W / tex.shape[1]), order=1)[:H, :W]
+    paint = paint * (1 + 0.035 * tex)[..., None]
+    # падающие тени на фоне — тоже чёткие, но мягче по цвету
+    SHB = np.array([0.74, 0.74, 0.94], np.float32)
+    paint = paint * (SHB + (1 - SHB) * lit[..., None])
+    # трава: живописные пятна, привязанные к земле (мировые координаты из прохода p_####)
+    pp = os.path.join(D, 'p_%04d.png' % F)
+    if os.path.exists(pp):
+        P3 = np.asarray(Image.open(pp)).astype(np.float32) / 65535.0
+        wx, wy = (P3[..., 0] - 0.5) * 100, (P3[..., 1] - 0.5) * 100
+        rg = np.random.default_rng(9)
+        n1 = ndi.gaussian_filter(rg.normal(0, 1, (256, 256)), 3.0, mode='wrap'); n1 /= n1.std()
+        n2 = ndi.gaussian_filter(rg.normal(0, 1, (256, 256)), 1.0, mode='wrap'); n2 /= n2.std()
+        s1 = ndi.map_coordinates(n1, [wy * 9.0, wx * 9.0], order=1, mode='grid-wrap')
+        s2 = ndi.map_coordinates(n2, [wy * 30.0, wx * 30.0], order=1, mode='grid-wrap')
+        amp = np.exp(-np.maximum(z - 1.0, 0) / 9.0) * (LB.get('grass', 0) | LB.get('hill1', 0) | LB.get('hill2', 0))
+        gv = 0.07 * s1 + 0.05 * s2 * np.exp(-np.maximum(z - 1.0, 0) / 4.0)
+        paint = paint * (1 + gv * amp)[..., None]
+        paint = paint + (np.array([0.80, 0.95, 0.45], np.float32) - paint) * (0.25 * np.clip(s1 - 1.2, 0, 1) * amp)[..., None]
+    img = np.where(cel[lab][..., None], cel_img, paint)
+    # глаза не затеняем: белки и зрачки остаются чистыми
+    for k in ('eyew', 'pupil'):
+        if k in LB: img = np.where(LB[k][..., None], base, img)
+    # воздушная дымка по глубине (дальше — светлее и голубее)
+    zz = np.where(sky, 100.0, z)
+    haze = (1 - np.exp(-np.maximum(zz - 5.0, 0) / 28.0)) * 0.62
+    HZ = np.array([0.80, 0.90, 1.0], np.float32)
+    img = img + (HZ - img) * haze[..., None]
+    # небо: глубокий синий сверху → светлый у горизонта
+    rows = np.where((~sky).any(1))[0]
+    first = np.argmax(~sky, axis=0).astype(np.float32); first[~(~sky).any(0)] = H
+    hy = float(np.median(first))
+    yy, xx = np.mgrid[0:H, 0:W]
+    tsky = np.clip(yy / max(hy, 1.0), 0, 1) ** 1.6
+    TOP = np.array([0.13, 0.38, 0.88], np.float32); MID = np.array([0.40, 0.66, 0.98], np.float32)
+    skyc = np.where((tsky < 0.55)[..., None], TOP + (MID - TOP) * (tsky / 0.55)[..., None],
+                    MID + (HZ - MID) * ((tsky - 0.55) / 0.45)[..., None])
+    img = np.where(sky[..., None], skyc, img)
+    # облака сцены: белые, тень сиреневая
+    if 'cloud' in LB:
+        cm = LB['cloud']
+        cl = np.where(lit[..., None] > 0.5, np.array([1.0, 1.0, 1.0], np.float32), np.array([0.80, 0.83, 0.97], np.float32))
+        img = np.where(cm[..., None], cl * 0.85 + img * 0.15, img)
+    # сглаживание заливки (без зубцов на краях масок)
+    img = np.stack([ndi.gaussian_filter(img[..., c], 0.6 * K) for c in range(3)], -1)
+    # ---- глаза: радужка с градиентом, зрачок, два блика ----
+    hl = []
+    if 'eyew' in LB:
+        eye_l, ne = ndi.label(LB['eyew'])
+        areas = ndi.sum(LB['eyew'], eye_l, range(1, ne + 1)) if ne else []
+        big = [i + 1 for i, a in enumerate(areas) if a > 0.25 * max(areas) and a > 150 * K * K]
+        pm = LB.get('pupil', np.zeros_like(sky))
+        nose_c = ndi.center_of_mass(LB['nose']) if LB.get('nose') is not None and LB['nose'].any() else None
+        for e in big:
+            em = eye_l == e
+            ea = em.sum(); re_ = np.sqrt(ea / np.pi)
+            ey, ex = ndi.center_of_mass(em)
+            near_p = pm & ndi.binary_dilation(em, iterations=int(4 * K) + 1)
+            if near_p.sum() > 20 * K * K:
+                cy, cx = ndi.center_of_mass(near_p); rp = np.sqrt(near_p.sum() / np.pi)
+                ri = max(rp * 1.5, re_ * 0.62)
+            else:
+                cy, cx = ey, ex
+                if nose_c is not None:
+                    dy_, dx_ = nose_c[0] - ey, nose_c[1] - ex; dn = np.hypot(dy_, dx_) + 1e-6
+                    cy += dy_ / dn * re_ * 0.32; cx += dx_ / dn * re_ * 0.32
+                ri = re_ * 0.62
+            region = em | near_p
+            d2 = (yy - cy) ** 2 + (xx - cx) ** 2
+            iris = (d2 < ri ** 2) & region
+            g = np.clip((yy - (cy - ri)) / (2 * ri), 0, 1)[..., None]
+            irc = np.array([0.08, 0.05, 0.06], np.float32) * (1 - g) + np.array([0.62, 0.34, 0.12], np.float32) * g
+            img = np.where(iris[..., None], irc, img)
+            img = np.where(((d2 < (ri * 0.45) ** 2) & region)[..., None], np.array([0.04, 0.02, 0.03], np.float32), img)
+            hl.append((cy, cx, ri, region))
+            if near_p.sum() > 20 * K * K:
+                img = np.where(near_p[..., None] & ~iris[..., None], np.array([0.08, 0.05, 0.06], np.float32), img)
+    # ---- контур: только у таксы и бабочки, тонкий ----
+    linek = {'body', 'ear', 'nose', 'mouth', 'eyew', 'collar', 'tag', 'butterfly'}
+    lm = np.zeros(256, bool)
+    for k in linek:
+        if k in IDX: lm[IDX[k]] = True
+    a_ink = np.clip(R * 0.45 + 0.5 - dist, 0, 1) * lm[Lnear]
+    img = img * (1 - a_ink[..., None]) + np.array([0.20, 0.09, 0.07], np.float32) * a_ink[..., None]
+    # блики поверх контура
+    for cy, cx, ri, region in hl:
+        for oy, ox, rr in ((-0.38, -0.30, 0.36), (0.42, 0.36, 0.15)):
+            d2 = (yy - (cy + oy * ri)) ** 2 + (xx - (cx + ox * ri)) ** 2
+            a = np.clip((rr * ri - np.sqrt(d2)) / (1.2 * K) + 0.5, 0, 1) * region
+            img = img * (1 - a[..., None]) + a[..., None]
+    # ---- румянец под ближним глазом ----
+    if hl and 'body' in LB and 'nose' in LB and LB['nose'].any():
+        cy, cx, ri, _ = max(hl, key=lambda h: h[2])
+        ny, nx = ndi.center_of_mass(LB['nose'])
+        by, bx = cy + 0.45 * (ny - cy) + 1.3 * ri, cx + 0.45 * (nx - cx)
+        rx_, ry_ = 1.15 * ri, 0.62 * ri
+        e = ((xx - bx) / rx_) ** 2 + ((yy - by) / ry_) ** 2
+        a = np.clip(1 - e, 0, 1) ** 0.7 * 0.55 * LB['body']
+        img = img * (1 - a[..., None]) + np.array([1.0, 0.50, 0.56], np.float32) * a[..., None]
+        lay = Image.new('L', (W, H), 0); d = ImageDraw.Draw(lay)
+        for i in range(3):
+            x0 = bx - 0.55 * rx_ + i * 0.45 * rx_
+            d.line([(x0, by + 0.35 * ry_), (x0 + 0.28 * rx_, by - 0.45 * ry_)], fill=255, width=max(2, int(3 * K)))
+        st = np.asarray(lay).astype(np.float32) / 255 * LB['body'] * 0.75
+        img = img * (1 - st[..., None]) + np.array([0.93, 0.33, 0.43], np.float32) * st[..., None]
+    # ---- искорки вокруг (мерцают) ----
+    lay = Image.new('L', (W, H), 0); d = ImageDraw.Draw(lay)
+    rs = np.random.default_rng(21)
+    for j in range(9):
+        px, py = rs.uniform(0.08, 0.92) * W, rs.uniform(0.33, 0.62) * H
+        ph = rs.uniform(0, 6.28)
+        s = (14 + 16 * rs.random()) * K * max(0.0, np.sin(F * 0.22 + ph)) ** 2
+        if s < 2: continue
+        w_ = s * 0.18
+        d.polygon([(px, py - s), (px + w_, py - w_), (px + s, py), (px + w_, py + w_), (px, py + s),
+                   (px - w_, py + w_), (px - s, py), (px - w_, py - w_)], fill=255)
+    sp = np.asarray(lay).astype(np.float32) / 255
+    dogm = ndi.binary_dilation(np.isin(lab, [IDX[k] for k in linek if k in IDX]), iterations=int(12 * K))
+    sp = sp * ~dogm
+    glow = ndi.gaussian_filter(sp, 4 * K) * 1.5
+    img = img + (np.array([1.0, 0.97, 0.85], np.float32) - img) * np.clip(sp + glow, 0, 1)[..., None]
+    # ---- мягкое свечение светлых мест и лёгкая насыщенность ----
+    br = np.clip(img.max(-1) - 0.82, 0, 1)
+    small = ndi.zoom(br, 0.25, order=1); small = ndi.gaussian_filter(small, 6 * K)
+    bloom = ndi.zoom(small, (H / small.shape[0], W / small.shape[1]), order=1)[:H, :W]
+    img = img + bloom[..., None] * np.array([1.0, 0.95, 0.85], np.float32) * 0.6
+    gray = img.mean(-1, keepdims=True); img = gray + (img - gray) * 1.08
+    Image.fromarray((np.clip(img, 0, 1) * 255).astype(np.uint8)).save(OUT)
+    sys.exit(0)
+
+
 if VAR in ('ink', 'halftone'):
     # плоский мультик с ровным чернильным контуром: заливка цветами сцены + трубки тёмной краской
     import ast, re

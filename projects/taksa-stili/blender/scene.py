@@ -450,7 +450,7 @@ def anim():
             wag_amp = 0.45 + 0.25 * look
             # концовка: два радостных подскока
             hop = 0.0
-            for h0 in (466, 498):
+            for h0 in (470, 520):   # v4: первый подскок — в аниме (436..495), второй — в концовке (496..585)
                 u = (f - h0) / 12.0
                 if 0 <= u <= 1: hop = 0.07 * math.sin(math.pi * u)
             # бабочка кружит вокруг таксы: то перед ней, то за ней
@@ -536,6 +536,9 @@ def light_rig(style, pal):
     ro = bpy.data.objects.new('Rim', rim); COLL.objects.link(ro)
     ro.location = (0.2, 3.2, 2.3)
     ro.rotation_euler = (Vector((0.45, 0, 0.7)) - ro.location).to_track_quat('-Z', 'Y').to_euler()
+    if _os.environ.get('KEYONLY'):
+        # проход «только солнце» для аниме: чёткая граница света и тени, падающие тени
+        bg2.inputs['Strength'].default_value = 0.0; area.energy = 0; rim.energy = 0
 
 PAL = dict(BASE)
 if STYLE == 'silhouette':
@@ -608,6 +611,11 @@ S.cycles.device = 'CPU'
 S.cycles.samples = int(_os.environ.get('SAMPLES', 28)) if STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'shade') else 12
 S.cycles.use_denoising = STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'comic', 'toon', 'shade')
 S.cycles.max_bounces = 4
+if _os.environ.get('KEYONLY'):
+    S.cycles.max_bounces = 0   # только прямой свет: тень чёрная, граница чёткая
+    bpy.data.lights['Sun'].angle = math.radians(3)
+    # аниме-свет: сверху, чуть спереди и со стороны морды — верх и верх бока светлые, низ бока и живот в тени
+    bpy.data.objects['Sun'].rotation_euler = Vector((-0.40, 0.15, -0.90)).to_track_quat('-Z', 'Y').to_euler()
 S.render.resolution_x = RESX; S.render.resolution_y = int(RESX * 16 / 9)
 S.render.film_transparent = False
 S.view_settings.view_transform = 'Standard'
@@ -632,6 +640,11 @@ if STYLE == 'ids':
             out = nt.nodes.new('ShaderNodeOutputMaterial'); em = nt.nodes.new('ShaderNodeEmission')
             if mode == 'id':
                 em.inputs['Color'].default_value = (IDX[key] / 255.0, 0, 0, 1)
+            elif mode == 'pos':
+                # мировые координаты: x, y в [-50, 50] м → 0..1, z в 0..10 м
+                geo = nt.nodes.new('ShaderNodeNewGeometry'); vm = nt.nodes.new('ShaderNodeVectorMath')
+                vm.operation = 'MULTIPLY_ADD'; vm.inputs[1].default_value = (0.01, 0.01, 0.1); vm.inputs[2].default_value = (0.5, 0.5, 0)
+                nt.links.new(geo.outputs['Position'], vm.inputs[0]); nt.links.new(vm.outputs[0], em.inputs['Color'])
             else:
                 cd = nt.nodes.new('ShaderNodeCameraData'); mth = nt.nodes.new('ShaderNodeMath')
                 mth.operation = 'DIVIDE'; mth.inputs[1].default_value = 100.0
@@ -654,6 +667,10 @@ if STYLE == 'ids':
         ids_mode('depth'); bgw.inputs['Color'].default_value = (1, 1, 1, 1)
         S.render.image_settings.color_mode = 'BW'; S.render.image_settings.color_depth = '16'
         S.render.filepath = os.path.join(OUT, 'z_%04d.png' % f); bpy.ops.render.render(write_still=True)
+        if os.environ.get('IDS_POS'):
+            ids_mode('pos'); bgw.inputs['Color'].default_value = (0, 0, 0, 1)
+            S.render.image_settings.color_mode = 'RGB'; S.render.image_settings.color_depth = '16'
+            S.render.filepath = os.path.join(OUT, 'p_%04d.png' % f); bpy.ops.render.render(write_still=True)
 elif F0 == F1:
     S.frame_set(F0)
     bpy.ops.render.render(write_still=True)
