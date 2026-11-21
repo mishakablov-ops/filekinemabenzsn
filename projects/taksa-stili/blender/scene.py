@@ -306,9 +306,9 @@ def tree(x, y, s=1.0):
     for j in range(3):
         uvs('Crown', (x + random.uniform(-0.3, 0.3) * s, y, (1.9 + j * 0.35) * s), (0.75 * s,) * 3, 'leaf', seg=24)
 
-def cloud(x, z, s=1.0):
+def cloud(x, z, s=1.0, y=30):
     for j in range(5):
-        uvs('Cloud', (x + (j - 2) * 0.6 * s, 30, z + random.uniform(0, 0.4) * s),
+        uvs('Cloud', (x + (j - 2) * 0.6 * s, y, z + random.uniform(0, 0.4) * s),
             (0.75 * s, 0.4 * s, 0.55 * s), 'cloud', seg=24)
 
 ground()
@@ -340,6 +340,24 @@ cube('Rail', (-0.15, 6.5, 0.65), (6.2, 0.04, 0.05), 'wood'); cube('Rail2', (-0.1
 house(-5.5, 13, 0.3, 1.0); house(3.5, 15, -0.2, 1.1); house(9.5, 13, 0.1, 0.9); house(-11, 16, 0.2, 1.2)
 tree(-3.2, 9, 1.0); tree(1.2, 10.5, 1.2); tree(6.5, 9.5, 0.9); tree(-8.5, 11, 1.3); tree(12, 14, 1.2)
 cloud(-5, 11, 1.4); cloud(6, 14, 1.8); cloud(-1, 17, 1.2)
+# v3: бока сцены для облёта камеры (вне кадра неона: кадры 1..75 не меняются)
+for i, (x, y, r, h, k) in enumerate([(-20, 1, 9, 3.0, 'hill2'), (20, 3, 9, 3.2, 'hill2'),
+                                      (-24, 12, 10, 4.5, 'hill1'), (24, 14, 10, 4.2, 'hill1')]):
+    uvs('HillSide%d' % i, (x, y, 0), (r, r * 0.7, h), k, seg=64)
+tree(-6.5, 1.5, 1.0); tree(-9, 4.5, 1.25); tree(-13, 2, 1.1); tree(8, 2.5, 1.0); tree(10.5, 5.5, 1.25); tree(14, 2.5, 1.0)
+bush((-4.2, -0.6, 0), 1.2, 'bush'); bush((-6.5, -2.5, 0), 1.3, 'bush2'); bush((6.0, 0.8, 0), 1.1, 'bush')
+bush((7.5, -2.0, 0), 1.3, 'bush2')
+house(-12.5, 6, 0.9, 1.0); house(13.5, 7, -0.9, 1.0); house(-17, 9, 0.6, 1.1); house(18, 10, -0.7, 1.1)
+for j in range(1, 6):
+    for x in (-6 - 0.9 * j, 5.7 + 0.9 * j):
+        cube('Post', (x, 6.5, 0.45), (0.06, 0.06, 0.45), 'wood')
+for x in (-8.7, 9.3):
+    cube('Rail', (x, 6.5, 0.65), (2.4, 0.04, 0.05), 'wood'); cube('Rail2', (x, 6.5, 0.32), (2.4, 0.04, 0.05), 'wood')
+for i in range(18):
+    side = -1 if i % 2 else 1
+    x = side * random.uniform(4.2, 7.5); y = random.uniform(-2.5, 3.0)
+    flower(x, y, 'petal' if i % 3 else 'petal2')
+cloud(-24, 13, 1.6, y=22); cloud(24, 12, 1.5, y=22); cloud(-30, 16, 1.8, y=10); cloud(30, 15, 1.7, y=10)
 # бабочка
 bfly = empty('Butterfly', (2.1, -0.6, 1.6))
 wings = []
@@ -348,57 +366,138 @@ for side in (-1, 1):
     w.location = (0, side * 0.06, 0); wings.append((w, side))
 
 # ---------------- анимация ----------------
+CAM_SHIFT = float(__import__('os').environ.get('CAM_SHIFT', 0.45))
+CAM_R = float(__import__('os').environ.get('CAM_R', 3.1))
+CAM_LENS = float(__import__('os').environ.get('CAM_LENS', 28))
+NEON_END = 75          # кадры 1..75 — неон-вывеска: всё как в одобренной версии (камера и движения не трогаем)
+T_LOOK = Vector((0.40, 0.0, 0.80))   # чуть выше центра собаки: такса ниже плашки со списком
+
+
+def smooth(x):
+    x = min(1.0, max(0.0, x)); return x * x * (3 - 2 * x)
+
+
+def lerp(a, b, x):
+    return a + (b - a) * x
+
+
+def bump(x, a, b, c, d):
+    """0 → 1 на [a,b], держим до c, 1 → 0 на [c,d]."""
+    if x <= a or x >= d: return 0.0
+    if x < b: return smooth((x - a) / (b - a))
+    if x <= c: return 1.0
+    return 1 - smooth((x - c) / (d - c))
+
+
+def cam_pose(f):
+    """Положение камеры: облёт таксы по дуге (3/4 спереди → профиль → 3/4 сзади), подъём, в концовке — назад к морде."""
+    if f <= NEON_END:
+        k = smooth((f - 1) / 719)  # как было: 2 ключа с плавными ручками
+        return Vector((lerp(0.45, 0.55, k), lerp(-2.85, -2.45, k), lerp(0.62, 0.6, k))), None
+    if f <= 435:
+        x = (f - 76) / (435 - 76)
+        s = 0.75 * x + 0.25 * smooth(x)
+        th = lerp(52, -42, s)
+        r = CAM_R + 0.35 * smooth((x - 0.6) / 0.4)
+        z = lerp(0.42, 0.62, smooth(x / 0.35)) + 0.70 * smooth((x - 0.62) / 0.38)
+    else:
+        k = smooth((f - 436) / 60)
+        th = lerp(-42, 32, k) + 0.08 * max(0, f - 496)
+        r = lerp(CAM_R + 0.35, CAM_R - 0.15, k)
+        z = lerp(1.32, 0.66, k)
+    a = math.radians(th)
+    # точка взгляда смещается к ближнему концу таксы (спереди — к голове, сзади — к хвосту), чтобы нос и хвост не резались
+    tgt = Vector((T_LOOK.x + CAM_SHIFT * math.sin(a), T_LOOK.y, T_LOOK.z))
+    p = Vector((tgt.x + r * math.sin(a), tgt.y - r * math.cos(a), z))
+    return p, tgt
+
+
+def look_rot(p, tgt):
+    return (tgt - p).to_track_quat('-Z', 'Y').to_euler()
+
+
 def anim():
+    tail_ph = 0.0; prev_yaw = 0.0
+    rnd = random.Random(11)
     for f in range(1, 721):
         t = f / 30.0
-        # голова: нюхает землю, поднимает, смотрит на бабочку
-        sniff = 0.5 * (1 - math.cos(min(1, max(0, (t % 6) / 2.0)) * math.pi)) if (t % 6) < 2 else \
-                (1 if (t % 6) < 3.2 else 0.5 * (1 + math.cos(min(1, ((t % 6) - 3.2) / 1.2) * math.pi)))
-        headpiv.rotation_euler = (0, math.radians(32 * sniff - 4 + 2.5 * math.sin(t * 9) * sniff), 0)
-        headpiv.keyframe_insert('rotation_euler', frame=f)
+        if f <= NEON_END:
+            sniff = 0.5 * (1 - math.cos(min(1, max(0, (t % 6) / 2.0)) * math.pi)) if (t % 6) < 2 else \
+                    (1 if (t % 6) < 3.2 else 0.5 * (1 + math.cos(min(1, ((t % 6) - 3.2) / 1.2) * math.pi)))
+            roll, pitch, yaw = 0.0, math.radians(32 * sniff - 4 + 2.5 * math.sin(t * 9) * sniff), 0.0
+            look = 0.0; wag_speed, wag_amp = 14.0, 0.6
+            body_yaw = 0.0; hop = 0.0
+            bpos = (1.3 + 0.7 * math.sin(t * 0.7), -0.5 + 0.2 * math.sin(t * 1.3), 1.65 + 0.2 * math.sin(t * 2.1))
+            brz = 0.0
+        else:
+            cp, _ = cam_pose(f)
+            # такса то смотрит в камеру (с любопытным наклоном головы), то нюхает траву сбоку
+            cyc = (t - 2.6) % 5.0
+            ending = f > 435
+            sn = 0.0 if ending else bump(cyc, 2.7, 3.2, 3.9, 4.4)
+            look = 1.0 - sn
+            body_yaw = math.radians(3.5) * math.sin(t * 0.9)
+            hx, hy, hz = 0.92, 0.0, 0.72
+            yaw_cam = math.atan2(cp.y - hy, cp.x - hx) - body_yaw
+            # голова поворачивается к камере, но оставляет «три четверти» (анфас с глазами по бокам выглядит странно)
+            yaw_cam = max(math.radians(-50), min(math.radians(5), yaw_cam + math.radians(35)))
+            elev = math.atan2(cp.z - (hz + 0.35), math.hypot(cp.x - hx, cp.y - hy))
+            tilt = bump(cyc, 0.2, 0.6, 1.5, 2.0) if not ending else bump((t - 436 / 30) % 3.0, 0.3, 0.6, 1.6, 2.1)
+            yaw = look * yaw_cam + sn * math.radians(22)
+            pitch = math.radians(-3) - look * 0.5 * elev + sn * (math.radians(34) + math.radians(3) * math.sin(t * 9))
+            roll = math.radians(16) * tilt * look
+            wag_speed = 12.0 + 8.0 * look + (8.0 if ending else 0.0)
+            wag_amp = 0.45 + 0.25 * look
+            # концовка: два радостных подскока
+            hop = 0.0
+            for h0 in (466, 498):
+                u = (f - h0) / 12.0
+                if 0 <= u <= 1: hop = 0.07 * math.sin(math.pi * u)
+            # бабочка кружит вокруг таксы: то перед ней, то за ней
+            ph = 2 * math.pi * (t - 2.5) / 6.5 + 2.2
+            bpos = (0.5 + 1.75 * math.cos(ph), 1.05 * math.sin(ph), 1.30 + 0.22 * math.sin(t * 1.7) + 0.08 * math.sin(t * 3.3))
+            brz = ph + math.pi / 2
+        headpiv.rotation_euler = (roll, pitch, yaw); headpiv.keyframe_insert('rotation_euler', frame=f)
+        dyaw = yaw - prev_yaw; prev_yaw = yaw
         for ep, side in zip(EARS, (-1, 1)):
-            ep.rotation_euler = (side * 0.08 * math.sin(t * 3.1), 0.12 * math.sin(t * 2.3 + side) - 0.3 * sniff, 0)
+            ep.rotation_euler = (side * (0.08 * math.sin(t * 3.1) + 0.10 * roll / 0.28) + 2.5 * dyaw,
+                                 0.12 * math.sin(t * 2.3 + side) - 0.3 * (1 - look if f > NEON_END else sniff), 0)
             ep.keyframe_insert('rotation_euler', frame=f)
-        tailpiv.rotation_euler = (0.6 * math.sin(t * 14), 0, 0.5 * math.sin(t * 14))
+        tail_ph += wag_speed / 30.0
+        tailpiv.rotation_euler = (wag_amp * math.sin(tail_ph), 0, (wag_amp - 0.1) * math.sin(tail_ph))
         tailpiv.keyframe_insert('rotation_euler', frame=f)
-        tagpiv.rotation_euler = (0.25 * math.sin(t * 5), 0, 0); tagpiv.keyframe_insert('rotation_euler', frame=f)
-        body.scale = (1, 1 + 0.02 * math.sin(t * 4), 1 + 0.02 * math.sin(t * 4)); body.keyframe_insert('scale', frame=f)
-        bfly.location = (1.3 + 0.7 * math.sin(t * 0.7), -0.5 + 0.2 * math.sin(t * 1.3), 1.65 + 0.2 * math.sin(t * 2.1))
-        bfly.keyframe_insert('location', frame=f)
+        tagpiv.rotation_euler = (0.25 * math.sin(t * 5) - 1.2 * dyaw, 0, 0); tagpiv.keyframe_insert('rotation_euler', frame=f)
+        sq = 1 - 0.6 * hop
+        body.scale = (1, 1 + 0.02 * math.sin(t * 4), (1 + 0.02 * math.sin(t * 4)) * sq); body.keyframe_insert('scale', frame=f)
+        # корень собаки: лёгкое покачивание, подскоки; в пластилине — «дыхание» рук аниматора на каждый снятый кадр
+        jl, jr = (0.0, 0.0, 0.0), 0.0
+        if STYLE == 'clay':
+            fr = f - ((f - 1) % 2)
+            rr = random.Random(fr * 7 + 11)
+            jl = (rr.uniform(-0.004, 0.004), rr.uniform(-0.004, 0.004), 0.0); jr = rr.uniform(-0.006, 0.006)
+        dog.location = (jl[0], jl[1], hop); dog.rotation_euler = (0, 0, body_yaw + jr)
+        dog.keyframe_insert('location', frame=f); dog.keyframe_insert('rotation_euler', frame=f)
+        bfly.location = bpos; bfly.rotation_euler = (0, 0, brz)
+        bfly.keyframe_insert('location', frame=f); bfly.keyframe_insert('rotation_euler', frame=f)
         for w, side in wings:
             w.rotation_euler = (side * 0.9 * abs(math.sin(t * 18)), 0, 0); w.keyframe_insert('rotation_euler', frame=f)
-    for o in bpy.data.objects:
-        if o.animation_data and o.animation_data.action:
-            for layer in getattr(o.animation_data.action, 'layers', []):
-                pass
 anim()
 
 # ---------------- камера и свет ----------------
 cam_d = bpy.data.cameras.new('Cam'); cam = bpy.data.objects.new('Cam', cam_d); COLL.objects.link(cam)
 S.camera = cam
 cam_d.sensor_fit = 'HORIZONTAL'; cam_d.lens = 30; cam_d.clip_start = 0.1
-cam.location = (0.45, -2.85, 0.62)
-cam.rotation_euler = (math.radians(96), 0, 0)
-cam.keyframe_insert('location', frame=1)
-cam.location = (0.55, -2.45, 0.6); cam.keyframe_insert('location', frame=720)
-for fc in getattr(cam.animation_data.action, 'fcurves', []):
-    for kp in fc.keyframe_points: kp.interpolation = 'LINEAR'
+for f in range(1, 721):
+    p, tgt = cam_pose(f)
+    cam.location = p
+    cam.rotation_euler = (math.radians(96), 0, 0) if tgt is None else look_rot(p, tgt)
+    cam.keyframe_insert('location', frame=f); cam.keyframe_insert('rotation_euler', frame=f)
+    cam_d.lens = 30 if tgt is None else CAM_LENS   # чуть шире после неона: такса целиком в кадре на облёте
+    cam_d.keyframe_insert('lens', frame=f)
 if STYLE in ('soft3d', 'clay'):
-    fo = empty('Focus', (0.7, -0.25, 0.75))
+    fo = empty('Focus', (0.0, 0.0, 0.0), dog); fo.location = (0.95, 0.0, 0.85)
     cam_d.dof.use_dof = True; cam_d.dof.focus_object = fo
     cam_d.dof.aperture_fstop = 1.4 if STYLE == 'soft3d' else 0.9
-if STYLE == 'clay':
-    # стоп-моушн: каждый снятый кадр собака и свет чуть «дышат» (как руки аниматора)
-    rnd = random.Random(11)
-    for f in range(1, 721, 2):
-        dog.location = (rnd.uniform(-0.004, 0.004), rnd.uniform(-0.004, 0.004), 0)
-        dog.rotation_euler = (0, 0, rnd.uniform(-0.006, 0.006))
-        dog.keyframe_insert('location', frame=f); dog.keyframe_insert('rotation_euler', frame=f)
-    for o in (dog,):
-        ad = o.animation_data
-        if ad and ad.action:
-            for fc in getattr(ad.action, 'fcurves', []):
-                for kp in fc.keyframe_points: kp.interpolation = 'CONSTANT'
 import os as _os
 if 'tufts' in _os.environ.get('IDS_HIDE', ''):
     TUFTS.hide_render = True
@@ -432,6 +531,11 @@ def light_rig(style, pal):
     area = bpy.data.lights.new('Fill', 'AREA'); area.energy = 250; area.size = 4
     ao = bpy.data.objects.new('Fill', area); COLL.objects.link(ao)
     ao.location = (1, -4, 3); ao.rotation_euler = (math.radians(60), 0, 0)
+    # v3: контровой свет сзади — светлая кромка по спине и ушам, отделяет объём от фона
+    rim = bpy.data.lights.new('Rim', 'AREA'); rim.energy = 320; rim.size = 2.0; rim.color = (1.0, 0.88, 0.72)
+    ro = bpy.data.objects.new('Rim', rim); COLL.objects.link(ro)
+    ro.location = (0.2, 3.2, 2.3)
+    ro.rotation_euler = (Vector((0.45, 0, 0.7)) - ro.location).to_track_quat('-Z', 'Y').to_euler()
 
 PAL = dict(BASE)
 if STYLE == 'silhouette':
