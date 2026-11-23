@@ -15,6 +15,7 @@
 | `posledniy-chelovek-blender` | та же история в реалистичных цветах (голос и титры те же) | Блендер: v1 быстрый, v2 полный | выданы 26.10.2026 | `posledniy-chelovek-blender.mp4`, `posledniy-chelovek-blender-v2.mp4` |
 | `sposobnosti` | «Каждому по способности»: всем по суперсиле, история от первого лица, **две части по ~60 с**, герой по фото пользователя | Блендер (полный, 40 клипов) | выдан 28.10.2026 | `sposobnosti-1-v2.mp4`, `sposobnosti-2-v2.mp4` |
 | `metro-city` | постоянный город «Метрополис» для всех городских сцен (не ролик, а декорация): план, точки съёмки, карта | Блендер | v1 в работе 26.10.2026 | кадры в общей папке `aipollon/metro/` |
+| `privetstvie-bot` | приветствие в Telegram-боте: low-poly Аполлон с аватарки машет рукой, цикл 4 с | Блендер (сцена из кода, Eevee) | выдан 23.11.2026 | `privetstvie-bot-v1.mp4`, `.gif` |
 
 Эталоны «Гибрида» (`coffee-agent`, `nuclear-survival`) и демо движка `demo-promo` — в `kinema/skills/reel-studio/examples/`.
 
