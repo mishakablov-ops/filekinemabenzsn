@@ -482,11 +482,13 @@ def build_world():
         pts = []
         for k in range(96):
             a = TAU * k / 96
-            pts.append(Vector((rr_ * math.cos(a), rr_ * 0.75 * math.sin(a), 0.07 * math.sin(3 * a + j))))
+            pts.append(Vector((rr_ * math.cos(a), rr_ * math.sin(a), 0.07 * math.sin(3 * a + j))))
+        spin = empty('ribbon_spin', (0, 0, 0), piv)     # вращение вокруг своей оси, наклон — у родителя
         rbn = ribbon('ribbon', pts, lambda t: wid * (0.65 + 0.35 * math.sin(3 * TAU * t)), M['gold'],
-                     twist_fn=lambda t: 0.5 * math.sin(3 * TAU * t), parent=piv, closed=True)
+                     twist_fn=lambda t: 0.5 * math.sin(3 * TAU * t), parent=spin, closed=True)
         piv.rotation_euler = (tilt, 0.15 * (1 if j else -1), 0)
-        anim.append(('ribbon', piv, j))
+        piv.scale = (1, 0.75, 1)          # эллипс даёт масштаб родителя, сама лента круглая -> поворот бесшовный
+        anim.append(('ribbon', spin, j))
     # широкие диагональные ленты на фоне
     for j, (z0, z1, y) in enumerate(((0.6, 2.4, 1.5), (2.3, 0.9, 2.2))):
         pts = [Vector((-2.4 + 4.8 * t, y + 0.3 * math.sin(t * 5), z0 + (z1 - z0) * t + 0.25 * math.sin(t * 6 + j)))
@@ -539,7 +541,7 @@ def animate(anim):
                 o.scale = (s, s, s)
                 o.rotation_euler = (0, (TAU / 4) * t * (1 if i % 2 else -1), 0)
             elif kind == 'halo':
-                o.rotation_euler = (0, (TAU / 12) * t, 0)
+                o.rotation_euler = (0, (TAU / 4) * t, 0)   # видны 4 звезды через 90°
             elif kind == 'ribbon':
                 o.rotation_euler = (rot.x, rot.y, (TAU / 3) * t * (1 if i else -1))
             o.keyframe_insert('location'); o.keyframe_insert('rotation_euler'); o.keyframe_insert('scale')
