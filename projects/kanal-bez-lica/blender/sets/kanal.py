@@ -420,7 +420,7 @@ def phone_cam(h, ph, dur, dist=0.27, lens=54, push=0.025, fstop=4.0, up=0.01):
         cam.matrix_world = Matrix.Translation(pos) @ Matrix((x, y, z)).transposed().to_4x4()
         cam.keyframe_insert('location', frame=F(t))
         cam.keyframe_insert('rotation_euler', frame=F(t))
-        cd.clip_start = dd - 0.035                      # лицо героя (нос, щёки) между камерой и телефоном отсекается
+        cd.clip_start = dd - 0.02                       # лицо героя (нос, щёки) между камерой и телефоном отсекается
         cd.keyframe_insert('clip_start', frame=F(t))
     return cam
 
@@ -433,6 +433,12 @@ def phone_screen_on(ph, coll, items=None, png=None, scroll=None, strength=1.2):
         [screen(coll, ph.name + 'S', png, SCR_W, SCR_H, loc, rot, strength, scroll)]
     for o in obs:
         o.parent = ph
+        for m in o.data.materials:                      # блик слабее и мягче: чёткое отражение подбородка читалось как дуга
+            for n in m.node_tree.nodes:
+                if n.type == 'BSDF_GLOSSY':
+                    n.inputs['Roughness'].default_value = 0.4
+                elif n.type == 'MIX_SHADER':
+                    n.inputs['Fac'].default_value = 0.025
     return obs
 
 
@@ -607,9 +613,9 @@ def v_comment(shot, fps):
     desk_stuff(coll, rng, mugs=2)
     screen(coll, 'Idle', ui('mon_build4'), MON_W, MON_H, scr[0], scr[1], strength=1.1)
     h = seated(coll)
-    p = H.pose('sit', head=(0, 26, 0), lean=10.0, **HOLD)
+    p = H.pose('sit', head=(0, 16, 0), lean=4.0, **HOLD)          # не нависает над телефоном: лицо дальше от экрана
     H.key_pose(h, 0, p)
-    H.key_pose(h, dur, H.pose(p, head=(0, 24, 2)))
+    H.key_pose(h, dur, H.pose(p, head=(0, 14, 2)))
     ph = hold_phone(h, phone(coll), 0.0, 'Right', tilt=60)
     t0 = 0.3
     items = [('phone_comment0', 0.0)] + [('phone_comment%d' % k, t0 + (dur * 0.55 - t0) * k / 5) for k in range(1, 6)]
