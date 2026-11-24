@@ -40,6 +40,7 @@
 | профиль канала, аватар, обложки концовки | `kinema-extra/README.md` (1 КБ), `kinema-extra/skills/reel-studio/engine/src/brand.json` | целиком |
 | оформление, вкус mike, шрифты | `knowledge/rules/styles.md` (20 КБ) | «Taste rules», разделы с датами |
 | звук, SFX, музыкальные подложки | `knowledge/rules/sound.md` (18 КБ) | «How sound gets placed»; список SFX — по категории |
+| рекламные ролики для бота, ЦА, подходы воронки, кодовое слово | `knowledge/rules/promo-funnel.md` (3 КБ) | целиком |
 | что проверить перед выдачей | `knowledge/rules/qa-checklist.md` (6 КБ) | «Mandatory checks…», «Fix recipes» |
 | пайплайн Blender, грабли, время рендера | `knowledge/rules/blender-pipeline.md` (19 КБ) | «Технические грабли», «Правки пользователя», «Время рендера» |
 | стиль «Блендер» | `styles/blender/README.md` (20 КБ) | «Картинка», «Два режима рендера», «Чего не делать» |
