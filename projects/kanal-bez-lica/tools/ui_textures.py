@@ -93,7 +93,6 @@ def phone_notes():
             d.text((91, y + 65), '▶', font=font('b', 36), fill=BG, anchor='mm')
             d.text((150, y + 30), NOTES[k][0], font=font('b', 32), fill=TXT)
             d.text((150, y + 80), NOTES[k][1], font=font('r', 26), fill=(205, 207, 216))
-            d.text((W - 60, y + 34), 'сейчас', font=font('r', 22), fill=DIM, anchor='ra')
         save(im, 'phone_notes%d' % n)
 
 
@@ -219,18 +218,20 @@ def mon_call():
 
 # ----------------------------------------------------------------------------- телефон: комментарии в конце
 def phone_comments():
+    """Поле комментария, куда зритель сам пишет «канал» (без выдуманных чужих комментов)."""
     W, H = 720, 1560
-    im = Image.new('RGB', (W, H), BG)
-    d = ImageDraw.Draw(im)
-    thumb(d, (0, 0, W, 900), 31)
-    d.rounded_rectangle([0, 860, W, H], 40, fill=(28, 29, 36))
-    d.text((W / 2, 910), 'Комментарии', font=font('b', 32), fill=TXT, anchor='mm')
-    for k, t in enumerate(('канал', 'канал', 'канал 🔥', 'канал')):
-        y = 980 + k * 125
-        d.ellipse([40, y, 110, y + 70], fill=[(120, 176, 255), (255, 168, 96), (110, 220, 200), (220, 140, 255)][k])
-        d.text((135, y + 8), ['user_%d' % (311 + 97 * k)][0], font=font('r', 24), fill=DIM)
-        d.text((135, y + 40), t, font=font('b', 32), fill=TXT)
-    save(im, 'phone_comments')
+    for typed in range(6):
+        im = Image.new('RGB', (W, H), BG)
+        d = ImageDraw.Draw(im)
+        thumb(d, (0, 0, W, 900), 31)
+        d.rounded_rectangle([0, 860, W, H], 40, fill=(28, 29, 36))
+        d.text((W / 2, 910), 'Комментарии', font=font('b', 32), fill=TXT, anchor='mm')
+        d.text((W / 2, 1150), 'Напиши первым', font=font('r', 30), fill=DIM, anchor='mm')
+        d.rounded_rectangle([30, 1420, W - 140, 1510], 45, fill=(48, 50, 60), outline=ACC if typed else None, width=3)
+        d.text((70, 1465), 'канал'[:typed] + ('|' if typed < 5 else ''), font=font('b', 36), fill=TXT, anchor='lm')
+        d.ellipse([W - 120, 1420, W - 30, 1510], fill=ACC if typed == 5 else (60, 62, 72))
+        d.polygon([(W - 92, 1445), (W - 92, 1485), (W - 52, 1465)], fill=BG)
+        save(im, 'phone_comment%d' % typed)
 
 
 if __name__ == '__main__':
