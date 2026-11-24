@@ -1,0 +1,622 @@
+"""«Канал без лица» (рекламный ролик воронки, 24.11.2026): комната героя, телефон и монитор с экранами-картинками
+из tools/ui_textures.py (папка ui/: KANAL_UI, <проект>/ui, project-files). Одна функция на план, время внутри плана —
+shot['events'] (после озвучки их проставит build_timeline.py), без них берутся доли длительности.
+
+Планы: feed (POV, лента канала), sofa (герой на кровати с телефоном), notes (POV, уведомления о рекламе), night (ручной
+монтаж ночью), build (одна фраза → ролик), styles (меню стилей), calendar (месяц роликов), call (созвон «настроим за
+тебя»), comment (POV, поле комментария «канал»).
+"""
+import math
+import os
+import random
+
+import bpy
+from mathutils import Matrix, Vector
+
+import lib
+import pcommon as pc
+import prooms as PR
+import sila_fx as FX
+import sila_hero as H
+import sila_sets as SS
+
+F = lib.sec2f
+HERE = os.path.dirname(os.path.abspath(__file__))
+UI_DIRS = [os.environ.get('KANAL_UI', ''), os.path.join(HERE, '..', 'ui'), os.path.join(HERE, '..', '..', 'ui'),
+           '/mnt/project-files/aipollon/kanal-bez-lica/ui']
+DESK = Vector((-1.4, 1.05, 0.78))           # верх стола (room() в sila_sets)
+CHAIR = Vector((-1.4, 0.32, 0.0))
+MON = Vector((-1.4, 1.27, 0.78))            # низ подставки монитора
+MON_W, MON_H = 0.64, 0.36
+SCR_Z = 0.78 + 0.14 + MON_H / 2             # центр экрана монитора
+BED_SEAT = (1.4, -0.42, 0.115)              # на кровати, ноги вдоль неё к -y, спиной к подушкам (замер: попа 0.34 над корнем)
+BED_LEGS = dict(thigh=88.0, shin=80.0, lean=-6.0)   # икры на 1–2 см в мягком матрасе, не висят
+
+
+def ui(name):
+    for d in UI_DIRS:
+        p = os.path.join(d, name + '.png') if d else ''
+        if p and os.path.exists(p):
+            return os.path.abspath(p)
+    raise SystemExit('UI texture not found: %s (python tools/ui_textures.py <dir>, или KANAL_UI)' % name)
+
+
+def _ev(shot, k, d):
+    return shot.get('events', {}).get(k, d)
+
+
+# ----------------------------------------------------------------------------- экраны
+def screen_mat(name, png, strength=1.3, scroll=None):
+    """Светящийся экран: картинка по Generated-координатам плоскости (верх картинки = +Y плоскости), лёгкий блик стекла.
+    scroll = [(t, dy)] прокручивает картинку вверх (dy в долях её высоты)."""
+    m = bpy.data.materials.new('Scr' + name)
+    m.use_nodes = True
+    nt = m.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new('ShaderNodeOutputMaterial')
+    tc = nt.nodes.new('ShaderNodeTexCoord')
+    mp = nt.nodes.new('ShaderNodeMapping')
+    tex = nt.nodes.new('ShaderNodeTexImage')
+    tex.image = bpy.data.images.load(png, check_existing=True)
+    tex.extension = 'EXTEND'
+    tex.interpolation = 'Cubic'
+    em = nt.nodes.new('ShaderNodeEmission')
+    em.inputs['Strength'].default_value = strength
+    gl = nt.nodes.new('ShaderNodeBsdfGlossy')
+    gl.inputs['Roughness'].default_value = 0.08
+    gl.inputs['Color'].default_value = (1, 1, 1, 1)
+    mix = nt.nodes.new('ShaderNodeMixShader')
+    mix.inputs['Fac'].default_value = 0.06
+    L = nt.links
+    L.new(tc.outputs['Generated'], mp.inputs['Vector'])
+    L.new(mp.outputs['Vector'], tex.inputs['Vector'])
+    L.new(tex.outputs['Color'], em.inputs['Color'])
+    L.new(em.outputs[0], mix.inputs[1])
+    L.new(gl.outputs[0], mix.inputs[2])
+    L.new(mix.outputs[0], out.inputs['Surface'])
+    if scroll:
+        sk = mp.inputs['Scale']
+        if scroll[0][0] is not None:
+            sk.default_value = (1.0, 0.5, 1.0)              # видна половина высоты картинки
+        loc = mp.inputs['Location']
+        for t, dy in scroll:
+            loc.default_value = (0.0, 0.5 - dy, 0.0)
+            loc.keyframe_insert('default_value', frame=F(t))
+    return m
+
+
+def screen(coll, name, png, w, h, loc, rot, strength=1.3, scroll=None):
+    ob = lib.plane((w, h), loc, screen_mat(name, png, strength, scroll), rot=rot, name='Scr' + name, coll=coll)
+    ob.visible_shadow = False
+    return ob
+
+
+def stack(coll, name, items, w, h, loc, rot, strength=1.3):
+    """Экраны по очереди: items = [(png_name, t_on)], каждый виден до включения следующего."""
+    obs = []
+    for i, (nm, t0) in enumerate(items):
+        ob = screen(coll, '%s%02d' % (name, i), ui(nm), w, h, loc, rot, strength)
+        t1 = items[i + 1][1] if i + 1 < len(items) else None
+        keys = [(0, t0 <= 0)]
+        if t0 > 0:
+            keys.append((t0, True))
+        if t1 is not None:
+            keys.append((t1, False))
+        FX.key_hide(ob, keys)
+        obs.append(ob)
+    return obs
+
+
+# ----------------------------------------------------------------------------- предметы
+def monitor(coll):
+    dark = lib.mat('MonBody', '#1C1D21', rough=0.35, spec=0.6)
+    metal = lib.mat('MonStand', '#8D9096', rough=0.3, metal=1.0)
+    lib.box((0.24, 0.18, 0.012), (MON.x, MON.y + 0.02, 0.78), metal, bevel=0.004, name='MonFoot', coll=coll, origin='bottom')
+    lib.box((0.05, 0.03, 0.2), (MON.x, MON.y + 0.06, 0.79), metal, bevel=0.006, name='MonNeck', coll=coll, origin='bottom')
+    lib.box((MON_W + 0.024, 0.028, MON_H + 0.024), (MON.x, MON.y + 0.01, SCR_Z), dark, bevel=0.006, name='MonBezel', coll=coll)
+    return (MON.x, MON.y - 0.0045, SCR_Z), (math.pi / 2, 0, 0)
+
+
+def desk_stuff(coll, rng, night=False, mugs=1):
+    """Клавиатура, мышь, кружки, наушники, книги, стикеры, лампа: задний план не пустой."""
+    kb = lib.mat('Keyb', '#2A2C31', rough=0.5)
+    lib.box((0.42, 0.14, 0.02), (DESK.x, DESK.y - 0.22, 0.78), kb, bevel=0.004, name='Keyboard', coll=coll, origin='bottom')
+    keys = lib.mat('Keys', '#3A3D44', rough=0.45)
+    for r in range(4):
+        lib.box((0.38, 0.022, 0.006), (DESK.x, DESK.y - 0.27 + r * 0.032, 0.80), keys, bevel=0.002, name='KeyRow', coll=coll,
+                origin='bottom')
+    lib.box((0.24, 0.2, 0.003), (DESK.x + 0.38, DESK.y - 0.2, 0.78), lib.mat('Pad', '#3B4A5C', rough=0.9), bevel=0.0,
+            name='MousePad', coll=coll, origin='bottom')
+    mouse = lib.sphere(0.034, (DESK.x + 0.38, DESK.y - 0.2, 0.795), lib.mat('Mouse', '#E8E8EA', rough=0.3), 16, 10,
+                       scale=(0.8, 1.25, 0.5), name='Mouse', coll=coll)
+    out = [mouse]
+    cups = []
+    for k in range(4):
+        c = PR.cup(DESK.x - 0.52 + k * 0.1, DESK.y - 0.08 - 0.06 * (k % 2), 0.78, coll, steam=False,
+                   coffee='#3E2414' if k else '#4A2A16', name='Mug%d' % k)
+        cups.append([o for o in bpy.data.objects if o.name.startswith('Mug%d' % k)])
+    for k, grp in enumerate(cups):                       # видны только первые `mugs`; остальные включает сцена
+        if k >= mugs:
+            for o in grp:
+                o.hide_render = o.hide_viewport = True
+    book = [('#8C2F2F', 0.04), ('#2F5E8C', 0.035), ('#D6A93A', 0.03), ('#3B7A57', 0.045)]
+    x = DESK.x + 0.48
+    for col, th in book:
+        lib.box((th, 0.17, 0.24), (x, DESK.y + 0.25, 0.78), lib.mat('Book' + col, col, rough=0.7), bevel=0.003, name='Book', coll=coll,
+                origin='bottom')
+        x += th + 0.004
+    for k, col in enumerate(()):                                     # стикеры убраны: висели у края рамки
+        lib.box((0.05, 0.002, 0.05), (MON.x - MON_W / 2 - 0.01 + k * 0.004, MON.y - 0.006, SCR_Z + 0.12 - k * 0.06),
+                lib.mat('Sticky' + col, col, rough=0.9), rot=(0, 0, 0), bevel=0.0, name='Sticky', coll=coll)
+    hp = lib.mat('Phones', '#26282D', rough=0.4)
+    lib.curve_poly('Headphones', [[(DESK.x - 0.62 + 0.09 * math.cos(a), DESK.y + 0.2, 0.8 + 0.1 * math.sin(a))
+                                   for a in [i * math.pi / 10 for i in range(11)]]], bevel=0.012, mat_=hp, coll=coll)
+    for sx in (-1, 1):
+        lib.cyl(0.04, 0.03, (DESK.x - 0.62 + sx * 0.09, DESK.y + 0.2, 0.8), hp, rot=(0, math.pi / 2, 0), verts=20, name='Cup',
+                coll=coll)
+    # лампа на кронштейне
+    lm = lib.mat('Lamp', '#E9E4D8', rough=0.4)
+    lib.cyl(0.07, 0.02, (DESK.x + 0.6, DESK.y + 0.2, 0.78), lm, verts=24, name='LampFoot', coll=coll, origin='bottom')
+    lib.curve_poly('LampArm', [[(DESK.x + 0.6, DESK.y + 0.2, 0.8), (DESK.x + 0.55, DESK.y + 0.12, 1.15),
+                                (DESK.x + 0.4, DESK.y + 0.02, 1.2)]], bevel=0.008, mat_=lm, coll=coll)
+    lib.cyl(0.06, 0.09, (DESK.x + 0.4, DESK.y + 0.02, 1.12), lm, verts=24, r2=0.03, name='LampHead', coll=coll, origin='bottom')
+    if night:
+        lib.light('POINT', (DESK.x + 0.4, DESK.y + 0.0, 1.08), energy=22, color='#FFC98A', size=0.05, name='DeskLamp', coll=coll)
+    return out, cups
+
+
+def wall_clock(coll, loc=(2.18, 0.75, 2.2), turns=(0.0, 0.0), dur=1.0):
+    """Часы на правой стене (смотрят в -x); стрелки делают `turns` оборотов за план."""
+    lib.cyl(0.17, 0.03, loc, lib.mat('ClockFace', '#F7F5EE', rough=0.5), rot=(0, math.pi / 2, 0), verts=40, name='Clock', coll=coll)
+    lib.cyl(0.185, 0.025, (loc[0] + 0.006, loc[1], loc[2]), lib.mat('ClockRim', '#2B2D30', rough=0.4), rot=(0, math.pi / 2, 0),
+            verts=40, name='ClockRim', coll=coll)
+    dark = lib.mat('ClockHand', '#1B1C1E', rough=0.4)
+    for k in range(12):
+        a = k * math.pi / 6
+        lib.box((0.01, 0.01, 0.03), (loc[0] - 0.018, loc[1] + 0.14 * math.sin(a), loc[2] + 0.14 * math.cos(a)), dark, rot=(-a, 0, 0),
+                bevel=0, name='Tick', coll=coll)
+    for nm, Ln, w, tr in (('Min', 0.13, 0.01, turns[0]), ('Hour', 0.085, 0.016, turns[1])):
+        piv = lib.empty('Clock' + nm, (loc[0] - 0.022, loc[1], loc[2]), coll=coll)
+        hb = lib.box((0.006, w, Ln), (0, 0, Ln / 2 - 0.012), dark, bevel=0, name='Hand' + nm, coll=coll)
+        hb.parent = piv
+        piv.rotation_euler.x = -0.7 if nm == 'Min' else -2.1
+        piv.keyframe_insert('rotation_euler', index=0, frame=F(0))
+        piv.rotation_euler.x += -2 * math.pi * tr
+        piv.keyframe_insert('rotation_euler', index=0, frame=F(dur))
+        lib._set_interp(piv, 'LINEAR')
+
+
+def calendar(coll, rng, loc=(2.19, 0.75, 1.45), fill=None):
+    """Календарь на правой стене: 5 недель × 7 дней; fill=(t0, t1) — клетки заполняются превью роликов по очереди."""
+    paper = lib.mat('CalPaper', '#FAF8F2', rough=0.8)
+    lib.box((0.012, 0.62, 0.62), loc, paper, bevel=0.003, name='Calendar', coll=coll)
+    lib.box((0.014, 0.62, 0.1), (loc[0] - 0.001, loc[1], loc[2] + 0.26), lib.mat('CalHead', '#C8402F', rough=0.6), bevel=0.0,
+            name='CalHead', coll=coll)
+    lib.text_obj('ДЕКАБРЬ', 0.05, (loc[0] - 0.009, loc[1], loc[2] + 0.26), (math.pi / 2, 0, -math.pi / 2),
+                 lib.mat('CalTitle', '#FFFFFF', rough=0.6), name='CalTitle', coll=coll)
+    grid = lib.mat('CalGrid', '#D8D4CA', rough=0.8)
+    cells = []
+    tints = ['#FFA860', '#78B0FF', '#C48CFF', '#FF788C', '#6EDCC8', '#FFD25C']
+    for r in range(5):
+        for c in range(7):
+            y = loc[1] - 0.27 + c * 0.09
+            z = loc[2] + 0.15 - r * 0.085
+            lib.box((0.003, 0.082, 0.077), (loc[0] - 0.007, y, z), grid, bevel=0.0, name='CalCell', coll=coll)
+            th = lib.box((0.003, 0.07, 0.066), (loc[0] - 0.01, y, z), lib.mat('Th' + tints[(r * 7 + c) % 6], tints[(r * 7 + c) % 6],
+                                                                              rough=0.6, emit=tints[(r * 7 + c) % 6], emit_strength=0.25),
+                         bevel=0.0, name='CalThumb', coll=coll)
+            cells.append(th)
+    if fill:
+        t0, t1 = fill
+        for i, th in enumerate(cells):
+            ti = t0 + (t1 - t0) * i / len(cells)
+            FX.key_hide(th, [(0, False), (ti, True)])
+    return cells
+
+
+def room_detail(coll, rng):
+    """Шкаф с полками, гитара, плакат, коврик, гирлянда: комната живая (правило 05.11 про насыщенный задний план)."""
+    wood = lib.mat('ShelfWood', '#8A6748', rough=0.55, var=0.2, var_scale=8)
+    for z in (0.0, 0.45, 0.9, 1.35, 1.8):
+        lib.box((0.32, 0.9, 0.025), (-2.05, -1.0, z + 0.02), wood, bevel=0.004, name='Shelf', coll=coll, origin='bottom')
+    for sy in (-1.44, -0.56):
+        lib.box((0.32, 0.025, 1.83), (-2.05, sy, 0.0), wood, bevel=0.004, name='ShelfSide', coll=coll, origin='bottom')
+    cols = ['#8C2F2F', '#2F5E8C', '#D6A93A', '#3B7A57', '#6B4E8C', '#C46A3A', '#E3DCCB']
+    for z in (0.045, 0.495, 0.945, 1.395):
+        y = -1.4
+        while y < -0.62:
+            th = rng.uniform(0.025, 0.05)
+            hgt = rng.uniform(0.2, 0.32)
+            if rng.random() < 0.12:
+                lib.sphere(0.06, (-2.05, y + 0.06, z + 0.06), lib.mat('Ball', rng.choice(cols), rough=0.5), 12, 8, name='Toy', coll=coll)
+                y += 0.14
+                continue
+            lib.box((0.2, th, hgt), (-2.05, y + th / 2, z), lib.mat('Bk' + rng.choice(cols), rng.choice(cols), rough=0.7), bevel=0.003,
+                    name='ShelfBook', coll=coll, origin='bottom')
+            y += th + 0.003
+    pot = lib.cyl(0.1, 0.22, (-1.95, -1.9, 0.0), lib.mat('BigPot', '#D9D2C3', rough=0.6), verts=20, r2=0.08, name='BigPot', coll=coll,
+                  origin='bottom')
+    for k in range(9):
+        a = k * 2.4
+        lib.sphere(0.12, (-1.95 + 0.12 * math.cos(a), -1.9 + 0.12 * math.sin(a), 0.4 + k * 0.07),
+                   lib.mat('BigLeaf', '#4E7A3A', rough=0.8, var=0.3, var_scale=10), 10, 8, scale=(1.3, 0.6, 0.35),
+                   name='BigLeaf', coll=coll).rotation_euler = (0.3, 0.2, a)
+    lib.box((1.6, 1.1, 0.012), (0.4, -0.7, 0.0), lib.mat('Rug', '#B8A68C', rough=0.95, var=0.15, var_scale=30), bevel=0.0, name='Rug',
+            coll=coll, origin='bottom')
+    lib.box((0.6, 0.02, 0.85), (2.19, -1.6, 1.2), lib.mat('Poster2', '#E0B45A', rough=0.7), rot=(0, 0, math.pi / 2), bevel=0.0,
+            name='Poster2', coll=coll, origin='bottom')
+    bulbs = lib.mat('Bulb', '#FFE3A8', emit='#FFD58A', emit_strength=3.0)
+    for k in range(18):
+        x = -2.0 + k * 0.24
+        lib.sphere(0.018, (x, 1.62, 2.42 - 0.05 * math.sin(k / 17 * math.pi)), bulbs, 8, 6, name='Garland', coll=coll)
+    return pot
+
+
+def base(night=False, rng=None):
+    rng = rng or random.Random(24)
+    coll = lib.collection('Room')
+    out, sun = SS.room(coll, rng, morning=True)
+    for nm in ('Laptop', 'Screen'):
+        for o in [o for o in bpy.data.objects if o.name.startswith(nm)]:
+            bpy.data.objects.remove(o, do_unlink=True)
+    scr = monitor(coll)
+    PR.chair(CHAIR.x, CHAIR.y, math.pi, coll, wood='#2E3036')
+    room_detail(coll, rng)
+    soft = lib.mat('Pillow', '#EDE7DC', rough=0.95, var=0.05, var_scale=20)
+    for px in (1.05, 1.75):
+        lib.box((0.6, 0.22, 0.38), (px, -0.12, 0.45), soft, rot=(0.35, 0, 0), bevel=0.08, name='Pillow', coll=coll, origin='bottom')
+    lib.box((1.5, 1.1, 0.04), (1.4, -1.35, 0.45), lib.mat('Plaid', '#C9785A', rough=0.95, var=0.1, var_scale=25), bevel=0.02,
+            name='Plaid', coll=coll, origin='bottom')
+    if night:
+        pc.night_sky(milky=0.3, stars=0.6, horizon='#1A2338', top='#05070D')
+        sun.data.energy = 0.0
+        wf = bpy.data.objects.get('WinFill')
+        if wf:
+            wf.data.energy = 25
+            wf.data.color = (0.45, 0.55, 0.9)
+        lib.light('AREA', (0.0, -0.6, 2.55), (0, 0, 0), energy=4, color='#AFC3FF', size=3.0, name='NightFill', coll=coll)
+    return coll, out, scr
+
+
+def seated(coll, typing=False):
+    h = H.load(coll, (CHAIR.x, CHAIR.y, 0.075), math.pi)
+    return h
+
+
+def type_pose(**kw):
+    p = H.pose('sit', arm=(14, 52), fore=(10, 95), head=(0, 4, 0), lean=8.0)
+    p.update(kw)
+    return p
+
+
+def typing(h, t0, t1, base=None, rate=6.0):
+    """Руки над клавиатурой чуть ходят: ключ каждые 1/rate с."""
+    base = base or type_pose()
+    n = max(2, int((t1 - t0) * rate))
+    for i in range(n + 1):
+        t = t0 + (t1 - t0) * i / n
+        a = 3.0 * (1 if i % 2 else -1)
+        H.key_pose(h, t, dict(base, fore=((10, 95 + a), (10, 95 - a))))
+
+
+# ----------------------------------------------------------------------------- телефон в руке
+PH_W, PH_D, PH_H = 0.11, 0.012, 0.23       # под чиби-кисти (кулак ~8 см): обычные 7,6 × 15,8 см тонули в кулаках
+SCR_W, SCR_H = 0.102, 0.22                  # экран 720×1560 (0.4636)
+
+
+def phone(coll, name='Phone'):
+    """Телефон: корпус + экран, экран смотрит в -Y корня (верх = +Z корня)."""
+    root = lib.empty(name, (0, 0, 0), coll=coll)
+    body = lib.box((PH_W, PH_D, PH_H), (0, 0, 0), lib.mat('PhoneBody', '#E2614E', rough=0.35, spec=0.6), bevel=0.006,
+                   name=name + 'Body', coll=coll)
+    body.parent = root
+    return root
+
+
+HOLD = dict(arm=(4, 52), fore=(-30, 112))          # ладони перед грудью, 16 см друг от друга (под ширину телефона)
+
+
+def hold_phone(h, ph, t=0.0, side='Right', tilt=55.0, out=(0.0, -0.035, 0.0), lift=0.06):
+    """Посадить телефон в кисть (родитель — кость кисти), экран к лицу. Вызывать после ключа позы на t."""
+    sc = bpy.context.scene
+    sc.frame_set(F(t))
+    bpy.context.view_layer.update()
+    rig = h['rig']
+    pb = rig.pose.bones[side + 'Hand']
+    tips = [rig.matrix_world @ rig.pose.bones[s + 'Hand'].matrix @ Vector((0, pb.length * 0.6, 0)) for s in ('Left', 'Right')]
+    tip = (tips[0] + tips[1]) / 2 + Vector((0, 0, 0.03))           # между ладонями: держит двумя руками
+    # out: телефон на 4,5 см ближе к лицу, чем центры кулаков, — кулаки за корпусом, видны по бокам, экран не закрывают
+    head = rig.matrix_world @ rig.pose.bones['Head'].matrix @ Vector((0, 0.25, 0))
+    d = (head - tip).normalized()                       # от телефона к лицу
+    q = d.to_track_quat('-Y', 'Z')                      # -Y корня (экран) смотрит на лицо
+    M = Matrix.Translation(tip + q @ Vector(out)) @ q.to_matrix().to_4x4()
+    M = M @ Matrix.Rotation(math.radians(tilt - 55.0), 4, 'X')       # +Z корня = верх экрана: вперёд-вверх, как герой видит
+    M = M @ Matrix.Translation((0, 0, lift))            # кулаки держат низ, верх экрана свободен
+    ph.parent = rig
+    ph.parent_type = 'BONE'
+    ph.parent_bone = side + 'Hand'
+    bone_tail = rig.matrix_world @ pb.matrix @ Matrix.Translation((0, pb.length, 0))
+    ph.matrix_parent_inverse = bone_tail.inverted()
+    ph.matrix_basis = M
+    return ph
+
+
+EYE_REST = Vector((0.0, -0.17, 1.14))       # между глаз, внутри головы (модель: лицо у y = -0.32, глаза z = 1.14)
+
+
+def eye_point(h, t=0.0):
+    sc = bpy.context.scene
+    sc.frame_set(F(t))
+    bpy.context.view_layer.update()
+    rig = h['rig']
+    pb = rig.pose.bones['Head']
+    return rig.matrix_world @ pb.matrix @ pb.bone.matrix_local.inverted() @ EYE_REST
+
+
+def pov_mats(h):
+    """Взгляд из глаз героя: камера стоит внутри головы, изнанка его модели для камеры прозрачна (видны руки и телефон)."""
+    for m in h['body'].data.materials:
+        nt = m.node_tree
+        out = next(n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL' and n.is_active_output)
+        src = out.inputs['Surface'].links[0].from_socket
+        geo = nt.nodes.new('ShaderNodeNewGeometry')
+        lp = nt.nodes.new('ShaderNodeLightPath')
+        mul = nt.nodes.new('ShaderNodeMath')
+        mul.operation = 'MULTIPLY'
+        tr = nt.nodes.new('ShaderNodeBsdfTransparent')
+        mix = nt.nodes.new('ShaderNodeMixShader')
+        nt.links.new(geo.outputs['Backfacing'], mul.inputs[0])
+        nt.links.new(lp.outputs['Is Camera Ray'], mul.inputs[1])
+        nt.links.new(mul.outputs[0], mix.inputs['Fac'])
+        nt.links.new(src, mix.inputs[1])
+        nt.links.new(tr.outputs[0], mix.inputs[2])
+        nt.links.new(mix.outputs[0], out.inputs['Surface'])
+
+
+def pov_camera(h, ph, dur, lens=30, push=0.0):
+    """Камера из глаз героя на телефон; push — на сколько метров подъехать к телефону за план."""
+    pov_mats(h)
+    e0, e1 = eye_point(h, 0.0), eye_point(h, dur)
+    bpy.context.scene.frame_set(1)
+    c = ph.matrix_world.translation.copy()
+    d0 = (c - e0).normalized()
+    cam = lib.camera(tuple(e0), tuple(c), lens)
+    lib.animate_camera(cam, [(0, tuple(e0)), (dur, tuple(e1 + d0 * push))], [(0, tuple(c)), (dur, tuple(c))])
+    cam.data.clip_start = 0.01
+    cam.data.dof.use_dof = True
+    cam.data.dof.focus_object = ph
+    cam.data.dof.aperture_fstop = 2.2
+    return cam
+
+
+def phone_cam(h, ph, dur, dist=0.27, lens=54, push=0.025, fstop=4.0, up=0.01):
+    """Крупно экран телефона со стороны лица героя: камера на нормали экрана, верх кадра = верх экрана,
+    кулаки по краям. Голова героя для камеры прозрачна изнутри (pov_mats), если камера в неё попала."""
+    pov_mats(h)
+    sc = bpy.context.scene
+    sc.frame_set(1)
+    bpy.context.view_layer.update()
+    W = ph.matrix_world
+    c = W.translation.copy()
+    n = (W.to_3x3() @ Vector((0, -1, 0))).normalized()          # нормаль экрана (к лицу)
+    u = (W.to_3x3() @ Vector((0, 0, 1))).normalized()           # верх картинки
+    tgt = c + u * up
+    cd = bpy.data.cameras.new('Cam')
+    cd.lens = lens
+    cd.sensor_fit = 'HORIZONTAL'
+    cd.sensor_width = 36.0
+    cd.clip_end = 200
+    cd.dof.use_dof = True
+    cd.dof.focus_object = ph
+    cd.dof.aperture_fstop = fstop
+    cam = bpy.data.objects.new('Cam', cd)
+    lib._link(cam)
+    sc.camera = cam
+    for t, dd in ((0.0, dist), (dur, dist - push)):
+        pos = c + n * dd
+        z = (pos - tgt).normalized()
+        x = u.cross(z).normalized()
+        y = z.cross(x)
+        cam.matrix_world = Matrix.Translation(pos) @ Matrix((x, y, z)).transposed().to_4x4()
+        cam.keyframe_insert('location', frame=F(t))
+        cam.keyframe_insert('rotation_euler', frame=F(t))
+        cd.clip_start = dd - 0.035                      # лицо героя (нос, щёки) между камерой и телефоном отсекается
+        cd.keyframe_insert('clip_start', frame=F(t))
+    return cam
+
+
+def phone_screen_on(ph, coll, items=None, png=None, scroll=None, strength=1.2):
+    """Экран(ы) телефона детьми корня: items=[(png, t)] по очереди или один png (scroll — прокрутка ленты)."""
+    rot = (math.pi / 2, 0, 0)
+    loc = (0, -(PH_D / 2 + 0.0007), 0)
+    obs = stack(coll, ph.name + 'S', items, SCR_W, SCR_H, loc, rot, strength) if items else \
+        [screen(coll, ph.name + 'S', png, SCR_W, SCR_H, loc, rot, strength, scroll)]
+    for o in obs:
+        o.parent = ph
+    return obs
+
+
+# ============================================================================= планы
+def v_feed(shot, fps):
+    """POV: экран телефона крупно, лента безликого канала листается, камера отходит и видно руку и колени."""
+    dur = shot['dur']
+    coll, out, scr = base()
+    h = H.load(coll, BED_SEAT, 0.0)
+    sp = H.pose('sit', head=(0, 26, 0), **BED_LEGS, **HOLD)
+    H.key_pose(h, 0, sp)
+    H.key_pose(h, dur, H.pose(sp, head=(0, 24, 3)))
+    ph = hold_phone(h, phone(coll), 0.0, 'Right', tilt=60)
+    phone_screen_on(ph, coll, png=ui('phone_feed'), scroll=[(0.0, 0.0), (dur * 0.45, 0.0), (dur * 0.7, 0.5), (dur, 0.5)])
+    phone_cam(h, ph, dur)
+    return dict(fill=0.25, exposure=0.3, samples=32)
+
+
+def _bed_hero(coll, dur, notes_t=()):
+    h = H.load(coll, BED_SEAT, 0.0)
+    sp = H.pose('sit', head=(0, 24, 0), **BED_LEGS, **HOLD)
+    H.key_pose(h, 0, sp)
+    for k, t in enumerate(notes_t):                 # на каждое уведомление голова чуть приподнимается, брови вверх
+        H.key_pose(h, t + 0.15, H.pose(sp, head=(0, 18 - 2 * k, 4 * (-1) ** k)))
+    H.key_pose(h, dur, H.pose(sp, head=(0, 16, -3)))
+    ph = hold_phone(h, phone(coll), 0.0, 'Right', tilt=60)
+    return h, ph
+
+
+def v_sofa(shot, fps):
+    """Герой на кровати, лицо подсвечено телефоном; телефон звякает (экран вспыхивает)."""
+    dur = shot['dur']
+    coll, out, scr = base()
+    t1 = _ev(shot, 'ping', dur * 0.45)
+    h, ph = _bed_hero(coll, dur, (t1,))
+    phone_screen_on(ph, coll, items=[('phone_notes0', 0.0), ('phone_notes1', t1)], strength=1.6)
+    glow = lib.light('POINT', (0, 0, 0), energy=0.6, color='#CFE0FF', size=0.05, name='PhoneGlow', coll=coll)
+    glow.parent = ph
+    glow.location = (0, -0.12, 0)
+    pc.key_light(glow, [(0, 0.6), (t1, 0.6), (t1 + 0.05, 2.2), (t1 + 0.5, 0.9), (dur, 0.9)])
+    cam = lib.camera((0.6, -2.0, 1.12), (1.36, -0.5, 0.86), 42)
+    lib.animate_camera(cam, [(0, (0.6, -2.0, 1.12)), (dur, (0.72, -1.82, 1.1))], [(0, (1.36, -0.5, 0.88)), (dur, (1.36, -0.5, 0.86))])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.35, exposure=0.4, samples=32, still_t=0.6)
+
+
+def v_notes(shot, fps):
+    """POV: экран блокировки, уведомления о рекламе приходят одно за другим (без сумм)."""
+    dur = shot['dur']
+    coll, out, scr = base()
+    ts = [_ev(shot, 'n1', 0.15), _ev(shot, 'n2', dur * 0.38), _ev(shot, 'n3', dur * 0.66)]
+    h, ph = _bed_hero(coll, dur, ts)
+    phone_screen_on(ph, coll, items=[('phone_notes1', 0.0), ('phone_notes2', ts[1]), ('phone_notes3', ts[2])], strength=1.4)
+    phone_cam(h, ph, dur)
+    return dict(fill=0.25, exposure=0.3, samples=32, still_t=0.8)
+
+
+def v_night(shot, fps):
+    """Ночь, ручной монтаж: на мониторе дорожки и «осталось 2 ч 40 мин», часы бегут, кружки копятся, герой клюёт носом."""
+    dur = shot['dur']
+    rng = random.Random(5)
+    coll, out, scr = base(night=True, rng=rng)
+    screen(coll, 'Edit', ui('mon_edit'), MON_W, MON_H, scr[0], scr[1], strength=1.5)
+    lib.light('AREA', (MON.x, MON.y - 0.25, SCR_Z), (math.radians(90), 0, 0), energy=6, color='#9DB8FF', size=0.6, name='MonGlow',
+              coll=coll)
+    _, cups = desk_stuff(coll, rng, night=True, mugs=1)
+    for k, grp in enumerate(cups[1:], 1):
+        for o in grp:
+            FX.key_hide(o, [(0, False), (dur * (0.2 + 0.22 * k), True)])
+    wall_clock(coll, turns=(5.0, 5.0 / 12), dur=dur)
+    h = seated(coll)
+    tp = type_pose()
+    typing(h, 0, dur * 0.45, tp)
+    H.key_pose(h, dur * 0.62, H.pose(tp, head=(0, 30, 6), lean=14.0))         # клюёт носом
+    H.key_pose(h, dur * 0.72, H.pose(tp, head=(0, -4, 0), lean=6.0))          # вздрогнул
+    H.key_pose(h, dur, H.pose(tp, head=(0, 22, -4), lean=12.0))
+    cam = lib.camera((-0.2, -0.45, 1.5), (-1.45, 1.1, 1.0), 30)
+    lib.animate_camera(cam, [(0, (-0.2, -0.45, 1.5)), (dur, (-0.35, -0.2, 1.42))], [(0, (-1.45, 1.1, 1.0)), (dur, (-1.45, 1.15, 1.02))])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.04, exposure=0.1, samples=32, fill_col='#9DB0E0')
+
+
+def v_build(shot, fps):
+    """День: пишет одну фразу, откидывается на спинку; на мониторе галочки «Сценарий, Голос, 3D-сцены, Субтитры» → готово."""
+    dur = shot['dur']
+    rng = random.Random(6)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=1)
+    wall_clock(coll, turns=(0.02, 0.0), dur=dur)
+    tt = _ev(shot, 'typed', dur * 0.22)
+    st = [_ev(shot, 's%d' % k, tt + (dur - tt) * (0.12 + 0.17 * k)) for k in range(5)]
+    items = [('mon_type0', 0.0), ('mon_type35', tt * 0.3), ('mon_type70', tt * 0.6), ('mon_type100', tt * 0.85),
+             ('mon_build0', tt)] + [('mon_build%d' % (k + 1), st[k]) for k in range(4)]
+    stack(coll, 'Build', items, MON_W, MON_H, scr[0], scr[1], strength=1.3)
+    h = seated(coll)
+    tp = type_pose()
+    typing(h, 0, tt, tp)
+    lean_back = H.pose('sit', arm=(18, 22), fore=(24, 62), lean=-9.0, head=(0, -4, 8))     # откинулся, руки на коленях
+    H.key_pose(h, tt + 0.6, lean_back)
+    H.key_pose(h, dur, H.pose(lean_back, head=(0, -2, -6)))
+    cam = lib.camera((-2.0, -0.5, 1.62), (-1.34, 1.25, 1.04), 36)
+    lib.animate_camera(cam, [(0, (-2.0, -0.5, 1.62)), (dur, (-1.96, -0.3, 1.56))], [(0, (-1.34, 1.25, 1.04)), (dur, (-1.35, 1.25, 1.05))])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.35, exposure=0.4, samples=32, still_t=0.8)
+
+
+def v_styles(shot, fps):
+    """Монитор ближе: меню стилей, подсветка бежит по плиткам (3D и Пиксель есть, у остальных «скоро»)."""
+    dur = shot['dur']
+    rng = random.Random(7)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=1)
+    n = 12
+    items = [('mon_styles%02d' % k, dur * k / n) for k in range(n)]
+    stack(coll, 'Sty', items, MON_W, MON_H, scr[0], scr[1], strength=1.3)
+    h = seated(coll)
+    mp = H.pose('sit', arm=((14, 52), (20, 40)), fore=((10, 95), (12, 70)), head=(0, 4, 0), lean=8.0)
+    H.key_pose(h, 0, mp)
+    H.key_pose(h, dur, H.pose(mp, head=(0, 2, 6)))
+    c = Vector(scr[0])
+    cam = lib.camera((c.x + 0.28, c.y - 0.62, c.z + 0.02), tuple(c), 30)
+    lib.animate_camera(cam, [(0, (c.x + 0.28, c.y - 0.62, c.z + 0.02)), (dur, (c.x + 0.18, c.y - 0.5, c.z + 0.01))],
+                       [(0, tuple(c)), (dur, tuple(c))])
+    cam.data.clip_start = 0.02
+    return dict(fill=0.3, exposure=0.35, samples=32)
+
+
+def v_calendar(shot, fps):
+    """Календарь на стене заполняется превью роликов, клетка за клеткой; герой смотрит на него со стула."""
+    dur = shot['dur']
+    rng = random.Random(8)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=1)
+    calendar(coll, rng, fill=(0.2, dur * 0.85))
+    h = H.load(coll, (1.9, 0.26, 0.0), -math.pi / 2 + 0.35)   # стоит у календаря лицом к камере, вполоборота
+    p = H.pose('stand', head=(0, -10, -35), arm=((24, 4), (55, 25)), fore=((18, 16), (30, 70)))   # правой рукой «смотри»
+    H.key_pose(h, 0, p)
+    H.key_pose(h, dur, H.pose(p, head=(0, -8, -28)))
+    wall_clock(coll, turns=(0.0, 0.0), dur=dur)
+    cam = lib.camera((0.35, 0.32, 1.32), (2.1, 0.56, 1.28), 40)
+    lib.animate_camera(cam, [(0, (0.35, 0.32, 1.32)), (dur, (0.6, 0.36, 1.33))], [(0, (2.1, 0.56, 1.28)), (dur, (2.1, 0.58, 1.3))])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.35, exposure=0.4, samples=32, still_t=0.8)
+
+
+def v_call(shot, fps):
+    """Созвон «настроим за тебя»: на мониторе установка с галочками и помощник на связи, герой показывает «класс»."""
+    dur = shot['dur']
+    rng = random.Random(9)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=1)
+    items = [('mon_call0', 0.0), ('mon_call1', dur * 0.3), ('mon_call2', dur * 0.55)]
+    stack(coll, 'Call', items, MON_W, MON_H, scr[0], scr[1], strength=1.3)
+    h = seated(coll)
+    p0 = H.pose('sit', arm=(16, 30), fore=(12, 70), head=(0, 2, 0))
+    thumbs = H.pose('sit', arm=((16, 30), (22, 60)), fore=((12, 70), (14, 150)), head=(0, -4, -14))   # правая рука вверх, к камере
+    H.key_pose(h, 0, p0)
+    H.key_pose(h, _ev(shot, 'thumb', dur * 0.6), p0)
+    H.key_pose(h, _ev(shot, 'thumb', dur * 0.6) + 0.35, thumbs)
+    H.key_pose(h, dur, H.pose(thumbs, head=(0, -6, -18)))
+    cam = lib.camera((-0.48, -0.22, 1.5), (-1.36, 1.25, 1.04), 36)
+    lib.animate_camera(cam, [(0, (-0.48, -0.22, 1.5)), (dur, (-0.56, -0.05, 1.46))], [(0, (-1.36, 1.25, 1.04)), (dur, (-1.36, 1.25, 1.05))])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.4, exposure=0.4, samples=32)
+
+
+def v_comment(shot, fps):
+    """POV: телефон в руках над столом, в поле комментария печатается «канал» и загорается кнопка отправки."""
+    dur = shot['dur']
+    rng = random.Random(10)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=2)
+    screen(coll, 'Idle', ui('mon_build4'), MON_W, MON_H, scr[0], scr[1], strength=1.1)
+    h = seated(coll)
+    p = H.pose('sit', head=(0, 26, 0), lean=10.0, **HOLD)
+    H.key_pose(h, 0, p)
+    H.key_pose(h, dur, H.pose(p, head=(0, 24, 2)))
+    ph = hold_phone(h, phone(coll), 0.0, 'Right', tilt=60)
+    t0 = 0.3
+    items = [('phone_comment0', 0.0)] + [('phone_comment%d' % k, t0 + (dur * 0.55 - t0) * k / 5) for k in range(1, 6)]
+    phone_screen_on(ph, coll, items=items, strength=1.3)
+    phone_cam(h, ph, dur)
+    return dict(fill=0.25, exposure=0.3, samples=32, still_t=0.8)
+
+
+def build(shot, fps=30):
+    return globals()['v_' + shot['variant']](shot, fps)

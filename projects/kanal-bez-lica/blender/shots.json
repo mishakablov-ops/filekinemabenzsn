@@ -1,0 +1,89 @@
+{
+ "fps": 30,
+ "ends": {
+  "1": 35.2
+ },
+ "shots": [
+  {
+   "id": "k01",
+   "set": "kanal",
+   "variant": "feed",
+   "kind": "clip",
+   "dur": 2.6,
+   "start": 0,
+   "events": {}
+  },
+  {
+   "id": "k02",
+   "set": "kanal",
+   "variant": "sofa",
+   "kind": "clip",
+   "dur": 1.8,
+   "start": 2.6,
+   "events": {}
+  },
+  {
+   "id": "k03",
+   "set": "kanal",
+   "variant": "notes",
+   "kind": "clip",
+   "dur": 2.8,
+   "start": 4.4,
+   "events": {}
+  },
+  {
+   "id": "k04",
+   "set": "kanal",
+   "variant": "night",
+   "kind": "clip",
+   "dur": 5.0,
+   "start": 7.2,
+   "events": {}
+  },
+  {
+   "id": "k05",
+   "set": "kanal",
+   "variant": "build",
+   "kind": "clip",
+   "dur": 6.0,
+   "start": 12.2,
+   "events": {}
+  },
+  {
+   "id": "k06",
+   "set": "kanal",
+   "variant": "styles",
+   "kind": "clip",
+   "dur": 6.0,
+   "start": 18.2,
+   "events": {}
+  },
+  {
+   "id": "k07",
+   "set": "kanal",
+   "variant": "calendar",
+   "kind": "clip",
+   "dur": 3.5,
+   "start": 24.2,
+   "events": {}
+  },
+  {
+   "id": "k08",
+   "set": "kanal",
+   "variant": "call",
+   "kind": "clip",
+   "dur": 3.5,
+   "start": 27.7,
+   "events": {}
+  },
+  {
+   "id": "k09",
+   "set": "kanal",
+   "variant": "comment",
+   "kind": "clip",
+   "dur": 4.0,
+   "start": 31.2,
+   "events": {}
+  }
+ ]
+}

@@ -5,6 +5,23 @@ Everything is built procedurally with bmesh (no bpy.ops), so scripts run headles
 import bpy, bmesh, math, random, os
 from mathutils import Vector, Matrix, Euler
 
+# Blender 5.x (29.10.2026, one Blender for the reels and the MCP): Action.fcurves is gone (layered actions). This shim
+# gives Action back an `fcurves` view of its first slot's channel bag, so the 4.5-era code keeps working on both.
+if not hasattr(bpy.types.Action, 'fcurves'):
+    from bpy_extras import anim_utils as _au
+
+    class _NoCurves(list):
+        def find(self, *a, **k):
+            return None
+
+    def _action_fcurves(act):
+        for slot in act.slots:
+            cb = _au.action_get_channelbag_for_slot(act, slot)
+            if cb is not None:
+                return cb.fcurves
+        return _NoCurves()
+    bpy.types.Action.fcurves = property(_action_fcurves)
+
 PROJ = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATA = os.path.join(PROJ, 'data')
 FPS = 60
@@ -90,19 +107,44 @@ def setup_render(dur_s, samples=48, scale=1.0, motion_blur=True, fps=FPS, view='
     r.use_placeholder = True
     return sc
 
+def _compositor_tree(sc):
+    """Blender 4.x: the scene's own compositor tree; 5.x: a compositor node group assigned to the scene."""
+    if hasattr(sc, 'node_tree'):
+        sc.use_nodes = True
+        return sc.node_tree
+    ng = bpy.data.node_groups.new('Compositor', 'CompositorNodeTree')
+    sc.compositing_node_group = ng
+    return ng
+
+
+def _comp_out(nt):
+    """The compositor's final output: Composite node (4.x) or the group output with an Image socket (5.x)."""
+    try:
+        return nt.nodes.new('CompositorNodeComposite')
+    except RuntimeError:
+        if 'Image' not in [s.name for s in nt.interface.items_tree]:
+            nt.interface.new_socket('Image', in_out='OUTPUT', socket_type='NodeSocketColor')
+        return nt.nodes.new('NodeGroupOutput')
+
 def bloom(strength=0.35, threshold=1.0, size=7, glare='BLOOM'):
     sc = bpy.context.scene
-    sc.use_nodes = True
-    nt = sc.node_tree
+    nt = _compositor_tree(sc)
     for n in list(nt.nodes):
         nt.nodes.remove(n)
     rl = nt.nodes.new('CompositorNodeRLayers')
-    comp = nt.nodes.new('CompositorNodeComposite')
+    comp = _comp_out(nt)
     g = nt.nodes.new('CompositorNodeGlare')
-    try:
-        g.glare_type = glare
-    except Exception:
-        g.glare_type = 'FOG_GLOW'
+    for v in (glare, 'FOG_GLOW'):
+        try:
+            g.glare_type = v
+            break
+        except Exception:
+            pass
+    if 'Type' in g.inputs:          # Blender 5.x: the glare settings are sockets
+        try:
+            g.inputs['Type'].default_value = glare.title().replace('_', ' ')
+        except Exception:
+            pass
     for k, v in dict(quality='HIGH', mix=-1 + 2 * strength, threshold=threshold, size=size).items():
         try:
             setattr(g, k, v)

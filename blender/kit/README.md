@@ -13,3 +13,8 @@
 - `tools/build_timeline.py` (слова → shots.json), `tools/build_spec.py` (spec.json Reel Studio), `tools/mix.py` (музыка + звуки + приглушение под голос) — примеры из «Мира без границ», план сцен и якоря менять под новый сценарий.
 - `tools/py/` — озвучка (Gemini/MiniMax/ElevenLabs/Chatterbox на Replicate), проверка Whisper, прослушка голосов, свои звуки (`sfx_mbg.py`), карты (`process_map.py`), текстуры (`make_textures.py`), контактный лист (`sheet.py`), стоп-кадры Remotion (`rs_stills.py`).
 - `data/` — границы и маски суши для глобуса, `audio/sfx/` — 19 своих звуков, `blender/tex/` — карта Европы, паспорт.
+
+## Журнал
+
+- 24.11.2026 — `blender/lib.py` синхронизирован с движком Wpresser: совместимость с Blender 5.x (`Action.fcurves` убран
+  в 5.0, ключи читаются через `bpy_extras.anim_utils.action_get_channelbag_for_slot`) и помощники композитора.
