@@ -388,7 +388,8 @@ def pov_camera(h, ph, dur, lens=30, push=0.0):
     return cam
 
 
-def phone_cam(h, ph, dur, dist=0.27, lens=54, push=0.025, fstop=4.0, up=0.01):
+def phone_cam(h, ph, dur, dist=0.39, lens=54, push=0.03, fstop=4.0, up=0.023):
+    # 25.11: телефон ~50 % высоты кадра и ниже центра — сверху место для титров (полоса 13–33 %), низ экрана выше 80 %
     """Крупно экран телефона со стороны лица героя: камера на нормали экрана, верх кадра = верх экрана,
     кулаки по краям. Голова героя для камеры прозрачна изнутри (pov_mats), если камера в неё попала."""
     pov_mats(h)
@@ -616,8 +617,8 @@ def v_comment(shot, fps):
     H.key_pose(h, 0, p)
     H.key_pose(h, dur, H.pose(p, head=(0, 14, 2)))
     ph = hold_phone(h, phone(coll), 0.0, 'Right', tilt=60)
-    t0 = 0.3
-    items = [('phone_comment0', 0.0)] + [('phone_comment%d' % k, t0 + (dur * 0.55 - t0) * k / 5) for k in range(1, 6)]
+    t0, t1 = 0.3, _ev(shot, 'typed', dur * 0.55)            # «канал» допечатано к концу слова в голосе
+    items = [('phone_comment0', 0.0)] + [('phone_comment%d' % k, t0 + (t1 - t0) * k / 5) for k in range(1, 6)]
     phone_screen_on(ph, coll, items=items, strength=1.3)
     phone_cam(h, ph, dur)
     return dict(fill=0.25, exposure=0.3, samples=32, still_t=0.8)
