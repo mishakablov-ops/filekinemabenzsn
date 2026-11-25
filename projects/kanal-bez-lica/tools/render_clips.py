@@ -25,17 +25,27 @@ PROJ = HERE.parent
 PID = "kanal-bez-lica"
 
 
-# v2 (mike 25.11: «разделение на 2 экрана… вот такие уже есть стили»): the 1080×960 render on top as 3D, the same frames
-# below as pixel art (1/6 size, 7 levels per channel, nearest-neighbour back up), a thin light line between them
+# v2 (mike 25.11: «разделение на 2 экрана… вот такие уже есть стили»): the 1080×960 render on top as 3D, below the same
+# action in our pixel style — the PIXCINE clip (pixel/build_split_pixel.py, 1080×960; mike 26.11: «сделай прям наш стиль
+# туда… не просто пиксели вместо хорошего качества»), a thin light line between them. Without that clip: the old filter
+# (1/6 size, 7 levels per channel, nearest-neighbour back up) as a stand-in only.
+SHARP = "unsharp=5:5:0.55:5:5:0.0"      # 26.11 mike «чтобы картинка не мыльная»: Eevee (filter 1.2 px) чуть мягкий
 PIXEL = ("scale=180:160:flags=area,lutrgb=r='trunc(val/36)*36+18':g='trunc(val/36)*36+18':b='trunc(val/36)*36+18',"
          "scale=1080:960:flags=neighbor")
 
 
-def split_screen(ff, clip):
+def split_screen(ff, clip, n, pixel_half=None):
     tmp = clip.with_name(clip.stem + "_half.mp4")
     clip.replace(tmp)
-    fc = f"[0:v]split[a][b];[b]{PIXEL}[p];[a][p]vstack,drawbox=x=0:y=956:w=1080:h=8:color=0xF2EFE8@0.95:t=fill[v]"
-    e = subprocess.run([ff, "-y", "-loglevel", "error", "-i", str(tmp), "-filter_complex", fc, "-map", "[v]", "-c:v", "libx264",
+    ins = ["-i", str(tmp)]
+    if pixel_half and Path(pixel_half).exists():
+        ins += ["-i", str(pixel_half)]
+        fc = ("[1:v]scale=1080:960:flags=neighbor,fps=30,tpad=stop_mode=clone:stop_duration=1,setsar=1[p];"
+              "[0:v]setsar=1[a];[a][p]vstack=shortest=1,drawbox=x=0:y=956:w=1080:h=8:color=0xF2EFE8@0.95:t=fill[v]")
+    else:
+        print("NOTE: no PIXCINE half, the pixel filter stand-in is used", flush=True)
+        fc = f"[0:v]split[a][b];[b]{PIXEL}[p];[a][p]vstack,drawbox=x=0:y=956:w=1080:h=8:color=0xF2EFE8@0.95:t=fill[v]"
+    e = subprocess.run([ff, "-y", "-loglevel", "error", *ins, "-filter_complex", fc, "-map", "[v]", "-frames:v", str(n), "-c:v", "libx264",
                         "-crf", "14", "-preset", "medium", "-g", "30", "-bf", "0", "-pix_fmt", "yuv420p", "-movflags",
                         "+faststart", str(clip)], capture_output=True, text=True)
     if e.returncode:
@@ -52,6 +62,8 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--samples", type=int, default=24)
     ap.add_argument("--scale", type=float, default=1.0)
+    ap.add_argument("--pixel-half", default=os.environ.get("KANAL_PIXEL_HALF", ""),
+                    help="PIXCINE clip for the lower half of the split shot (pixel/build_split_pixel.py)")
     ap.add_argument("--seq-root", default=os.environ.get("KANAL_SEQ", ""),
                     help="folder for the JPEG frames, best outside public/ (the KINEMA bundle copies all of public)")
     a = ap.parse_args()
@@ -106,14 +118,14 @@ def main():
         ok = r.returncode == 0 and len(frames) >= n
         if ok:
             e = subprocess.run([ff, "-y", "-loglevel", "error", "-framerate", "30", "-start_number", "1",
-                                "-i", str(seq / "f_%04d.jpg"), "-frames:v", str(n), "-c:v", "libx264", "-crf", "14",
+                                "-i", str(seq / "f_%04d.jpg"), "-frames:v", str(n), "-vf", SHARP, "-c:v", "libx264", "-crf", "14",
                                 "-preset", "medium", "-g", "30", "-bf", "0", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
                                 str(out)], capture_output=True, text=True)
             ok = e.returncode == 0 and out.exists()
             if not ok:
                 print("ENCODE FAILED", e.stderr[-1500:], flush=True)
         if ok and s.get("variant") == "split":
-            ok = split_screen(ff, out)
+            ok = split_screen(ff, out, n, a.pixel_half)
         if ok:
             subprocess.run([ff, "-y", "-loglevel", "error", "-ss", f"{s['dur'] * 0.6:.2f}", "-i", str(out), "-frames:v", "1",
                             "-q:v", "3", str(chk / f"{sid}.jpg")])

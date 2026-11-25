@@ -717,13 +717,14 @@ def v_plus(shot, fps):
     return dict(fill=0.4, exposure=0.4, samples=32, still_t=0.6)
 
 
-SPLIT_AT = (0.15, 0.65, 0.0)
+SPLIT_AT = (-0.1, 0.75, 0.0)
 
 
 def v_split(shot, fps):
     """v2, mike 25.11: «разделение на 2 экрана в каком-либо действии и объяснить, что вот такие уже есть стили».
     Герой стоит у окна («Метрополис» за ним), машет и делает оборот на месте. Кадр 1080×960: render_clips.py ставит
-    его сверху как 3D, а снизу то же движение пикселем (ffmpeg), подписи стилей — плашки KINEMA."""
+    его сверху как 3D, а снизу то же движение в нашем пиксельном стиле (PIXCINE, pixel/build_split_pixel.py; mike 26.11:
+    «не просто пиксели вместо хорошего качества»), подписи стилей — плашки KINEMA."""
     dur = shot['dur']
     rng = random.Random(12)
     coll, out, scr = base(rng=rng)
@@ -750,10 +751,12 @@ def v_split(shot, fps):
     for tt, z in ((0.0, z0), (t_sp0, z0), (t_sp1, z0 + 2 * math.pi), (dur, z0 + 2 * math.pi)):
         rig.rotation_euler.z = z
         rig.keyframe_insert('rotation_euler', index=2, frame=F(tt))
-    c0, c1 = (SPLIT_AT[0], SPLIT_AT[1] - 2.05, 1.0), (SPLIT_AT[0], SPLIT_AT[1] - 1.9, 0.98)
-    tg = (SPLIT_AT[0], SPLIT_AT[1], 0.84)
-    cam = lib.camera(c0, tg, 34)
-    lib.animate_camera(cam, [(0, c0), (dur, c1)], [(0, tg), (dur, tg)])
+    # 26.11: герой во весь рост в нижних ~55 % половины, сверху окно и «Метрополис» — там встают титры KINEMA, они больше
+    # не ложатся на голову; камера на высоте 1,6 м без наклона (без завала вертикалей), объектив 28 мм
+    c0, c1 = (SPLIT_AT[0], SPLIT_AT[1] - 2.87, 1.62), (SPLIT_AT[0], SPLIT_AT[1] - 2.72, 1.6)
+    tg0, tg1 = (SPLIT_AT[0], SPLIT_AT[1], 1.62), (SPLIT_AT[0], SPLIT_AT[1], 1.6)
+    cam = lib.camera(c0, tg0, 28)
+    lib.animate_camera(cam, [(0, c0), (dur, c1)], [(0, tg0), (dur, tg1)])
     cam.data.clip_start = 0.05
     return dict(fill=0.4, exposure=0.4, samples=32, still_t=0.3)
 

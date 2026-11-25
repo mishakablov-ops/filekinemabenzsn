@@ -158,8 +158,8 @@ scenes = [
                                      chip("3D выделяется в ленте", "@выделяется", 120, accent=True)]),
     # v2 split screen (mike): the same wave and turn, 3D on top and pixel below; labels on each half
     scene("k5s", "@Одно действие", layers=[
-        chip("3D", "@стиля", -75, "center", size=54, accent=True), chip("ПИКСЕЛЬ", "@пиксель", 75, "center", size=54, accent=True)],
-          captions={"pos": "bottom"}),          # the top band would sit on the 3D hero's head; below it is the pixel copy
+        chip("3D", "@стиля", -75, "center", size=54, accent=True), chip("ПИКСЕЛЬ", "@пиксель", 75, "center", size=54, accent=True)]),
+    # (captions stay on top: the 3D half keeps the window above the hero's head for them, 26.11)
     scene("k06", "@а скоро"),                   # the style menu: the «скоро» tiles
     # the wall calendar fills with covers; «больше мест под баннеры» — ad tags pop low (v2: the hero stands left of the
     # calendar, the tags must not cross his face or the calendar)
