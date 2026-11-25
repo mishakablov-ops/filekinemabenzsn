@@ -4,7 +4,8 @@
 import bpy, math, sys, random
 from mathutils import Vector, Euler
 
-ARGS = sys.argv[1:]
+# аргументы: python scene.py <args> (bpy-модуль) или blender -b -P scene.py -- <args>
+ARGS = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else sys.argv[1:]
 STYLE = ARGS[0] if ARGS else 'soft3d'
 OUT = ARGS[1] if len(ARGS) > 1 else '/tmp/dog.png'
 F0 = int(ARGS[2]) if len(ARGS) > 2 else 24
@@ -241,8 +242,13 @@ head = metaball('Body.head', 'body', [
 kid(uvs('Nose', (0, 0, 0), (0.10, 0.105, 0.09), 'nose'), headpiv, (0.99, 0, 0.21))
 for side in (-1, 1):
     kid(uvs('EyeW%d' % side, (0, 0, 0), (0.10, 0.07, 0.11), 'eyew'), headpiv, (0.40, side * 0.23, 0.42))
-    kid(uvs('Pupil%d' % side, (0, 0, 0), (0.055, 0.03, 0.065), 'pupil'), headpiv, (0.46, side * 0.285, 0.43))
-    kid(uvs('Hl%d' % side, (0, 0, 0), (0.018, 0.01, 0.018), 'eyew', seg=16), headpiv, (0.485, side * 0.31, 0.46))
+    # v5: зрачок смотрит вперёд (20° от носа наружу) — в анфасе и 3/4 спереди виден у обоих глаз
+    a20 = math.radians(20)
+    kid(uvs('Pupil%d' % side, (0, 0, 0), (0.055, 0.03, 0.065), 'pupil'), headpiv,
+        (0.40 + 0.097 * math.cos(a20), side * (0.23 + 0.068 * math.sin(a20)), 0.43), (0, 0, -side * math.radians(70)))
+    kid(uvs('Hl%d' % side, (0, 0, 0), (0.018, 0.01, 0.018), 'eyew', seg=16), headpiv,
+        (0.40 + 0.118 * math.cos(math.radians(28)), side * (0.23 + 0.075 * math.sin(math.radians(28))), 0.46),
+        (0, 0, -side * math.radians(62)))
 EARS = []
 for side in (-1, 1):
     ep = empty('EarPiv%d' % side, (0, 0, 0), headpiv); ep.location = (0.02, side * 0.30, 0.52)
@@ -497,7 +503,8 @@ for f in range(1, 721):
 if STYLE in ('soft3d', 'clay'):
     fo = empty('Focus', (0.0, 0.0, 0.0), dog); fo.location = (0.95, 0.0, 0.85)
     cam_d.dof.use_dof = True; cam_d.dof.focus_object = fo
-    cam_d.dof.aperture_fstop = 1.4 if STYLE == 'soft3d' else 0.9
+    # v5: глубина резкости мягче — вся такса в фокусе, фон слегка размыт (при f/1.4 тело «мылилось» шумодавом)
+    cam_d.dof.aperture_fstop = float(__import__('os').environ.get('FSTOP', 2.8 if STYLE == 'soft3d' else 1.6))
 import os as _os
 if 'tufts' in _os.environ.get('IDS_HIDE', ''):
     TUFTS.hide_render = True
@@ -608,6 +615,18 @@ if STYLE in LINES and USE_FREESTYLE:
 # ---------------- рендер ----------------
 S.render.engine = 'CYCLES'
 S.cycles.device = 'CPU'
+if _os.environ.get('CYCLES_GPU'):
+    # на ПК: CYCLES_GPU=OPTIX | CUDA | HIP
+    try:
+        cp = bpy.context.preferences.addons['cycles'].preferences
+        cp.compute_device_type = _os.environ['CYCLES_GPU']; cp.get_devices()
+        for dv in cp.devices: dv.use = dv.type != 'CPU'
+        S.cycles.device = 'GPU'
+    except Exception as e:
+        print('GPU off:', e)
+if STYLE in ('soft3d', 'lowpoly') and _os.environ.get('MBLUR', '0') == '1':
+    S.render.use_motion_blur = True; S.render.motion_blur_shutter = 0.4
+    S.render.motion_blur_position = 'START'   # затвор от кадра вперёд: на кадре 76 нет смаза от скачка камеры после неона
 S.cycles.samples = int(_os.environ.get('SAMPLES', 28)) if STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'shade') else 12
 S.cycles.use_denoising = STYLE in ('soft3d', 'clay', 'gzhel', 'lowpoly', 'comic', 'toon', 'shade')
 S.cycles.max_bounces = 4

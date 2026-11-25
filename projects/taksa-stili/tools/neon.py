@@ -74,7 +74,7 @@ SL = np.where(S, BL[iy, ix], 0)
 
 if TEXT:
     from PIL import ImageDraw, ImageFont
-    fnt = ImageFont.truetype(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nunito-cyrillic-900.ttf'), int(170 * K))
+    fnt = ImageFont.truetype(os.path.join(os.environ.get('FONT_DIR', os.path.dirname(os.path.abspath(__file__))), 'nunito-cyrillic-900.ttf'), int(170 * K))
     tm = Image.new('L', (W, H), 0); dr = ImageDraw.Draw(tm)
     dr.text((W / 2, H * float(os.environ.get('NEON_TEXT_Y', '0.71'))), TEXT, font=fnt, fill=255, anchor='mm')
     TS = skeletonize(np.asarray(tm) > 128)
@@ -305,7 +305,10 @@ if VAR == 'anime':
 if VAR in ('ink', 'halftone'):
     # плоский мультик с ровным чернильным контуром: заливка цветами сцены + трубки тёмной краской
     import ast, re
-    src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'scene.py'), encoding='utf-8').read()
+    _here = os.path.dirname(os.path.abspath(__file__))
+    _sp = os.environ.get('SCENE_PY') or next(p for p in (os.path.join(_here, 'scene.py'),
+                                                         os.path.join(_here, '..', 'blender', 'scene.py')) if os.path.exists(p))
+    src = open(_sp, encoding='utf-8').read()
     body = src[src.index('BASE = dict(') + len('BASE = dict('):src.index(')\n\n', src.index('BASE = dict('))]
     base = {k: ast.literal_eval(v) for k, v in re.findall(r'(\w+)=(\([^)]*\))', body)}
     lin = np.zeros((256, 3), np.float32)
