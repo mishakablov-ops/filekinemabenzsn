@@ -234,6 +234,65 @@ def phone_comments():
         save(im, 'phone_comment%d' % typed)
 
 
+# ----------------------------------------------------------------------------- телефон: лента «Для вас» поверх нашего ролика (v2)
+def heart(d, cx, cy, r, fill):
+    d.ellipse([cx - r, cy - r * 0.9, cx, cy + r * 0.1], fill=fill)
+    d.ellipse([cx, cy - r * 0.9, cx + r, cy + r * 0.1], fill=fill)
+    d.polygon([(cx - r * 0.97, cy - r * 0.25), (cx + r * 0.97, cy - r * 0.25), (cx, cy + r * 1.05)], fill=fill)
+
+
+def phone_tiktok(n=12):
+    """Прозрачный слой интерфейса ленты (v2, mike 25.11: «пример с тиктоком, что щас такое залетает»): вкладки
+    «Подписки | Для вас», правая колонка кнопок, ник и подпись, полоска прогресса, сердечки всплывают от кнопки лайка.
+    Под ним в сцене играет наш 3D-ролик (видео-текстура). Цифр просмотров и лайков нет (promo-funnel.md)."""
+    W, H = 720, 1560
+    hr = random.Random(25)
+    flying = [(hr.uniform(0, 1), hr.uniform(-60, 40), hr.uniform(26, 44),
+               hr.choice([(255, 64, 96), (255, 92, 120), (255, 140, 160), (255, 60, 80)])) for _ in range(9)]
+    for f in range(n):
+        im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        sh = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        g = ImageDraw.Draw(sh)
+        g.rectangle([0, 0, W, 230], fill=(0, 0, 0, 70))             # затемнения под текстом сверху и снизу
+        g.rectangle([0, 1180, W, H], fill=(0, 0, 0, 110))
+        im = Image.alpha_composite(im, sh)
+        d = ImageDraw.Draw(im)
+        d.text((250, 150), 'Подписки', font=font('b', 32), fill=(255, 255, 255, 170), anchor='mm')
+        d.text((470, 150), 'Для вас', font=font('b', 34), fill=(255, 255, 255, 255), anchor='mm')
+        d.rounded_rectangle([430, 180, 510, 186], 3, fill=(255, 255, 255, 255))
+        x = W - 72
+        d.ellipse([x - 44, 690, x + 44, 778], fill=(40, 40, 48, 255), outline=(255, 255, 255, 255), width=4)
+        d.ellipse([x - 16, 712, x + 16, 744], fill=(220, 220, 226, 255))
+        d.rounded_rectangle([x - 26, 742, x + 26, 772], 14, fill=(220, 220, 226, 255))
+        d.ellipse([x - 16, 762, x + 16, 794], fill=(255, 60, 92, 255))
+        d.text((x, 777), '+', font=font('b', 28), fill=(255, 255, 255, 255), anchor='mm')
+        liked = f >= 2
+        heart(d, x, 878, 40, (255, 56, 92, 255) if liked else (255, 255, 255, 235))
+        d.rounded_rectangle([x - 38, 960, x + 38, 1018], 26, fill=(255, 255, 255, 235))
+        d.polygon([(x - 14, 1014), (x - 26, 1036), (x + 2, 1016)], fill=(255, 255, 255, 235))
+        for k in range(3):
+            d.ellipse([x - 22 + k * 18, 982, x - 12 + k * 18, 992], fill=(40, 40, 48, 255))
+        d.polygon([(x - 26, 1080), (x + 26, 1080), (x + 26, 1140), (x, 1122), (x - 26, 1140)], fill=(255, 255, 255, 235))
+        d.polygon([(x + 30, 1220), (x - 6, 1186), (x - 6, 1206), (x - 32, 1206), (x - 32, 1236), (x - 6, 1236),
+                   (x - 6, 1256)], fill=(255, 255, 255, 235))
+        for k, (u, dx, r, col) in enumerate(flying):                # сердечки летят вверх от кнопки лайка
+            ph = (f / n * 1.6 + u) % 1.0
+            if f < 2:
+                continue
+            cy = 860 - ph * 560
+            cx = x - 40 + dx - ph * 90 + 30 * __import__('math').sin(ph * 7 + k)
+            a = int(255 * (1 - ph) ** 0.7)
+            heart(d, cx, cy, r * (0.6 + 0.6 * ph), col[:3] + (a,))
+        d.rounded_rectangle([36, 1236, 330, 1290], 27, fill=(255, 196, 64, 235))
+        d.text((183, 1263), 'в рекомендациях', font=font('b', 26), fill=(24, 24, 28, 255), anchor='mm')
+        d.text((40, 1330), '@kanal_bez_lica', font=font('b', 34), fill=(255, 255, 255, 255))
+        d.text((40, 1382), '3D-герой, голос и субтитры за вечер', font=font('r', 29), fill=(255, 255, 255, 240))
+        d.text((40, 1426), '#3d #ии #безлица', font=font('b', 27), fill=(255, 255, 255, 220))
+        d.rectangle([0, 1528, W, 1534], fill=(255, 255, 255, 70))
+        d.rectangle([0, 1528, int(W * (0.15 + 0.7 * f / max(1, n - 1))), 1534], fill=(255, 255, 255, 230))
+        im.save(os.path.join(OUT, 'phone_tt%02d.png' % f))
+
+
 if __name__ == '__main__':
     phone_feed()
     phone_notes()
@@ -242,4 +301,5 @@ if __name__ == '__main__':
     mon_styles()
     mon_call()
     phone_comments()
+    phone_tiktok()
     print('UI ->', OUT, len(os.listdir(OUT)), 'files')

@@ -133,15 +133,32 @@ def at_end(rel):
     return f"@начать>+{0.13 + rel:.2f}"
 
 
+def pill(text, at, dy, preset="upper", **kw):
+    return {"block": "Pill", "at": at, "pos": {"preset": preset, "dy": dy}, "enter": "pop",
+            "props": {"text": text, "size": 40, "dark": True, **kw}}
+
+
 scenes = [
-    scene("k01", 0, zoom=(1.0, 1.04)),          # hook: the faceless feed on the phone, views growing
-    scene("k02", "@Такие"),                     # the sofa, the phone pings: an ad offer
+    scene("k01", 0, zoom=(1.0, 1.04)),          # hook: the faceless feed on the phone
+    scene("k1b", "@В ТикТоке"),                 # v2: the «Для вас» feed plays our 3D reel, hearts fly, «в рекомендациях»
+    scene("k02", "@А где просмотры"),           # the sofa, the phone pings: an ad offer
     scene("k03", "@баннеры"),                   # the phone: banners, integrations, partner programs (no sums)
-    scene("k04", "@Но реклама"),                # night editing, the clock runs, the hero nods off
-    scene("k05", "@С KINEMA"),                  # one phrase → checks: script, voice, 3D scenes, captions
-    scene("k06", "@И стиль"),                   # the style menu: 3D and pixel ready, the rest «скоро»
-    scene("k07", "@Один вечер"),                # the wall calendar fills with covers
-    scene("k08", "@Не шаришь"),                 # a call with the helper, thumbs up
+    scene("k04", "@Но реклама"),                # night editing seen from the front: the face in the monitor light
+    scene("k05", "@С KINEMA"),                  # the monitor close: one phrase → checks: script, voice, 3D scenes, captions
+    # v2 «Плюсы такого монтажа»: the hero leans back, a pill per plus on its word
+    scene("k5c", "@Плюсы", layers=[pill("без камеры", "@камеры", 0), pill("без монтажёра", "@монтажёра", 95),
+                                     pill("3D выделяется в ленте", "@выделяется", 190)]),
+    # v2 split screen (mike): the same wave and turn, 3D on top and pixel below; labels on each half
+    scene("k5s", "@Одно действие", layers=[
+        {"block": "Pill", "at": "@стиля", "pos": {"preset": "center", "dy": -70}, "enter": "pop",
+         "props": {"text": "3D", "size": 44, "dark": True}},
+        {"block": "Pill", "at": "@пиксель", "pos": {"preset": "center", "dy": 70}, "enter": "pop",
+         "props": {"text": "ПИКСЕЛЬ", "size": 44, "dark": True}}]),
+    scene("k06", "@а скоро"),                   # the style menu: the «скоро» tiles
+    # the wall calendar fills with covers; «больше мест под баннеры» — ad tags pop over it
+    scene("k07", "@Один вечер", layers=[{"block": "Chips", "at": "@больше роликов", "pos": {"preset": "center", "dy": 120},
+                                          "props": {"items": ["баннер", "интеграция", "партнёрка"], "accentIdx": [0]}}]),
+    scene("k08", "@Не шаришь"),                 # the call on the monitor, then the camera turns to the hero: thumbs up
     scene("k09", "@Кто напишет"),               # «канал» typed into the comments
     # the end card (video-ending-rule, themed «coins»): the k09 clip goes on dimmed, the profile flips in on the iPhone,
     # «ПОДДЕРЖИ ЛАЙКОМ И ПОДПИСКОЙ» lands where the captions were once the voice is over, coins rain, two jokes
@@ -188,6 +205,11 @@ def cue(at, cands, vol, peak=False, dur=None, fade=0.25):
     CUES.append({"at": round(at, 3) if not isinstance(at, str) else at, "id": i, "volume": vol, "alignPeak": peak})
 
 
+# k1b: the feed: a like tap when the heart turns red (overlay frame 2 of 12), soft pops as the hearts fly
+d1b = SH["k1b"]["dur"]
+cue(c0("k1b") + d1b * 2 / 12, ["pk-click-ui-button"] + POP, 0.3)
+for j in range(3):
+    cue(c0("k1b") + d1b * (0.32 + 0.2 * j), POP, 0.18)
 # k02: the ad offer pings on the phone
 cue(c0("k02") + ev("k02", "ping"), NOTIFY_A, 0.5)
 # k03: the other two notifications drop in on their words (the first is on screen at the cut, k02 just pinged)
@@ -204,18 +226,23 @@ cue(c0("k05") + 0.05, ["typing-medium", "typing-long"], 0.3, dur=max(0.4, tt - 0
 for j in range(3):
     cue(c0("k05") + ev("k05", f"s{j}"), POP, 0.32)
 cue(c0("k05") + ev("k05", "s3"), SUCCESS, 0.38)
-# k06: the highlight runs over the styles; clicks on the two ready ones, a pop on «скоро»
-for w, cands, v in (("3D", CLICK, 0.3), ("пиксель", CLICK, 0.3), ("скоро", POP, 0.3)):
-    cue(W.find(w, c0("k06"))[0], cands, v)          # absolute: «3D» is said in k05 too
-# k07: covers fill the calendar: four soft pops over the fill
+# k5c: a pop per plus pill (on its word)
+for j in range(3):
+    cue(c0("k5c") + ev("k5c", f"p{j}"), POP, 0.3)
+# k5s: a click per style label, a whoosh-free «tick» on the turn is the picture itself
+for w in ("стиля", "пиксель"):
+    cue(W.find(w, c0("k5s"))[0], CLICK, 0.3)
+# k06: «скоро» tiles light up: one pop
+cue(W.find("скоро", c0("k06") - 0.3)[0], POP, 0.3)
+# k07: covers fill the calendar: three soft pops; the ad tags pop on «больше роликов»
 d7 = SH["k07"]["dur"]
-for j in range(4):
-    cue(c0("k07") + 0.2 + (d7 * 0.85 - 0.2) * (j + 0.5) / 4, POP, 0.22)
+for j in range(3):
+    cue(c0("k07") + 0.2 + (d7 * 0.5 - 0.2) * (j + 0.5) / 3, POP, 0.22)
+cue(W.find("больше роликов", c0("k07"))[0], NOTIFY_B, 0.32)
 # k08: the call connects, the helper clicks the setup through, the thumb goes up
 d8 = SH["k08"]["dur"]
 cue(c0("k08") + 0.1, NOTIFY_B, 0.32)
 cue(c0("k08") + d8 * 0.3, CLICK, 0.28)
-cue(c0("k08") + d8 * 0.55, CLICK, 0.28)
 cue(c0("k08") + ev("k08", "thumb") + 0.3, SUCCESS, 0.4)
 # k09: «канал» typed letter by letter (the same frames as kanal.py v_comment), the send button lights up
 t0, t1 = 0.3, ev("k09", "typed")

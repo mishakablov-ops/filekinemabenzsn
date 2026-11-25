@@ -27,6 +27,9 @@ UI_DIRS = [os.environ.get('KANAL_UI', ''), os.path.join(HERE, '..', 'ui'), os.pa
 DESK = Vector((-1.4, 1.05, 0.78))           # верх стола (room() в sila_sets)
 CHAIR = Vector((-1.4, 0.32, 0.0))
 MON = Vector((-1.4, 1.27, 0.78))            # низ подставки монитора
+# v2 (25.11): лицо героя за столом спереди-справа (камера перед линией головы — голова не закрывает экран): старт, конец, цель
+FACE_R = ((-0.8, 0.95, 1.32), (-0.86, 0.9, 1.3))
+FACE_T = (-1.45, 0.45, 1.13)
 MON_W, MON_H = 0.64, 0.36
 SCR_Z = 0.78 + 0.14 + MON_H / 2             # центр экрана монитора
 BED_SEAT = (1.4, -0.42, 0.115)              # на кровати, ноги вдоль неё к -y, спиной к подушкам (замер: попа 0.34 над корнем)
@@ -39,6 +42,15 @@ def ui(name):
         if p and os.path.exists(p):
             return os.path.abspath(p)
     raise SystemExit('UI texture not found: %s (python tools/ui_textures.py <dir>, или KANAL_UI)' % name)
+
+
+def media(name):
+    """Видео для экранов (v2): KANAL_MEDIA, затем папки UI."""
+    for d in [os.environ.get('KANAL_MEDIA', '')] + UI_DIRS:
+        p = os.path.join(d, name) if d else ''
+        if p and os.path.exists(p):
+            return os.path.abspath(p)
+    raise SystemExit('media not found: %s (KANAL_MEDIA)' % name)
 
 
 def _ev(shot, k, d):
@@ -89,6 +101,59 @@ def screen(coll, name, png, w, h, loc, rot, strength=1.3, scroll=None):
     ob = lib.plane((w, h), loc, screen_mat(name, png, strength, scroll), rot=rot, name='Scr' + name, coll=coll)
     ob.visible_shadow = False
     return ob
+
+
+def video_mat(name, movie, overlay, frames, strength=1.3, aspect=(720 / 1560) / (1080 / 1920)):
+    """Экран-видео (v2): наш ролик (MOVIE, кадр сцены = кадр видео) под прозрачным слоем интерфейса overlay (PNG RGBA).
+    Видео 9:16 обрезается по ширине под экран телефона (aspect)."""
+    m = screen_mat(name, overlay, strength)
+    nt = m.node_tree
+    ov = next(n for n in nt.nodes if n.type == 'TEX_IMAGE')
+    em = next(n for n in nt.nodes if n.type == 'EMISSION')
+    tc = next(n for n in nt.nodes if n.type == 'TEX_COORD')
+    img = bpy.data.images.load(movie, check_existing=True)
+    img.source = 'MOVIE'
+    mv = nt.nodes.new('ShaderNodeTexImage')
+    mv.image = img
+    mv.extension = 'EXTEND'
+    iu = mv.image_user
+    iu.frame_duration = frames
+    iu.frame_start = 1
+    iu.frame_offset = 0
+    iu.use_auto_refresh = True
+    mp = nt.nodes.new('ShaderNodeMapping')
+    mp.inputs['Scale'].default_value = (aspect, 1.0, 1.0)
+    mp.inputs['Location'].default_value = ((1 - aspect) / 2, 0.0, 0.0)
+    mix = nt.nodes.new('ShaderNodeMix')
+    mix.data_type = 'RGBA'
+    pin = {i.identifier: i for i in mix.inputs}
+    pout = {o.identifier: o for o in mix.outputs}
+    L = nt.links
+    L.new(tc.outputs['Generated'], mp.inputs['Vector'])
+    L.new(mp.outputs['Vector'], mv.inputs['Vector'])
+    L.new(ov.outputs['Alpha'], pin['Factor_Float'])
+    L.new(mv.outputs['Color'], pin['A_Color'])
+    L.new(ov.outputs['Color'], pin['B_Color'])
+    L.new(pout['Result_Color'], em.inputs['Color'])
+    return m
+
+
+def video_stack(coll, name, movie, frames, items, w, h, loc, rot, strength=1.3):
+    """Как stack(), но под каждым слоем интерфейса играет одно и то же видео."""
+    obs = []
+    for i, (nm, t0) in enumerate(items):
+        ob = lib.plane((w, h), loc, video_mat('%s%02d' % (name, i), movie, ui(nm), frames, strength), rot=rot,
+                       name='Scr%s%02d' % (name, i), coll=coll)
+        ob.visible_shadow = False
+        t1 = items[i + 1][1] if i + 1 < len(items) else None
+        keys = [(0, t0 <= 0)]
+        if t0 > 0:
+            keys.append((t0, True))
+        if t1 is not None:
+            keys.append((t1, False))
+        FX.key_hide(ob, keys)
+        obs.append(ob)
+    return obs
 
 
 def stack(coll, name, items, w, h, loc, rot, strength=1.3):
@@ -457,12 +522,16 @@ def phone_cam(h, ph, dur, dist=0.39, lens=54, push=0.03, fstop=4.0, up=0.023):
     return cam
 
 
-def phone_screen_on(ph, coll, items=None, png=None, scroll=None, strength=1.2):
-    """Экран(ы) телефона детьми корня: items=[(png, t)] по очереди или один png (scroll — прокрутка ленты)."""
+def phone_screen_on(ph, coll, items=None, png=None, scroll=None, strength=1.2, movie=None, frames=0):
+    """Экран(ы) телефона детьми корня: items=[(png, t)] по очереди или один png (scroll — прокрутка ленты);
+    movie — под слоями items играет видео (v2, лента «Для вас»)."""
     rot = (math.pi / 2, 0, 0)
     loc = (0, -(PH_D / 2 + 0.0007), 0)
-    obs = stack(coll, ph.name + 'S', items, SCR_W, SCR_H, loc, rot, strength) if items else \
-        [screen(coll, ph.name + 'S', png, SCR_W, SCR_H, loc, rot, strength, scroll)]
+    if movie:
+        obs = video_stack(coll, ph.name + 'S', movie, frames, items, SCR_W, SCR_H, loc, rot, strength)
+    else:
+        obs = stack(coll, ph.name + 'S', items, SCR_W, SCR_H, loc, rot, strength) if items else \
+            [screen(coll, ph.name + 'S', png, SCR_W, SCR_H, loc, rot, strength, scroll)]
     for o in obs:
         o.parent = ph
         for m in o.data.materials:                      # блик слабее и мягче: чёткое отражение подбородка читалось как дуга
@@ -487,6 +556,23 @@ def v_feed(shot, fps):
     phone_screen_on(ph, coll, png=ui('phone_feed'), scroll=[(0.0, 0.0), (dur * 0.45, 0.0), (dur * 0.7, 0.5), (dur, 0.5)])
     phone_cam(h, ph, dur)
     return dict(fill=0.25, exposure=0.3, samples=32)
+
+
+def v_tiktok(shot, fps):
+    """v2, mike 25.11: «пример с тиктоком, что щас такое залетает». POV: в телефоне лента «Для вас», играет наш 3D-ролик
+    (feed_hero.mp4: план v1 с героем, листается на следующий), сердечки всплывают, «в рекомендациях». Без цифр."""
+    dur = shot['dur']
+    coll, out, scr = base()
+    h = H.load(coll, BED_SEAT, 0.0)
+    sp = H.pose('sit', head=(0, 26, 0), **BED_LEGS, **HOLD)
+    H.key_pose(h, 0, sp)
+    H.key_pose(h, dur, H.pose(sp, head=(0, 23, -3)))
+    ph = hold_phone(h, phone(coll), 0.0, 'Right', tilt=60)
+    n = 12
+    items = [('phone_tt%02d' % k, dur * k / n) for k in range(n)]
+    phone_screen_on(ph, coll, items=items, strength=1.25, movie=media('feed_hero.mp4'), frames=int(round(dur * fps)) + 2)
+    phone_cam(h, ph, dur)
+    return dict(fill=0.25, exposure=0.3, samples=32, still_t=0.5)
 
 
 def _bed_hero(coll, dur, notes_t=()):
@@ -547,8 +633,10 @@ def v_night(shot, fps):
     H.key_pose(h, dur * 0.62, H.pose(tp, head=(0, 30, 6), lean=14.0))         # клюёт носом
     H.key_pose(h, dur * 0.72, H.pose(tp, head=(0, -4, 0), lean=6.0))          # вздрогнул
     H.key_pose(h, dur, H.pose(tp, head=(0, 22, -4), lean=12.0))
-    cam = lib.camera((-0.2, -0.45, 1.5), (-1.45, 1.1, 1.0), 30)
-    lib.animate_camera(cam, [(0, (-0.2, -0.45, 1.5)), (dur, (-0.35, -0.2, 1.42))], [(0, (-1.45, 1.1, 1.0)), (dur, (-1.45, 1.15, 1.02))])
+    # v2 (mike 25.11: «голова гг закрывает основной вид картинки»): не через плечо, а спереди-справа — лицо в свете
+    # монитора, кружки и стол; голова ничего не закрывает
+    cam = lib.camera(FACE_R[0], FACE_T, 32)
+    lib.animate_camera(cam, [(0, FACE_R[0]), (dur, FACE_R[1])], [(0, FACE_T), (dur, (FACE_T[0], FACE_T[1], FACE_T[2] - 0.03))])
     cam.data.clip_start = 0.05
     return dict(fill=0.04, exposure=0.1, samples=32, fill_col='#9DB0E0')
 
@@ -571,9 +659,12 @@ def v_build(shot, fps):
     lean_back = H.pose('sit', arm=(18, 22), fore=(24, 62), lean=-9.0, head=(0, -4, 8))     # откинулся, руки на коленях
     H.key_pose(h, tt + 0.6, lean_back)
     H.key_pose(h, dur, H.pose(lean_back, head=(0, -2, -6)))
-    cam = lib.camera((-2.0, -0.5, 1.62), (-1.34, 1.25, 1.04), 36)
-    lib.animate_camera(cam, [(0, (-2.0, -0.5, 1.62)), (dur, (-1.96, -0.3, 1.56))], [(0, (-1.34, 1.25, 1.04)), (dur, (-1.35, 1.25, 1.05))])
-    cam.data.clip_start = 0.05
+    # v2: монитор крупно, камера между героем и экраном (голова позади камеры)
+    c = Vector(scr[0])
+    cam = lib.camera((c.x - 0.2, c.y - 0.68, c.z + 0.05), tuple(c), 30)
+    lib.animate_camera(cam, [(0, (c.x - 0.2, c.y - 0.68, c.z + 0.05)), (dur, (c.x - 0.15, c.y - 0.57, c.z + 0.03))],
+                       [(0, tuple(c)), (dur, tuple(c))])
+    cam.data.clip_start = 0.02
     return dict(fill=0.35, exposure=0.4, samples=32, still_t=0.8)
 
 
@@ -596,6 +687,73 @@ def v_styles(shot, fps):
                        [(0, tuple(c)), (dur, tuple(c))])
     cam.data.clip_start = 0.02
     return dict(fill=0.3, exposure=0.35, samples=32)
+
+
+def v_plus(shot, fps):
+    """v2 «Плюсы такого монтажа»: день, ролик собран (на мониторе «готово»), герой откинулся на спинку и довольно кивает
+    на каждом плюсе (пункты — плашками KINEMA). Камера спереди-справа ближе и ниже, чем ночью."""
+    dur = shot['dur']
+    rng = random.Random(11)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=1)
+    screen(coll, 'Done', ui('mon_build4'), MON_W, MON_H, scr[0], scr[1], strength=1.2)
+    wall_clock(coll, turns=(0.02, 0.0), dur=dur)
+    h = seated(coll)
+    lb = H.pose('sit', arm=(18, 22), fore=(24, 62), lean=-9.0, head=(0, -4, 8))
+    H.key_pose(h, 0, lb)
+    for k in range(3):
+        t = _ev(shot, 'p%d' % k, dur * (0.15 + 0.27 * k))
+        H.key_pose(h, t, H.pose(lb, head=(0, -4, 8 - 6 * k)))
+        H.key_pose(h, t + 0.18, H.pose(lb, head=(0, 8, 6 - 6 * k)))        # кивок
+        H.key_pose(h, t + 0.42, H.pose(lb, head=(0, -2, 4 - 6 * k)))
+    H.key_pose(h, dur, H.pose(lb, head=(0, -6, -10)))
+    c0, c1 = (-0.92, 0.84, 1.2), (-0.98, 0.78, 1.19)
+    tg = (-1.42, 0.42, 1.08)
+    cam = lib.camera(c0, tg, 36)
+    lib.animate_camera(cam, [(0, c0), (dur, c1)], [(0, tg), (dur, tg)])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.4, exposure=0.4, samples=32, still_t=0.6)
+
+
+SPLIT_AT = (0.15, 0.65, 0.0)
+
+
+def v_split(shot, fps):
+    """v2, mike 25.11: «разделение на 2 экрана в каком-либо действии и объяснить, что вот такие уже есть стили».
+    Герой стоит у окна («Метрополис» за ним), машет и делает оборот на месте. Кадр 1080×960: render_clips.py ставит
+    его сверху как 3D, а снизу то же движение пикселем (ffmpeg), подписи стилей — плашки KINEMA."""
+    dur = shot['dur']
+    rng = random.Random(12)
+    coll, out, scr = base(rng=rng)
+    desk_stuff(coll, rng, mugs=1)
+    sc = bpy.context.scene
+    sc.render.resolution_y = int(round(sc.render.resolution_x * 960 / 1080))
+    h = H.load(coll, SPLIT_AT, 0.0)
+    st = H.pose('stand', head=(0, -6, 0))
+    up = ((24, 4), (78, 22))
+    t_sp0, t_sp1 = dur * 0.42, dur * 0.66
+    t = 0.0
+    k = 0
+    while t < dur + 0.01:                           # машет правой рукой, кроме оборота
+        if t_sp0 - 0.1 < t < t_sp1 + 0.1:
+            H.key_pose(h, t, H.pose(st, arm=((26, 8), (30, 10)), fore=((20, 20), (24, 30)), side=0.0))
+        else:
+            a = 8 if k % 2 else 38
+            H.key_pose(h, t, H.pose(st, arm=up, fore=((18, 16), (a, 158 - a * 0.3)), side=3.0 if k % 2 else -3.0,
+                                    head=(0, -6, 6 if k % 2 else -6)))
+        t += 0.26
+        k += 1
+    rig = h['rig']
+    z0 = rig.rotation_euler.z
+    for tt, z in ((0.0, z0), (t_sp0, z0), (t_sp1, z0 + 2 * math.pi), (dur, z0 + 2 * math.pi)):
+        rig.rotation_euler.z = z
+        rig.keyframe_insert('rotation_euler', index=2, frame=F(tt))
+    c0, c1 = (SPLIT_AT[0], SPLIT_AT[1] - 2.05, 1.0), (SPLIT_AT[0], SPLIT_AT[1] - 1.9, 0.98)
+    tg = (SPLIT_AT[0], SPLIT_AT[1], 0.84)
+    cam = lib.camera(c0, tg, 34)
+    lib.animate_camera(cam, [(0, c0), (dur, c1)], [(0, tg), (dur, tg)])
+    cam.data.clip_start = 0.05
+    return dict(fill=0.4, exposure=0.4, samples=32, still_t=0.3)
 
 
 def v_calendar(shot, fps):
@@ -631,10 +789,15 @@ def v_call(shot, fps):
     H.key_pose(h, _ev(shot, 'thumb', dur * 0.6), p0)
     H.key_pose(h, _ev(shot, 'thumb', dur * 0.6) + 0.35, thumbs)
     H.key_pose(h, dur, H.pose(thumbs, head=(0, -6, -18)))
-    cam = lib.camera((-0.48, -0.22, 1.5), (-1.36, 1.25, 1.04), 36)
-    lib.animate_camera(cam, [(0, (-0.48, -0.22, 1.5)), (dur, (-0.56, -0.05, 1.46))], [(0, (-1.36, 1.25, 1.04)), (dur, (-1.36, 1.25, 1.05))])
-    cam.data.clip_start = 0.05
-    return dict(fill=0.4, exposure=0.4, samples=32)
+    # v2: сначала экран созвона крупно, к «за тебя» камера уходит к лицу героя (большой палец); через плечо не снимаем
+    c = Vector(scr[0])
+    th = _ev(shot, 'thumb', dur * 0.6)
+    s0, s1 = (c.x + 0.18, c.y - 0.64, c.z + 0.03), (c.x + 0.13, c.y - 0.55, c.z + 0.02)
+    cam = lib.camera(s0, tuple(c), 32)
+    lib.animate_camera(cam, [(0, s0), (max(0.2, th - 0.45), s1), (th + 0.12, FACE_R[0]), (dur, FACE_R[1])],
+                       [(0, tuple(c)), (max(0.2, th - 0.45), tuple(c)), (th + 0.12, FACE_T), (dur, FACE_T)])
+    cam.data.clip_start = 0.02
+    return dict(fill=0.4, exposure=0.4, samples=32, still_t=0.9)
 
 
 def v_comment(shot, fps):
@@ -660,7 +823,8 @@ def v_comment(shot, fps):
 CITY_AT = Vector((0.0, 18.0, 24.0))         # пол комнаты: 8-й этаж над набережной, окно (+y) вдоль проспекта x = 0 в Даунтаун
 CITY_DETAIL = 250.0                          # фасады вблизи с подоконниками, вывесками, балконами (metro_detail)
 CITY_OVER = {}
-WINDOW_PLANS = ('feed', 'sofa', 'notes', 'night', 'build', 'styles', 'calendar', 'call', 'comment')
+WINDOW_PLANS = ('feed', 'tiktok', 'sofa', 'notes', 'night', 'build', 'plus', 'split', 'styles', 'calendar', 'call',
+                'comment')
 
 
 def city_view(shot, fps, preset='day'):

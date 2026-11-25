@@ -14,6 +14,15 @@
    "events": {}
   },
   {
+   "id": "k1b",
+   "set": "kanal",
+   "variant": "tiktok",
+   "kind": "clip",
+   "dur": 5.5,
+   "start": 0,
+   "events": {}
+  },
+  {
    "id": "k02",
    "set": "kanal",
    "variant": "sofa",
@@ -47,6 +56,24 @@
    "kind": "clip",
    "dur": 6.0,
    "start": 12.2,
+   "events": {}
+  },
+  {
+   "id": "k5c",
+   "set": "kanal",
+   "variant": "plus",
+   "kind": "clip",
+   "dur": 5.2,
+   "start": 0,
+   "events": {}
+  },
+  {
+   "id": "k5s",
+   "set": "kanal",
+   "variant": "split",
+   "kind": "clip",
+   "dur": 4.0,
+   "start": 0,
    "events": {}
   },
   {

@@ -1,4 +1,4 @@
-"""Render the 9 Blender clips of «Канал без лица» on the PC, one background Blender per shot, after the voice is done.
+"""Render the Blender clips of «Канал без лица» on the PC, one background Blender per shot, after the voice is done.
 
     python -I tools/render_clips.py --blender BLENDER_EXE [--rs RS] [--only k01,k05] [--samples 24]
 
@@ -22,6 +22,26 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PROJ = HERE.parent
 PID = "kanal-bez-lica"
+
+
+# v2 (mike 25.11: «разделение на 2 экрана… вот такие уже есть стили»): the 1080×960 render on top as 3D, the same frames
+# below as pixel art (1/6 size, 7 levels per channel, nearest-neighbour back up), a thin light line between them
+PIXEL = ("scale=180:160:flags=area,lutrgb=r='trunc(val/36)*36+18':g='trunc(val/36)*36+18':b='trunc(val/36)*36+18',"
+         "scale=1080:960:flags=neighbor")
+
+
+def split_screen(ff, clip):
+    tmp = clip.with_name(clip.stem + "_half.mp4")
+    clip.replace(tmp)
+    fc = f"[0:v]split[a][b];[b]{PIXEL}[p];[a][p]vstack,drawbox=x=0:y=956:w=1080:h=8:color=0xF2EFE8@0.95:t=fill[v]"
+    e = subprocess.run([ff, "-y", "-loglevel", "error", "-i", str(tmp), "-filter_complex", fc, "-map", "[v]", "-c:v", "libx264",
+                        "-crf", "14", "-preset", "medium", "-g", "30", "-bf", "0", "-pix_fmt", "yuv420p", "-movflags",
+                        "+faststart", str(clip)], capture_output=True, text=True)
+    if e.returncode:
+        print("SPLIT FAILED", e.stderr[-1500:], flush=True)
+        return False
+    tmp.unlink()
+    return True
 
 
 def main():
@@ -80,6 +100,8 @@ def main():
             ok = e.returncode == 0 and out.exists()
             if not ok:
                 print("ENCODE FAILED", e.stderr[-1500:], flush=True)
+        if ok and s.get("variant") == "split":
+            ok = split_screen(ff, out)
         if ok:
             subprocess.run([ff, "-y", "-loglevel", "error", "-ss", f"{s['dur'] * 0.6:.2f}", "-i", str(out), "-frames:v", "1",
                             "-q:v", "3", str(chk / f"{sid}.jpg")])

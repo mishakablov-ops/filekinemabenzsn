@@ -18,11 +18,12 @@ TAIL = 3.2                     # the like/sub card after the last word (storyboa
 OVER = 0.5                     # clip runs past the next cut (transition overlap)
 
 # shot -> anchor phrase (display text, like the storyboard "@..." anchors); None = 0 s
-ANCHORS = [("k01", None), ("k02", "Такие"), ("k03", "баннеры"), ("k04", "Но реклама"), ("k05", "С KINEMA"),
-           ("k06", "И стиль"), ("k07", "Один вечер"), ("k08", "Не шаришь"), ("k09", "Кто напишет")]
+ANCHORS = [("k01", None), ("k1b", "В ТикТоке"), ("k02", "А где просмотры"), ("k03", "баннеры"), ("k04", "Но реклама"),
+           ("k05", "С KINEMA"), ("k5c", "Плюсы"), ("k5s", "Одно действие"), ("k06", "а скоро"), ("k07", "Один вечер"),
+           ("k08", "Не шаришь"), ("k09", "Кто напишет")]
 # the scene transition into each shot (storyboard.py uses the same) and KINEMA's transition lengths (transitions/index.tsx)
-TRANS = {"k01": "cut", "k02": "push", "k03": "zoom", "k04": "dip", "k05": "blur", "k06": "push", "k07": "dip", "k08": "whip",
-         "k09": "zoom"}
+TRANS = {"k01": "cut", "k1b": "whip", "k02": "push", "k03": "zoom", "k04": "dip", "k05": "blur", "k5c": "push",
+         "k5s": "zoom", "k06": "whip", "k07": "dip", "k08": "whip", "k09": "zoom"}
 TIN = {"cut": 0.0, "fade": 0.4, "blur": 0.5, "zoom": 0.55, "push": 0.5, "whip": 0.3, "dip": 0.6}
 PICTURE_LEAD = 0.07            # KINEMA cuts this much before the anchor word (core/plan.ts)
 
@@ -74,11 +75,12 @@ def main(words_path, shots_path):
     ev = {}
     t = lambda ph, a, edge=0: W.find(ph, a)[edge]               # noqa: E731
     a = {sid: st - lead(sid) for (sid, _), st in zip(ANCHORS, starts)}          # clip zero, seconds
-    ev["k02"] = {"ping": t("рекламе", a["k02"]) - a["k02"]}
+    ev["k02"] = {"ping": t("реклама", a["k02"]) - a["k02"]}
     ev["k03"] = {"n1": 0.1, "n2": t("интеграции", a["k03"]) - a["k03"], "n3": t("партнёрки", a["k03"]) - a["k03"]}
     tt = t("фразу", a["k05"], 1) - a["k05"]
     ev["k05"] = {"typed": tt, **{f"s{k}": t(ph, a["k05"]) - a["k05"] + 0.25
                                  for k, ph in enumerate(["сценарий", "голос", "3D-сцены", "субтитры"])}}
+    ev["k5c"] = {f"p{k}": t(ph, a["k5c"]) - a["k5c"] for k, ph in enumerate(["камеры", "монтажёра", "выделяется"])}
     ev["k08"] = {"thumb": t("за тебя", a["k08"]) - a["k08"] - 0.3}
     ev["k09"] = {"typed": t("канал", a["k09"], 1) - a["k09"]}
     for i, (sid, _) in enumerate(ANCHORS):
