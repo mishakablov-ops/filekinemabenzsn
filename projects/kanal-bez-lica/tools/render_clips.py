@@ -40,7 +40,8 @@ def split_screen(ff, clip, n, pixel_half=None):
     ins = ["-i", str(tmp)]
     if pixel_half and Path(pixel_half).exists():
         ins += ["-i", str(pixel_half)]
-        fc = ("[1:v]scale=1080:960:flags=neighbor,fps=30,tpad=stop_mode=clone:stop_duration=1,setsar=1[p];"
+        # hflip: PIXCINE машет левой рукой, 3D-герой — правой; зеркало даёт одно движение и стол слева, как в 3D
+        fc = ("[1:v]hflip,scale=1080:960:flags=neighbor,fps=30,tpad=stop_mode=clone:stop_duration=1,setsar=1[p];"
               "[0:v]setsar=1[a];[a][p]vstack=shortest=1,drawbox=x=0:y=956:w=1080:h=8:color=0xF2EFE8@0.95:t=fill[v]")
     else:
         print("NOTE: no PIXCINE half, the pixel filter stand-in is used", flush=True)
