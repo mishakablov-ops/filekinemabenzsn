@@ -25,10 +25,14 @@ import loudnorm  # noqa: E402
 import replicate_tts as R  # noqa: E402
 from tts import write_wav  # noqa: E402
 
-BASE = ("Read this Russian text as a young Russian guy of about 25 who runs faceless video channels and tells a friend "
-        "how it works, in a short social video. Confident, friendly, lively and a little ironic, like sharing a useful "
-        "trick, never salesy, never pushy, never theatrical, never whispering. Brisk natural pace, very short pauses "
-        "between sentences, never stretch words. Perfect native Russian pronunciation, no foreign accent. ")
+BASE = ("Read this Russian text as a young Russian guy of about 25 who runs faceless video channels and is convincing a "
+        "friend that this really works and he should start now, in a short social video. Persuasive and certain: every "
+        "sentence lands with conviction, firm stresses on the key words, energy that rises toward the end of each phrase, "
+        "like a confident pitch from someone who has done it himself. Not a neutral story, not a TV ad, not shouting, "
+        "never whispering, never theatrical. Brisk natural pace, very short pauses between sentences, never stretch words. "
+        "Perfect native Russian pronunciation, no foreign accent. ")
+# 25.11 mike to v2: «сделай так, чтобы диктор был убедительнее, а не просто рассказывал» -> BASE above; v1 tone was
+# «friendly, lively, a little ironic, never salesy». All v2 takes go to takes_v2 (KANAL_TAKES_DIR): the tone changed.
 
 PID = "kanal-bez-lica"
 # 25.11: the first 16 takes made 40.5 s at 2.1 w/s (plan ~35 s, KINEMA wants 2.5–3.0): two faster takes per section,
@@ -37,20 +41,28 @@ FAST = (" Pace: fast and energetic, like a lively social-video voice-over, about
         "list items flow quickly one after another without pauses.")
 TAKES = os.environ.get("KANAL_TAKES", "abef")
 PICK = dict(x.split("=") for x in os.environ.get("KANAL_PICK", "").split(",") if "=" in x)   # «s4b=e,s6=a» by ear
+# v2 (25.11, mike: «Текст ок»): sections whose text changed get new ids (takes are cached by id), unchanged ones keep theirs
 SECTIONS = [
     ("s1", "The hook: punchy and intriguing, three short beats; a light stress on 'монтажа'.",
      "Канал без лица, камеры и монтажа."),
-    ("s2", "Matter-of-fact insider tone, the three kinds of ads listed briskly with a small smile.",
-     "Такие каналы живут на рекламе: баннеры, интеграции, партнёрки."),
+    ("s1b", "Enthusiastic insider sharing a trend: a light stress on 'залетают', then the three ingredients listed briskly.",
+     "В ТикТоке сейчас залетают такие ролики: три-дэ герой, голос, субтитры."),
+    ("s2v2", "Matter-of-fact insider tone, a small logical turn on 'а где просмотры', the three kinds of ads listed briskly "
+             "with a small smile.",
+     "А где просмотры, там реклама: баннеры, интеграции, партнёрки."),
     ("s3", "A turn: the first sentence clear and logical; the second with tired irony, 'это часы' short and dry.",
      "Но реклама идёт туда, где ролики выходят каждый день. А монтаж одного это часы."),
     ("s4", "Upbeat and a bit amazed at how simple it is; 'одну фразу' stressed; the four items listed quickly and lightly. "
            "'Кинема' is a product name, read it as one word.",
      "С Кинема пишешь одну фразу, а и-и сам собирает ролик: сценарий, голос, три-дэ сцены, субтитры."),
-    ("s4b", "Light and proud, listing styles quickly like a menu; 'скоро' with a little anticipation; 'и другие' easy.",
-     "И стиль не один: три-дэ и пиксель уже работают, а скоро добавятся пластилин, аниме, неон, гжель, лоу поли и другие."),
-    ("s5", "Satisfied and simple, a short beat on 'на месяц'.",
-     "Один вечер, и роликов хватает на месяц."),
+    ("s4c", "Confident and light, the pluses listed quickly; 'выделяется в ленте' with a little pride.",
+     "Плюсы такого монтажа: ни камеры, ни монтажёра, а три-дэ выделяется в ленте."),
+    ("s4bv2", "Show-and-tell, like pointing at a split screen: 'одно действие, два стиля' crisp; 'уже работают' confident; "
+              "'скоро' with a little anticipation, the three styles quick.",
+     "Одно действие, два стиля: три-дэ и пиксель уже работают, а скоро пластилин, аниме и неон."),
+    ("s5v2", "Satisfied and simple, a short beat on 'на месяц'; the second sentence a smart little conclusion with a light "
+             "stress on 'баннеры'.",
+     "Один вечер, и роликов хватает на месяц. А больше роликов, больше мест под баннеры."),
     ("s6", "Warm and reassuring: a friendly question, then a calm, confident promise.",
      "Не шаришь в нейросетях? Настроим всё за тебя."),
     ("s7", "Casual, said in passing to a friend, relaxed and quiet-confident, no pressure, no selling; "
@@ -66,7 +78,8 @@ def norm_words(s: str) -> list[str]:
 
 # Whisper writes «3D», «ИИ», «лоуполи» where the script spells the sounds: compare letters, not words (25.11: «три-дэ»
 # against «3D» cost s4/s4b up to 0.2 of the word match and picked the slowest take)
-CANON = [("3d", "тридэ"), ("3д", "тридэ"), ("ai", "ии"), ("кинема", "кинема")]
+CANON = [("3d", "тридэ"), ("3д", "тридэ"), ("ai", "ии"), ("кинема", "кинема"), ("tiktok", "тикток"),
+         ("tik tok", "тикток"), ("тик ток", "тикток"), ("тик-ток", "тикток")]
 
 
 def letters(s: str) -> str:
@@ -131,7 +144,7 @@ def make_takes(takes: Path, sid: str, direction: str, text: str, names: str):
 
 def main():
     P = RS / "engine" / "public" / "projects" / PID
-    takes = P / "takes"
+    takes = P / os.environ.get("KANAL_TAKES_DIR", "takes_v2")
     takes.mkdir(parents=True, exist_ok=True)
     shutil.copy(HERE / "script-voice.md", P / "script.md")
     manifest = []
