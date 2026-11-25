@@ -31,6 +31,12 @@ BASE = ("Read this Russian text as a young Russian guy of about 25 who runs face
         "between sentences, never stretch words. Perfect native Russian pronunciation, no foreign accent. ")
 
 PID = "kanal-bez-lica"
+# 25.11: the first 16 takes made 40.5 s at 2.1 w/s (plan ~35 s, KINEMA wants 2.5–3.0): two faster takes per section,
+# the pick is the fastest take among those that read the text right (never time-stretched)
+FAST = (" Pace: fast and energetic, like a lively social-video voice-over, about three words per second; "
+        "list items flow quickly one after another without pauses.")
+TAKES = os.environ.get("KANAL_TAKES", "abef")
+PICK = dict(x.split("=") for x in os.environ.get("KANAL_PICK", "").split(",") if "=" in x)   # «s4b=e,s6=a» by ear
 SECTIONS = [
     ("s1", "The hook: punchy and intriguing, three short beats; a light stress on 'монтажа'.",
      "Канал без лица, камеры и монтажа."),
@@ -58,6 +64,18 @@ def norm_words(s: str) -> list[str]:
     return re.findall(r"[a-zа-я0-9]+", s)
 
 
+# Whisper writes «3D», «ИИ», «лоуполи» where the script spells the sounds: compare letters, not words (25.11: «три-дэ»
+# against «3D» cost s4/s4b up to 0.2 of the word match and picked the slowest take)
+CANON = [("3d", "тридэ"), ("3д", "тридэ"), ("ai", "ии"), ("кинема", "кинема")]
+
+
+def letters(s: str) -> str:
+    s = s.lower().replace("ё", "е")
+    for a, b in CANON:
+        s = s.replace(a, b)
+    return "".join(re.findall(r"[а-я0-9]+", s))
+
+
 _model = None
 
 
@@ -81,8 +99,8 @@ def transcribe(path: Path):
 
 def score(text: str, f: Path) -> dict:
     hyp, wt, dur = transcribe(f)
-    ref_w, hyp_w = norm_words(text), norm_words(hyp)
-    ratio = difflib.SequenceMatcher(a=ref_w, b=hyp_w).ratio()
+    ref_w = norm_words(text)
+    ratio = difflib.SequenceMatcher(a=letters(text), b=letters(hyp), autojunk=False).ratio()
     gaps = [b[0] - a[1] for a, b in zip(wt, wt[1:])]
     span = (wt[-1][1] - wt[0][0]) if wt else dur
     return dict(file=f.name, match=round(float(ratio), 3), hyp=hyp, dur=round(float(dur), 2),
@@ -92,13 +110,17 @@ def score(text: str, f: Path) -> dict:
 
 def make_takes(takes: Path, sid: str, direction: str, text: str, names: str):
     for take in names:
+        if take in "efgh":
+            direction_t = direction + FAST
+        else:
+            direction_t = direction
         f = takes / f"{sid}_{take}.wav"
         if f.exists():
             continue
         for attempt in range(3):
             t0 = time.time()
             try:
-                b = R.run("google/gemini-3.1-flash-tts", dict(text=text, voice="Algenib", language_code="ru-RU", prompt=BASE + direction))
+                b = R.run("google/gemini-3.1-flash-tts", dict(text=text, voice="Algenib", language_code="ru-RU", prompt=BASE + direction_t))
                 f.write_bytes(b)
                 print(f"OK  {sid}_{take} {time.time() - t0:5.1f}s", flush=True)
                 break
@@ -114,14 +136,18 @@ def main():
     shutil.copy(HERE / "script-voice.md", P / "script.md")
     manifest = []
     for sid, direction, text in SECTIONS:
-        make_takes(takes, sid, direction, text, "ab")
-        cands = [score(text, takes / f"{sid}_{t}.wav") for t in "abcd" if (takes / f"{sid}_{t}.wav").exists()]
-        if cands and max(c["match"] for c in cands) < 0.9 and not (takes / f"{sid}_c.wav").exists():
-            make_takes(takes, sid, direction, text, "cd")
-            cands = [score(text, takes / f"{sid}_{t}.wav") for t in "abcd" if (takes / f"{sid}_{t}.wav").exists()]
+        make_takes(takes, sid, direction, text, TAKES)
+        cands = [score(text, takes / f"{sid}_{t}.wav") for t in "abcdefgh" if (takes / f"{sid}_{t}.wav").exists()]
+        if cands and max(c["match"] for c in cands) < 0.92 and not (takes / f"{sid}_g.wav").exists():
+            make_takes(takes, sid, direction, text, "gh")
+            cands = [score(text, takes / f"{sid}_{t}.wav") for t in "abcdefgh" if (takes / f"{sid}_{t}.wav").exists()]
         if not cands:
             raise SystemExit(f"no takes for {sid}")
-        best = max(cands, key=lambda c: (round(c["match"] / 0.03), -c["long_pauses"], c["wps"]))
+        top = max(c["match"] for c in cands)
+        good = [c for c in cands if c["match"] >= top - 0.03 and c["long_pauses"] == 0] or cands
+        best = max(good, key=lambda c: (c["wps"], c["match"]))
+        if sid in PICK:
+            best = next(c for c in cands if c["file"] == f"{sid}_{PICK[sid]}.wav")
         pick = takes / f"{sid}_pick.wav"
         loudnorm.normalize(str(takes / best["file"]), str(pick), -16.0, -1.0)
         manifest.append(dict(id=sid, text=text, takes=cands, pick=best["file"]))

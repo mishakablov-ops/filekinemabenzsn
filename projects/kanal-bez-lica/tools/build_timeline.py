@@ -2,9 +2,11 @@
 
     python build_timeline.py WORDS_JSON [SHOTS_JSON]       (SHOTS_JSON default: ../blender/shots.json)
 
-Each 3D clip starts on its anchor word (the same anchors as engine/storyboard.py) and lasts until the next anchor plus
-0.5 s for the transition; k09 also carries the like/sub card (voice end + TAIL). Events (notification pings, typing,
-check marks, the thumb) land on their words, in seconds from the clip start. Pure Python, runs anywhere.
+Each 3D clip starts where KINEMA starts playing it: the scene cuts 0.07 s before its anchor word (the same anchors as
+engine/storyboard.py) and its video begins half a transition earlier, so the clip starts LEAD = 0.07 + tin/2 before the
+word and lasts until the next anchor plus 0.5 s for the transition; k09 also carries the like/sub card (voice end +
+TAIL). Events (notification pings, typing, check marks, the thumb) land on their words, in seconds from the clip start,
+so picture and voice stay in sync. Pure Python, runs anywhere.
 """
 import json
 import re
@@ -18,6 +20,15 @@ OVER = 0.5                     # clip runs past the next cut (transition overlap
 # shot -> anchor phrase (display text, like the storyboard "@..." anchors); None = 0 s
 ANCHORS = [("k01", None), ("k02", "Такие"), ("k03", "баннеры"), ("k04", "Но реклама"), ("k05", "С KINEMA"),
            ("k06", "И стиль"), ("k07", "Один вечер"), ("k08", "Не шаришь"), ("k09", "Кто напишет")]
+# the scene transition into each shot (storyboard.py uses the same) and KINEMA's transition lengths (transitions/index.tsx)
+TRANS = {"k01": "cut", "k02": "push", "k03": "zoom", "k04": "dip", "k05": "blur", "k06": "push", "k07": "dip", "k08": "whip",
+         "k09": "zoom"}
+TIN = {"cut": 0.0, "fade": 0.4, "blur": 0.5, "zoom": 0.55, "push": 0.5, "whip": 0.3, "dip": 0.6}
+PICTURE_LEAD = 0.07            # KINEMA cuts this much before the anchor word (core/plan.ts)
+
+
+def lead(sid):
+    return 0.0 if sid == "k01" else PICTURE_LEAD + TIN[TRANS[sid]] / 2
 
 
 def norm(s):
@@ -62,7 +73,7 @@ def main(words_path, shots_path):
     by = {s["id"]: s for s in S["shots"]}
     ev = {}
     t = lambda ph, a, edge=0: W.find(ph, a)[edge]               # noqa: E731
-    a = dict(zip([x for x, _ in ANCHORS], starts))
+    a = {sid: st - lead(sid) for (sid, _), st in zip(ANCHORS, starts)}          # clip zero, seconds
     ev["k02"] = {"ping": t("рекламе", a["k02"]) - a["k02"]}
     ev["k03"] = {"n1": 0.1, "n2": t("интеграции", a["k03"]) - a["k03"], "n3": t("партнёрки", a["k03"]) - a["k03"]}
     tt = t("фразу", a["k05"], 1) - a["k05"]
@@ -73,8 +84,8 @@ def main(words_path, shots_path):
     for i, (sid, _) in enumerate(ANCHORS):
         nxt = starts[i + 1] + OVER if i + 1 < len(ANCHORS) else end + 0.3
         s = by[sid]
-        s["start"] = round(starts[i], 3)
-        s["dur"] = round(nxt - starts[i], 2)
+        s["start"] = round(a[sid], 3)
+        s["dur"] = round(nxt - a[sid], 2)
         s["events"] = {k: round(v, 3) for k, v in ev.get(sid, {}).items()}
     S["ends"] = {"1": round(end, 2)}
     Path(shots_path).write_text(json.dumps(S, ensure_ascii=False, indent=1), encoding="utf-8")
