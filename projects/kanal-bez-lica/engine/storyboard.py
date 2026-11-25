@@ -138,6 +138,13 @@ def pill(text, at, dy, preset="upper", **kw):
             "props": {"text": text, "size": 40, "dark": True, **kw}}
 
 
+def chip(text, at, dy, preset="lower", size=48, accent=False):
+    """v2: one solid tag (Chips with one item): the dusk theme's Pill is 10 % white glass (dark) or white with light ink
+    (light) and is unreadable over the bright day room; the Chips card is solid dark with light ink, the accent one orange"""
+    return {"block": "Chips", "at": at, "pos": {"preset": preset, "dy": dy}, "enter": "pop",
+            "props": {"items": [text], "size": size, "accentIdx": [0] if accent else []}}
+
+
 scenes = [
     scene("k01", 0, zoom=(1.0, 1.04)),          # hook: the faceless feed on the phone
     scene("k1b", "@В ТикТоке"),                 # v2: the «Для вас» feed plays our 3D reel, hearts fly, «в рекомендациях»
@@ -146,16 +153,13 @@ scenes = [
     scene("k04", "@Но реклама"),                # night editing seen from the front: the face in the monitor light
     scene("k05", "@С KINEMA"),                  # the monitor close: one phrase → checks: script, voice, 3D scenes, captions
     # v2 «Плюсы такого монтажа»: the hero leans back, a pill per plus on its word
-    # (lower, under the face: the hero's face sits in the upper middle of this shot; bigger than the end-card pills)
-    scene("k5c", "@Плюсы", layers=[pill("без камеры", "@камеры", -105, "lower", size=52),
-                                     pill("без монтажёра", "@монтажёра", 0, "lower", size=52),
-                                     pill("3D выделяется в ленте", "@выделяется", 105, "lower", size=52)]),
+    # (lower, under the face: the hero's face sits in the upper middle of this shot; solid tags, see chip())
+    scene("k5c", "@Плюсы", layers=[chip("без камеры", "@камеры", -120), chip("без монтажёра", "@монтажёра", 0),
+                                     chip("3D выделяется в ленте", "@выделяется", 120, accent=True)]),
     # v2 split screen (mike): the same wave and turn, 3D on top and pixel below; labels on each half
     scene("k5s", "@Одно действие", layers=[
-        {"block": "Pill", "at": "@стиля", "pos": {"preset": "center", "dy": -70}, "enter": "pop",
-         "props": {"text": "3D", "size": 56, "dark": True}},
-        {"block": "Pill", "at": "@пиксель", "pos": {"preset": "center", "dy": 70}, "enter": "pop",
-         "props": {"text": "ПИКСЕЛЬ", "size": 56, "dark": True}}]),
+        chip("3D", "@стиля", -75, "center", size=54, accent=True), chip("ПИКСЕЛЬ", "@пиксель", 75, "center", size=54, accent=True)],
+          captions={"pos": "bottom"}),          # the top band would sit on the 3D hero's head; below it is the pixel copy
     scene("k06", "@а скоро"),                   # the style menu: the «скоро» tiles
     # the wall calendar fills with covers; «больше мест под баннеры» — ad tags pop low (v2: the hero stands left of the
     # calendar, the tags must not cross his face or the calendar)
