@@ -190,21 +190,20 @@ def cue(at, cands, vol, peak=False, dur=None, fade=0.25):
 
 # k02: the ad offer pings on the phone
 cue(c0("k02") + ev("k02", "ping"), NOTIFY_A, 0.5)
-# k03: three notifications drop in, one per word
-for kk, cands in (("n1", NOTIFY_B), ("n2", NOTIFY_A), ("n3", NOTIFY_B)):
+# k03: the other two notifications drop in on their words (the first is on screen at the cut, k02 just pinged)
+for kk, cands in (("n2", NOTIFY_B), ("n3", NOTIFY_A)):
     cue(c0("k03") + ev("k03", kk), cands, 0.42)
 # k04: night typing (0 → 45 % of the shot), then the clock races on «А монтаж одного — это часы»
 d4 = SH["k04"]["dur"]
 cue(c0("k04") + 0.05, ["typing-long"], 0.3, dur=d4 * 0.45 - 0.05)
 t_mont = W.find("А монтаж", c0("k04"))[0]
 cue(t_mont - 0.05, ["usr-clock-fast-bright-late-072"], 0.32, dur=c0("k05") + 0.4 - t_mont, fade=0.4)
-# k05: one phrase typed, then a soft pop on each check, a small jingle when the reel is ready
+# k05: one phrase typed, then a soft pop on each check; the fourth check (субтитры) makes the reel ready: a small jingle
 tt = ev("k05", "typed")
 cue(c0("k05") + 0.05, ["typing-medium", "typing-long"], 0.3, dur=max(0.4, tt - 0.1))
-for j in range(4):
+for j in range(3):
     cue(c0("k05") + ev("k05", f"s{j}"), POP, 0.32)
-d5 = SH["k05"]["dur"]
-cue(c0("k05") + tt + (d5 - tt) * 0.8, SUCCESS, 0.38)
+cue(c0("k05") + ev("k05", "s3"), SUCCESS, 0.38)
 # k06: the highlight runs over the styles; clicks on the two ready ones, a pop on «скоро»
 for w, cands, v in (("3D", CLICK, 0.3), ("пиксель", CLICK, 0.3), ("скоро", POP, 0.3)):
     cue(W.find(w, c0("k06"))[0], cands, v)          # absolute: «3D» is said in k05 too
