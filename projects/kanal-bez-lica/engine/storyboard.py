@@ -146,17 +146,20 @@ scenes = [
     scene("k04", "@Но реклама"),                # night editing seen from the front: the face in the monitor light
     scene("k05", "@С KINEMA"),                  # the monitor close: one phrase → checks: script, voice, 3D scenes, captions
     # v2 «Плюсы такого монтажа»: the hero leans back, a pill per plus on its word
-    scene("k5c", "@Плюсы", layers=[pill("без камеры", "@камеры", 0), pill("без монтажёра", "@монтажёра", 95),
-                                     pill("3D выделяется в ленте", "@выделяется", 190)]),
+    # (lower, under the face: the hero's face sits in the upper middle of this shot; bigger than the end-card pills)
+    scene("k5c", "@Плюсы", layers=[pill("без камеры", "@камеры", -105, "lower", size=52),
+                                     pill("без монтажёра", "@монтажёра", 0, "lower", size=52),
+                                     pill("3D выделяется в ленте", "@выделяется", 105, "lower", size=52)]),
     # v2 split screen (mike): the same wave and turn, 3D on top and pixel below; labels on each half
     scene("k5s", "@Одно действие", layers=[
         {"block": "Pill", "at": "@стиля", "pos": {"preset": "center", "dy": -70}, "enter": "pop",
-         "props": {"text": "3D", "size": 44, "dark": True}},
+         "props": {"text": "3D", "size": 56, "dark": True}},
         {"block": "Pill", "at": "@пиксель", "pos": {"preset": "center", "dy": 70}, "enter": "pop",
-         "props": {"text": "ПИКСЕЛЬ", "size": 44, "dark": True}}]),
+         "props": {"text": "ПИКСЕЛЬ", "size": 56, "dark": True}}]),
     scene("k06", "@а скоро"),                   # the style menu: the «скоро» tiles
-    # the wall calendar fills with covers; «больше мест под баннеры» — ad tags pop over it
-    scene("k07", "@Один вечер", layers=[{"block": "Chips", "at": "@больше роликов", "pos": {"preset": "center", "dy": 120},
+    # the wall calendar fills with covers; «больше мест под баннеры» — ad tags pop low (v2: the hero stands left of the
+    # calendar, the tags must not cross his face or the calendar)
+    scene("k07", "@Один вечер", layers=[{"block": "Chips", "at": "@больше роликов", "pos": {"preset": "lower", "dy": 0},
                                           "props": {"items": ["баннер", "интеграция", "партнёрка"], "accentIdx": [0]}}]),
     scene("k08", "@Не шаришь"),                 # the call on the monitor, then the camera turns to the hero: thumbs up
     scene("k09", "@Кто напишет"),               # «канал» typed into the comments

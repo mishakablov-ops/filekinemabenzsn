@@ -4,14 +4,15 @@
 
 1. tools/build_timeline.py on <RS>/engine/public/projects/kanal-bez-lica/words.json -> blender/shots.json (clip starts,
    lengths and in-shot events from the voice);
-2. each shot -> JPEG frames in clips/_seq/<shot>/ (resumable: finished frames are kept, empty placeholders of a broken
-   run are removed) -> ffmpeg H.264 clips/<shot>.mp4 (1080x1920, 30 fps, CRF 14, GOP 30, no B-frames for exact
+2. each shot -> JPEG frames in <seq-root>/<shot>_<hash>/ (default clips/_seq; the hash covers the shot's timing and the
+   set code, so stale frames are never reused; resumable: finished frames are kept, empty placeholders are removed) -> ffmpeg H.264 clips/<shot>.mp4 (1080x1920, 30 fps, CRF 14, GOP 30, no B-frames for exact
    seeking); a middle frame -> clips/_check/<shot>.jpg and a contact sheet clips/_check/sheet.jpg for review;
    Blender's own log of each shot (frame times) -> clips/_check/<shot>.log
 3. progress in clips/_check/progress.json (shot, frames, seconds), so a broken run can go on with --only.
 Keep TEMP on C: (the flash drive is FAT32): the caller sets it.
 """
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -51,6 +52,8 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--samples", type=int, default=24)
     ap.add_argument("--scale", type=float, default=1.0)
+    ap.add_argument("--seq-root", default=os.environ.get("KANAL_SEQ", ""),
+                    help="folder for the JPEG frames, best outside public/ (the KINEMA bundle copies all of public)")
     a = ap.parse_args()
     rs = Path(a.rs)
     kp = rs / "engine" / "public" / "projects" / PID
@@ -67,6 +70,8 @@ def main():
         raise SystemExit("build_timeline failed")
     S = json.loads(shots_json.read_text(encoding="utf-8"))
     only = [x for x in a.only.split(",") if x]
+    seq_root = Path(a.seq_root) if a.seq_root else clips / "_seq"
+    set_md5 = {}
     prog_f = chk / "progress.json"
     prog = json.loads(prog_f.read_text(encoding="utf-8")) if prog_f.exists() else {}
     for s in S["shots"]:
@@ -74,7 +79,14 @@ def main():
         if only and sid not in only:
             continue
         out = clips / f"{sid}.mp4"
-        seq = clips / "_seq" / sid
+        # v2 (25.11): the frames folder is named by a hash of the shot (timing, events, camera code), so frames of an
+        # older version of the shot are never mixed into a new clip; a broken run of the same shot still resumes
+        if s["set"] not in set_md5:
+            src = PROJ / "blender" / "sets" / f"{s['set']}.py"
+            set_md5[s["set"]] = hashlib.md5(src.read_bytes()).hexdigest() if src.exists() else ""
+        key = hashlib.md5((json.dumps(s, sort_keys=True, ensure_ascii=False) + set_md5[s["set"]] +
+                           f"{a.samples}/{a.scale}").encode("utf-8")).hexdigest()[:8]
+        seq = seq_root / f"{sid}_{key}"
         seq.mkdir(parents=True, exist_ok=True)
         for f in seq.glob("f_*.jpg"):
             if f.stat().st_size == 0:                # a placeholder of a frame that was never finished
