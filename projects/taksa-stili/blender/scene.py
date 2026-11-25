@@ -588,6 +588,11 @@ if LOWPOLY:
             if 'Hill' in o.name or o.name.startswith(('Bush', 'Crown', 'Cloud')):
                 m = o.modifiers.new('dec', 'DECIMATE'); m.ratio = 0.06
     for mb in bpy.data.metaballs: mb.render_resolution = 0.2
+    # v6: голова — отдельная семья метаболов с сеткой мельче. В общей семье с телом (сетка 0.2) узкая морда
+    # не попадала в сетку: морда пропадала, нос и улыбка висели в воздухе. Шея прячется под ошейником.
+    hd = bpy.data.objects['Body.head']; hd.name = 'Head'
+    hd.data.resolution = 0.08; hd.data.render_resolution = 0.08
+    bpy.data.objects['Nose'].location.x = 0.93   # грубая сетка укорачивает морду — нос ближе, без зазора
 
 # ---------------- линии (Freestyle) ----------------
 LINES = {'flat': ((0.02, 0.01, 0.0), 2.2), 'lineart': ((1, 1, 1), 2.0), 'comic': ((0.05, 0.03, 0.02), 2.8),
