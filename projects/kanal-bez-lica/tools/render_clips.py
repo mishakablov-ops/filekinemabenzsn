@@ -4,8 +4,10 @@
 
 1. tools/build_timeline.py on <RS>/engine/public/projects/kanal-bez-lica/words.json -> blender/shots.json (clip starts,
    lengths and in-shot events from the voice);
-2. each shot -> <RS>/engine/public/projects/kanal-bez-lica/clips/<shot>.mp4 (1080x1920, 30 fps, EEVEE), a middle frame
-   -> clips/_check/<shot>.jpg and a contact sheet clips/_check/sheet.jpg for review;
+2. each shot -> JPEG frames in clips/_seq/<shot>/ (resumable: finished frames are kept, empty placeholders of a broken
+   run are removed) -> ffmpeg H.264 clips/<shot>.mp4 (1080x1920, 30 fps, CRF 14, GOP 30, no B-frames for exact
+   seeking); a middle frame -> clips/_check/<shot>.jpg and a contact sheet clips/_check/sheet.jpg for review;
+   Blender's own log of each shot (frame times) -> clips/_check/<shot>.log
 3. progress in clips/_check/progress.json (shot, frames, seconds), so a broken run can go on with --only.
 Keep TEMP on C: (the flash drive is FAT32): the caller sets it.
 """
@@ -52,21 +54,39 @@ def main():
         if only and sid not in only:
             continue
         out = clips / f"{sid}.mp4"
+        seq = clips / "_seq" / sid
+        seq.mkdir(parents=True, exist_ok=True)
+        for f in seq.glob("f_*.jpg"):
+            if f.stat().st_size == 0:                # a placeholder of a frame that was never finished
+                f.unlink()
+        n = round(s["dur"] * 30)
         t0 = time.time()
-        print(f"=== {sid} dur {s['dur']} s", flush=True)
-        r = subprocess.run([a.blender, "-b", "--factory-startup", "--python", str(PROJ / "blender" / "build_pc.py"), "--",
-                            "--shot", sid, "--mp4", str(out), "--scale", str(a.scale), "--fps", "30",
-                            "--samples", str(a.samples)], capture_output=True, text=True, encoding="utf-8", errors="replace")
-        tail = [ln for ln in (r.stdout + r.stderr).splitlines() if any(k in ln for k in ("BUILD", "CLIP", "Error", "rror:", "Traceback"))]
+        print(f"=== {sid} dur {s['dur']} s, {n} frames, {len(list(seq.glob('f_*.jpg')))} already there", flush=True)
+        blog = chk / f"{sid}.log"
+        with open(blog, "w", encoding="utf-8", errors="replace") as lf:
+            r = subprocess.run([a.blender, "-b", "--factory-startup", "--python", str(PROJ / "blender" / "build_pc.py"), "--",
+                                "--shot", sid, "--seq", str(seq), "--scale", str(a.scale), "--fps", "30",
+                                "--samples", str(a.samples)], stdout=lf, stderr=subprocess.STDOUT)
+        text = blog.read_text(encoding="utf-8", errors="replace")
+        tail = [ln for ln in text.splitlines() if any(k in ln for k in ("BUILD", "SEQ", "Error", "rror:", "Traceback"))]
         print("\n".join(tail[-8:]), flush=True)
-        ok = r.returncode == 0 and out.exists()
+        frames = sorted(f for f in seq.glob("f_*.jpg") if f.stat().st_size > 0)
+        ok = r.returncode == 0 and len(frames) >= n
+        if ok:
+            e = subprocess.run([ff, "-y", "-loglevel", "error", "-framerate", "30", "-start_number", "1",
+                                "-i", str(seq / "f_%04d.jpg"), "-frames:v", str(n), "-c:v", "libx264", "-crf", "14",
+                                "-preset", "medium", "-g", "30", "-bf", "0", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                                str(out)], capture_output=True, text=True)
+            ok = e.returncode == 0 and out.exists()
+            if not ok:
+                print("ENCODE FAILED", e.stderr[-1500:], flush=True)
         if ok:
             subprocess.run([ff, "-y", "-loglevel", "error", "-ss", f"{s['dur'] * 0.6:.2f}", "-i", str(out), "-frames:v", "1",
                             "-q:v", "3", str(chk / f"{sid}.jpg")])
         prog[sid] = dict(ok=ok, sec=round(time.time() - t0, 1), frames=round(s["dur"] * 30), at=time.strftime("%H:%M:%S"))
         prog_f.write_text(json.dumps(prog, indent=1), encoding="utf-8")
         if not ok:
-            print(f"FAILED {sid}: exit {r.returncode}\n" + (r.stdout + r.stderr)[-3000:], flush=True)
+            print(f"FAILED {sid}: exit {r.returncode}, frames {len(frames)}/{n}\n" + text[-3000:], flush=True)
     jpgs = [chk / f"{s['id']}.jpg" for s in S["shots"] if (chk / f"{s['id']}.jpg").exists()]
     if jpgs:
         ins = sum([["-i", str(j)] for j in jpgs], [])

@@ -28,6 +28,7 @@ def main():
     ap.add_argument('--ts', default='', help='several stills from one build: "0.2,0.5,0.9" -> <shot>_t20.jpg ...')
     ap.add_argument('--tag', default='', help='suffix for the still file name')
     ap.add_argument('--mp4', default='')
+    ap.add_argument('--seq', default='', help='render the shot as DIR/f_0001.jpg… (resumable, progress visible)')
     ap.add_argument('--scale', type=float, default=1.0)
     ap.add_argument('--samples', type=int, default=0)
     ap.add_argument('--save', action='store_true')
@@ -68,6 +69,19 @@ def main():
     if a.save:
         lib.save_blend(os.path.join(lib.PROJ, 'blender', 'files', a.shot + '.blend'))
     r = sc.render
+    if a.seq:
+        # 25.11 (ПК): кадры JPEG по одному — видно прогресс, обрыв продолжается с места (готовые кадры не перерисовываются)
+        os.makedirs(a.seq, exist_ok=True)
+        r.image_settings.file_format = 'JPEG'
+        r.image_settings.quality = 95
+        r.use_overwrite = False
+        r.use_placeholder = True
+        r.filepath = os.path.join(a.seq, 'f_')
+        t1 = time.time()
+        bpy.ops.render.render(animation=True)
+        n = sc.frame_end - sc.frame_start + 1
+        print(f'SEQ {a.shot} {n} frames in {time.time() - t1:.1f}s -> {a.seq}', flush=True)
+        return
     if a.mp4:
         tmp = os.path.join(os.path.dirname(a.mp4), '_tmp_' + a.shot)
         os.makedirs(tmp, exist_ok=True)
