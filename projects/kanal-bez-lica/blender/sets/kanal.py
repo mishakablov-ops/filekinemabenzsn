@@ -372,6 +372,38 @@ def pov_mats(h):
         nt.links.new(mix.outputs[0], out.inputs['Surface'])
 
 
+def hide_head_for_camera(h, group='Head'):
+    """25.11 (EEVEE на ПК): голова героя между камерой и телефоном прозрачна только для лучей камеры — по весу её группы
+    вершин, а не отсечением clip_start. Отсечение резало и предплечья с кулаками (они в 1–7 см перед экраном, голова
+    подходит к тому же расстоянию), и кулаки превращались в белые «крылья». Тень от головы остаётся."""
+    for m in h['body'].data.materials:
+        nt = m.node_tree
+        out = next(n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL' and n.is_active_output)
+        src = out.inputs['Surface'].links[0].from_socket
+        at = nt.nodes.new('ShaderNodeAttribute')
+        at.attribute_type = 'GEOMETRY'
+        at.attribute_name = group
+        gt = nt.nodes.new('ShaderNodeMath')
+        gt.operation = 'GREATER_THAN'
+        gt.inputs[1].default_value = 0.5
+        lp = nt.nodes.new('ShaderNodeLightPath')
+        mul = nt.nodes.new('ShaderNodeMath')
+        mul.operation = 'MULTIPLY'
+        tr = nt.nodes.new('ShaderNodeBsdfTransparent')
+        mix = nt.nodes.new('ShaderNodeMixShader')
+        nt.links.new(at.outputs['Fac'], gt.inputs[0])
+        nt.links.new(gt.outputs[0], mul.inputs[0])
+        nt.links.new(lp.outputs['Is Camera Ray'], mul.inputs[1])
+        nt.links.new(mul.outputs[0], mix.inputs['Fac'])
+        nt.links.new(src, mix.inputs[1])
+        nt.links.new(tr.outputs[0], mix.inputs[2])
+        nt.links.new(mix.outputs[0], out.inputs['Surface'])
+        try:
+            m.surface_render_method = 'DITHERED'          # EEVEE: прозрачность через дизеринг, тени как у непрозрачного
+        except Exception:
+            pass
+
+
 def pov_camera(h, ph, dur, lens=30, push=0.0):
     """Камера из глаз героя на телефон; push — на сколько метров подъехать к телефону за план."""
     pov_mats(h)
@@ -391,8 +423,9 @@ def pov_camera(h, ph, dur, lens=30, push=0.0):
 def phone_cam(h, ph, dur, dist=0.39, lens=54, push=0.03, fstop=4.0, up=0.023):
     # 25.11: телефон ~50 % высоты кадра и ниже центра — сверху место для титров (полоса 13–33 %), низ экрана выше 80 %
     """Крупно экран телефона со стороны лица героя: камера на нормали экрана, верх кадра = верх экрана,
-    кулаки по краям. Голова героя для камеры прозрачна изнутри (pov_mats), если камера в неё попала."""
+    кулаки по краям. Голова героя для камеры прозрачна (hide_head_for_camera), руки и кулаки целиком в кадре."""
     pov_mats(h)
+    hide_head_for_camera(h)
     sc = bpy.context.scene
     sc.frame_set(1)
     bpy.context.view_layer.update()
@@ -420,8 +453,7 @@ def phone_cam(h, ph, dur, dist=0.39, lens=54, push=0.03, fstop=4.0, up=0.023):
         cam.matrix_world = Matrix.Translation(pos) @ Matrix((x, y, z)).transposed().to_4x4()
         cam.keyframe_insert('location', frame=F(t))
         cam.keyframe_insert('rotation_euler', frame=F(t))
-        cd.clip_start = dd - 0.02                       # лицо героя (нос, щёки) между камерой и телефоном отсекается
-        cd.keyframe_insert('clip_start', frame=F(t))
+    cd.clip_start = 0.05                                # голову прячет материал; clip_start резал кулаки (25.11)
     return cam
 
 

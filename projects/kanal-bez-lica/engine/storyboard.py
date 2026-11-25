@@ -121,8 +121,17 @@ def profile(**kw):
 
 # ----------------------------------------------------------------------------- scenes
 _, end_last = W.find("начать", W.find("Кто напишет")[0])       # the last word of the voice
-END_AT = "@расскажу"                                            # the phone flips while the voice ends the line
-end_from = W.find("расскажу", W.find("Кто напишет")[0])[0] - 0.07 - TIN["fade"] / 2
+# the end card cuts in right after the voice (captions end with it, the title takes their place: video-ending-rule);
+# 25.11 cloud test: started on «расскажу», the last caption and the title fought over the top band
+END_AT = "@начать>+0.2"
+END0 = end_last + 0.2 - 0.07                                    # the end scene's cut, seconds
+end_from = END0 - TIN["fade"] / 2
+
+
+def at_end(rel):
+    """an absolute anchor rel seconds after the end card's cut"""
+    return f"@начать>+{0.13 + rel:.2f}"
+
 
 scenes = [
     scene("k01", 0, zoom=(1.0, 1.04)),          # hook: the faceless feed on the phone, views growing
@@ -136,21 +145,24 @@ scenes = [
     scene("k09", "@Кто напишет"),               # «канал» typed into the comments
     # the end card (video-ending-rule, themed «coins»): the k09 clip goes on dimmed, the profile flips in on the iPhone,
     # «ПОДДЕРЖИ ЛАЙКОМ И ПОДПИСКОЙ» lands where the captions were once the voice is over, coins rain, two jokes
-    {"id": "kend", "at": END_AT, "transition": "fade", "camera": "still", "captions": {"mode": "editorial", "pos": "top", "uppercase": True},
-     "bg": {**clip("k09", (1.04, 1.1), startFrom=round(end_from - c0("k09"), 3)), "dim": 0.5},
+    {"id": "kend", "at": END_AT, "transition": "fade", "camera": "still", "captions": False,
+     "bg": {**clip("k09", (1.04, 1.1), startFrom=round(end_from - c0("k09"), 3)), "dim": 0.55},
      "layers": [
+         # the phone sits low (its top under the jokes, the grid runs into the TikTok buttons), the header readable
          {"block": "IPhone17", "pos": "full", "enter": "none", "props": {
-             "enter": "flip", "flipAt": 0.1, "flipDur": 0.9, "float": True, "shadow": 0, "color": "#2C3A4F",
+             "enter": "flip", "flipAt": 0.0, "flipDur": 0.9, "float": True, "shadow": 0, "color": "#2C3A4F",
              "screen": profile(),
-             "cam": [k(0, [0, 2.3, 12.4], [0, 2.25, 0], 30), k(1.0, [0.3, 2.32, 11.6], [0, 2.25, 0], 30),
-                     k(2.4, [0, 2.2, 9.6], [0, 2.2, 0], 30, "inOut"), k(6.0, [0, 2.2, 9.2], [0, 2.2, 0], 30)]}},
-         {"block": "Title", "at": f"@начать>+0.12", "pos": "top", "enter": "none",
-          "props": {"text": "ПОДДЕРЖИ ЛАЙКОМ / [И ПОДПИСКОЙ]", "size": 92, "weight": 900}},
-         {"block": "StarRain", "at": "@начать>+0.2", "pos": "full", "props": {"kind": "coin", "count": 22, "dur": 3.0}},
-         {"block": "Pill", "at": "@начать>+0.75", "pos": {"preset": "bottom", "dy": -150}, "enter": "pop",
-          "props": {"text": "лайк — бесплатная интеграция", "size": 40, "dark": True}},
-         {"block": "Pill", "at": "@начать>+1.25", "pos": {"preset": "bottom", "dy": -40}, "enter": "pop",
-          "props": {"text": "подписка дешевле монтажёра", "size": 40, "dark": True}},
+             "cam": [k(0, [0, 2.75, 12.4], [0, 2.7, 0], 30), k(1.0, [0.3, 2.77, 11.4], [0, 2.72, 0], 30),
+                     k(2.2, [0, 2.75, 9.6], [0, 2.75, 0], 30, "inOut"), k(5.0, [0, 2.75, 9.3], [0, 2.75, 0], 30)]}},
+         # the last caption card holds ~2.2 s after the voice (captions/Captions.tsx), so the title sits just under it;
+         # words glued with NBSP: the cloud test lost the spaces between Title words («ПОДДЕРЖИЛАЙКОМ»)
+         {"block": "Title", "at": 0.3, "pos": {"preset": "top", "dy": 130}, "enter": "none",
+          "props": {"text": "ПОДДЕРЖИ\u00a0ЛАЙКОМ / [И\u00a0ПОДПИСКОЙ]", "size": 80, "weight": 900}},
+         {"block": "StarRain", "at": 0.35, "pos": "full", "props": {"kind": "coin", "count": 22, "dur": 3.0}},
+         {"block": "Pill", "at": 0.85, "pos": {"preset": "upper", "dy": 0}, "enter": "pop",
+          "props": {"text": "лайк — бесплатная интеграция", "size": 38, "dark": True}},
+         {"block": "Pill", "at": 1.3, "pos": {"preset": "upper", "dy": 95}, "enter": "pop",
+          "props": {"text": "подписка дешевле монтажёра", "size": 38, "dark": True}},
      ]},
 ]
 
@@ -212,10 +224,10 @@ for j in range(1, 6):
     cue(c0("k09") + t0 + (t1 - t0) * j / 5, TAP, 0.35)
 cue(c0("k09") + t1 + 0.15, POP, 0.3)
 # end card: the flip, coins with the title, a pop per joke
-cue(END_AT + "+0.1", ["card-flip", "pk-pop-ui-menu"], 0.35)
-cue("@начать>+0.12", COINS, 0.38)
-cue("@начать>+0.75", POP, 0.3)
-cue("@начать>+1.25", POP, 0.3)
+cue(at_end(0.05), ["card-flip", "pk-pop-ui-menu"], 0.35)
+cue(at_end(0.3), COINS, 0.38)
+cue(at_end(0.85), POP, 0.3)
+cue(at_end(1.3), POP, 0.3)
 
 SPEC = {
     "id": PID, "mode": "explainer", "style": "dusk", "fps": 30,
