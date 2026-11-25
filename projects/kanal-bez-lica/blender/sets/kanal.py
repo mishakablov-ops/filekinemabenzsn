@@ -880,9 +880,10 @@ def city_view(shot, fps, preset='day'):
     return root
 
 
-def hero_tone(value=0.74, sat=1.12):
+def hero_tone(value=0.5, sat=1.12):
     """mike 26.11: «гг слишком яркий» — в белой дневной комнате кожа и кроссовки героя светились почти белым. Цвет всех
-    материалов героя (и рук в POV) темнее и чуть насыщеннее: HSV после текстуры и масок глаз, до Base Color."""
+    материалов героя (и рук в POV) темнее и чуть насыщеннее: HSV после текстуры и масок глаз, до Base Color. Кожа в текстуре
+    ~0.85 линейной яркости; пробы 26.11: 0.74 почти не видно, 0.5 — живой тон кожи."""
     done = set()
     for o in bpy.data.objects:
         if o.type != 'MESH' or not o.name.startswith('Hero'):
@@ -910,7 +911,7 @@ def build(shot, fps=30):
     res = globals()['v_' + shot['variant']](shot, fps) or {}
     if shot['variant'] in WINDOW_PLANS and not shot.get('old_street'):
         city_view(shot, fps, 'night' if shot['variant'] == 'night' else 'day')
-    hero_tone(shot.get('hero_value', 0.74))
+    hero_tone(shot.get('hero_value', 0.5))
     if shot['variant'] != 'night':          # 26.11: днём вся картинка на ~1/4 ступени темнее, заливка от камеры слабее
         res['exposure'] = round(res.get('exposure', 0.1) - 0.25, 3)
         res['fill'] = round(res.get('fill', 0.6) * 0.6, 3)
