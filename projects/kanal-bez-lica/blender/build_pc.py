@@ -71,6 +71,10 @@ def main():
     if a.mp4:
         tmp = os.path.join(os.path.dirname(a.mp4), '_tmp_' + a.shot)
         os.makedirs(tmp, exist_ok=True)
+        try:
+            r.image_settings.media_type = 'VIDEO'       # Blender 5.x: video formats sit behind media_type (25.11, ПК)
+        except (AttributeError, TypeError):
+            pass
         r.image_settings.file_format = 'FFMPEG'
         ff = r.ffmpeg
         ff.format = 'MPEG4'
