@@ -35,6 +35,16 @@ for pr in loc["props"]:
         pr["ceiling"] = True
 for pa in loc.get("particles", []):
     pa["n"] = 40
+# 26.11: над 3D-половиной светлая дневная комната — пиксельную делаем светлее (стены, рассеянный свет, лампа), но в нашей
+# гамме: тёмно-синие обои и луч из окна остаются
+for pr in loc["props"]:
+    if pr.get("t") == "room":
+        pr.setdefault("wallOpts", {})["color"] = "#46506a"
+hemi = loc.get("hemi") or ["#c8c0b8", "#3a2a20", 0.6]
+loc["hemi"] = [hemi[0], "#5a4636", round(hemi[2] * 1.6, 2)]
+for li in loc.get("lights", []):
+    if li.get("type") == "point":
+        li["i"] = round(li["i"] * 1.6, 2)
 (PIX / "engine" / "public" / "locations" / "kanal_room.json").write_text(json.dumps(loc, ensure_ascii=False), encoding="utf-8")
 
 ep = Ep("kanal", "split", fps=30, w=1080, h=960)
