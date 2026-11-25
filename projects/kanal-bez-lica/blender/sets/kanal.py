@@ -880,8 +880,38 @@ def city_view(shot, fps, preset='day'):
     return root
 
 
+def hero_tone(value=0.74, sat=1.12):
+    """mike 26.11: «гг слишком яркий» — в белой дневной комнате кожа и кроссовки героя светились почти белым. Цвет всех
+    материалов героя (и рук в POV) темнее и чуть насыщеннее: HSV после текстуры и масок глаз, до Base Color."""
+    done = set()
+    for o in bpy.data.objects:
+        if o.type != 'MESH' or not o.name.startswith('Hero'):
+            continue
+        for m in o.data.materials:
+            if m is None or not m.use_nodes or m.name in done or m.get('kanal_tone'):
+                continue
+            done.add(m.name)
+            N, L = m.node_tree.nodes, m.node_tree.links
+            for b in [n for n in N if n.type == 'BSDF_PRINCIPLED']:
+                inp = b.inputs['Base Color']
+                if inp.links:
+                    hsv = N.new('ShaderNodeHueSaturation')
+                    hsv.inputs['Saturation'].default_value = sat
+                    hsv.inputs['Value'].default_value = value
+                    L.new(inp.links[0].from_socket, hsv.inputs['Color'])
+                    L.new(hsv.outputs['Color'], inp)
+                else:
+                    inp.default_value = [c * value for c in inp.default_value[:3]] + [inp.default_value[3]]
+            m['kanal_tone'] = 1
+    return len(done)
+
+
 def build(shot, fps=30):
     res = globals()['v_' + shot['variant']](shot, fps) or {}
     if shot['variant'] in WINDOW_PLANS and not shot.get('old_street'):
         city_view(shot, fps, 'night' if shot['variant'] == 'night' else 'day')
+    hero_tone(shot.get('hero_value', 0.74))
+    if shot['variant'] != 'night':          # 26.11: днём вся картинка на ~1/4 ступени темнее, заливка от камеры слабее
+        res['exposure'] = round(res.get('exposure', 0.1) - 0.25, 3)
+        res['fill'] = round(res.get('fill', 0.6) * 0.6, 3)
     return res
