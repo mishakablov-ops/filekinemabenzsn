@@ -268,8 +268,7 @@ def base(night=False, rng=None):
     lib.box((1.5, 1.1, 0.04), (1.4, -1.35, 0.45), lib.mat('Plaid', '#C9785A', rough=0.95, var=0.1, var_scale=25), bevel=0.02,
             name='Plaid', coll=coll, origin='bottom')
     if night:
-        pc.night_sky(milky=0.3, stars=0.6, horizon='#1A2338', top='#05070D')
-        sun.data.energy = 0.0
+        sun.data.energy = 0.0                       # небо и огни города — пресет 'night' «Метрополиса» (city_view)
         wf = bpy.data.objects.get('WinFill')
         if wf:
             wf.data.energy = 25
@@ -624,5 +623,60 @@ def v_comment(shot, fps):
     return dict(fill=0.25, exposure=0.3, samples=32, still_t=0.8)
 
 
+# ============================================================================= за окном — «Метрополис»
+CITY_AT = Vector((0.0, 18.0, 24.0))         # пол комнаты: 8-й этаж над набережной, окно (+y) вдоль проспекта x = 0 в Даунтаун
+CITY_DETAIL = 250.0                          # фасады вблизи с подоконниками, вывесками, балконами (metro_detail)
+CITY_OVER = {}
+WINDOW_PLANS = ('feed', 'sofa', 'notes', 'night', 'build', 'styles', 'calendar', 'call', 'comment')
+
+
+def city_view(shot, fps, preset='day'):
+    """mike 25.11: «поменяй на улице вид на наш город новый». Комнату со всем содержимым (герой, камера, свет)
+    переносим в «Метрополис» (blender/library/metro*.py), улицу-заглушку sila_sets.room() убираем. Солнце комнаты
+    светит только комнату, солнце города — только город (light linking): иначе оно бьёт в открытую стену комнаты."""
+    import metro
+    import metro_build as MB
+    import metro_mats as MM
+    out = bpy.data.collections.get('RoomOutside')
+    if out:
+        for o in list(out.objects):
+            bpy.data.objects.remove(o, do_unlink=True)
+    room_objs = list(bpy.data.objects)
+    room_suns = [o for o in room_objs if o.type == 'LIGHT' and o.data.type == 'SUN']
+    root = lib.empty('RoomRoot', tuple(CITY_AT))
+    for o in room_objs:
+        if o.parent is None:
+            o.parent = root
+    frames = max(1, int(round(shot['dur'] * fps)))
+    MM.set_global('FocusX', CITY_AT.x)
+    MM.set_global('FocusY', CITY_AT.y)
+    MM.set_global('FocusR', CITY_DETAIL)
+    MB.build_city(focus=(CITY_AT.x, CITY_AT.y), detail_r=CITY_DETAIL, filler=True, fps=fps, frames=frames,
+                  night=metro.PRESETS[preset]['night'], keep=[])
+    metro.apply_preset(preset, CITY_OVER.get(preset))
+    g = bpy.data.materials.get('WinGlass')                 # стекло почти без отражения комнаты: город за ним не в молоке
+    if g and g.node_tree:
+        for n in g.node_tree.nodes:
+            if n.type == 'BSDF_PRINCIPLED':
+                n.inputs['Alpha'].default_value = 0.04
+                n.inputs['Specular IOR Level'].default_value = 0.25
+    MM.key_time(fps, frames)
+    lit = bpy.data.collections.new('RoomLit')                  # не в сцене: только список приёмников света
+    for o in room_objs:
+        if o.type in ('MESH', 'CURVE', 'FONT') and o.name in bpy.data.objects:
+            lit.objects.link(o)
+    for o in room_suns:
+        o.light_linking.receiver_collection = lit
+    metro_coll = bpy.data.collections.get('Metro')
+    for nm in ('MetroSun', 'MetroMoon'):
+        o = bpy.data.objects.get(nm)
+        if o and metro_coll:
+            o.light_linking.receiver_collection = metro_coll
+    return root
+
+
 def build(shot, fps=30):
-    return globals()['v_' + shot['variant']](shot, fps)
+    res = globals()['v_' + shot['variant']](shot, fps) or {}
+    if shot['variant'] in WINDOW_PLANS and not shot.get('old_street'):
+        city_view(shot, fps, 'night' if shot['variant'] == 'night' else 'day')
+    return res
