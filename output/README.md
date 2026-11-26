@@ -5,7 +5,7 @@ MP4 в git не храним (сотни МБ, лимит GitHub 100 МБ на �
 
 | файл | проект | стиль | дата | отзыв пользователя |
 |---|---|---|---|---|
-| `kanal-bez-lica-v2.mp4` (+ `kanal-bez-lica-v2-voice-sfx.wav`) | kanal-bez-lica | Блендер 3D (12 планов EEVEE на ПК) + сплит 3D/пиксель (PIXCINE) + KINEMA, реклама воронки «канал», 55,3 с, голос «убеждает», плюсы монтажа, ТикТок, без музыки | 26.11.2026 | кадры одобрены («ахуенно»), ролик выдан, ждём отзыв; на ПК `D:\aipollon\output\`, QA PASS, −13,9 LUFS, MD5 006c0a8c…31cb (WAV 056df11d…014d) |
+| `kanal-bez-lica-v2.mp4` (+ `kanal-bez-lica-v2-voice-sfx.wav`) | kanal-bez-lica | Блендер 3D (12 планов EEVEE на ПК) + сплит 3D/пиксель (PIXCINE) + KINEMA, реклама воронки «канал», 55,3 с, голос «убеждает», плюсы монтажа, ТикТок, без музыки | 26.11.2026 | **принят 26.11** («все, отлично»); на ПК `D:\aipollon\output\`, QA PASS, −13,9 LUFS, MD5 006c0a8c…31cb (WAV 056df11d…014d) |
 | `kanal-bez-lica-v1.mp4` (+ `kanal-bez-lica-v1-voice-sfx.wav`) | kanal-bez-lica | Блендер 3D (9 планов EEVEE на ПК через Blender MCP) + KINEMA, реклама воронки «канал», 39,7 с, голос Algenib, звуки без музыки, концовка «поддержи лайком и подпиской» (монеты) | 25.11.2026 | выдан, ждём отзыв; на ПК `D:\aipollon\output\`, QA PASS, −13,9 LUFS, MD5 a3f8ee78…9903 (WAV 1eb2b76f…a038) |
 | `kak-zhit-tupoy-v1.mp4` | kak-zhit-tupoy | Пиксель PIXCINE, 76 с, голос MiniMax ×1.35, мат, без музыки | 11.11.2026 | заменён v4; удалён с ПК 16.11 по выбору mike (MD5 был 7be66b5f…cf82) |
 | `kak-zhit-tupoy-v2.mp4` | kak-zhit-tupoy | Пиксель PIXCINE, 76 с, правки «без нереалистичности и лагов»: живой шаг, камеры с лица, желток на стенах, мигалки, 10 Мбит/с + faststart | 13.11.2026 | заменён v4; удалён с ПК 16.11 по выбору mike (MD5 был 744d45f1…9201) |
