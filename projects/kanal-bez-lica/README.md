@@ -1,8 +1,8 @@
 # Канал без лица (`kanal-bez-lica`)
 
 - **Стиль:** блендер (полный), герой `hero_rig.blend`
-- **Длительность:** 39,7 с (голос 36,45 с + концовка) · **Голос:** Gemini «Algenib»
-- **Статус:** v1 готов 25.11 — `D:\aipollon\output\kanal-bez-lica-v1.mp4` (39,7 с, QA PASS, −13,9 LUFS) и WAV голос+звуки без музыки; ждём отзыв mike
+- **Длительность:** v2 55,3 с (голос 52,0 с + концовка); v1 39,7 с · **Голос:** Gemini «Algenib»
+- **Статус:** v2 готов 26.11 — `D:\aipollon\output\kanal-bez-lica-v2.mp4` (55,3 с, QA PASS, −13,9 LUFS) и WAV голос+звуки без музыки; ждём отзыв mike
 - **Жанр:** рекламный ролик воронки, «реклама денег, а не история» (mike 24.11). Правила: `knowledge/rules/promo-funnel.md`.
 - **ЦА:** безликие каналы и новички, которые не разбираются в нейросетях → тариф «Настроим за тебя» (6 000 ₽).
 - **Факты:** сумм заработка нет, доход не обещаем. Уведомления о рекламе на экране без цифр.
@@ -25,11 +25,16 @@
   Планы `tools/render_clips.py` (тайминг по словам, кадры JPEG → H.264), сборка `engine/storyboard.py` → KINEMA `render.py`.
 - v1 25.11 — 9 планов на ПК (EEVEE, ~42 мин), сборка KINEMA `render.py` (бандл на флешке ~38 мин при новых файлах в public),
   QA PASS: 10 планов, 86 слов, 14 карточек, layout clean, −13,9 LUFS / TP −1,8. Выдача: MP4 + WAV голос+звуки в `D:\aipollon\output\`.
+- v2 25.11–26.11 — mike: голова не заслоняет, плюсы монтажа, выгода/баннеры/ТикТок, сплит «одно действие — два стиля»,
+  диктор убедительнее; 26.11: «гг слишком яркий», «картинка не мыльная», пиксель — «прям наш стиль» → `hero_tone(0.5)`,
+  дневные планы темнее, кадры на проверку в 1080×1920, пиксельная половина на PIXCINE (`pixel/build_split_pixel.py`,
+  зеркально — та же рука). Кадры: «ахуенно». 12 планов на ПК (32 сэмпла, ~65 мин, кадры вне public в `seq_v2`),
+  сборка KINEMA ~56 мин (бандл 41 мин). QA PASS: 13 планов, 112 слов, 19 карточек, layout clean, −13,9 LUFS / TP −2,0.
 
 ## Рендер на ПК (25.11)
 
 1. `KINEMA_RS=<RS> python -I engine/voice_sections.py` → `<RS>/engine/public/projects/kanal-bez-lica/{voice.wav,words.json}`.
-2. `python -I tools/render_clips.py --blender <blender.exe> --rs <RS>` → `tools/build_timeline.py` пишет в `blender/shots.json`
+2. `python -I tools/render_clips.py --blender <blender.exe> --rs <RS> [--seq-root DIR] [--pixel-half split_pixel.mp4]` → `tools/build_timeline.py` пишет в `blender/shots.json`
    начала и длины планов и события в плане (уведомления, галочки, палец, набор «канал»), затем 9 планов EEVEE кадрами
    (~2 с на кадр на RTX 3060) → `clips/<план>.mp4`, проверка `clips/_check/sheet.jpg`.
 3. `python -I engine/storyboard.py --rs <RS>` → `spec.json` (титры сверху, звуки на событиях, концовка после голоса).
